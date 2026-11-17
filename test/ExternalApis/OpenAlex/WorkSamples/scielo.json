@@ -1,0 +1,767 @@
+{
+  "id": "https://openalex.org/W4383265365",
+  "doi": "https://doi.org/10.1590/scielopreprints.6356",
+  "title": "A ESCOLA PARA TODES? O QUE DIZEM OS ESTUDOS SOBRE EDUCAÇÃO DE PESSOAS TRANS",
+  "display_name": "A ESCOLA PARA TODES? O QUE DIZEM OS ESTUDOS SOBRE EDUCAÇÃO DE PESSOAS TRANS",
+  "alternate_titles": [],
+  "publication_year": 2023,
+  "publication_date": "2023-07-05",
+  "ids": {
+    "openalex": "https://openalex.org/W4383265365",
+    "doi": "https://doi.org/10.1590/scielopreprints.6356"
+  },
+  "language": "pt",
+  "primary_location": {
+    "id": "doi:10.1590/scielopreprints.6356",
+    "doi": "https://doi.org/10.1590/scielopreprints.6356",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.1590/scielopreprints.6356",
+    "pdf_url": "https://preprints.scielo.org/index.php/scielo/preprint/download/6356/12126/12694",
+    "source": null,
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": "submittedVersion",
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "posted-content"
+  },
+  "parent_works": [],
+  "lineage": [
+    "https://openalex.org/W4383265365"
+  ],
+  "child_works_count": 0,
+  "type": "preprint",
+  "is_traditional": true,
+  "indexed_in": [
+    "crossref"
+  ],
+  "open_access": {
+    "is_oa": true,
+    "oa_status": "green",
+    "oa_url": "https://preprints.scielo.org/index.php/scielo/preprint/download/6356/12126/12694",
+    "any_repository_has_fulltext": null
+  },
+  "authorships": [
+    {
+      "author_position": "first",
+      "author": {
+        "id": "https://openalex.org/A5048613409",
+        "display_name": "Alessia Rodrigues Moura",
+        "orcid": "https://orcid.org/0000-0002-7859-9389",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-7859-9389"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I123001628",
+          "display_name": "Universidade Federal de Rondônia",
+          "ror": "https://ror.org/02842cb31",
+          "country_code": "BR",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I123001628"
+          ]
+        }
+      ],
+      "countries": [
+        "BR"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Alessia Rodrigues Moura",
+      "raw_affiliation_strings": [
+        "Federal University of Rondônia image/svg+xml"
+      ],
+      "raw_orcid": "https://orcid.org/0000-0002-7859-9389",
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Federal University of Rondônia image/svg+xml",
+          "institution_ids": [
+            "https://openalex.org/I123001628"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "last",
+      "author": {
+        "id": "https://openalex.org/A5009325460",
+        "display_name": "Marlí Lúcia Tonatto Zibetti",
+        "orcid": "https://orcid.org/0000-0003-3939-5663",
+        "observed_orcids": [
+          "https://orcid.org/0000-0003-3939-5663"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I123001628",
+          "display_name": "Universidade Federal de Rondônia",
+          "ror": "https://ror.org/02842cb31",
+          "country_code": "BR",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I123001628"
+          ]
+        }
+      ],
+      "countries": [
+        "BR"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Marli Lúcia Tonatto Zibetti",
+      "raw_affiliation_strings": [
+        "Federal University of Rondônia image/svg+xml"
+      ],
+      "raw_orcid": "https://orcid.org/0000-0003-3939-5663",
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Federal University of Rondônia image/svg+xml",
+          "institution_ids": [
+            "https://openalex.org/I123001628"
+          ]
+        }
+      ]
+    }
+  ],
+  "institutions": [],
+  "countries_distinct_count": 1,
+  "institutions_distinct_count": 1,
+  "corresponding_author_ids": [],
+  "corresponding_institution_ids": [
+    "https://openalex.org/I123001628"
+  ],
+  "apc_list": null,
+  "apc_paid": null,
+  "fwci": null,
+  "has_fulltext": true,
+  "cited_by_count": 4,
+  "citation_normalized_percentile": null,
+  "cited_by_percentile_year": null,
+  "biblio": {
+    "volume": null,
+    "issue": null,
+    "first_page": null,
+    "last_page": null
+  },
+  "is_retracted": false,
+  "is_paratext": false,
+  "is_xpac": false,
+  "primary_topic": {
+    "id": "https://openalex.org/T11906",
+    "display_name": "Gender, Sexuality, and Education",
+    "score": 0.9042999744415283,
+    "subfield": {
+      "id": "https://openalex.org/subfields/3318",
+      "display_name": "Gender Studies"
+    },
+    "field": {
+      "id": "https://openalex.org/fields/33",
+      "display_name": "Social Sciences"
+    },
+    "domain": {
+      "id": "https://openalex.org/domains/2",
+      "display_name": "Social Sciences"
+    }
+  },
+  "topics": [
+    {
+      "id": "https://openalex.org/T11906",
+      "display_name": "Gender, Sexuality, and Education",
+      "score": 0.9042999744415283,
+      "subfield": {
+        "id": "https://openalex.org/subfields/3318",
+        "display_name": "Gender Studies"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/33",
+        "display_name": "Social Sciences"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/2",
+        "display_name": "Social Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T10156",
+      "display_name": "LGBTQ Health, Identity, and Policy",
+      "score": 0.09549999982118607,
+      "subfield": {
+        "id": "https://openalex.org/subfields/3207",
+        "display_name": "Social Psychology"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/32",
+        "display_name": "Psychology"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/2",
+        "display_name": "Social Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T12275",
+      "display_name": "Gender and Feminist Studies",
+      "score": 0.0,
+      "subfield": {
+        "id": "https://openalex.org/subfields/3318",
+        "display_name": "Gender Studies"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/33",
+        "display_name": "Social Sciences"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/2",
+        "display_name": "Social Sciences"
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "id": "https://openalex.org/keywords/transgender-people",
+      "display_name": "transgender people",
+      "score": 0.7279999852180481
+    },
+    {
+      "id": "https://openalex.org/keywords/violence-against-transgender-people",
+      "display_name": "violence against transgender people",
+      "score": 0.703000009059906
+    },
+    {
+      "id": "https://openalex.org/keywords/public-education-policy",
+      "display_name": "public education policy",
+      "score": 0.5649999976158142
+    },
+    {
+      "id": "https://openalex.org/keywords/school-dropout",
+      "display_name": "school dropout",
+      "score": 0.5419999957084656
+    },
+    {
+      "id": "https://openalex.org/keywords/gender-identity-in-schools",
+      "display_name": "gender identity in schools",
+      "score": 0.5139999985694885
+    }
+  ],
+  "concepts": [
+    {
+      "id": "https://openalex.org/C15708023",
+      "wikidata": "https://www.wikidata.org/wiki/Q80083",
+      "display_name": "Humanities",
+      "level": 1,
+      "score": 0.4787308871746063
+    },
+    {
+      "id": "https://openalex.org/C138885662",
+      "wikidata": "https://www.wikidata.org/wiki/Q5891",
+      "display_name": "Philosophy",
+      "level": 0,
+      "score": 0.37493622303009033
+    },
+    {
+      "id": "https://openalex.org/C15744967",
+      "wikidata": "https://www.wikidata.org/wiki/Q9418",
+      "display_name": "Psychology",
+      "level": 0,
+      "score": 0.3610212802886963
+    },
+    {
+      "id": "https://openalex.org/C121332964",
+      "wikidata": "https://www.wikidata.org/wiki/Q413",
+      "display_name": "Physics",
+      "level": 0,
+      "score": 0.33340275287628174
+    }
+  ],
+  "mesh": [],
+  "locations_count": 1,
+  "locations": [
+    {
+      "id": "doi:10.1590/scielopreprints.6356",
+      "doi": "https://doi.org/10.1590/scielopreprints.6356",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.1590/scielopreprints.6356",
+      "pdf_url": "https://preprints.scielo.org/index.php/scielo/preprint/download/6356/12126/12694",
+      "source": null,
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "posted-content"
+    }
+  ],
+  "best_oa_location": {
+    "id": "doi:10.1590/scielopreprints.6356",
+    "doi": "https://doi.org/10.1590/scielopreprints.6356",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.1590/scielopreprints.6356",
+    "pdf_url": "https://preprints.scielo.org/index.php/scielo/preprint/download/6356/12126/12694",
+    "source": null,
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": "submittedVersion",
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "posted-content"
+  },
+  "sustainable_development_goals": [
+    {
+      "display_name": "Quality education",
+      "id": "https://metadata.un.org/sdg/4",
+      "score": 0.8278999924659729
+    },
+    {
+      "display_name": "Reduced inequalities",
+      "id": "https://metadata.un.org/sdg/10",
+      "score": 0.6453999876976013
+    }
+  ],
+  "study_designs": [
+    {
+      "display_name": "Systematic Review",
+      "id": "https://openalex.org/study-designs/systematic-review"
+    }
+  ],
+  "awards": [],
+  "funders": [
+    {
+      "id": "https://openalex.org/F4320321091",
+      "display_name": "Coordenação de Aperfeiçoamento de Pessoal de Nível Superior",
+      "ror": "https://ror.org/00x0ma614"
+    }
+  ],
+  "has_content": {
+    "grobid_xml": true,
+    "pdf": true
+  },
+  "content_urls": {
+    "pdf": "https://content.openalex.org/works/W4383265365.pdf",
+    "grobid_xml": "https://content.openalex.org/works/W4383265365.grobid-xml"
+  },
+  "referenced_works_count": 19,
+  "referenced_works": [
+    "https://openalex.org/W1801631459",
+    "https://openalex.org/W2211975104",
+    "https://openalex.org/W2226172413",
+    "https://openalex.org/W2344183788",
+    "https://openalex.org/W2345399813",
+    "https://openalex.org/W2409232283",
+    "https://openalex.org/W2567338036",
+    "https://openalex.org/W2587608864",
+    "https://openalex.org/W2610186458",
+    "https://openalex.org/W2610534478",
+    "https://openalex.org/W2782728873",
+    "https://openalex.org/W2785262955",
+    "https://openalex.org/W2945782191",
+    "https://openalex.org/W2946678931",
+    "https://openalex.org/W2972629711",
+    "https://openalex.org/W2980623284",
+    "https://openalex.org/W3028332099",
+    "https://openalex.org/W3111744348",
+    "https://openalex.org/W4240413672"
+  ],
+  "related_works": [
+    "https://openalex.org/W4313150911",
+    "https://openalex.org/W4401606662",
+    "https://openalex.org/W7219965440",
+    "https://openalex.org/W7220039597",
+    "https://openalex.org/W7215575501",
+    "https://openalex.org/W7220735706",
+    "https://openalex.org/W2515657067",
+    "https://openalex.org/W7167075910",
+    "https://openalex.org/W3126237580"
+  ],
+  "abstract_inverted_index": {
+    "RESUMO:": [
+      0
+    ],
+    "O": [
+      1
+    ],
+    "presente": [
+      2
+    ],
+    "estudo": [
+      3,
+      84
+    ],
+    "é": [
+      4
+    ],
+    "uma": [
+      5
+    ],
+    "revisão": [
+      6
+    ],
+    "de": [
+      7,
+      13,
+      17,
+      25,
+      31,
+      35,
+      37,
+      39,
+      61,
+      83,
+      101,
+      118,
+      121,
+      134,
+      138,
+      144
+    ],
+    "literatura": [
+      8
+    ],
+    "sobre": [
+      9,
+      136
+    ],
+    "o": [
+      10,
+      53,
+      123
+    ],
+    "tema": [
+      11
+    ],
+    "escolarização": [
+      12,
+      137
+    ],
+    "pessoas": [
+      14,
+      119,
+      139
+    ],
+    "trans.": [
+      15
+    ],
+    "Trata-se": [
+      16
+    ],
+    "um": [
+      18,
+      115
+    ],
+    "levantamento": [
+      19
+    ],
+    "das": [
+      20,
+      105
+    ],
+    "produções": [
+      21,
+      135
+    ],
+    "publicadas": [
+      22
+    ],
+    "no": [
+      23,
+      29,
+      59,
+      132
+    ],
+    "período": [
+      24
+    ],
+    "2015": [
+      26
+    ],
+    "a": [
+      27,
+      76,
+      94,
+      99
+    ],
+    "2020": [
+      28
+    ],
+    "Portal": [
+      30
+    ],
+    "Periódicos": [
+      32
+    ],
+    "da": [
+      33,
+      78,
+      89,
+      147,
+      152
+    ],
+    "Coordenação": [
+      34
+    ],
+    "Aperfeiçoamento": [
+      36
+    ],
+    "Pessoal": [
+      38
+    ],
+    "Nível": [
+      40
+    ],
+    "Superior": [
+      41
+    ],
+    "(CAPES)": [
+      42
+    ],
+    "e": [
+      43,
+      66,
+      71,
+      103
+    ],
+    "na": [
+      44,
+      73,
+      150
+    ],
+    "Scientific": [
+      45
+    ],
+    "Electronic": [
+      46
+    ],
+    "Library": [
+      47
+    ],
+    "Online": [
+      48
+    ],
+    "-": [
+      49
+    ],
+    "(SciELO).": [
+      50
+    ],
+    "Foi": [
+      51
+    ],
+    "utilizado": [
+      52,
+      86
+    ],
+    "rigor": [
+      54
+    ],
+    "técnico": [
+      55
+    ],
+    "do": [
+      56,
+      63,
+      129
+    ],
+    "protocolo": [
+      57
+    ],
+    "Prisma": [
+      58
+    ],
+    "processo": [
+      60
+    ],
+    "seleção": [
+      62
+    ],
+    "material": [
+      64
+    ],
+    "analisado": [
+      65
+    ],
+    "28": [
+      67
+    ],
+    "artigos": [
+      68
+    ],
+    "foram": [
+      69
+    ],
+    "selecionados": [
+      70
+    ],
+    "estudados": [
+      72
+    ],
+    "íntegra.": [
+      74
+    ],
+    "Verifica-se": [
+      75
+    ],
+    "prevalência": [
+      77
+    ],
+    "abordagem": [
+      79
+    ],
+    "qualitativa": [
+      80
+    ],
+    "como": [
+      81
+    ],
+    "método": [
+      82
+    ],
+    "mais": [
+      85
+    ],
+    "pelos": [
+      87
+    ],
+    "investigadores": [
+      88
+    ],
+    "temática.": [
+      90
+    ],
+    "Os": [
+      91
+    ],
+    "resultados": [
+      92
+    ],
+    "explicitam": [
+      93
+    ],
+    "preocupação": [
+      95
+    ],
+    "dos": [
+      96
+    ],
+    "pesquisadores": [
+      97
+    ],
+    "com": [
+      98
+    ],
+    "falta": [
+      100
+    ],
+    "ações": [
+      102
+    ],
+    "efetividade": [
+      104
+    ],
+    "políticas": [
+      106
+    ],
+    "públicas": [
+      107
+    ],
+    "em": [
+      108
+    ],
+    "fazer": [
+      109
+    ],
+    "frente": [
+      110
+    ],
+    "às": [
+      111
+    ],
+    "violências": [
+      112
+    ],
+    "que": [
+      113
+    ],
+    "impedem": [
+      114
+    ],
+    "altíssimo": [
+      116
+    ],
+    "número": [
+      117,
+      133
+    ],
+    "trans": [
+      120
+    ],
+    "concluírem": [
+      122
+    ],
+    "percurso": [
+      124
+    ],
+    "escolar.": [
+      125
+    ],
+    "Além": [
+      126
+    ],
+    "disso,": [
+      127
+    ],
+    "apesar": [
+      128
+    ],
+    "significativo": [
+      130
+    ],
+    "aumento": [
+      131
+    ],
+    "trans,": [
+      140
+    ],
+    "ainda": [
+      141
+    ],
+    "há": [
+      142
+    ],
+    "carência": [
+      143
+    ],
+    "produção": [
+      145
+    ],
+    "acerca": [
+      146
+    ],
+    "temática,": [
+      148
+    ],
+    "sobretudo": [
+      149
+    ],
+    "área": [
+      151
+    ],
+    "psicologia.": [
+      153
+    ]
+  },
+  "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W4383265365",
+  "counts_by_year": [
+    {
+      "year": 2026,
+      "cited_by_count": 2
+    },
+    {
+      "year": 2024,
+      "cited_by_count": 2
+    }
+  ],
+  "updated_date": "2026-11-16T12:05:36.265796",
+  "created_date": "2023-07-06T00:00:00"
+}

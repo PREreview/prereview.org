@@ -1,0 +1,565 @@
+{
+  "id": "https://openalex.org/W4307490037",
+  "doi": "https://doi.org/10.32942/x2rp4v",
+  "title": "BPGA: an interactive Shiny application for basic population genetic analysis of genotype data",
+  "display_name": "BPGA: an interactive Shiny application for basic population genetic analysis of genotype data",
+  "alternate_titles": [],
+  "publication_year": 2022,
+  "publication_date": "2022-10-28",
+  "ids": {
+    "openalex": "https://openalex.org/W4307490037",
+    "doi": "https://doi.org/10.32942/x2rp4v"
+  },
+  "language": "en",
+  "primary_location": {
+    "id": "doi:10.32942/x2rp4v",
+    "doi": "https://doi.org/10.32942/x2rp4v",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.32942/x2rp4v",
+    "pdf_url": null,
+    "source": null,
+    "license": "cc-by-nc-nd",
+    "license_id": "https://openalex.org/licenses/cc-by-nc-nd",
+    "version": "submittedVersion",
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "posted-content"
+  },
+  "parent_works": [],
+  "lineage": [
+    "https://openalex.org/W4307490037"
+  ],
+  "child_works_count": 0,
+  "type": "preprint",
+  "is_traditional": true,
+  "indexed_in": [
+    "crossref"
+  ],
+  "open_access": {
+    "is_oa": true,
+    "oa_status": "green",
+    "oa_url": "https://doi.org/10.32942/x2rp4v",
+    "any_repository_has_fulltext": true
+  },
+  "authorships": [
+    {
+      "author_position": "first",
+      "author": {
+        "id": "https://openalex.org/A5033074892",
+        "display_name": "Joan Fibla",
+        "orcid": "https://orcid.org/0000-0002-3255-2227",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-3255-2227"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I95457486",
+          "display_name": "University of California, Berkeley",
+          "ror": "https://ror.org/01an7q238",
+          "country_code": "US",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I95457486"
+          ]
+        }
+      ],
+      "countries": [
+        "US"
+      ],
+      "is_corresponding": true,
+      "raw_author_name": "Joan Fibla",
+      "raw_affiliation_strings": [
+        "Department of Environmental, Science, Policy, and Management, University of California Berkeley, 137 Mulford #3114, Berkeley, CA, 94720, USA"
+      ],
+      "raw_orcid": "https://orcid.org/0000-0002-3255-2227",
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Department of Environmental, Science, Policy, and Management, University of California Berkeley, 137 Mulford #3114, Berkeley, CA, 94720, USA",
+          "institution_ids": [
+            "https://openalex.org/I95457486"
+          ]
+        }
+      ]
+    }
+  ],
+  "institutions": [],
+  "countries_distinct_count": 1,
+  "institutions_distinct_count": 1,
+  "corresponding_author_ids": [
+    "https://openalex.org/A5033074892"
+  ],
+  "corresponding_institution_ids": [
+    "https://openalex.org/I95457486"
+  ],
+  "apc_list": null,
+  "apc_paid": null,
+  "fwci": null,
+  "has_fulltext": true,
+  "cited_by_count": 0,
+  "citation_normalized_percentile": null,
+  "cited_by_percentile_year": null,
+  "biblio": {
+    "volume": null,
+    "issue": null,
+    "first_page": null,
+    "last_page": null
+  },
+  "is_retracted": false,
+  "is_paratext": false,
+  "is_xpac": false,
+  "primary_topic": {
+    "id": "https://openalex.org/T10012",
+    "display_name": "Genetic diversity and population structure",
+    "score": 0.5151000022888184,
+    "subfield": {
+      "id": "https://openalex.org/subfields/1311",
+      "display_name": "Genetics"
+    },
+    "field": {
+      "id": "https://openalex.org/fields/13",
+      "display_name": "Biochemistry, Genetics and Molecular Biology"
+    },
+    "domain": {
+      "id": "https://openalex.org/domains/1",
+      "display_name": "Life Sciences"
+    }
+  },
+  "topics": [
+    {
+      "id": "https://openalex.org/T10012",
+      "display_name": "Genetic diversity and population structure",
+      "score": 0.5151000022888184,
+      "subfield": {
+        "id": "https://openalex.org/subfields/1311",
+        "display_name": "Genetics"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/13",
+        "display_name": "Biochemistry, Genetics and Molecular Biology"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/1",
+        "display_name": "Life Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T10751",
+      "display_name": "Forensic and Genetic Research",
+      "score": 0.3246999979019165,
+      "subfield": {
+        "id": "https://openalex.org/subfields/1311",
+        "display_name": "Genetics"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/13",
+        "display_name": "Biochemistry, Genetics and Molecular Biology"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/1",
+        "display_name": "Life Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T10261",
+      "display_name": "Genetic Associations and Epidemiology",
+      "score": 0.08590000122785568,
+      "subfield": {
+        "id": "https://openalex.org/subfields/1311",
+        "display_name": "Genetics"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/13",
+        "display_name": "Biochemistry, Genetics and Molecular Biology"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/1",
+        "display_name": "Life Sciences"
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "id": "https://openalex.org/keywords/population-structure",
+      "display_name": "population structure",
+      "score": 0.6600000262260437
+    },
+    {
+      "id": "https://openalex.org/keywords/ancestry-inference",
+      "display_name": "ancestry inference",
+      "score": 0.9869999885559082
+    },
+    {
+      "id": "https://openalex.org/keywords/genotype-data",
+      "display_name": "genotype data",
+      "score": 0.9020000100135803
+    },
+    {
+      "id": "https://openalex.org/keywords/shiny-app",
+      "display_name": "Shiny app",
+      "score": 0.7870000004768372
+    },
+    {
+      "id": "https://openalex.org/keywords/interactive-web-application",
+      "display_name": "interactive web application",
+      "score": 0.6579999923706055
+    },
+    {
+      "id": "https://openalex.org/keywords/non-expert-users",
+      "display_name": "non-expert users",
+      "score": 0.628000020980835
+    },
+    {
+      "id": "https://openalex.org/keywords/admixture",
+      "display_name": "admixture",
+      "score": 0.5789999961853027
+    },
+    {
+      "id": "https://openalex.org/keywords/plink",
+      "display_name": "PLINK",
+      "score": 0.7620000243186951
+    },
+    {
+      "id": "https://openalex.org/keywords/genome-wide-complex-trait-analysis",
+      "display_name": "GCTA",
+      "score": 0.9940000176429749
+    }
+  ],
+  "concepts": [
+    {
+      "id": "https://openalex.org/C2778208748",
+      "wikidata": "https://www.wikidata.org/wiki/Q1231177",
+      "display_name": "Ungulate",
+      "level": 3,
+      "score": 0.9599839448928833
+    },
+    {
+      "id": "https://openalex.org/C2775972322",
+      "wikidata": "https://www.wikidata.org/wiki/Q2334923",
+      "display_name": "Odocoileus",
+      "level": 2,
+      "score": 0.9239983558654785
+    },
+    {
+      "id": "https://openalex.org/C18903297",
+      "wikidata": "https://www.wikidata.org/wiki/Q7150",
+      "display_name": "Ecology",
+      "level": 1,
+      "score": 0.6162357926368713
+    },
+    {
+      "id": "https://openalex.org/C185933670",
+      "wikidata": "https://www.wikidata.org/wiki/Q52105",
+      "display_name": "Habitat",
+      "level": 2,
+      "score": 0.5743805170059204
+    },
+    {
+      "id": "https://openalex.org/C2777707811",
+      "wikidata": "https://www.wikidata.org/wiki/Q842123",
+      "display_name": "Chaparral",
+      "level": 2,
+      "score": 0.5248275399208069
+    },
+    {
+      "id": "https://openalex.org/C2908647359",
+      "wikidata": "https://www.wikidata.org/wiki/Q2625603",
+      "display_name": "Population",
+      "level": 2,
+      "score": 0.505765438079834
+    },
+    {
+      "id": "https://openalex.org/C205649164",
+      "wikidata": "https://www.wikidata.org/wiki/Q1071",
+      "display_name": "Geography",
+      "level": 0,
+      "score": 0.4581299424171448
+    },
+    {
+      "id": "https://openalex.org/C2779370140",
+      "wikidata": "https://www.wikidata.org/wiki/Q13377214",
+      "display_name": "Forage",
+      "level": 2,
+      "score": 0.43184319138526917
+    },
+    {
+      "id": "https://openalex.org/C165287380",
+      "wikidata": "https://www.wikidata.org/wiki/Q2916569",
+      "display_name": "Foraging",
+      "level": 2,
+      "score": 0.4282476305961609
+    },
+    {
+      "id": "https://openalex.org/C188382862",
+      "wikidata": "https://www.wikidata.org/wiki/Q170430",
+      "display_name": "Predation",
+      "level": 2,
+      "score": 0.42778024077415466
+    },
+    {
+      "id": "https://openalex.org/C29376679",
+      "wikidata": "https://www.wikidata.org/wiki/Q241741",
+      "display_name": "Wildlife",
+      "level": 2,
+      "score": 0.4200389087200165
+    },
+    {
+      "id": "https://openalex.org/C86803240",
+      "wikidata": "https://www.wikidata.org/wiki/Q420",
+      "display_name": "Biology",
+      "level": 0,
+      "score": 0.32016563415527344
+    },
+    {
+      "id": "https://openalex.org/C149923435",
+      "wikidata": "https://www.wikidata.org/wiki/Q37732",
+      "display_name": "Demography",
+      "level": 1,
+      "score": 0.0
+    },
+    {
+      "id": "https://openalex.org/C144024400",
+      "wikidata": "https://www.wikidata.org/wiki/Q21201",
+      "display_name": "Sociology",
+      "level": 0,
+      "score": 0.0
+    }
+  ],
+  "mesh": [],
+  "locations_count": 2,
+  "locations": [
+    {
+      "id": "doi:10.32942/x2rp4v",
+      "doi": "https://doi.org/10.32942/x2rp4v",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.32942/x2rp4v",
+      "pdf_url": null,
+      "source": null,
+      "license": "cc-by-nc-nd",
+      "license_id": "https://openalex.org/licenses/cc-by-nc-nd",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "posted-content"
+    },
+    {
+      "id": "pmh:oai:eer:id:4638",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://ecoevorxiv.org/repository/object/4638/download/9267/",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306402488",
+        "display_name": "EcoEvoRxiv",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I2799848540",
+        "host_organization_name": "Center for Open Science",
+        "host_organization_lineage": [
+          "https://openalex.org/I2799848540"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "other-oa",
+      "license_id": "https://openalex.org/licenses/other-oa",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": "EcoEvoRxiv",
+      "raw_type": "PREPRINTS"
+    }
+  ],
+  "best_oa_location": {
+    "id": "doi:10.32942/x2rp4v",
+    "doi": "https://doi.org/10.32942/x2rp4v",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.32942/x2rp4v",
+    "pdf_url": null,
+    "source": null,
+    "license": "cc-by-nc-nd",
+    "license_id": "https://openalex.org/licenses/cc-by-nc-nd",
+    "version": "submittedVersion",
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "posted-content"
+  },
+  "sustainable_development_goals": [],
+  "study_designs": [],
+  "awards": [],
+  "funders": [],
+  "has_content": {
+    "grobid_xml": false,
+    "pdf": false
+  },
+  "content_urls": null,
+  "referenced_works_count": 50,
+  "referenced_works": [
+    "https://openalex.org/W1486845105",
+    "https://openalex.org/W1606956573",
+    "https://openalex.org/W1934005380",
+    "https://openalex.org/W1943565020",
+    "https://openalex.org/W1951724000",
+    "https://openalex.org/W2001455010",
+    "https://openalex.org/W2024158525",
+    "https://openalex.org/W2043119556",
+    "https://openalex.org/W2053299494",
+    "https://openalex.org/W2093481701",
+    "https://openalex.org/W2094353923",
+    "https://openalex.org/W2099569618",
+    "https://openalex.org/W2110306174",
+    "https://openalex.org/W2120103214",
+    "https://openalex.org/W2146565992",
+    "https://openalex.org/W2175422357",
+    "https://openalex.org/W2341959691",
+    "https://openalex.org/W2469862374",
+    "https://openalex.org/W2493043508",
+    "https://openalex.org/W2531560135",
+    "https://openalex.org/W2540480725",
+    "https://openalex.org/W2622738426",
+    "https://openalex.org/W2769509758",
+    "https://openalex.org/W2783667504",
+    "https://openalex.org/W2807828126",
+    "https://openalex.org/W2810327497",
+    "https://openalex.org/W2874979696",
+    "https://openalex.org/W2905005664",
+    "https://openalex.org/W2905054097",
+    "https://openalex.org/W2929415146",
+    "https://openalex.org/W2938992841",
+    "https://openalex.org/W2948009726",
+    "https://openalex.org/W2996419166",
+    "https://openalex.org/W3008179206",
+    "https://openalex.org/W3010248967",
+    "https://openalex.org/W3017174959",
+    "https://openalex.org/W3023263776",
+    "https://openalex.org/W3125524675",
+    "https://openalex.org/W3145607041",
+    "https://openalex.org/W3153999239",
+    "https://openalex.org/W3155918577",
+    "https://openalex.org/W3185510098",
+    "https://openalex.org/W3194090515",
+    "https://openalex.org/W3197387768",
+    "https://openalex.org/W4206420815",
+    "https://openalex.org/W4221115141",
+    "https://openalex.org/W4221116717",
+    "https://openalex.org/W4225320264",
+    "https://openalex.org/W4281550898",
+    "https://openalex.org/W6764010985"
+  ],
+  "related_works": [
+    "https://openalex.org/W3007832669",
+    "https://openalex.org/W2135477380",
+    "https://openalex.org/W2117351777",
+    "https://openalex.org/W7143950907",
+    "https://openalex.org/W2171231777",
+    "https://openalex.org/W4402460988",
+    "https://openalex.org/W2059189547",
+    "https://openalex.org/W4405852317",
+    "https://openalex.org/W3091948627",
+    "https://openalex.org/W7199511564"
+  ],
+  "abstract_inverted_index": {
+    "Background:": [
+      0
+    ],
+    "Population": [
+      1
+    ],
+    "structure": [
+      2
+    ],
+    "and": [
+      3,
+      27
+    ],
+    "ancestry": [
+      4
+    ],
+    "inference": [
+      5
+    ],
+    "are": [
+      6
+    ],
+    "routine": [
+      7
+    ],
+    "in": [
+      8
+    ],
+    "human": [
+      9
+    ],
+    "genetics,": [
+      10
+    ],
+    "yet": [
+      11
+    ],
+    "remain": [
+      12
+    ],
+    "inconvenient": [
+      13
+    ],
+    "for": [
+      14
+    ],
+    "non": [
+      15
+    ],
+    "experts": [
+      16
+    ],
+    "because": [
+      17
+    ],
+    "canonical": [
+      18
+    ],
+    "tools": [
+      19
+    ],
+    "(PLINK,": [
+      20
+    ],
+    "GCTA,": [
+      21
+    ],
+    "ADMIXTURE)": [
+      22
+    ],
+    "require": [
+      23
+    ],
+    "command": [
+      24
+    ],
+    "line": [
+      25
+    ],
+    "expertise": [
+      26
+    ],
+    "careful": [
+      28
+    ],
+    "data": [
+      29
+    ],
+    "management.": [
+      30
+    ]
+  },
+  "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W4307490037",
+  "counts_by_year": [],
+  "updated_date": "2026-11-16T12:05:36.265796",
+  "created_date": "2022-11-02T00:00:00"
+}

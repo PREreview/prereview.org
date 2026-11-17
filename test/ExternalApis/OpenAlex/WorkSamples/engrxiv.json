@@ -1,0 +1,1088 @@
+{
+  "id": "https://openalex.org/W4402215482",
+  "doi": "https://doi.org/10.31224/3866",
+  "title": "AI for United Nations Sustainable Development Goals",
+  "display_name": "AI for United Nations Sustainable Development Goals",
+  "alternate_titles": [],
+  "publication_year": 2024,
+  "publication_date": "2024-09-04",
+  "ids": {
+    "openalex": "https://openalex.org/W4402215482",
+    "doi": "https://doi.org/10.31224/3866"
+  },
+  "language": "en",
+  "primary_location": {
+    "id": "doi:10.31224/3866",
+    "doi": "https://doi.org/10.31224/3866",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.31224/3866",
+    "pdf_url": "https://engrxiv.org/preprint/download/3866/6848/5548",
+    "source": null,
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": "submittedVersion",
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "posted-content"
+  },
+  "parent_works": [],
+  "lineage": [
+    "https://openalex.org/W4402215482"
+  ],
+  "child_works_count": 0,
+  "type": "preprint",
+  "is_traditional": true,
+  "indexed_in": [
+    "crossref"
+  ],
+  "open_access": {
+    "is_oa": true,
+    "oa_status": "green",
+    "oa_url": "https://engrxiv.org/preprint/download/3866/6848/5548",
+    "any_repository_has_fulltext": true
+  },
+  "authorships": [
+    {
+      "author_position": "first",
+      "author": {
+        "id": "https://openalex.org/A5036551684",
+        "display_name": "Mirza Abdul Aleem Baig",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I126520041",
+          "display_name": "University of Science and Technology of China",
+          "ror": "https://ror.org/04c4dkn09",
+          "country_code": "CN",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I126520041",
+            "https://openalex.org/I19820366"
+          ]
+        }
+      ],
+      "countries": [
+        "CN"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Mirza Abdul Aleem Baig",
+      "raw_affiliation_strings": [
+        "University of Science and Technology of China"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "University of Science and Technology of China",
+          "institution_ids": [
+            "https://openalex.org/I126520041"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5109776060",
+        "display_name": "Jingchen Huang",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I76130692",
+          "display_name": "Zhejiang University",
+          "ror": "https://ror.org/00a2xv884",
+          "country_code": "CN",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I76130692"
+          ]
+        }
+      ],
+      "countries": [
+        "CN"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Jingchen Huang",
+      "raw_affiliation_strings": [
+        ". School of International Studies , Zhejiang University , Hangzhou , Zhejiang , P.R. China"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": ". School of International Studies , Zhejiang University , Hangzhou , Zhejiang , P.R. China",
+          "institution_ids": [
+            "https://openalex.org/I76130692"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "last",
+      "author": {
+        "id": "https://openalex.org/A5100575396",
+        "display_name": "Jingzehua Xu",
+        "orcid": "https://orcid.org/0009-0007-2860-5203",
+        "observed_orcids": [
+          "https://orcid.org/0009-0007-2860-5203"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4405263052",
+          "display_name": "Tsinghua Shenzhen International Graduate School",
+          "ror": "https://ror.org/01vceef04",
+          "country_code": "CN",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I4405263052",
+            "https://openalex.org/I99065089"
+          ]
+        },
+        {
+          "id": "https://openalex.org/I99065089",
+          "display_name": "Tsinghua University",
+          "ror": "https://ror.org/03cve4549",
+          "country_code": "CN",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I99065089"
+          ]
+        }
+      ],
+      "countries": [
+        "CN"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Jingzehua Xu",
+      "raw_affiliation_strings": [
+        ". Tsinghua Shenzhen International Graduate School , Tsinghua University , Shenzhen , Guangdong , P.R. China"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": ". Tsinghua Shenzhen International Graduate School , Tsinghua University , Shenzhen , Guangdong , P.R. China",
+          "institution_ids": [
+            "https://openalex.org/I4405263052",
+            "https://openalex.org/I99065089"
+          ]
+        }
+      ]
+    }
+  ],
+  "institutions": [],
+  "countries_distinct_count": 1,
+  "institutions_distinct_count": 4,
+  "corresponding_author_ids": [],
+  "corresponding_institution_ids": [],
+  "apc_list": null,
+  "apc_paid": null,
+  "fwci": null,
+  "has_fulltext": true,
+  "cited_by_count": 26,
+  "citation_normalized_percentile": null,
+  "cited_by_percentile_year": null,
+  "biblio": {
+    "volume": null,
+    "issue": null,
+    "first_page": null,
+    "last_page": null
+  },
+  "is_retracted": false,
+  "is_paratext": false,
+  "is_xpac": false,
+  "primary_topic": {
+    "id": "https://openalex.org/T10883",
+    "display_name": "Ethics and Social Impacts of AI",
+    "score": 0.7943999767303467,
+    "subfield": {
+      "id": "https://openalex.org/subfields/1702",
+      "display_name": "Artificial Intelligence"
+    },
+    "field": {
+      "id": "https://openalex.org/fields/17",
+      "display_name": "Computer Science"
+    },
+    "domain": {
+      "id": "https://openalex.org/domains/3",
+      "display_name": "Physical Sciences"
+    }
+  },
+  "topics": [
+    {
+      "id": "https://openalex.org/T10883",
+      "display_name": "Ethics and Social Impacts of AI",
+      "score": 0.7943999767303467,
+      "subfield": {
+        "id": "https://openalex.org/subfields/1702",
+        "display_name": "Artificial Intelligence"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/17",
+        "display_name": "Computer Science"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/3",
+        "display_name": "Physical Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T14350",
+      "display_name": "Innovation, Sustainability, Human-Machine Systems",
+      "score": 0.10530000180006027,
+      "subfield": {
+        "id": "https://openalex.org/subfields/2308",
+        "display_name": "Management, Monitoring, Policy and Law"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/23",
+        "display_name": "Environmental Science"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/3",
+        "display_name": "Physical Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T13904",
+      "display_name": "Artificial Intelligence Applications",
+      "score": 0.08340000361204147,
+      "subfield": {
+        "id": "https://openalex.org/subfields/1702",
+        "display_name": "Artificial Intelligence"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/17",
+        "display_name": "Computer Science"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/3",
+        "display_name": "Physical Sciences"
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "id": "https://openalex.org/keywords/artificial-intelligence",
+      "display_name": "artificial intelligence",
+      "score": 0.9850000143051147
+    },
+    {
+      "id": "https://openalex.org/keywords/sustainable-development-goals",
+      "display_name": "Sustainable Development Goals",
+      "score": 0.968999981880188
+    },
+    {
+      "id": "https://openalex.org/keywords/agenda-2030",
+      "display_name": "2030 Agenda for Sustainable Development",
+      "score": 0.9089999794960022
+    },
+    {
+      "id": "https://openalex.org/keywords/ai-ethics",
+      "display_name": "AI ethics",
+      "score": 0.878000020980835
+    },
+    {
+      "id": "https://openalex.org/keywords/algorithmic-bias",
+      "display_name": "algorithmic bias",
+      "score": 0.9779999852180481
+    },
+    {
+      "id": "https://openalex.org/keywords/data-privacy",
+      "display_name": "data privacy",
+      "score": 0.9959999918937683
+    },
+    {
+      "id": "https://openalex.org/keywords/job-displacement",
+      "display_name": "job displacement",
+      "score": 0.9729999899864197
+    },
+    {
+      "id": "https://openalex.org/keywords/ai-governance",
+      "display_name": "AI governance",
+      "score": 0.7250000238418579
+    },
+    {
+      "id": "https://openalex.org/keywords/renewable-energy-optimization",
+      "display_name": "renewable energy optimization",
+      "score": 0.8190000057220459
+    },
+    {
+      "id": "https://openalex.org/keywords/waste-management",
+      "display_name": "waste management",
+      "score": 0.9940000176429749
+    },
+    {
+      "id": "https://openalex.org/keywords/disease-detection",
+      "display_name": "disease detection",
+      "score": 0.9660000205039978
+    },
+    {
+      "id": "https://openalex.org/keywords/personalized-education",
+      "display_name": "personalized education",
+      "score": 0.996999979019165
+    },
+    {
+      "id": "https://openalex.org/keywords/gender-equality",
+      "display_name": "gender equality",
+      "score": 0.9980000257492065
+    },
+    {
+      "id": "https://openalex.org/keywords/ai-literacy",
+      "display_name": "AI literacy",
+      "score": 0.703000009059906
+    },
+    {
+      "id": "https://openalex.org/keywords/environmental-sustainability",
+      "display_name": "environmental sustainability",
+      "score": 0.6740000247955322
+    },
+    {
+      "id": "https://openalex.org/keywords/poverty-reduction",
+      "display_name": "poverty reduction",
+      "score": 0.6079999804496765
+    },
+    {
+      "id": "https://openalex.org/keywords/economic-growth",
+      "display_name": "economic growth",
+      "score": 0.5419999957084656
+    },
+    {
+      "id": "https://openalex.org/keywords/public-private-partnerships",
+      "display_name": "public-private partnerships",
+      "score": 0.5479999780654907
+    }
+  ],
+  "concepts": [
+    {
+      "id": "https://openalex.org/C552854447",
+      "wikidata": "https://www.wikidata.org/wiki/Q131201",
+      "display_name": "Sustainable development",
+      "level": 2,
+      "score": 0.6199041604995728
+    },
+    {
+      "id": "https://openalex.org/C66204764",
+      "wikidata": "https://www.wikidata.org/wiki/Q219416",
+      "display_name": "Sustainability",
+      "level": 2,
+      "score": 0.5748171806335449
+    },
+    {
+      "id": "https://openalex.org/C189326681",
+      "wikidata": "https://www.wikidata.org/wiki/Q10294",
+      "display_name": "Poverty",
+      "level": 2,
+      "score": 0.5022766590118408
+    },
+    {
+      "id": "https://openalex.org/C39389867",
+      "wikidata": "https://www.wikidata.org/wiki/Q380767",
+      "display_name": "Corporate governance",
+      "level": 2,
+      "score": 0.4475491940975189
+    },
+    {
+      "id": "https://openalex.org/C17744445",
+      "wikidata": "https://www.wikidata.org/wiki/Q36442",
+      "display_name": "Political science",
+      "level": 0,
+      "score": 0.4121853709220886
+    },
+    {
+      "id": "https://openalex.org/C55587333",
+      "wikidata": "https://www.wikidata.org/wiki/Q1133029",
+      "display_name": "Engineering ethics",
+      "level": 1,
+      "score": 0.3658422529697418
+    },
+    {
+      "id": "https://openalex.org/C144133560",
+      "wikidata": "https://www.wikidata.org/wiki/Q4830453",
+      "display_name": "Business",
+      "level": 0,
+      "score": 0.35410168766975403
+    },
+    {
+      "id": "https://openalex.org/C39549134",
+      "wikidata": "https://www.wikidata.org/wiki/Q133080",
+      "display_name": "Public relations",
+      "level": 1,
+      "score": 0.3368922173976898
+    },
+    {
+      "id": "https://openalex.org/C50522688",
+      "wikidata": "https://www.wikidata.org/wiki/Q189833",
+      "display_name": "Economic growth",
+      "level": 1,
+      "score": 0.3143553137779236
+    },
+    {
+      "id": "https://openalex.org/C162324750",
+      "wikidata": "https://www.wikidata.org/wiki/Q8134",
+      "display_name": "Economics",
+      "level": 0,
+      "score": 0.25636011362075806
+    },
+    {
+      "id": "https://openalex.org/C127413603",
+      "wikidata": "https://www.wikidata.org/wiki/Q11023",
+      "display_name": "Engineering",
+      "level": 0,
+      "score": 0.2365756630897522
+    },
+    {
+      "id": "https://openalex.org/C187736073",
+      "wikidata": "https://www.wikidata.org/wiki/Q2920921",
+      "display_name": "Management",
+      "level": 1,
+      "score": 0.12420833110809326
+    },
+    {
+      "id": "https://openalex.org/C18903297",
+      "wikidata": "https://www.wikidata.org/wiki/Q7150",
+      "display_name": "Ecology",
+      "level": 1,
+      "score": 0.0
+    },
+    {
+      "id": "https://openalex.org/C199539241",
+      "wikidata": "https://www.wikidata.org/wiki/Q7748",
+      "display_name": "Law",
+      "level": 1,
+      "score": 0.0
+    },
+    {
+      "id": "https://openalex.org/C86803240",
+      "wikidata": "https://www.wikidata.org/wiki/Q420",
+      "display_name": "Biology",
+      "level": 0,
+      "score": 0.0
+    }
+  ],
+  "mesh": [],
+  "locations_count": 2,
+  "locations": [
+    {
+      "id": "doi:10.31224/3866",
+      "doi": "https://doi.org/10.31224/3866",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.31224/3866",
+      "pdf_url": "https://engrxiv.org/preprint/download/3866/6848/5548",
+      "source": null,
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "posted-content"
+    },
+    {
+      "id": "pmh:oai:ops.engrxiv.org:preprint/3866",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://engrxiv.org/preprint/view/3866",
+      "pdf_url": "https://engrxiv.org/preprint/download/3866/6848",
+      "source": {
+        "id": "https://openalex.org/S4306401210",
+        "display_name": "Engineering Archive (engrXiv)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": null,
+        "host_organization_name": null,
+        "host_organization_lineage": [],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "publishedVersion",
+      "is_accepted": true,
+      "is_published": true,
+      "raw_source_name": null,
+      "raw_type": "info:eu-repo/semantics/publishedVersion"
+    }
+  ],
+  "best_oa_location": {
+    "id": "doi:10.31224/3866",
+    "doi": "https://doi.org/10.31224/3866",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.31224/3866",
+    "pdf_url": "https://engrxiv.org/preprint/download/3866/6848/5548",
+    "source": null,
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": "submittedVersion",
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "posted-content"
+  },
+  "sustainable_development_goals": [
+    {
+      "id": "https://metadata.un.org/sdg/10",
+      "display_name": "Reduced inequalities",
+      "score": 0.7578999996185303
+    },
+    {
+      "id": "https://metadata.un.org/sdg/9",
+      "display_name": "Industry, innovation and infrastructure",
+      "score": 0.5378999710083008
+    },
+    {
+      "id": "https://metadata.un.org/sdg/13",
+      "display_name": "Climate action",
+      "score": 0.5351999998092651
+    }
+  ],
+  "study_designs": [],
+  "awards": [],
+  "funders": [],
+  "has_content": {
+    "pdf": true,
+    "grobid_xml": true
+  },
+  "content_urls": {
+    "pdf": "https://content.openalex.org/works/W4402215482.pdf",
+    "grobid_xml": "https://content.openalex.org/works/W4402215482.grobid-xml"
+  },
+  "referenced_works_count": 22,
+  "referenced_works": [
+    "https://openalex.org/W3121184641",
+    "https://openalex.org/W4210966229",
+    "https://openalex.org/W4245176725",
+    "https://openalex.org/W4309303812",
+    "https://openalex.org/W4313894361",
+    "https://openalex.org/W4321437806",
+    "https://openalex.org/W4380303803",
+    "https://openalex.org/W4386422767",
+    "https://openalex.org/W4386619339",
+    "https://openalex.org/W4387767134",
+    "https://openalex.org/W4388001743",
+    "https://openalex.org/W4388526483",
+    "https://openalex.org/W4393196049",
+    "https://openalex.org/W4394696451",
+    "https://openalex.org/W4394842190",
+    "https://openalex.org/W4396581915",
+    "https://openalex.org/W4396644540",
+    "https://openalex.org/W4396774019",
+    "https://openalex.org/W4399269583",
+    "https://openalex.org/W4399518864",
+    "https://openalex.org/W4401576447",
+    "https://openalex.org/W7203623644"
+  ],
+  "related_works": [
+    "https://openalex.org/W4401404420",
+    "https://openalex.org/W7162119173",
+    "https://openalex.org/W7152585832",
+    "https://openalex.org/W4409946301",
+    "https://openalex.org/W7117973166",
+    "https://openalex.org/W4405869832",
+    "https://openalex.org/W4412596703",
+    "https://openalex.org/W7124261146",
+    "https://openalex.org/W6911652115",
+    "https://openalex.org/W4413475428"
+  ],
+  "abstract_inverted_index": {
+    "The": [
+      0,
+      51,
+      86
+    ],
+    "UN": [
+      1
+    ],
+    "2030": [
+      2
+    ],
+    "Agenda": [
+      3
+    ],
+    "for": [
+      4,
+      177,
+      190
+    ],
+    "Sustainable": [
+      5
+    ],
+    "Development": [
+      6
+    ],
+    "(SDGs)": [
+      7
+    ],
+    "emphasizes": [
+      8
+    ],
+    "addressing": [
+      9
+    ],
+    "poverty,": [
+      10
+    ],
+    "inequality,": [
+      11
+    ],
+    "environmental": [
+      12,
+      61
+    ],
+    "sustainability,": [
+      13
+    ],
+    "and": [
+      14,
+      44,
+      65,
+      80,
+      97,
+      106,
+      114,
+      133,
+      163,
+      194
+    ],
+    "economic": [
+      15,
+      63
+    ],
+    "growth.": [
+      16
+    ],
+    "Artificial": [
+      17
+    ],
+    "Intelligence": [
+      18
+    ],
+    "(AI)": [
+      19
+    ],
+    "has": [
+      20
+    ],
+    "emerged": [
+      21
+    ],
+    "as": [
+      22,
+      100
+    ],
+    "a": [
+      23,
+      143,
+      173,
+      191
+    ],
+    "pivotal": [
+      24
+    ],
+    "technology": [
+      25
+    ],
+    "capable": [
+      26
+    ],
+    "of": [
+      27,
+      38,
+      83,
+      124,
+      184
+    ],
+    "accelerating": [
+      28
+    ],
+    "progress": [
+      29
+    ],
+    "towards": [
+      30
+    ],
+    "these": [
+      31,
+      112
+    ],
+    "goals.": [
+      32
+    ],
+    "This": [
+      33
+    ],
+    "perspective": [
+      34,
+      87
+    ],
+    "explores": [
+      35
+    ],
+    "the": [
+      36,
+      49,
+      81,
+      90,
+      119,
+      122,
+      138,
+      156,
+      182,
+      185,
+      188
+    ],
+    "potential": [
+      37,
+      107
+    ],
+    "AI": [
+      39,
+      55,
+      95,
+      141,
+      153,
+      161,
+      168
+    ],
+    "to": [
+      40,
+      48,
+      165
+    ],
+    "address": [
+      41
+    ],
+    "environmental,": [
+      42
+    ],
+    "social,": [
+      43
+    ],
+    "ethical": [
+      45,
+      91,
+      145,
+      166,
+      175
+    ],
+    "challenges": [
+      46
+    ],
+    "related": [
+      47
+    ],
+    "SDGs.": [
+      50
+    ],
+    "verdicts": [
+      52
+    ],
+    "indicate": [
+      53
+    ],
+    "that": [
+      54,
+      147,
+      170
+    ],
+    "can": [
+      56,
+      179
+    ],
+    "significantly": [
+      57,
+      180
+    ],
+    "enhance": [
+      58
+    ],
+    "healthcare,": [
+      59
+    ],
+    "education,": [
+      60,
+      79
+    ],
+    "protection,": [
+      62
+    ],
+    "growth,": [
+      64
+    ],
+    "gender": [
+      66,
+      84
+    ],
+    "equality.": [
+      67,
+      85
+    ],
+    "Specific": [
+      68
+    ],
+    "applications": [
+      69
+    ],
+    "include": [
+      70
+    ],
+    "renewable": [
+      71
+    ],
+    "energy": [
+      72
+    ],
+    "optimization,": [
+      73
+    ],
+    "waste": [
+      74
+    ],
+    "management,": [
+      75
+    ],
+    "disease": [
+      76
+    ],
+    "detection,": [
+      77
+    ],
+    "personalized": [
+      78
+    ],
+    "promotion": [
+      82
+    ],
+    "also": [
+      88
+    ],
+    "highlights": [
+      89
+    ],
+    "concerns": [
+      92
+    ],
+    "associated": [
+      93
+    ],
+    "with": [
+      94,
+      172
+    ],
+    "development": [
+      96
+    ],
+    "deployment,": [
+      98
+    ],
+    "such": [
+      99
+    ],
+    "algorithmic": [
+      101
+    ],
+    "bias,": [
+      102
+    ],
+    "data": [
+      103
+    ],
+    "privacy": [
+      104
+    ],
+    "breaches,": [
+      105
+    ],
+    "job": [
+      108
+    ],
+    "displacement.": [
+      109
+    ],
+    "To": [
+      110
+    ],
+    "mitigate": [
+      111
+    ],
+    "risks": [
+      113
+    ],
+    "fully": [
+      115
+    ],
+    "harness": [
+      116
+    ],
+    "AI’s": [
+      117
+    ],
+    "potential,": [
+      118
+    ],
+    "judgment": [
+      120
+    ],
+    "recommends": [
+      121
+    ],
+    "implementation": [
+      123
+    ],
+    "intelligent": [
+      125
+    ],
+    "automation": [
+      126
+    ],
+    "governance": [
+      127
+    ],
+    "systems,": [
+      128
+    ],
+    "professional": [
+      129
+    ],
+    "engagement,": [
+      130
+    ],
+    "educational": [
+      131
+    ],
+    "initiatives,": [
+      132
+    ],
+    "stringent": [
+      134
+    ],
+    "regulatory": [
+      135
+    ],
+    "frameworks.": [
+      136
+    ],
+    "Achieving": [
+      137
+    ],
+    "SDGs": [
+      139
+    ],
+    "through": [
+      140
+    ],
+    "necessitates": [
+      142
+    ],
+    "comprehensive,": [
+      144
+    ],
+    "approach": [
+      146
+    ],
+    "fosters": [
+      148
+    ],
+    "interdisciplinary": [
+      149
+    ],
+    "research,": [
+      150
+    ],
+    "public-private": [
+      151
+    ],
+    "partnerships,": [
+      152
+    ],
+    "literacy": [
+      154
+    ],
+    "among": [
+      155
+    ],
+    "general": [
+      157
+    ],
+    "populace,": [
+      158
+    ],
+    "environmentally": [
+      159
+    ],
+    "sustainable": [
+      160
+    ],
+    "policies,": [
+      162
+    ],
+    "adherence": [
+      164
+    ],
+    "standards.": [
+      167
+    ],
+    "advancements": [
+      169
+    ],
+    "align": [
+      171
+    ],
+    "people-centered,": [
+      174
+    ],
+    "framework": [
+      176
+    ],
+    "sustainability": [
+      178
+    ],
+    "accelerate": [
+      181
+    ],
+    "achievement": [
+      183
+    ],
+    "SDGs,": [
+      186
+    ],
+    "paving": [
+      187
+    ],
+    "way": [
+      189
+    ],
+    "more": [
+      192
+    ],
+    "inclusive": [
+      193
+    ],
+    "equitable": [
+      195
+    ],
+    "future.": [
+      196
+    ]
+  },
+  "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W4402215482",
+  "counts_by_year": [
+    {
+      "year": 2026,
+      "cited_by_count": 17
+    },
+    {
+      "year": 2025,
+      "cited_by_count": 9
+    }
+  ],
+  "updated_date": "2026-11-17T12:49:18.490984",
+  "created_date": "2024-09-05T00:00:00"
+}

@@ -1,0 +1,499 @@
+{
+  "id": "https://openalex.org/W7125831433",
+  "doi": "https://doi.org/10.2139/ssrn.6030314",
+  "title": "Asymmetric Compliance: Behavioral Intent vs. Systemic Friction in the Era of AI-Driven IRS Collections",
+  "display_name": "Asymmetric Compliance: Behavioral Intent vs. Systemic Friction in the Era of AI-Driven IRS Collections",
+  "alternate_titles": [],
+  "publication_year": 2026,
+  "publication_date": "2026-01-01",
+  "ids": {
+    "openalex": "https://openalex.org/W7125831433",
+    "doi": "https://doi.org/10.2139/ssrn.6030314"
+  },
+  "language": "en",
+  "primary_location": {
+    "id": "doi:10.2139/ssrn.6030314",
+    "doi": "https://doi.org/10.2139/ssrn.6030314",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.2139/ssrn.6030314",
+    "pdf_url": null,
+    "source": {
+      "id": "https://openalex.org/S4210172589",
+      "display_name": "SSRN Electronic Journal",
+      "issn_l": "1556-5068",
+      "issn": [
+        "1556-5068"
+      ],
+      "is_oa": true,
+      "is_in_doaj": false,
+      "is_core": false,
+      "listed_in": [],
+      "host_organization": "https://openalex.org/I1318003438",
+      "host_organization_name": "RELX Group (Netherlands)",
+      "host_organization_lineage": [
+        "https://openalex.org/I1318003438"
+      ],
+      "host_organization_lineage_names": [],
+      "type": "repository"
+    },
+    "license": null,
+    "license_id": null,
+    "version": "submittedVersion",
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "posted-content"
+  },
+  "parent_works": [],
+  "lineage": [
+    "https://openalex.org/W7125831433"
+  ],
+  "child_works_count": 0,
+  "type": "preprint",
+  "is_traditional": true,
+  "indexed_in": [
+    "crossref"
+  ],
+  "open_access": {
+    "is_oa": true,
+    "oa_status": "green",
+    "oa_url": "https://philpapers.org/archive/RODACB.pdf",
+    "any_repository_has_fulltext": true
+  },
+  "authorships": [
+    {
+      "author_position": "first",
+      "author": {
+        "id": "https://openalex.org/A5124027938",
+        "display_name": "Julian Rodriguez",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": true,
+      "raw_author_name": "Julian Rodriguez",
+      "raw_affiliation_strings": [
+        "Independent researcher",
+        "Independent researcher, 7000 N MOPAC EXPY, STE 200, AUSTIN, TX TX 78731, United States"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Independent researcher",
+          "institution_ids": []
+        },
+        {
+          "raw_affiliation_string": "Independent researcher, 7000 N MOPAC EXPY, STE 200, AUSTIN, TX TX 78731, United States",
+          "institution_ids": []
+        }
+      ]
+    }
+  ],
+  "institutions": [],
+  "countries_distinct_count": 0,
+  "institutions_distinct_count": 0,
+  "corresponding_author_ids": [
+    "https://openalex.org/A5124027938"
+  ],
+  "corresponding_institution_ids": [],
+  "apc_list": null,
+  "apc_paid": null,
+  "fwci": null,
+  "has_fulltext": true,
+  "cited_by_count": 0,
+  "citation_normalized_percentile": null,
+  "cited_by_percentile_year": null,
+  "biblio": {
+    "volume": null,
+    "issue": null,
+    "first_page": null,
+    "last_page": null
+  },
+  "is_retracted": false,
+  "is_paratext": false,
+  "is_xpac": false,
+  "primary_topic": {
+    "id": "https://openalex.org/T11257",
+    "display_name": "Taxation and Compliance Studies",
+    "score": 0.9965999722480774,
+    "subfield": {
+      "id": "https://openalex.org/subfields/2002",
+      "display_name": "Economics and Econometrics"
+    },
+    "field": {
+      "id": "https://openalex.org/fields/20",
+      "display_name": "Economics, Econometrics and Finance"
+    },
+    "domain": {
+      "id": "https://openalex.org/domains/2",
+      "display_name": "Social Sciences"
+    }
+  },
+  "topics": [
+    {
+      "id": "https://openalex.org/T11257",
+      "display_name": "Taxation and Compliance Studies",
+      "score": 0.9965999722480774,
+      "subfield": {
+        "id": "https://openalex.org/subfields/2002",
+        "display_name": "Economics and Econometrics"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/20",
+        "display_name": "Economics, Econometrics and Finance"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/2",
+        "display_name": "Social Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T14030",
+      "display_name": "Taxation and Legal Issues",
+      "score": 0.0017999999690800905,
+      "subfield": {
+        "id": "https://openalex.org/subfields/1402",
+        "display_name": "Accounting"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/14",
+        "display_name": "Business, Management and Accounting"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/2",
+        "display_name": "Social Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T12185",
+      "display_name": "Regulation and Compliance Studies",
+      "score": 0.0003000000142492354,
+      "subfield": {
+        "id": "https://openalex.org/subfields/3321",
+        "display_name": "Public Administration"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/33",
+        "display_name": "Social Sciences"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/2",
+        "display_name": "Social Sciences"
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "id": "https://openalex.org/keywords/internal-revenue-service",
+      "display_name": "Internal Revenue Service",
+      "score": 0.7519999742507935
+    },
+    {
+      "id": "https://openalex.org/keywords/tax-compliance",
+      "display_name": "tax compliance",
+      "score": 0.6209999918937683
+    },
+    {
+      "id": "https://openalex.org/keywords/foreign-account-tax-compliance-act",
+      "display_name": "FATCA",
+      "score": 0.9879999756813049
+    }
+  ],
+  "concepts": [
+    {
+      "id": "https://openalex.org/C2776360696",
+      "wikidata": "https://www.wikidata.org/wiki/Q1938414",
+      "display_name": "Taxpayer",
+      "level": 2,
+      "score": 0.7778000235557556
+    },
+    {
+      "id": "https://openalex.org/C2993958944",
+      "wikidata": "https://www.wikidata.org/wiki/Q973587",
+      "display_name": "Internal revenue",
+      "level": 3,
+      "score": 0.5537999868392944
+    },
+    {
+      "id": "https://openalex.org/C39549134",
+      "wikidata": "https://www.wikidata.org/wiki/Q133080",
+      "display_name": "Public relations",
+      "level": 1,
+      "score": 0.44119998812675476
+    },
+    {
+      "id": "https://openalex.org/C195487862",
+      "wikidata": "https://www.wikidata.org/wiki/Q850210",
+      "display_name": "Revenue",
+      "level": 2,
+      "score": 0.4165000021457672
+    },
+    {
+      "id": "https://openalex.org/C94625758",
+      "wikidata": "https://www.wikidata.org/wiki/Q7163",
+      "display_name": "Politics",
+      "level": 2,
+      "score": 0.4088999927043915
+    },
+    {
+      "id": "https://openalex.org/C144133560",
+      "wikidata": "https://www.wikidata.org/wiki/Q4830453",
+      "display_name": "Business",
+      "level": 0,
+      "score": 0.4016000032424927
+    },
+    {
+      "id": "https://openalex.org/C165064840",
+      "wikidata": "https://www.wikidata.org/wiki/Q1321061",
+      "display_name": "Matching (statistics)",
+      "level": 2,
+      "score": 0.3824999928474426
+    },
+    {
+      "id": "https://openalex.org/C91602232",
+      "wikidata": "https://www.wikidata.org/wiki/Q756115",
+      "display_name": "Volatility (finance)",
+      "level": 2,
+      "score": 0.35749998688697815
+    },
+    {
+      "id": "https://openalex.org/C162853370",
+      "wikidata": "https://www.wikidata.org/wiki/Q39809",
+      "display_name": "Marketing",
+      "level": 1,
+      "score": 0.34540000557899475
+    },
+    {
+      "id": "https://openalex.org/C2780378061",
+      "wikidata": "https://www.wikidata.org/wiki/Q25351891",
+      "display_name": "Service (business)",
+      "level": 2,
+      "score": 0.3450999855995178
+    },
+    {
+      "id": "https://openalex.org/C162118730",
+      "wikidata": "https://www.wikidata.org/wiki/Q1128453",
+      "display_name": "Actuarial science",
+      "level": 1,
+      "score": 0.3395000100135803
+    },
+    {
+      "id": "https://openalex.org/C162324750",
+      "wikidata": "https://www.wikidata.org/wiki/Q8134",
+      "display_name": "Economics",
+      "level": 0,
+      "score": 0.32440000772476196
+    },
+    {
+      "id": "https://openalex.org/C100001284",
+      "wikidata": "https://www.wikidata.org/wiki/Q2248246",
+      "display_name": "Public economics",
+      "level": 1,
+      "score": 0.31859999895095825
+    },
+    {
+      "id": "https://openalex.org/C2989277270",
+      "wikidata": "https://www.wikidata.org/wiki/Q168338",
+      "display_name": "Behavioral analysis",
+      "level": 2,
+      "score": 0.31369999051094055
+    },
+    {
+      "id": "https://openalex.org/C2777834853",
+      "wikidata": "https://www.wikidata.org/wiki/Q96776939",
+      "display_name": "Liability",
+      "level": 2,
+      "score": 0.2800999879837036
+    },
+    {
+      "id": "https://openalex.org/C38652104",
+      "wikidata": "https://www.wikidata.org/wiki/Q3510521",
+      "display_name": "Computer security",
+      "level": 1,
+      "score": 0.2721000015735626
+    },
+    {
+      "id": "https://openalex.org/C108827166",
+      "wikidata": "https://www.wikidata.org/wiki/Q175975",
+      "display_name": "Internet privacy",
+      "level": 1,
+      "score": 0.26899999380111694
+    },
+    {
+      "id": "https://openalex.org/C10138342",
+      "wikidata": "https://www.wikidata.org/wiki/Q43015",
+      "display_name": "Finance",
+      "level": 1,
+      "score": 0.2669000029563904
+    },
+    {
+      "id": "https://openalex.org/C87868495",
+      "wikidata": "https://www.wikidata.org/wiki/Q750843",
+      "display_name": "Information processing",
+      "level": 2,
+      "score": 0.25220000743865967
+    }
+  ],
+  "mesh": [],
+  "locations_count": 3,
+  "locations": [
+    {
+      "id": "doi:10.2139/ssrn.6030314",
+      "doi": "https://doi.org/10.2139/ssrn.6030314",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.2139/ssrn.6030314",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4210172589",
+        "display_name": "SSRN Electronic Journal",
+        "issn_l": "1556-5068",
+        "issn": [
+          "1556-5068"
+        ],
+        "is_oa": true,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I1318003438",
+        "host_organization_name": "RELX Group (Netherlands)",
+        "host_organization_lineage": [
+          "https://openalex.org/I1318003438"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "posted-content"
+    },
+    {
+      "id": "pmh:oai:philpapers.org/rec/RODACB",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://philpapers.org/rec/RODACB",
+      "pdf_url": "https://philpapers.org/archive/RODACB.pdf",
+      "source": {
+        "id": "https://openalex.org/S4306402130",
+        "display_name": "PhilPapers (PhilPapers Foundation)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": null,
+        "host_organization_name": null,
+        "host_organization_lineage": [],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "info:eu-repo/semantics/article"
+    },
+    {
+      "id": "pmh:oai:philarchive.org/rec/RODACB",
+      "doi": null,
+      "is_oa": false,
+      "landing_page_url": "https://philarchive.org/rec/RODACB",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306402130",
+        "display_name": "PhilPapers (PhilPapers Foundation)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": null,
+        "host_organization_name": null,
+        "host_organization_lineage": [],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "info:eu-repo/semantics/article"
+    }
+  ],
+  "best_oa_location": {
+    "id": "pmh:oai:philpapers.org/rec/RODACB",
+    "doi": null,
+    "is_oa": true,
+    "landing_page_url": "https://philpapers.org/rec/RODACB",
+    "pdf_url": "https://philpapers.org/archive/RODACB.pdf",
+    "source": {
+      "id": "https://openalex.org/S4306402130",
+      "display_name": "PhilPapers (PhilPapers Foundation)",
+      "issn_l": null,
+      "issn": null,
+      "is_oa": false,
+      "is_in_doaj": false,
+      "is_core": false,
+      "listed_in": [],
+      "host_organization": null,
+      "host_organization_name": null,
+      "host_organization_lineage": [],
+      "host_organization_lineage_names": [],
+      "type": "repository"
+    },
+    "license": null,
+    "license_id": null,
+    "version": "submittedVersion",
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "info:eu-repo/semantics/article"
+  },
+  "sustainable_development_goals": [
+    {
+      "score": 0.9595999717712402,
+      "display_name": "Peace, justice, and strong institutions",
+      "id": "https://metadata.un.org/sdg/16"
+    }
+  ],
+  "study_designs": [],
+  "awards": [],
+  "funders": [],
+  "has_content": {
+    "pdf": true,
+    "grobid_xml": true
+  },
+  "content_urls": {
+    "pdf": "https://content.openalex.org/works/W7125831433.pdf",
+    "grobid_xml": "https://content.openalex.org/works/W7125831433.grobid-xml"
+  },
+  "referenced_works_count": 0,
+  "referenced_works": [],
+  "related_works": [
+    "https://openalex.org/W7125779756",
+    "https://openalex.org/W108547324",
+    "https://openalex.org/W7071882754",
+    "https://openalex.org/W4410517955",
+    "https://openalex.org/W4412632185",
+    "https://openalex.org/W3159884850",
+    "https://openalex.org/W2592623733",
+    "https://openalex.org/W7006276066",
+    "https://openalex.org/W7220926591",
+    "https://openalex.org/W4385197601"
+  ],
+  "abstract_inverted_index": null,
+  "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W7125831433",
+  "counts_by_year": [],
+  "updated_date": "2026-11-13T13:42:25.865203",
+  "created_date": "2026-01-28T00:00:00"
+}

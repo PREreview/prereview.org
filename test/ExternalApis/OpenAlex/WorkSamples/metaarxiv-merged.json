@@ -1,0 +1,1489 @@
+{
+  "id": "https://openalex.org/W4225289914",
+  "doi": "https://doi.org/10.1371/journal.pone.0267971",
+  "title": "Downstream retraction of preprinted research in the life and medical sciences",
+  "display_name": "Downstream retraction of preprinted research in the life and medical sciences",
+  "alternate_titles": [],
+  "publication_year": 2022,
+  "publication_date": "2022-05-02",
+  "ids": {
+    "openalex": "https://openalex.org/W4225289914",
+    "doi": "https://doi.org/10.1371/journal.pone.0267971",
+    "pmid": "https://pubmed.ncbi.nlm.nih.gov/35500021",
+    "pmcid": "https://www.ncbi.nlm.nih.gov/pmc/articles/9060331"
+  },
+  "language": "en",
+  "primary_location": {
+    "id": "doi:10.1371/journal.pone.0267971",
+    "doi": "https://doi.org/10.1371/journal.pone.0267971",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.1371/journal.pone.0267971",
+    "pdf_url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0267971&type=printable",
+    "source": {
+      "id": "https://openalex.org/S202381698",
+      "display_name": "PLoS ONE",
+      "issn_l": "1932-6203",
+      "issn": [
+        "1932-6203"
+      ],
+      "is_oa": true,
+      "is_in_doaj": true,
+      "is_core": true,
+      "listed_in": [
+        "anvur-class-a",
+        "anvur-scientific",
+        "cwts-core",
+        "doaj",
+        "dongbi-c",
+        "doyens",
+        "erih-plus",
+        "jufo-1",
+        "ki-jl-1",
+        "medline",
+        "norway-1",
+        "poland-100",
+        "russia-white-list-1",
+        "vabb-shw"
+      ],
+      "host_organization": "https://openalex.org/P4310315706",
+      "host_organization_name": "Public Library of Science",
+      "host_organization_lineage": [
+        "https://openalex.org/P4310315706"
+      ],
+      "host_organization_lineage_names": [
+        "Public Library of Science"
+      ],
+      "type": "journal"
+    },
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": "publishedVersion",
+    "is_accepted": true,
+    "is_published": true,
+    "raw_source_name": "PLOS ONE",
+    "raw_type": "journal-article"
+  },
+  "parent_works": [],
+  "lineage": [
+    "https://openalex.org/W4225289914"
+  ],
+  "child_works_count": 7,
+  "type": "article",
+  "is_traditional": true,
+  "indexed_in": [
+    "crossref",
+    "doaj",
+    "pubmed"
+  ],
+  "open_access": {
+    "is_oa": true,
+    "oa_status": "gold",
+    "oa_url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0267971&type=printable",
+    "any_repository_has_fulltext": true
+  },
+  "authorships": [
+    {
+      "author_position": "first",
+      "author": {
+        "id": "https://openalex.org/A5022629702",
+        "display_name": "Michele Avissar-Whiting",
+        "orcid": "https://orcid.org/0000-0003-0030-3135",
+        "observed_orcids": [
+          "https://orcid.org/0000-0003-0030-3135"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4210096694",
+          "display_name": "Research Square (United States)",
+          "ror": "https://ror.org/00c0gj024",
+          "country_code": "US",
+          "type": "company",
+          "lineage": [
+            "https://openalex.org/I1313014049",
+            "https://openalex.org/I4210096694",
+            "https://openalex.org/I4210112888"
+          ]
+        }
+      ],
+      "countries": [
+        "US"
+      ],
+      "is_corresponding": true,
+      "raw_author_name": "Michele Avissar-Whiting",
+      "raw_affiliation_strings": [
+        "Research Square Company, Durham, North Carolina, United States of America"
+      ],
+      "raw_orcid": "https://orcid.org/0000-0003-0030-3135",
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Research Square Company, Durham, North Carolina, United States of America",
+          "institution_ids": [
+            "https://openalex.org/I4210096694"
+          ]
+        }
+      ]
+    }
+  ],
+  "institutions": [],
+  "countries_distinct_count": 1,
+  "institutions_distinct_count": 1,
+  "corresponding_author_ids": [
+    "https://openalex.org/A5022629702"
+  ],
+  "corresponding_institution_ids": [
+    "https://openalex.org/I4210096694"
+  ],
+  "apc_list": {
+    "value": 1805,
+    "currency": "USD",
+    "value_usd": 1805
+  },
+  "apc_paid": {
+    "value": 1805,
+    "currency": "USD",
+    "value_usd": 1805
+  },
+  "fwci": 6.3695,
+  "has_fulltext": true,
+  "cited_by_count": 25,
+  "citation_normalized_percentile": {
+    "value": 0.96365505,
+    "is_in_top_1_percent": false,
+    "is_in_top_10_percent": true
+  },
+  "cited_by_percentile_year": {
+    "min": 96,
+    "max": 98
+  },
+  "biblio": {
+    "volume": "17",
+    "issue": "5",
+    "first_page": "e0267971",
+    "last_page": "e0267971"
+  },
+  "is_retracted": false,
+  "is_paratext": false,
+  "is_xpac": false,
+  "primary_topic": {
+    "id": "https://openalex.org/T13607",
+    "display_name": "Academic Publishing and Open Access",
+    "score": 0.9976000189781189,
+    "subfield": {
+      "id": "https://openalex.org/subfields/3309",
+      "display_name": "Library and Information Sciences"
+    },
+    "field": {
+      "id": "https://openalex.org/fields/33",
+      "display_name": "Social Sciences"
+    },
+    "domain": {
+      "id": "https://openalex.org/domains/2",
+      "display_name": "Social Sciences"
+    }
+  },
+  "topics": [
+    {
+      "id": "https://openalex.org/T13607",
+      "display_name": "Academic Publishing and Open Access",
+      "score": 0.9976000189781189,
+      "subfield": {
+        "id": "https://openalex.org/subfields/3309",
+        "display_name": "Library and Information Sciences"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/33",
+        "display_name": "Social Sciences"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/2",
+        "display_name": "Social Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T11492",
+      "display_name": "Academic integrity and plagiarism",
+      "score": 0.0012000000569969416,
+      "subfield": {
+        "id": "https://openalex.org/subfields/3304",
+        "display_name": "Education"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/33",
+        "display_name": "Social Sciences"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/2",
+        "display_name": "Social Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T13516",
+      "display_name": "Publishing and Scholarly Communication",
+      "score": 0.0005000000237487257,
+      "subfield": {
+        "id": "https://openalex.org/subfields/3309",
+        "display_name": "Library and Information Sciences"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/33",
+        "display_name": "Social Sciences"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/2",
+        "display_name": "Social Sciences"
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "id": "https://openalex.org/keywords/retraction",
+      "display_name": "retraction",
+      "score": 0.765999972820282
+    },
+    {
+      "id": "https://openalex.org/keywords/preprints",
+      "display_name": "preprints",
+      "score": 0.9470000267028809
+    },
+    {
+      "id": "https://openalex.org/keywords/preprint-servers",
+      "display_name": "preprint servers",
+      "score": 0.9229999780654907
+    },
+    {
+      "id": "https://openalex.org/keywords/research-square",
+      "display_name": "Research Square",
+      "score": 0.8029999732971191
+    },
+    {
+      "id": "https://openalex.org/keywords/biorxiv",
+      "display_name": "bioRxiv",
+      "score": 0.9990000128746033
+    },
+    {
+      "id": "https://openalex.org/keywords/medrxiv",
+      "display_name": "medRxiv",
+      "score": 0.9980000257492065
+    },
+    {
+      "id": "https://openalex.org/keywords/retraction-watch",
+      "display_name": "Retraction Watch",
+      "score": 0.7630000114440918
+    },
+    {
+      "id": "https://openalex.org/keywords/research-misconduct",
+      "display_name": "research misconduct",
+      "score": 0.5720000267028809
+    },
+    {
+      "id": "https://openalex.org/keywords/research-dissemination",
+      "display_name": "research dissemination",
+      "score": 0.38600000739097595
+    }
+  ],
+  "concepts": [
+    {
+      "id": "https://openalex.org/C43169469",
+      "wikidata": "https://www.wikidata.org/wiki/Q580922",
+      "display_name": "Preprint",
+      "level": 2,
+      "score": 0.7368205785751343
+    },
+    {
+      "id": "https://openalex.org/C93996380",
+      "wikidata": "https://www.wikidata.org/wiki/Q44127",
+      "display_name": "Server",
+      "level": 2,
+      "score": 0.6795856356620789
+    },
+    {
+      "id": "https://openalex.org/C41008148",
+      "wikidata": "https://www.wikidata.org/wiki/Q21198",
+      "display_name": "Computer science",
+      "level": 0,
+      "score": 0.5315183401107788
+    },
+    {
+      "id": "https://openalex.org/C2776207758",
+      "wikidata": "https://www.wikidata.org/wiki/Q5303302",
+      "display_name": "Downstream (manufacturing)",
+      "level": 2,
+      "score": 0.486013263463974
+    },
+    {
+      "id": "https://openalex.org/C55282118",
+      "wikidata": "https://www.wikidata.org/wiki/Q252683",
+      "display_name": "Snapshot (computer storage)",
+      "level": 2,
+      "score": 0.4396373927593231
+    },
+    {
+      "id": "https://openalex.org/C136764020",
+      "wikidata": "https://www.wikidata.org/wiki/Q466",
+      "display_name": "World Wide Web",
+      "level": 1,
+      "score": 0.3865404725074768
+    },
+    {
+      "id": "https://openalex.org/C77088390",
+      "wikidata": "https://www.wikidata.org/wiki/Q8513",
+      "display_name": "Database",
+      "level": 1,
+      "score": 0.12578392028808594
+    },
+    {
+      "id": "https://openalex.org/C21547014",
+      "wikidata": "https://www.wikidata.org/wiki/Q1423657",
+      "display_name": "Operations management",
+      "level": 1,
+      "score": 0.0
+    },
+    {
+      "id": "https://openalex.org/C162324750",
+      "wikidata": "https://www.wikidata.org/wiki/Q8134",
+      "display_name": "Economics",
+      "level": 0,
+      "score": 0.0
+    }
+  ],
+  "mesh": [
+    {
+      "descriptor_ui": "D006801",
+      "descriptor_name": "Humans",
+      "qualifier_ui": null,
+      "qualifier_name": null,
+      "is_major_topic": false
+    },
+    {
+      "descriptor_ui": "D011643",
+      "descriptor_name": "Publishing",
+      "qualifier_ui": "Q000639",
+      "qualifier_name": "trends",
+      "is_major_topic": true
+    },
+    {
+      "descriptor_ui": "D012108",
+      "descriptor_name": "Research Personnel",
+      "qualifier_ui": null,
+      "qualifier_name": null,
+      "is_major_topic": true
+    },
+    {
+      "descriptor_ui": "D012180",
+      "descriptor_name": "Retraction of Publication as Topic",
+      "qualifier_ui": null,
+      "qualifier_name": null,
+      "is_major_topic": true
+    }
+  ],
+  "locations_count": 8,
+  "locations": [
+    {
+      "id": "doi:10.1371/journal.pone.0267971",
+      "doi": "https://doi.org/10.1371/journal.pone.0267971",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.1371/journal.pone.0267971",
+      "pdf_url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0267971&type=printable",
+      "source": {
+        "id": "https://openalex.org/S202381698",
+        "display_name": "PLoS ONE",
+        "issn_l": "1932-6203",
+        "issn": [
+          "1932-6203"
+        ],
+        "is_oa": true,
+        "is_in_doaj": true,
+        "is_core": true,
+        "listed_in": [
+          "anvur-class-a",
+          "anvur-scientific",
+          "cwts-core",
+          "doaj",
+          "dongbi-c",
+          "doyens",
+          "erih-plus",
+          "jufo-1",
+          "ki-jl-1",
+          "medline",
+          "norway-1",
+          "poland-100",
+          "russia-white-list-1",
+          "vabb-shw"
+        ],
+        "host_organization": "https://openalex.org/P4310315706",
+        "host_organization_name": "Public Library of Science",
+        "host_organization_lineage": [
+          "https://openalex.org/P4310315706"
+        ],
+        "host_organization_lineage_names": [
+          "Public Library of Science"
+        ],
+        "type": "journal"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "publishedVersion",
+      "is_accepted": true,
+      "is_published": true,
+      "raw_source_name": "PLOS ONE",
+      "raw_type": "journal-article"
+    },
+    {
+      "id": "doi:10.31222/osf.io/xdekq",
+      "doi": "https://doi.org/10.31222/osf.io/xdekq",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.31222/osf.io/xdekq",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306402619",
+        "display_name": "MetArXiv (OSF Preprints)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I2799848540",
+        "host_organization_name": "Center for Open Science",
+        "host_organization_lineage": [
+          "https://openalex.org/I2799848540"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "posted-content"
+    },
+    {
+      "id": "pmid:35500021",
+      "doi": null,
+      "is_oa": false,
+      "landing_page_url": "https://pubmed.ncbi.nlm.nih.gov/35500021",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306525036",
+        "display_name": "PubMed",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I1299303238",
+        "host_organization_name": "National Institutes of Health",
+        "host_organization_lineage": [
+          "https://openalex.org/I1299303238"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": "publishedVersion",
+      "is_accepted": true,
+      "is_published": true,
+      "raw_source_name": "PloS one",
+      "raw_type": "Journal Article"
+    },
+    {
+      "id": "pmh:oai:doaj.org/article:191efb9201ac41fea235cc4020f58881",
+      "doi": null,
+      "is_oa": false,
+      "landing_page_url": "https://doaj.org/article/191efb9201ac41fea235cc4020f58881",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306401280",
+        "display_name": "DOAJ (DOAJ: Directory of Open Access Journals)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": null,
+        "host_organization_name": null,
+        "host_organization_lineage": [],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": "publishedVersion",
+      "is_accepted": true,
+      "is_published": true,
+      "raw_source_name": "PLoS ONE, Vol 17, Iss 5 (2022)",
+      "raw_type": "article"
+    },
+    {
+      "id": "pmh:oai:pubmedcentral.nih.gov:9060331",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9060331/",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S2764455111",
+        "display_name": "PubMed Central",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": true,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I1299303238",
+        "host_organization_name": "National Institutes of Health",
+        "host_organization_lineage": [
+          "https://openalex.org/I1299303238"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "publishedVersion",
+      "is_accepted": true,
+      "is_published": true,
+      "raw_source_name": "PLoS One",
+      "raw_type": "Text"
+    },
+    {
+      "id": "pmh:oai:share.osf.io:E001D-34E-481",
+      "doi": null,
+      "is_oa": false,
+      "landing_page_url": "http://doi.org/10.31222/OSF.IO/XDEKQ",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306402619",
+        "display_name": "MetArXiv (OSF Preprints)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I2799848540",
+        "host_organization_name": "Center for Open Science",
+        "host_organization_lineage": [
+          "https://openalex.org/I2799848540"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": "publishedVersion",
+      "is_accepted": true,
+      "is_published": true,
+      "raw_source_name": "",
+      "raw_type": "preprint"
+    },
+    {
+      "id": "pmh:oai:doaj.org/article:f10cc847f10a48499294ae37bce02eb4",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://doaj.org/article/f10cc847f10a48499294ae37bce02eb4",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306401280",
+        "display_name": "DOAJ (DOAJ: Directory of Open Access Journals)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": null,
+        "host_organization_name": null,
+        "host_organization_lineage": [],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by-sa",
+      "license_id": "https://openalex.org/licenses/cc-by-sa",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": "PLoS ONE, Vol 17, Iss 5, p e0267971 (2022)",
+      "raw_type": "article"
+    },
+    {
+      "id": "pmh:oai:share.osf.io:c4296fd0-f0bb-437f-a023-991dacd46e02",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://osf.io/xdekq",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306402619",
+        "display_name": "MetArXiv (OSF Preprints)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I2799848540",
+        "host_organization_name": "Center for Open Science",
+        "host_organization_lineage": [
+          "https://openalex.org/I2799848540"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "Preprint"
+    }
+  ],
+  "best_oa_location": {
+    "id": "doi:10.1371/journal.pone.0267971",
+    "doi": "https://doi.org/10.1371/journal.pone.0267971",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.1371/journal.pone.0267971",
+    "pdf_url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0267971&type=printable",
+    "source": {
+      "id": "https://openalex.org/S202381698",
+      "display_name": "PLoS ONE",
+      "issn_l": "1932-6203",
+      "issn": [
+        "1932-6203"
+      ],
+      "is_oa": true,
+      "is_in_doaj": true,
+      "is_core": true,
+      "listed_in": [
+        "anvur-class-a",
+        "anvur-scientific",
+        "cwts-core",
+        "doaj",
+        "dongbi-c",
+        "doyens",
+        "erih-plus",
+        "jufo-1",
+        "ki-jl-1",
+        "medline",
+        "norway-1",
+        "poland-100",
+        "russia-white-list-1",
+        "vabb-shw"
+      ],
+      "host_organization": "https://openalex.org/P4310315706",
+      "host_organization_name": "Public Library of Science",
+      "host_organization_lineage": [
+        "https://openalex.org/P4310315706"
+      ],
+      "host_organization_lineage_names": [
+        "Public Library of Science"
+      ],
+      "type": "journal"
+    },
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": "publishedVersion",
+    "is_accepted": true,
+    "is_published": true,
+    "raw_source_name": "PLOS ONE",
+    "raw_type": "journal-article"
+  },
+  "sustainable_development_goals": [],
+  "study_designs": [],
+  "awards": [],
+  "funders": [],
+  "has_content": {
+    "pdf": true,
+    "grobid_xml": true
+  },
+  "content_urls": {
+    "pdf": "https://content.openalex.org/works/W4225289914.pdf",
+    "grobid_xml": "https://content.openalex.org/works/W4225289914.grobid-xml"
+  },
+  "referenced_works_count": 19,
+  "referenced_works": [
+    "https://openalex.org/W1997443699",
+    "https://openalex.org/W2045816279",
+    "https://openalex.org/W2062187425",
+    "https://openalex.org/W2118482224",
+    "https://openalex.org/W2122827137",
+    "https://openalex.org/W2792134980",
+    "https://openalex.org/W2898297501",
+    "https://openalex.org/W2902735068",
+    "https://openalex.org/W2941006887",
+    "https://openalex.org/W3014734202",
+    "https://openalex.org/W3128789760",
+    "https://openalex.org/W3153961663",
+    "https://openalex.org/W3199846882",
+    "https://openalex.org/W3216483586",
+    "https://openalex.org/W4200394820",
+    "https://openalex.org/W4206453722",
+    "https://openalex.org/W4238983657",
+    "https://openalex.org/W4296369701",
+    "https://openalex.org/W6920649243"
+  ],
+  "related_works": [
+    "https://openalex.org/W4362590789",
+    "https://openalex.org/W6930398059",
+    "https://openalex.org/W6977544397",
+    "https://openalex.org/W4292172086",
+    "https://openalex.org/W4415182860",
+    "https://openalex.org/W2016914734",
+    "https://openalex.org/W4405910040",
+    "https://openalex.org/W2997232560",
+    "https://openalex.org/W2570511786",
+    "https://openalex.org/W4200394820"
+  ],
+  "abstract_inverted_index": {
+    "Retractions": [
+      0
+    ],
+    "have": [
+      1
+    ],
+    "been": [
+      2,
+      40
+    ],
+    "on": [
+      3,
+      29,
+      103,
+      191,
+      303
+    ],
+    "the": [
+      4,
+      7,
+      13,
+      30,
+      47,
+      62,
+      104,
+      115,
+      129,
+      140,
+      159,
+      162,
+      173,
+      202,
+      206,
+      215,
+      233,
+      261,
+      264,
+      268,
+      276,
+      284,
+      293,
+      308
+    ],
+    "rise": [
+      5
+    ],
+    "in": [
+      6,
+      12,
+      46,
+      53,
+      133,
+      149,
+      172,
+      218,
+      251
+    ],
+    "life": [
+      8,
+      286
+    ],
+    "and": [
+      9,
+      26,
+      67,
+      99,
+      157,
+      296,
+      307
+    ],
+    "clinical": [
+      10
+    ],
+    "sciences": [
+      11
+    ],
+    "last": [
+      14
+    ],
+    "decade,": [
+      15
+    ],
+    "likely": [
+      16
+    ],
+    "due": [
+      17
+    ],
+    "to": [
+      18,
+      73,
+      83,
+      113,
+      128,
+      166,
+      170,
+      225,
+      292,
+      297,
+      313
+    ],
+    "both": [
+      19
+    ],
+    "broader": [
+      20
+    ],
+    "accessibility": [
+      21
+    ],
+    "of": [
+      22,
+      32,
+      49,
+      64,
+      91,
+      97,
+      109,
+      117,
+      139,
+      143,
+      146,
+      161,
+      179,
+      187,
+      208,
+      242,
+      246,
+      259,
+      263,
+      278,
+      280
+    ],
+    "published": [
+      23,
+      132
+    ],
+    "scientific": [
+      24,
+      298
+    ],
+    "research": [
+      25,
+      65
+    ],
+    "increased": [
+      27
+    ],
+    "vigilance": [
+      28
+    ],
+    "part": [
+      31
+    ],
+    "publishers.": [
+      33
+    ],
+    "In": [
+      34,
+      240,
+      257
+    ],
+    "this": [
+      35,
+      57,
+      110,
+      118
+    ],
+    "same": [
+      36
+    ],
+    "period,": [
+      37
+    ],
+    "there": [
+      38
+    ],
+    "has": [
+      39,
+      59,
+      68,
+      77
+    ],
+    "a": [
+      41,
+      137,
+      209,
+      290
+    ],
+    "greater": [
+      42
+    ],
+    "than": [
+      43,
+      232
+    ],
+    "ten-fold": [
+      44
+    ],
+    "increase": [
+      45
+    ],
+    "posting": [
+      48
+    ],
+    "preprints": [
+      50,
+      127,
+      167,
+      247
+    ],
+    "by": [
+      51,
+      201,
+      214
+    ],
+    "researchers": [
+      52,
+      71
+    ],
+    "these": [
+      54,
+      192,
+      315
+    ],
+    "fields.": [
+      55
+    ],
+    "While": [
+      56
+    ],
+    "development": [
+      58
+    ],
+    "significantly": [
+      60
+    ],
+    "accelerated": [
+      61
+    ],
+    "rate": [
+      63
+    ],
+    "dissemination": [
+      66
+    ],
+    "benefited": [
+      69
+    ],
+    "early-career": [
+      70
+    ],
+    "eager": [
+      72
+    ],
+    "show": [
+      74
+    ],
+    "productivity,": [
+      75
+    ],
+    "it": [
+      76
+    ],
+    "also": [
+      78
+    ],
+    "introduced": [
+      79
+    ],
+    "challenges": [
+      80
+    ],
+    "with": [
+      81
+    ],
+    "respect": [
+      82
+    ],
+    "provenance": [
+      84
+    ],
+    "tracking,": [
+      85
+    ],
+    "version": [
+      86
+    ],
+    "linking,": [
+      87
+    ],
+    "and,": [
+      88
+    ],
+    "ultimately,": [
+      89
+    ],
+    "back-propagation": [
+      90
+    ],
+    "events": [
+      92
+    ],
+    "such": [
+      93
+    ],
+    "as": [
+      94
+    ],
+    "corrigenda,": [
+      95
+    ],
+    "expressions": [
+      96
+    ],
+    "concern,": [
+      98
+    ],
+    "retractions": [
+      100,
+      145,
+      181,
+      197,
+      244
+    ],
+    "that": [
+      101,
+      123,
+      267,
+      310
+    ],
+    "occur": [
+      102
+    ],
+    "journal-published": [
+      105,
+      163
+    ],
+    "version.": [
+      106
+    ],
+    "The": [
+      107,
+      221
+    ],
+    "aim": [
+      108
+    ],
+    "study": [
+      111
+    ],
+    "was": [
+      112,
+      211
+    ],
+    "understand": [
+      114
+    ],
+    "extent": [
+      116
+    ],
+    "problem": [
+      119
+    ],
+    "among": [
+      120
+    ],
+    "preprint": [
+      121,
+      152,
+      203,
+      210,
+      304
+    ],
+    "servers": [
+      122,
+      153
+    ],
+    "routinely": [
+      124
+    ],
+    "link": [
+      125
+    ],
+    "their": [
+      126,
+      318
+    ],
+    "corollary": [
+      130
+    ],
+    "versions": [
+      131,
+      164
+    ],
+    "journals.": [
+      134
+    ],
+    "To": [
+      135
+    ],
+    "present": [
+      136
+    ],
+    "snapshot": [
+      138
+    ],
+    "current": [
+      141
+    ],
+    "state": [
+      142
+    ],
+    "downstream": [
+      144,
+      245
+    ],
+    "articles": [
+      147,
+      236
+    ],
+    "preprinted": [
+      148
+    ],
+    "three": [
+      150
+    ],
+    "large": [
+      151
+    ],
+    "(Research": [
+      154
+    ],
+    "Square,": [
+      155
+    ],
+    "bioRxiv,": [
+      156
+    ],
+    "medRxiv),": [
+      158
+    ],
+    "DOIs": [
+      160
+    ],
+    "linked": [
+      165
+    ],
+    "were": [
+      168,
+      182,
+      198,
+      248,
+      270
+    ],
+    "matched": [
+      169
+    ],
+    "entries": [
+      171
+    ],
+    "Retraction": [
+      174
+    ],
+    "Watch": [
+      175
+    ],
+    "database.": [
+      176
+    ],
+    "A": [
+      177
+    ],
+    "total": [
+      178
+    ],
+    "30": [
+      180
+    ],
+    "identified,": [
+      183
+    ],
+    "representing": [
+      184
+    ],
+    "only": [
+      185,
+      212
+    ],
+    "0.01%": [
+      186
+    ],
+    "all": [
+      188
+    ],
+    "content": [
+      189
+    ],
+    "posted": [
+      190
+    ],
+    "servers.": [
+      193
+    ],
+    "Of": [
+      194
+    ],
+    "these,": [
+      195
+    ],
+    "11": [
+      196
+    ],
+    "clearly": [
+      199
+    ],
+    "noted": [
+      200
+    ],
+    "servers;": [
+      204
+    ],
+    "however,": [
+      205
+    ],
+    "existence": [
+      207
+    ],
+    "acknowledged": [
+      213
+    ],
+    "retracting": [
+      216
+    ],
+    "journal": [
+      217
+    ],
+    "one": [
+      219
+    ],
+    "case.": [
+      220
+    ],
+    "time": [
+      222
+    ],
+    "from": [
+      223
+    ],
+    "publication": [
+      224,
+      285
+    ],
+    "retraction": [
+      226,
+      265
+    ],
+    "averaged": [
+      227
+    ],
+    "278": [
+      228
+    ],
+    "days,": [
+      229
+    ],
+    "notably": [
+      230
+    ],
+    "lower": [
+      231
+    ],
+    "average": [
+      234
+    ],
+    "for": [
+      235
+    ],
+    "overall": [
+      237
+    ],
+    "(839": [
+      238
+    ],
+    "days).": [
+      239
+    ],
+    "70%": [
+      241
+    ],
+    "cases,": [
+      243,
+      260
+    ],
+    "due-at": [
+      249
+    ],
+    "least": [
+      250
+    ],
+    "part-to": [
+      252
+    ],
+    "ethical": [
+      253
+    ],
+    "or": [
+      254
+    ],
+    "procedural": [
+      255
+    ],
+    "misconduct.": [
+      256
+    ],
+    "63%": [
+      258
+    ],
+    "nature": [
+      262
+    ],
+    "suggested": [
+      266
+    ],
+    "conclusions": [
+      269
+    ],
+    "no": [
+      271
+    ],
+    "longer": [
+      272
+    ],
+    "reliable.": [
+      273
+    ],
+    "Over": [
+      274
+    ],
+    "time,": [
+      275
+    ],
+    "lack": [
+      277
+    ],
+    "propagation": [
+      279
+    ],
+    "critical": [
+      281
+    ],
+    "information": [
+      282
+    ],
+    "across": [
+      283
+    ],
+    "cycle": [
+      287
+    ],
+    "will": [
+      288
+    ],
+    "pose": [
+      289
+    ],
+    "threat": [
+      291
+    ],
+    "scholarly": [
+      294
+    ],
+    "record": [
+      295
+    ],
+    "integrity.": [
+      299
+    ],
+    "It": [
+      300
+    ],
+    "is": [
+      301
+    ],
+    "incumbent": [
+      302
+    ],
+    "servers,": [
+      305
+    ],
+    "publishers,": [
+      306
+    ],
+    "systems": [
+      309
+    ],
+    "connect": [
+      311
+    ],
+    "them": [
+      312
+    ],
+    "address": [
+      314
+    ],
+    "issues": [
+      316
+    ],
+    "before": [
+      317
+    ],
+    "scale": [
+      319
+    ],
+    "becomes": [
+      320
+    ],
+    "untenable.": [
+      321
+    ]
+  },
+  "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W4225289914",
+  "counts_by_year": [
+    {
+      "year": 2026,
+      "cited_by_count": 5
+    },
+    {
+      "year": 2025,
+      "cited_by_count": 6
+    },
+    {
+      "year": 2024,
+      "cited_by_count": 5
+    },
+    {
+      "year": 2023,
+      "cited_by_count": 4
+    },
+    {
+      "year": 2022,
+      "cited_by_count": 5
+    }
+  ],
+  "updated_date": "2026-11-16T12:05:36.265796",
+  "created_date": "2022-05-05T00:00:00"
+}

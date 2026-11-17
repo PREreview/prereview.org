@@ -1,0 +1,459 @@
+{
+  "id": "https://openalex.org/W6925166193",
+  "doi": "https://doi.org/10.17605/osf.io/cqf5t",
+  "title": "Unveiling the Development of Human Voice Perception: Neurobiological Mechanisms and Pathophysiology",
+  "display_name": "Unveiling the Development of Human Voice Perception: Neurobiological Mechanisms and Pathophysiology",
+  "alternate_titles": [],
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "ids": {
+    "openalex": "https://openalex.org/W6925166193",
+    "doi": "https://doi.org/10.17605/osf.io/cqf5t"
+  },
+  "language": "en",
+  "primary_location": {
+    "id": "pmh:oai:share.osf.io:be5b4b72-e79e-48a2-8eeb-b47096e98147",
+    "doi": null,
+    "is_oa": false,
+    "landing_page_url": "https://osf.io/cqf5t",
+    "pdf_url": null,
+    "source": {
+      "id": "https://openalex.org/S4306401127",
+      "display_name": "OSF Preprints (OSF Preprints)",
+      "issn_l": null,
+      "issn": null,
+      "is_oa": false,
+      "is_in_doaj": false,
+      "is_core": false,
+      "listed_in": [],
+      "host_organization": "https://openalex.org/I2799848540",
+      "host_organization_name": "Center for Open Science",
+      "host_organization_lineage": [
+        "https://openalex.org/I2799848540"
+      ],
+      "host_organization_lineage_names": [],
+      "type": "repository"
+    },
+    "license": null,
+    "license_id": null,
+    "version": "submittedVersion",
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "Project"
+  },
+  "parent_works": [],
+  "lineage": [
+    "https://openalex.org/W6925166193"
+  ],
+  "child_works_count": 0,
+  "type": "preprint",
+  "is_traditional": true,
+  "indexed_in": [
+    "datacite"
+  ],
+  "open_access": {
+    "is_oa": true,
+    "oa_status": "green",
+    "oa_url": "https://doi.org/10.17605/osf.io/cqf5t",
+    "any_repository_has_fulltext": true
+  },
+  "authorships": [
+    {
+      "author_position": "first",
+      "author": {
+        "id": "https://openalex.org/A5008886006",
+        "display_name": "Lori L. Holt",
+        "orcid": "https://orcid.org/0000-0002-8732-4977",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-8732-4977",
+          "https://orcid.org/0000-0002-2215-8533"
+        ]
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Holt, Lori L.",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5011688244",
+        "display_name": "Emily E. Harford",
+        "orcid": "https://orcid.org/0000-0001-8769-2238",
+        "observed_orcids": [
+          "https://orcid.org/0000-0001-8769-2238"
+        ]
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Harford, Emily",
+      "raw_affiliation_strings": [],
+      "raw_orcid": "https://orcid.org/0000-0001-8769-2238",
+      "affiliations": []
+    },
+    {
+      "author_position": "last",
+      "author": {
+        "id": "https://openalex.org/A5158183673",
+        "display_name": "Taylor J. Abel",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Abel, Taylor",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    }
+  ],
+  "institutions": [],
+  "countries_distinct_count": 0,
+  "institutions_distinct_count": 0,
+  "corresponding_author_ids": [],
+  "corresponding_institution_ids": [],
+  "apc_list": null,
+  "apc_paid": null,
+  "fwci": null,
+  "has_fulltext": false,
+  "cited_by_count": 0,
+  "citation_normalized_percentile": null,
+  "cited_by_percentile_year": null,
+  "biblio": {
+    "volume": null,
+    "issue": null,
+    "first_page": null,
+    "last_page": null
+  },
+  "is_retracted": false,
+  "is_paratext": false,
+  "is_xpac": true,
+  "primary_topic": {
+    "id": "https://openalex.org/T10788",
+    "display_name": "Neuroscience and Music Perception",
+    "score": 0.9262999892234802,
+    "subfield": {
+      "id": "https://openalex.org/subfields/2805",
+      "display_name": "Cognitive Neuroscience"
+    },
+    "field": {
+      "id": "https://openalex.org/fields/28",
+      "display_name": "Neuroscience"
+    },
+    "domain": {
+      "id": "https://openalex.org/domains/1",
+      "display_name": "Life Sciences"
+    }
+  },
+  "topics": [
+    {
+      "id": "https://openalex.org/T10788",
+      "display_name": "Neuroscience and Music Perception",
+      "score": 0.9262999892234802,
+      "subfield": {
+        "id": "https://openalex.org/subfields/2805",
+        "display_name": "Cognitive Neuroscience"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/28",
+        "display_name": "Neuroscience"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/1",
+        "display_name": "Life Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T10914",
+      "display_name": "Tactile and Sensory Interactions",
+      "score": 0.019500000402331352,
+      "subfield": {
+        "id": "https://openalex.org/subfields/2805",
+        "display_name": "Cognitive Neuroscience"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/28",
+        "display_name": "Neuroscience"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/1",
+        "display_name": "Life Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T10403",
+      "display_name": "Phonetics and Phonology Research",
+      "score": 0.017400000244379044,
+      "subfield": {
+        "id": "https://openalex.org/subfields/3205",
+        "display_name": "Experimental and Cognitive Psychology"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/32",
+        "display_name": "Psychology"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/2",
+        "display_name": "Social Sciences"
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "id": "https://openalex.org/keywords/voice-perception",
+      "display_name": "voice perception",
+      "score": 0.949999988079071
+    },
+    {
+      "id": "https://openalex.org/keywords/auditory-development",
+      "display_name": "auditory development",
+      "score": 0.6710000038146973
+    },
+    {
+      "id": "https://openalex.org/keywords/neurobiological-mechanisms",
+      "display_name": "neurobiological mechanisms",
+      "score": 0.8859999775886536
+    },
+    {
+      "id": "https://openalex.org/keywords/pathophysiology",
+      "display_name": "pathophysiology",
+      "score": 0.890999972820282
+    },
+    {
+      "id": "https://openalex.org/keywords/speech-perception",
+      "display_name": "speech perception",
+      "score": 0.6359999775886536
+    },
+    {
+      "id": "https://openalex.org/keywords/auditory-cortex",
+      "display_name": "auditory cortex",
+      "score": 0.33899998664855957
+    }
+  ],
+  "concepts": [
+    {
+      "id": "https://openalex.org/C15744967",
+      "wikidata": "https://www.wikidata.org/wiki/Q9418",
+      "display_name": "Psychology",
+      "level": 0,
+      "score": 0.5126000046730042
+    },
+    {
+      "id": "https://openalex.org/C169760540",
+      "wikidata": "https://www.wikidata.org/wiki/Q207011",
+      "display_name": "Neuroscience",
+      "level": 1,
+      "score": 0.4846999943256378
+    },
+    {
+      "id": "https://openalex.org/C26760741",
+      "wikidata": "https://www.wikidata.org/wiki/Q160402",
+      "display_name": "Perception",
+      "level": 2,
+      "score": 0.42250001430511475
+    },
+    {
+      "id": "https://openalex.org/C20766975",
+      "wikidata": "https://www.wikidata.org/wiki/Q7390",
+      "display_name": "Human voice",
+      "level": 2,
+      "score": 0.36559998989105225
+    },
+    {
+      "id": "https://openalex.org/C116834253",
+      "wikidata": "https://www.wikidata.org/wiki/Q2039217",
+      "display_name": "Identification (biology)",
+      "level": 2,
+      "score": 0.35269999504089355
+    },
+    {
+      "id": "https://openalex.org/C188147891",
+      "wikidata": "https://www.wikidata.org/wiki/Q147638",
+      "display_name": "Cognitive science",
+      "level": 1,
+      "score": 0.3375999927520752
+    },
+    {
+      "id": "https://openalex.org/C46312422",
+      "wikidata": "https://www.wikidata.org/wiki/Q11024",
+      "display_name": "Communication",
+      "level": 1,
+      "score": 0.3343999981880188
+    },
+    {
+      "id": "https://openalex.org/C71924100",
+      "wikidata": "https://www.wikidata.org/wiki/Q11190",
+      "display_name": "Medicine",
+      "level": 0,
+      "score": 0.31299999356269836
+    },
+    {
+      "id": "https://openalex.org/C10162356",
+      "wikidata": "https://www.wikidata.org/wiki/Q1135939",
+      "display_name": "Pathophysiology",
+      "level": 2,
+      "score": 0.2639000117778778
+    },
+    {
+      "id": "https://openalex.org/C180747234",
+      "wikidata": "https://www.wikidata.org/wiki/Q23373",
+      "display_name": "Cognitive psychology",
+      "level": 1,
+      "score": 0.24140000343322754
+    }
+  ],
+  "mesh": [],
+  "locations_count": 2,
+  "locations": [
+    {
+      "id": "pmh:oai:share.osf.io:be5b4b72-e79e-48a2-8eeb-b47096e98147",
+      "doi": null,
+      "is_oa": false,
+      "landing_page_url": "https://osf.io/cqf5t",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306401127",
+        "display_name": "OSF Preprints (OSF Preprints)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I2799848540",
+        "host_organization_name": "Center for Open Science",
+        "host_organization_lineage": [
+          "https://openalex.org/I2799848540"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "Project"
+    },
+    {
+      "id": "doi:10.17605/osf.io/cqf5t",
+      "doi": "https://doi.org/10.17605/osf.io/cqf5t",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.17605/osf.io/cqf5t",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S7407050956",
+        "display_name": "Open Science Framework",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I2799848540",
+        "host_organization_name": "Center for Open Science",
+        "host_organization_lineage": [
+          "https://openalex.org/I2799848540"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": null,
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "Preprint"
+    }
+  ],
+  "best_oa_location": {
+    "id": "doi:10.17605/osf.io/cqf5t",
+    "doi": "https://doi.org/10.17605/osf.io/cqf5t",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.17605/osf.io/cqf5t",
+    "pdf_url": null,
+    "source": {
+      "id": "https://openalex.org/S7407050956",
+      "display_name": "Open Science Framework",
+      "issn_l": null,
+      "issn": null,
+      "is_oa": false,
+      "is_in_doaj": false,
+      "is_core": false,
+      "listed_in": [],
+      "host_organization": "https://openalex.org/I2799848540",
+      "host_organization_name": "Center for Open Science",
+      "host_organization_lineage": [
+        "https://openalex.org/I2799848540"
+      ],
+      "host_organization_lineage_names": [],
+      "type": "repository"
+    },
+    "license": null,
+    "license_id": null,
+    "version": null,
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "Preprint"
+  },
+  "sustainable_development_goals": [],
+  "study_designs": [],
+  "awards": [],
+  "funders": [],
+  "has_content": {
+    "grobid_xml": false,
+    "pdf": false
+  },
+  "content_urls": null,
+  "referenced_works_count": 0,
+  "referenced_works": [],
+  "related_works": [
+    "https://openalex.org/W2949114654",
+    "https://openalex.org/W2955758456",
+    "https://openalex.org/W2142086911",
+    "https://openalex.org/W4254575182",
+    "https://openalex.org/W4250054528",
+    "https://openalex.org/W4401602661",
+    "https://openalex.org/W6990475936",
+    "https://openalex.org/W2982892860",
+    "https://openalex.org/W2065338064",
+    "https://openalex.org/W3105756469"
+  ],
+  "abstract_inverted_index": {
+    "Review": [
+      0
+    ],
+    "of": [
+      1,
+      4
+    ],
+    "the": [
+      2
+    ],
+    "development": [
+      3
+    ],
+    "human": [
+      5
+    ],
+    "voice": [
+      6
+    ],
+    "perception": [
+      7
+    ]
+  },
+  "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W6925166193",
+  "counts_by_year": [],
+  "updated_date": "2026-11-14T11:04:58.165337",
+  "created_date": "2025-10-10T00:00:00"
+}

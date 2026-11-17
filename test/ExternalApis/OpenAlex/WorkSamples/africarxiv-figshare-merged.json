@@ -1,0 +1,742 @@
+{
+  "id": "https://openalex.org/W6920782462",
+  "doi": "https://doi.org/10.6084/m9.figshare.22904504",
+  "title": "Ten simple rules for successful and sustainable African research collaboration.docx",
+  "display_name": "Ten simple rules for successful and sustainable African research collaboration.docx",
+  "alternate_titles": [],
+  "publication_year": 2023,
+  "publication_date": "2023-05-18",
+  "ids": {
+    "openalex": "https://openalex.org/W6920782462",
+    "doi": "https://doi.org/10.6084/m9.figshare.22904504"
+  },
+  "language": "en",
+  "primary_location": {
+    "id": "pmh:oai:figshare.com:article/22904504",
+    "doi": null,
+    "is_oa": true,
+    "landing_page_url": "https://figshare.com/articles/journal_contribution/Ten_simple_rules_for_successful_and_sustainable_African_research_collaboration_docx/22904504",
+    "pdf_url": null,
+    "source": {
+      "id": "https://openalex.org/S4377196282",
+      "display_name": "Figshare",
+      "issn_l": null,
+      "issn": null,
+      "is_oa": false,
+      "is_in_doaj": false,
+      "is_core": false,
+      "listed_in": [],
+      "host_organization": "https://openalex.org/I4210132348",
+      "host_organization_name": "Figshare (United Kingdom)",
+      "host_organization_lineage": [
+        "https://openalex.org/I4210132348"
+      ],
+      "host_organization_lineage_names": [],
+      "type": "repository"
+    },
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": "submittedVersion",
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": "",
+    "raw_type": "Text"
+  },
+  "parent_works": [],
+  "lineage": [
+    "https://openalex.org/W6920782462"
+  ],
+  "child_works_count": 0,
+  "type": "article",
+  "is_traditional": true,
+  "indexed_in": [
+    "datacite"
+  ],
+  "open_access": {
+    "is_oa": true,
+    "oa_status": "green",
+    "oa_url": "https://figshare.com/articles/journal_contribution/Ten_simple_rules_for_successful_and_sustainable_African_research_collaboration_docx/22904504",
+    "any_repository_has_fulltext": true
+  },
+  "authorships": [
+    {
+      "author_position": "first",
+      "author": {
+        "id": null,
+        "display_name": "Dine, Roseline Dzekem",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Dine, Roseline Dzekem",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5027580470",
+        "display_name": "Lamis Yahia Mohamed Elkheir",
+        "orcid": "https://orcid.org/0000-0002-3516-334X",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-3516-334X"
+        ]
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Elkheir, Lamis Yahia Mohamed",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": null,
+        "display_name": "Raimi, Morufu Olalekan",
+        "orcid": "https://orcid.org/0000-0001-5042-6729",
+        "observed_orcids": [
+          "https://orcid.org/0000-0001-5042-6729"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I250102252",
+          "display_name": "Geological Society of America",
+          "ror": "https://ror.org/0029f7m05",
+          "country_code": "US",
+          "type": "nonprofit",
+          "lineage": [
+            "https://openalex.org/I250102252"
+          ]
+        }
+      ],
+      "countries": [
+        "US"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Raimi, Morufu Olalekan",
+      "raw_affiliation_strings": [
+        "Geological Society of America"
+      ],
+      "raw_orcid": "https://orcid.org/0000-0001-5042-6729",
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Geological Society of America",
+          "institution_ids": [
+            "https://openalex.org/I250102252"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": null,
+        "display_name": "Alemayehu, Micheal",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Alemayehu, Micheal",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": null,
+        "display_name": "Mohamed, Salem Youssef",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Mohamed, Salem Youssef",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": null,
+        "display_name": "Turzin, Justice Kwadwo",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Turzin, Justice Kwadwo",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5092074031",
+        "display_name": "Femi Qudus Arogundade",
+        "orcid": "https://orcid.org/0000-0002-9222-1817",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-9222-1817"
+        ]
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Arogundade, Femi Qudus",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5059687245",
+        "display_name": "Elizabeth A. Ochola",
+        "orcid": "https://orcid.org/0000-0002-8435-3115",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-8435-3115"
+        ]
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Ochola, Elizabeth A.",
+      "raw_affiliation_strings": [],
+      "raw_orcid": "https://orcid.org/0000-0002-8435-3115",
+      "affiliations": []
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": null,
+        "display_name": "Nasiyo, Alex Mukungu",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Nasiyo, Alex Mukungu",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": null,
+        "display_name": "Mwawanga, Raziah Quallatein",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Mwawanga, Raziah Quallatein",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    },
+    {
+      "author_position": "last",
+      "author": {
+        "id": "https://openalex.org/A5012768626",
+        "display_name": "Yahaya Abubakar Yabo",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Yabo, Yahaya Abubakar",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    }
+  ],
+  "institutions": [],
+  "countries_distinct_count": 1,
+  "institutions_distinct_count": 1,
+  "corresponding_author_ids": [],
+  "corresponding_institution_ids": [],
+  "apc_list": null,
+  "apc_paid": null,
+  "fwci": 0.0,
+  "has_fulltext": false,
+  "cited_by_count": 0,
+  "citation_normalized_percentile": {
+    "value": 0.0,
+    "is_in_top_1_percent": false,
+    "is_in_top_10_percent": false
+  },
+  "cited_by_percentile_year": null,
+  "biblio": {
+    "volume": null,
+    "issue": null,
+    "first_page": null,
+    "last_page": null
+  },
+  "is_retracted": false,
+  "is_paratext": false,
+  "is_xpac": true,
+  "primary_topic": {
+    "id": "https://openalex.org/T13726",
+    "display_name": "International Science and Diplomacy",
+    "score": 0.39329999685287476,
+    "subfield": {
+      "id": "https://openalex.org/subfields/3320",
+      "display_name": "Political Science and International Relations"
+    },
+    "field": {
+      "id": "https://openalex.org/fields/33",
+      "display_name": "Social Sciences"
+    },
+    "domain": {
+      "id": "https://openalex.org/domains/2",
+      "display_name": "Social Sciences"
+    }
+  },
+  "topics": [
+    {
+      "id": "https://openalex.org/T13726",
+      "display_name": "International Science and Diplomacy",
+      "score": 0.39329999685287476,
+      "subfield": {
+        "id": "https://openalex.org/subfields/3320",
+        "display_name": "Political Science and International Relations"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/33",
+        "display_name": "Social Sciences"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/2",
+        "display_name": "Social Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T14185",
+      "display_name": "Research, Science, and Academia",
+      "score": 0.24609999358654022,
+      "subfield": {
+        "id": "https://openalex.org/subfields/1405",
+        "display_name": "Management of Technology and Innovation"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/14",
+        "display_name": "Business, Management and Accounting"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/2",
+        "display_name": "Social Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T12766",
+      "display_name": "Interdisciplinary Research and Collaboration",
+      "score": 0.18790000677108765,
+      "subfield": {
+        "id": "https://openalex.org/subfields/1207",
+        "display_name": "History and Philosophy of Science"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/12",
+        "display_name": "Arts and Humanities"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/2",
+        "display_name": "Social Sciences"
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "id": "https://openalex.org/keywords/research-collaboration",
+      "display_name": "research collaboration",
+      "score": 0.9129999876022339
+    },
+    {
+      "id": "https://openalex.org/keywords/african-scientists",
+      "display_name": "African researchers",
+      "score": 0.6859999895095825
+    },
+    {
+      "id": "https://openalex.org/keywords/international-research-partnerships",
+      "display_name": "international research partnerships",
+      "score": 0.9330000281333923
+    },
+    {
+      "id": "https://openalex.org/keywords/sustainable-cooperation",
+      "display_name": "sustainable cooperation",
+      "score": 0.703000009059906
+    },
+    {
+      "id": "https://openalex.org/keywords/research-capacity-building",
+      "display_name": "research capacity building",
+      "score": 0.5789999961853027
+    }
+  ],
+  "concepts": [
+    {
+      "id": "https://openalex.org/C2780586882",
+      "wikidata": "https://www.wikidata.org/wiki/Q7520643",
+      "display_name": "Simple (philosophy)",
+      "level": 2,
+      "score": 0.566100001335144
+    },
+    {
+      "id": "https://openalex.org/C539667460",
+      "wikidata": "https://www.wikidata.org/wiki/Q2414942",
+      "display_name": "Management science",
+      "level": 1,
+      "score": 0.44940000772476196
+    },
+    {
+      "id": "https://openalex.org/C41008148",
+      "wikidata": "https://www.wikidata.org/wiki/Q21198",
+      "display_name": "Computer science",
+      "level": 0,
+      "score": 0.4361000061035156
+    },
+    {
+      "id": "https://openalex.org/C144133560",
+      "wikidata": "https://www.wikidata.org/wiki/Q4830453",
+      "display_name": "Business",
+      "level": 0,
+      "score": 0.3732999861240387
+    },
+    {
+      "id": "https://openalex.org/C195094911",
+      "wikidata": "https://www.wikidata.org/wiki/Q14167904",
+      "display_name": "Process management",
+      "level": 1,
+      "score": 0.3700999915599823
+    },
+    {
+      "id": "https://openalex.org/C552854447",
+      "wikidata": "https://www.wikidata.org/wiki/Q131201",
+      "display_name": "Sustainable development",
+      "level": 2,
+      "score": 0.3637000024318695
+    },
+    {
+      "id": "https://openalex.org/C66204764",
+      "wikidata": "https://www.wikidata.org/wiki/Q219416",
+      "display_name": "Sustainability",
+      "level": 2,
+      "score": 0.3614000082015991
+    },
+    {
+      "id": "https://openalex.org/C112930515",
+      "wikidata": "https://www.wikidata.org/wiki/Q4389547",
+      "display_name": "Risk analysis (engineering)",
+      "level": 1,
+      "score": 0.33239999413490295
+    },
+    {
+      "id": "https://openalex.org/C42475967",
+      "wikidata": "https://www.wikidata.org/wiki/Q194292",
+      "display_name": "Operations research",
+      "level": 1,
+      "score": 0.326200008392334
+    },
+    {
+      "id": "https://openalex.org/C127413603",
+      "wikidata": "https://www.wikidata.org/wiki/Q11023",
+      "display_name": "Engineering",
+      "level": 0,
+      "score": 0.2953999936580658
+    },
+    {
+      "id": "https://openalex.org/C26517878",
+      "wikidata": "https://www.wikidata.org/wiki/Q228039",
+      "display_name": "Key (lock)",
+      "level": 2,
+      "score": 0.274399995803833
+    },
+    {
+      "id": "https://openalex.org/C56739046",
+      "wikidata": "https://www.wikidata.org/wiki/Q192060",
+      "display_name": "Knowledge management",
+      "level": 1,
+      "score": 0.27379998564720154
+    },
+    {
+      "id": "https://openalex.org/C107826830",
+      "wikidata": "https://www.wikidata.org/wiki/Q929380",
+      "display_name": "Environmental resource management",
+      "level": 1,
+      "score": 0.2727000117301941
+    },
+    {
+      "id": "https://openalex.org/C110354214",
+      "wikidata": "https://www.wikidata.org/wiki/Q6314146",
+      "display_name": "Engineering management",
+      "level": 1,
+      "score": 0.27129998803138733
+    },
+    {
+      "id": "https://openalex.org/C134560507",
+      "wikidata": "https://www.wikidata.org/wiki/Q753291",
+      "display_name": "Environmental economics",
+      "level": 1,
+      "score": 0.26750001311302185
+    },
+    {
+      "id": "https://openalex.org/C91375879",
+      "wikidata": "https://www.wikidata.org/wiki/Q15473274",
+      "display_name": "Environmental planning",
+      "level": 1,
+      "score": 0.2653999924659729
+    }
+  ],
+  "mesh": [],
+  "locations_count": 3,
+  "locations": [
+    {
+      "id": "pmh:oai:figshare.com:article/22904504",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://figshare.com/articles/journal_contribution/Ten_simple_rules_for_successful_and_sustainable_African_research_collaboration_docx/22904504",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4377196282",
+        "display_name": "Figshare",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I4210132348",
+        "host_organization_name": "Figshare (United Kingdom)",
+        "host_organization_lineage": [
+          "https://openalex.org/I4210132348"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": "",
+      "raw_type": "Text"
+    },
+    {
+      "id": "doi:10.6084/m9.figshare.22904504",
+      "doi": "https://doi.org/10.6084/m9.figshare.22904504",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.6084/m9.figshare.22904504",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4377196282",
+        "display_name": "Figshare",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I4210132348",
+        "host_organization_name": "Figshare (United Kingdom)",
+        "host_organization_lineage": [
+          "https://openalex.org/I4210132348"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": null,
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "Preprint"
+    },
+    {
+      "id": "doi:10.6084/m9.figshare.22904504.v1",
+      "doi": "https://doi.org/10.6084/m9.figshare.22904504.v1",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.6084/m9.figshare.22904504.v1",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4377196282",
+        "display_name": "Figshare",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I4210132348",
+        "host_organization_name": "Figshare (United Kingdom)",
+        "host_organization_lineage": [
+          "https://openalex.org/I4210132348"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": null,
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "Preprint"
+    }
+  ],
+  "best_oa_location": {
+    "id": "pmh:oai:figshare.com:article/22904504",
+    "doi": null,
+    "is_oa": true,
+    "landing_page_url": "https://figshare.com/articles/journal_contribution/Ten_simple_rules_for_successful_and_sustainable_African_research_collaboration_docx/22904504",
+    "pdf_url": null,
+    "source": {
+      "id": "https://openalex.org/S4377196282",
+      "display_name": "Figshare",
+      "issn_l": null,
+      "issn": null,
+      "is_oa": false,
+      "is_in_doaj": false,
+      "is_core": false,
+      "listed_in": [],
+      "host_organization": "https://openalex.org/I4210132348",
+      "host_organization_name": "Figshare (United Kingdom)",
+      "host_organization_lineage": [
+        "https://openalex.org/I4210132348"
+      ],
+      "host_organization_lineage_names": [],
+      "type": "repository"
+    },
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": "submittedVersion",
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": "",
+    "raw_type": "Text"
+  },
+  "sustainable_development_goals": [
+    {
+      "score": 1.0,
+      "display_name": "Partnerships for the goals",
+      "id": "https://metadata.un.org/sdg/17"
+    }
+  ],
+  "study_designs": [],
+  "awards": [],
+  "funders": [],
+  "has_content": {
+    "grobid_xml": false,
+    "pdf": false
+  },
+  "content_urls": null,
+  "referenced_works_count": 0,
+  "referenced_works": [],
+  "related_works": [
+    "https://openalex.org/W6939853218",
+    "https://openalex.org/W6939378525",
+    "https://openalex.org/W4400080238",
+    "https://openalex.org/W2744038760",
+    "https://openalex.org/W6894253055",
+    "https://openalex.org/W6947539311",
+    "https://openalex.org/W146684785",
+    "https://openalex.org/W4247004641",
+    "https://openalex.org/W1575129482",
+    "https://openalex.org/W2955386582"
+  ],
+  "abstract_inverted_index": {
+    "This": [
+      0
+    ],
+    "manuscrip": [
+      1
+    ],
+    "presents": [
+      2
+    ],
+    "10": [
+      3
+    ],
+    "practical": [
+      4
+    ],
+    "and": [
+      5,
+      11,
+      21
+    ],
+    "sustainable": [
+      6
+    ],
+    "steps": [
+      7
+    ],
+    "that": [
+      8
+    ],
+    "if": [
+      9
+    ],
+    "followed": [
+      10
+    ],
+    "built": [
+      12
+    ],
+    "upon": [
+      13
+    ],
+    "will": [
+      14
+    ],
+    "enhance": [
+      15
+    ],
+    "successful": [
+      16
+    ],
+    "collaboration": [
+      17
+    ],
+    "between": [
+      18
+    ],
+    "African": [
+      19
+    ],
+    "researchers": [
+      20
+    ],
+    "the": [
+      22
+    ],
+    "international": [
+      23
+    ],
+    "research": [
+      24
+    ],
+    "community.": [
+      25
+    ]
+  },
+  "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W6920782462",
+  "counts_by_year": [],
+  "updated_date": "2026-11-06T12:05:46.655746",
+  "created_date": "2025-10-10T00:00:00"
+}

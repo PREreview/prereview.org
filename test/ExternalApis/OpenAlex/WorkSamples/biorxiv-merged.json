@@ -1,0 +1,1319 @@
+{
+  "id": "https://openalex.org/W7222580070",
+  "doi": "https://doi.org/10.1038/s41467-026-78638-y",
+  "title": "Viral SSB-bound ssDNA activates the bacterial anti-phage defense system DARNA",
+  "display_name": "Viral SSB-bound ssDNA activates the bacterial anti-phage defense system DARNA",
+  "alternate_titles": [],
+  "publication_year": 2026,
+  "publication_date": "2026-10-16",
+  "ids": {
+    "openalex": "https://openalex.org/W7222580070",
+    "doi": "https://doi.org/10.1038/s41467-026-78638-y"
+  },
+  "language": "en",
+  "primary_location": {
+    "id": "doi:10.1038/s41467-026-78638-y",
+    "doi": "https://doi.org/10.1038/s41467-026-78638-y",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.1038/s41467-026-78638-y",
+    "pdf_url": "https://www.nature.com/articles/s41467-026-78638-y_reference.pdf",
+    "source": {
+      "id": "https://openalex.org/S64187185",
+      "display_name": "Nature Communications",
+      "issn_l": "2041-1723",
+      "issn": [
+        "2041-1723"
+      ],
+      "is_oa": true,
+      "is_in_doaj": true,
+      "is_core": true,
+      "listed_in": [
+        "anvur-class-a",
+        "anvur-scientific",
+        "cwts-core",
+        "doaj",
+        "dongbi-a",
+        "doyens",
+        "jufo-3",
+        "ki-jl-3",
+        "medline",
+        "norway-2",
+        "oarl",
+        "poland-200",
+        "russia-white-list-1",
+        "vabb-shw"
+      ],
+      "host_organization": "https://openalex.org/P4310319908",
+      "host_organization_name": "Nature Portfolio",
+      "host_organization_lineage": [
+        "https://openalex.org/P4310319908",
+        "https://openalex.org/P4310319965"
+      ],
+      "host_organization_lineage_names": [
+        "Nature Portfolio",
+        "Springer Nature"
+      ],
+      "type": "journal"
+    },
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": "publishedVersion",
+    "is_accepted": true,
+    "is_published": true,
+    "raw_source_name": "Nature Communications",
+    "raw_type": "journal-article"
+  },
+  "parent_works": [],
+  "lineage": [
+    "https://openalex.org/W7222580070"
+  ],
+  "child_works_count": 0,
+  "type": "article",
+  "is_traditional": true,
+  "indexed_in": [
+    "crossref"
+  ],
+  "open_access": {
+    "is_oa": true,
+    "oa_status": "gold",
+    "oa_url": "https://www.nature.com/articles/s41467-026-78638-y_reference.pdf",
+    "any_repository_has_fulltext": true
+  },
+  "authorships": [
+    {
+      "author_position": "first",
+      "author": {
+        "id": "https://openalex.org/A5123837610",
+        "display_name": "Rugile Puteikiene",
+        "orcid": "https://orcid.org/0009-0003-7181-4896",
+        "observed_orcids": [
+          "https://orcid.org/0009-0003-7181-4896"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I173212132",
+          "display_name": "Vilnius University",
+          "ror": "https://ror.org/03nadee84",
+          "country_code": "LT",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I173212132"
+          ]
+        }
+      ],
+      "countries": [
+        "LT"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Rugile Puteikiene",
+      "raw_affiliation_strings": [
+        "Institute of Biotechnology, Life Sciences Center, Vilnius University, Vilnius, Lithuania"
+      ],
+      "raw_orcid": "https://orcid.org/0009-0003-7181-4896",
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Institute of Biotechnology, Life Sciences Center, Vilnius University, Vilnius, Lithuania",
+          "institution_ids": [
+            "https://openalex.org/I173212132"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5065970875",
+        "display_name": "Christopher N. Vassallo",
+        "orcid": "https://orcid.org/0000-0001-6992-5894",
+        "observed_orcids": [
+          "https://orcid.org/0000-0001-6992-5894"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I63966007",
+          "display_name": "Massachusetts Institute of Technology",
+          "ror": "https://ror.org/042nb2s44",
+          "country_code": "US",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I63966007"
+          ]
+        }
+      ],
+      "countries": [
+        "US"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Christopher N. Vassallo",
+      "raw_affiliation_strings": [
+        "Department of Biology, Massachusetts Institute of Technology, Cambridge, MA, USA"
+      ],
+      "raw_orcid": "https://orcid.org/0000-0001-6992-5894",
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Department of Biology, Massachusetts Institute of Technology, Cambridge, MA, USA",
+          "institution_ids": [
+            "https://openalex.org/I63966007"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5081047429",
+        "display_name": "Arūnas Šilanskas",
+        "orcid": "https://orcid.org/0000-0002-6385-6928",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-6385-6928"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I173212132",
+          "display_name": "Vilnius University",
+          "ror": "https://ror.org/03nadee84",
+          "country_code": "LT",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I173212132"
+          ]
+        }
+      ],
+      "countries": [
+        "LT"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Arunas Silanskas",
+      "raw_affiliation_strings": [
+        "Institute of Biotechnology, Life Sciences Center, Vilnius University, Vilnius, Lithuania"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Institute of Biotechnology, Life Sciences Center, Vilnius University, Vilnius, Lithuania",
+          "institution_ids": [
+            "https://openalex.org/I173212132"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5028236880",
+        "display_name": "J. Juozapaitis",
+        "orcid": "https://orcid.org/0000-0003-0114-3663",
+        "observed_orcids": [
+          "https://orcid.org/0000-0003-0114-3663"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I173212132",
+          "display_name": "Vilnius University",
+          "ror": "https://ror.org/03nadee84",
+          "country_code": "LT",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I173212132"
+          ]
+        }
+      ],
+      "countries": [
+        "LT"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Jonas Juozapaitis",
+      "raw_affiliation_strings": [
+        "Institute of Biotechnology, Life Sciences Center, Vilnius University, Vilnius, Lithuania"
+      ],
+      "raw_orcid": "https://orcid.org/0000-0003-0114-3663",
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Institute of Biotechnology, Life Sciences Center, Vilnius University, Vilnius, Lithuania",
+          "institution_ids": [
+            "https://openalex.org/I173212132"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5015834333",
+        "display_name": "Inga Songailienė",
+        "orcid": "https://orcid.org/0000-0003-2188-0556",
+        "observed_orcids": [
+          "https://orcid.org/0000-0003-2188-0556"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I173212132",
+          "display_name": "Vilnius University",
+          "ror": "https://ror.org/03nadee84",
+          "country_code": "LT",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I173212132"
+          ]
+        }
+      ],
+      "countries": [
+        "LT"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Inga Songailiene",
+      "raw_affiliation_strings": [
+        "Institute of Biotechnology, Life Sciences Center, Vilnius University, Vilnius, Lithuania"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Institute of Biotechnology, Life Sciences Center, Vilnius University, Vilnius, Lithuania",
+          "institution_ids": [
+            "https://openalex.org/I173212132"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5061582937",
+        "display_name": "Michael T. Laub",
+        "orcid": "https://orcid.org/0000-0002-8288-7607",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-8288-7607"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I1344073410",
+          "display_name": "Howard Hughes Medical Institute",
+          "ror": "https://ror.org/006w34k90",
+          "country_code": "US",
+          "type": "facility",
+          "lineage": [
+            "https://openalex.org/I1344073410"
+          ]
+        },
+        {
+          "id": "https://openalex.org/I63966007",
+          "display_name": "Massachusetts Institute of Technology",
+          "ror": "https://ror.org/042nb2s44",
+          "country_code": "US",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I63966007"
+          ]
+        }
+      ],
+      "countries": [
+        "US"
+      ],
+      "is_corresponding": true,
+      "raw_author_name": "Michael T. Laub",
+      "raw_affiliation_strings": [
+        "Department of Biology, Massachusetts Institute of Technology, Cambridge, MA, USA",
+        "Howard Hughes Medical Institute, Massachusetts Institute of Technology, Cambridge, MA, USA"
+      ],
+      "raw_orcid": "https://orcid.org/0000-0002-8288-7607",
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Department of Biology, Massachusetts Institute of Technology, Cambridge, MA, USA",
+          "institution_ids": [
+            "https://openalex.org/I63966007"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Howard Hughes Medical Institute, Massachusetts Institute of Technology, Cambridge, MA, USA",
+          "institution_ids": [
+            "https://openalex.org/I1344073410",
+            "https://openalex.org/I63966007"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "last",
+      "author": {
+        "id": "https://openalex.org/A5012785162",
+        "display_name": "Giedrius Sasnauskas",
+        "orcid": "https://orcid.org/0000-0002-3185-2682",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-3185-2682"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I173212132",
+          "display_name": "Vilnius University",
+          "ror": "https://ror.org/03nadee84",
+          "country_code": "LT",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I173212132"
+          ]
+        }
+      ],
+      "countries": [
+        "LT"
+      ],
+      "is_corresponding": true,
+      "raw_author_name": "Giedrius Sasnauskas",
+      "raw_affiliation_strings": [
+        "Institute of Biotechnology, Life Sciences Center, Vilnius University, Vilnius, Lithuania"
+      ],
+      "raw_orcid": "https://orcid.org/0000-0002-3185-2682",
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Institute of Biotechnology, Life Sciences Center, Vilnius University, Vilnius, Lithuania",
+          "institution_ids": [
+            "https://openalex.org/I173212132"
+          ]
+        }
+      ]
+    }
+  ],
+  "institutions": [],
+  "countries_distinct_count": 2,
+  "institutions_distinct_count": 3,
+  "corresponding_author_ids": [
+    "https://openalex.org/A5012785162",
+    "https://openalex.org/A5061582937"
+  ],
+  "corresponding_institution_ids": [
+    "https://openalex.org/I1344073410",
+    "https://openalex.org/I173212132",
+    "https://openalex.org/I63966007"
+  ],
+  "apc_list": {
+    "value": 6990,
+    "currency": "USD",
+    "value_usd": 6990
+  },
+  "apc_paid": {
+    "value": 6990,
+    "currency": "USD",
+    "value_usd": 6990
+  },
+  "fwci": 5.4191,
+  "has_fulltext": true,
+  "cited_by_count": 3,
+  "citation_normalized_percentile": {
+    "value": 0.94575844,
+    "is_in_top_1_percent": false,
+    "is_in_top_10_percent": true
+  },
+  "cited_by_percentile_year": {
+    "min": 97,
+    "max": 98
+  },
+  "biblio": {
+    "volume": null,
+    "issue": null,
+    "first_page": null,
+    "last_page": null
+  },
+  "is_retracted": false,
+  "is_paratext": false,
+  "is_xpac": false,
+  "primary_topic": {
+    "id": "https://openalex.org/T11048",
+    "display_name": "Bacteriophages and microbial interactions",
+    "score": 0.9932000041007996,
+    "subfield": {
+      "id": "https://openalex.org/subfields/2406",
+      "display_name": "Virology"
+    },
+    "field": {
+      "id": "https://openalex.org/fields/24",
+      "display_name": "Immunology and Microbiology"
+    },
+    "domain": {
+      "id": "https://openalex.org/domains/1",
+      "display_name": "Life Sciences"
+    }
+  },
+  "topics": [
+    {
+      "id": "https://openalex.org/T11048",
+      "display_name": "Bacteriophages and microbial interactions",
+      "score": 0.9932000041007996,
+      "subfield": {
+        "id": "https://openalex.org/subfields/2406",
+        "display_name": "Virology"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/24",
+        "display_name": "Immunology and Microbiology"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/1",
+        "display_name": "Life Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T10120",
+      "display_name": "Bacterial Genetics and Biotechnology",
+      "score": 0.002300000051036477,
+      "subfield": {
+        "id": "https://openalex.org/subfields/1311",
+        "display_name": "Genetics"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/13",
+        "display_name": "Biochemistry, Genetics and Molecular Biology"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/1",
+        "display_name": "Life Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T10878",
+      "display_name": "CRISPR and Genetic Engineering",
+      "score": 0.002199999988079071,
+      "subfield": {
+        "id": "https://openalex.org/subfields/1312",
+        "display_name": "Molecular Biology"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/13",
+        "display_name": "Biochemistry, Genetics and Molecular Biology"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/1",
+        "display_name": "Life Sciences"
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "id": "https://openalex.org/keywords/single-stranded-dna-binding-protein",
+      "display_name": "single-stranded DNA binding protein",
+      "score": 0.8259999752044678
+    },
+    {
+      "id": "https://openalex.org/keywords/anti-phage-defense",
+      "display_name": "anti-phage defense",
+      "score": 0.7400000095367432
+    },
+    {
+      "id": "https://openalex.org/keywords/bacterial-immunity",
+      "display_name": "bacterial immunity",
+      "score": 0.6399999856948853
+    },
+    {
+      "id": "https://openalex.org/keywords/trna-cleavage",
+      "display_name": "tRNA cleavage",
+      "score": 0.8009999990463257
+    },
+    {
+      "id": "https://openalex.org/keywords/phage-detection",
+      "display_name": "phage detection",
+      "score": 0.375
+    }
+  ],
+  "concepts": [
+    {
+      "id": "https://openalex.org/C552990157",
+      "wikidata": "https://www.wikidata.org/wiki/Q7430",
+      "display_name": "DNA",
+      "level": 2,
+      "score": 0.6324999928474426
+    },
+    {
+      "id": "https://openalex.org/C24107716",
+      "wikidata": "https://www.wikidata.org/wiki/Q123619",
+      "display_name": "Nucleic acid",
+      "level": 2,
+      "score": 0.6208000183105469
+    },
+    {
+      "id": "https://openalex.org/C95444343",
+      "wikidata": "https://www.wikidata.org/wiki/Q7141",
+      "display_name": "Cell biology",
+      "level": 1,
+      "score": 0.5131999850273132
+    },
+    {
+      "id": "https://openalex.org/C86803240",
+      "wikidata": "https://www.wikidata.org/wiki/Q420",
+      "display_name": "Biology",
+      "level": 0,
+      "score": 0.5130000114440918
+    },
+    {
+      "id": "https://openalex.org/C104317684",
+      "wikidata": "https://www.wikidata.org/wiki/Q7187",
+      "display_name": "Gene",
+      "level": 2,
+      "score": 0.4675999879837036
+    },
+    {
+      "id": "https://openalex.org/C501734568",
+      "wikidata": "https://www.wikidata.org/wiki/Q42918",
+      "display_name": "Mutation",
+      "level": 3,
+      "score": 0.44040000438690186
+    },
+    {
+      "id": "https://openalex.org/C523546767",
+      "wikidata": "https://www.wikidata.org/wiki/Q10876",
+      "display_name": "Bacteria",
+      "level": 2,
+      "score": 0.43459999561309814
+    },
+    {
+      "id": "https://openalex.org/C136449434",
+      "wikidata": "https://www.wikidata.org/wiki/Q428253",
+      "display_name": "Innate immune system",
+      "level": 3,
+      "score": 0.41429999470710754
+    },
+    {
+      "id": "https://openalex.org/C16613235",
+      "wikidata": "https://www.wikidata.org/wiki/Q285982",
+      "display_name": "Endogeny",
+      "level": 2,
+      "score": 0.40689998865127563
+    },
+    {
+      "id": "https://openalex.org/C2776441376",
+      "wikidata": "https://www.wikidata.org/wiki/Q165028",
+      "display_name": "Bacteriophage",
+      "level": 4,
+      "score": 0.3603000044822693
+    },
+    {
+      "id": "https://openalex.org/C185592680",
+      "wikidata": "https://www.wikidata.org/wiki/Q2329",
+      "display_name": "Chemistry",
+      "level": 0,
+      "score": 0.3578000068664551
+    },
+    {
+      "id": "https://openalex.org/C2779341262",
+      "wikidata": "https://www.wikidata.org/wiki/Q182581",
+      "display_name": "Immunity",
+      "level": 3,
+      "score": 0.3447999954223633
+    },
+    {
+      "id": "https://openalex.org/C165864922",
+      "wikidata": "https://www.wikidata.org/wiki/Q411391",
+      "display_name": "Regulation of gene expression",
+      "level": 3,
+      "score": 0.34200000762939453
+    },
+    {
+      "id": "https://openalex.org/C126831891",
+      "wikidata": "https://www.wikidata.org/wiki/Q221673",
+      "display_name": "Host (biology)",
+      "level": 2,
+      "score": 0.334199994802475
+    },
+    {
+      "id": "https://openalex.org/C67705224",
+      "wikidata": "https://www.wikidata.org/wiki/Q11053",
+      "display_name": "RNA",
+      "level": 3,
+      "score": 0.3059000074863434
+    },
+    {
+      "id": "https://openalex.org/C186268636",
+      "wikidata": "https://www.wikidata.org/wiki/Q896217",
+      "display_name": "Phage display",
+      "level": 3,
+      "score": 0.30300000309944153
+    },
+    {
+      "id": "https://openalex.org/C2522874641",
+      "wikidata": "https://www.wikidata.org/wiki/Q808",
+      "display_name": "Virus",
+      "level": 2,
+      "score": 0.28870001435279846
+    },
+    {
+      "id": "https://openalex.org/C10079403",
+      "wikidata": "https://www.wikidata.org/wiki/Q424475",
+      "display_name": "Phagemid",
+      "level": 5,
+      "score": 0.2867000102996826
+    },
+    {
+      "id": "https://openalex.org/C174510640",
+      "wikidata": "https://www.wikidata.org/wiki/Q489618",
+      "display_name": "HEK 293 cells",
+      "level": 3,
+      "score": 0.27869999408721924
+    },
+    {
+      "id": "https://openalex.org/C150194340",
+      "wikidata": "https://www.wikidata.org/wiki/Q26972",
+      "display_name": "Gene expression",
+      "level": 3,
+      "score": 0.2777000069618225
+    },
+    {
+      "id": "https://openalex.org/C2993175405",
+      "wikidata": "https://www.wikidata.org/wiki/Q8054",
+      "display_name": "Bacterial protein",
+      "level": 3,
+      "score": 0.27730000019073486
+    },
+    {
+      "id": "https://openalex.org/C54355233",
+      "wikidata": "https://www.wikidata.org/wiki/Q7162",
+      "display_name": "Genetics",
+      "level": 1,
+      "score": 0.2741999924182892
+    },
+    {
+      "id": "https://openalex.org/C180223184",
+      "wikidata": "https://www.wikidata.org/wiki/Q4839986",
+      "display_name": "Bacterial genetics",
+      "level": 4,
+      "score": 0.2736999988555908
+    },
+    {
+      "id": "https://openalex.org/C89611455",
+      "wikidata": "https://www.wikidata.org/wiki/Q6804646",
+      "display_name": "Mechanism (biology)",
+      "level": 2,
+      "score": 0.26989999413490295
+    },
+    {
+      "id": "https://openalex.org/C2910978944",
+      "wikidata": "https://www.wikidata.org/wiki/Q165028",
+      "display_name": "Bacterial virus",
+      "level": 5,
+      "score": 0.2667999863624573
+    },
+    {
+      "id": "https://openalex.org/C94966510",
+      "wikidata": "https://www.wikidata.org/wiki/Q2252764",
+      "display_name": "DNA-binding protein",
+      "level": 4,
+      "score": 0.2660999894142151
+    },
+    {
+      "id": "https://openalex.org/C70721500",
+      "wikidata": "https://www.wikidata.org/wiki/Q177005",
+      "display_name": "Computational biology",
+      "level": 1,
+      "score": 0.26589998602867126
+    },
+    {
+      "id": "https://openalex.org/C2780879997",
+      "wikidata": "https://www.wikidata.org/wiki/Q952587",
+      "display_name": "Viral protein",
+      "level": 3,
+      "score": 0.262800008058548
+    },
+    {
+      "id": "https://openalex.org/C89423630",
+      "wikidata": "https://www.wikidata.org/wiki/Q7193",
+      "display_name": "Microbiology",
+      "level": 1,
+      "score": 0.26249998807907104
+    }
+  ],
+  "mesh": [],
+  "locations_count": 2,
+  "locations": [
+    {
+      "id": "doi:10.1038/s41467-026-78638-y",
+      "doi": "https://doi.org/10.1038/s41467-026-78638-y",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.1038/s41467-026-78638-y",
+      "pdf_url": "https://www.nature.com/articles/s41467-026-78638-y_reference.pdf",
+      "source": {
+        "id": "https://openalex.org/S64187185",
+        "display_name": "Nature Communications",
+        "issn_l": "2041-1723",
+        "issn": [
+          "2041-1723"
+        ],
+        "is_oa": true,
+        "is_in_doaj": true,
+        "is_core": true,
+        "listed_in": [
+          "anvur-class-a",
+          "anvur-scientific",
+          "cwts-core",
+          "doaj",
+          "dongbi-a",
+          "doyens",
+          "jufo-3",
+          "ki-jl-3",
+          "medline",
+          "norway-2",
+          "oarl",
+          "poland-200",
+          "russia-white-list-1",
+          "vabb-shw"
+        ],
+        "host_organization": "https://openalex.org/P4310319908",
+        "host_organization_name": "Nature Portfolio",
+        "host_organization_lineage": [
+          "https://openalex.org/P4310319908",
+          "https://openalex.org/P4310319965"
+        ],
+        "host_organization_lineage_names": [
+          "Nature Portfolio",
+          "Springer Nature"
+        ],
+        "type": "journal"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "publishedVersion",
+      "is_accepted": true,
+      "is_published": true,
+      "raw_source_name": "Nature Communications",
+      "raw_type": "journal-article"
+    },
+    {
+      "id": "doi:10.64898/2026.02.22.705581",
+      "doi": "https://doi.org/10.64898/2026.02.22.705581",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.64898/2026.02.22.705581",
+      "pdf_url": "https://www.biorxiv.org/content/biorxiv/early/2026/02/23/2026.02.22.705581.full.pdf",
+      "source": {
+        "id": "https://openalex.org/S4306402567",
+        "display_name": "bioRxiv (Cold Spring Harbor Laboratory)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I2750212522",
+        "host_organization_name": "Cold Spring Harbor Laboratory",
+        "host_organization_lineage": [
+          "https://openalex.org/I2750212522"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": "bioRxiv",
+      "raw_type": "posted-content"
+    }
+  ],
+  "best_oa_location": {
+    "id": "doi:10.1038/s41467-026-78638-y",
+    "doi": "https://doi.org/10.1038/s41467-026-78638-y",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.1038/s41467-026-78638-y",
+    "pdf_url": "https://www.nature.com/articles/s41467-026-78638-y_reference.pdf",
+    "source": {
+      "id": "https://openalex.org/S64187185",
+      "display_name": "Nature Communications",
+      "issn_l": "2041-1723",
+      "issn": [
+        "2041-1723"
+      ],
+      "is_oa": true,
+      "is_in_doaj": true,
+      "is_core": true,
+      "listed_in": [
+        "anvur-class-a",
+        "anvur-scientific",
+        "cwts-core",
+        "doaj",
+        "dongbi-a",
+        "doyens",
+        "jufo-3",
+        "ki-jl-3",
+        "medline",
+        "norway-2",
+        "oarl",
+        "poland-200",
+        "russia-white-list-1",
+        "vabb-shw"
+      ],
+      "host_organization": "https://openalex.org/P4310319908",
+      "host_organization_name": "Nature Portfolio",
+      "host_organization_lineage": [
+        "https://openalex.org/P4310319908",
+        "https://openalex.org/P4310319965"
+      ],
+      "host_organization_lineage_names": [
+        "Nature Portfolio",
+        "Springer Nature"
+      ],
+      "type": "journal"
+    },
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": "publishedVersion",
+    "is_accepted": true,
+    "is_published": true,
+    "raw_source_name": "Nature Communications",
+    "raw_type": "journal-article"
+  },
+  "sustainable_development_goals": [
+    {
+      "id": "https://metadata.un.org/sdg/3",
+      "display_name": "Good health and well-being",
+      "score": 0.4000000059604645
+    }
+  ],
+  "study_designs": [],
+  "awards": [
+    {
+      "id": "https://openalex.org/G483332250",
+      "display_name": "HEPN domeną turinčių naujų bakterijų priešvirusinių sistemų funkciniai ir struktūriniai tyrimai",
+      "funder_award_id": "S-MIP-22-13",
+      "funder_id": "https://openalex.org/F4320322689",
+      "funder_display_name": "Lietuvos Mokslo Taryba"
+    }
+  ],
+  "funders": [
+    {
+      "id": "https://openalex.org/F4320322689",
+      "display_name": "Lietuvos Mokslo Taryba",
+      "ror": "https://ror.org/02gs16m83"
+    }
+  ],
+  "has_content": {
+    "pdf": true,
+    "grobid_xml": true
+  },
+  "content_urls": {
+    "pdf": "https://content.openalex.org/works/W7222580070.pdf",
+    "grobid_xml": "https://content.openalex.org/works/W7222580070.grobid-xml"
+  },
+  "referenced_works_count": 70,
+  "referenced_works": [
+    "https://openalex.org/W1501900559",
+    "https://openalex.org/W1806123628",
+    "https://openalex.org/W1978352901",
+    "https://openalex.org/W1993063862",
+    "https://openalex.org/W2009498355",
+    "https://openalex.org/W2051602907",
+    "https://openalex.org/W2093007504",
+    "https://openalex.org/W2099962807",
+    "https://openalex.org/W2124026197",
+    "https://openalex.org/W2146263030",
+    "https://openalex.org/W2154289342",
+    "https://openalex.org/W2163589491",
+    "https://openalex.org/W2344642615",
+    "https://openalex.org/W2409671300",
+    "https://openalex.org/W2468770811",
+    "https://openalex.org/W2522085729",
+    "https://openalex.org/W2587625522",
+    "https://openalex.org/W2631627478",
+    "https://openalex.org/W2728385286",
+    "https://openalex.org/W2732924043",
+    "https://openalex.org/W2734470795",
+    "https://openalex.org/W2960176412",
+    "https://openalex.org/W2973457155",
+    "https://openalex.org/W3016271589",
+    "https://openalex.org/W3047636746",
+    "https://openalex.org/W3081228941",
+    "https://openalex.org/W3083406432",
+    "https://openalex.org/W3092608619",
+    "https://openalex.org/W3108495343",
+    "https://openalex.org/W3112285777",
+    "https://openalex.org/W3115685501",
+    "https://openalex.org/W3204025149",
+    "https://openalex.org/W4223910587",
+    "https://openalex.org/W4229042017",
+    "https://openalex.org/W4296381497",
+    "https://openalex.org/W4307493886",
+    "https://openalex.org/W4309412280",
+    "https://openalex.org/W4309858927",
+    "https://openalex.org/W4319728599",
+    "https://openalex.org/W4362697030",
+    "https://openalex.org/W4378781709",
+    "https://openalex.org/W4384258948",
+    "https://openalex.org/W4387950571",
+    "https://openalex.org/W4388913741",
+    "https://openalex.org/W4389687764",
+    "https://openalex.org/W4391994100",
+    "https://openalex.org/W4394785938",
+    "https://openalex.org/W4395069334",
+    "https://openalex.org/W4396721167",
+    "https://openalex.org/W4401388980",
+    "https://openalex.org/W4401841344",
+    "https://openalex.org/W4402101575",
+    "https://openalex.org/W4403065814",
+    "https://openalex.org/W4403450951",
+    "https://openalex.org/W4405925000",
+    "https://openalex.org/W4407697397",
+    "https://openalex.org/W4409225935",
+    "https://openalex.org/W4409990698",
+    "https://openalex.org/W4410206250",
+    "https://openalex.org/W4410815543",
+    "https://openalex.org/W4414601763",
+    "https://openalex.org/W4415024796",
+    "https://openalex.org/W4415702247",
+    "https://openalex.org/W4415702439",
+    "https://openalex.org/W4416158722",
+    "https://openalex.org/W7125676027",
+    "https://openalex.org/W7125913478",
+    "https://openalex.org/W7130363174",
+    "https://openalex.org/W7165887318",
+    "https://openalex.org/W7168870527"
+  ],
+  "related_works": [
+    "https://openalex.org/W7223405758",
+    "https://openalex.org/W4309127649",
+    "https://openalex.org/W4403242103",
+    "https://openalex.org/W4387950571",
+    "https://openalex.org/W4416158722",
+    "https://openalex.org/W7216327040",
+    "https://openalex.org/W4388694358",
+    "https://openalex.org/W7164194448",
+    "https://openalex.org/W4401162222",
+    "https://openalex.org/W4283024284"
+  ],
+  "abstract_inverted_index": {
+    "Abstract": [
+      0
+    ],
+    "To": [
+      1
+    ],
+    "protect": [
+      2
+    ],
+    "themselves": [
+      3
+    ],
+    "against": [
+      4
+    ],
+    "phage": [
+      5,
+      54,
+      74,
+      90
+    ],
+    "infection,": [
+      6
+    ],
+    "bacteria": [
+      7
+    ],
+    "employ": [
+      8
+    ],
+    "diverse": [
+      9
+    ],
+    "defense": [
+      10,
+      60
+    ],
+    "systems": [
+      11,
+      31
+    ],
+    "that": [
+      12,
+      38,
+      73,
+      112
+    ],
+    "are": [
+      13
+    ],
+    "typically": [
+      14
+    ],
+    "activated": [
+      15,
+      84
+    ],
+    "specifically": [
+      16
+    ],
+    "upon": [
+      17
+    ],
+    "infection.": [
+      18
+    ],
+    "However,": [
+      19
+    ],
+    "the": [
+      20,
+      39,
+      64,
+      95
+    ],
+    "mechanisms": [
+      21
+    ],
+    "of": [
+      22,
+      49,
+      100,
+      122
+    ],
+    "activation": [
+      23
+    ],
+    "and": [
+      24,
+      116
+    ],
+    "self": [
+      25
+    ],
+    "versus": [
+      26
+    ],
+    "non-self": [
+      27
+    ],
+    "discrimination": [
+      28
+    ],
+    "for": [
+      29
+    ],
+    "most": [
+      30
+    ],
+    "remain": [
+      32
+    ],
+    "poorly": [
+      33
+    ],
+    "understood.": [
+      34
+    ],
+    "Here,": [
+      35
+    ],
+    "we": [
+      36,
+      71
+    ],
+    "show": [
+      37
+    ],
+    "bacterial": [
+      40
+    ],
+    "immunity": [
+      41
+    ],
+    "protein": [
+      42,
+      69,
+      110
+    ],
+    "DARNA,": [
+      43
+    ],
+    "once": [
+      44
+    ],
+    "activated,": [
+      45
+    ],
+    "cleaves": [
+      46
+    ],
+    "a": [
+      47,
+      108,
+      119
+    ],
+    "subset": [
+      48
+    ],
+    "host": [
+      50,
+      96
+    ],
+    "tRNAs,": [
+      51
+    ],
+    "thereby": [
+      52
+    ],
+    "inhibiting": [
+      53
+    ],
+    "propagation.": [
+      55
+    ],
+    "Although": [
+      56
+    ],
+    "phages": [
+      57
+    ],
+    "escape": [
+      58
+    ],
+    "DARNA-mediated": [
+      59
+    ],
+    "through": [
+      61
+    ],
+    "mutations": [
+      62
+    ],
+    "in": [
+      63
+    ],
+    "gene": [
+      65
+    ],
+    "encoding": [
+      66
+    ],
+    "single-stranded": [
+      67,
+      86
+    ],
+    "DNA-binding": [
+      68
+    ],
+    "(SSB),": [
+      70
+    ],
+    "find": [
+      72
+    ],
+    "SSBs": [
+      75
+    ],
+    "do": [
+      76
+    ],
+    "not": [
+      77,
+      93
+    ],
+    "directly": [
+      78
+    ],
+    "stimulate": [
+      79
+    ],
+    "DARNA.": [
+      80
+    ],
+    "Instead,": [
+      81
+    ],
+    "DARNA": [
+      82,
+      113
+    ],
+    "is": [
+      83
+    ],
+    "by": [
+      85,
+      89,
+      94,
+      107
+    ],
+    "DNA": [
+      87
+    ],
+    "presented": [
+      88
+    ],
+    "SSB,": [
+      91
+    ],
+    "but": [
+      92
+    ],
+    "SSB.": [
+      97
+    ],
+    "The": [
+      98
+    ],
+    "recognition": [
+      99
+    ],
+    "an": [
+      101
+    ],
+    "endogenous": [
+      102
+    ],
+    "nucleic": [
+      103
+    ],
+    "acid": [
+      104
+    ],
+    "signal": [
+      105
+    ],
+    "promoted": [
+      106
+    ],
+    "viral": [
+      109
+    ],
+    "ensures": [
+      111
+    ],
+    "can": [
+      114
+    ],
+    "detect": [
+      115
+    ],
+    "respond": [
+      117
+    ],
+    "to": [
+      118
+    ],
+    "broad": [
+      120
+    ],
+    "range": [
+      121
+    ],
+    "viruses": [
+      123
+    ],
+    "while": [
+      124
+    ],
+    "avoiding": [
+      125
+    ],
+    "autoimmunity.": [
+      126
+    ]
+  },
+  "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W7222580070",
+  "counts_by_year": [
+    {
+      "year": 2026,
+      "cited_by_count": 3
+    }
+  ],
+  "updated_date": "2026-11-16T12:05:36.265796",
+  "created_date": "2026-10-17T00:00:00"
+}

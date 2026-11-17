@@ -1,0 +1,1574 @@
+{
+  "id": "https://openalex.org/W4396804163",
+  "doi": "https://doi.org/10.1038/s41597-024-03185-4",
+  "title": "A maturity model for catalogues of semantic artefacts",
+  "display_name": "A maturity model for catalogues of semantic artefacts",
+  "alternate_titles": [],
+  "publication_year": 2024,
+  "publication_date": "2024-05-10",
+  "ids": {
+    "openalex": "https://openalex.org/W4396804163",
+    "doi": "https://doi.org/10.1038/s41597-024-03185-4",
+    "pmid": "https://pubmed.ncbi.nlm.nih.gov/38730252",
+    "pmcid": "https://www.ncbi.nlm.nih.gov/pmc/articles/11087458"
+  },
+  "language": "en",
+  "primary_location": {
+    "id": "doi:10.1038/s41597-024-03185-4",
+    "doi": "https://doi.org/10.1038/s41597-024-03185-4",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.1038/s41597-024-03185-4",
+    "pdf_url": "https://www.nature.com/articles/s41597-024-03185-4.pdf",
+    "source": {
+      "id": "https://openalex.org/S2607323502",
+      "display_name": "Scientific Data",
+      "issn_l": "2052-4463",
+      "issn": [
+        "2052-4463"
+      ],
+      "is_oa": true,
+      "is_in_doaj": true,
+      "is_core": true,
+      "listed_in": [
+        "anvur-class-a",
+        "anvur-scientific",
+        "cwts-core",
+        "doaj",
+        "dongbi-b",
+        "jufo-1",
+        "ki-jl-1",
+        "medline",
+        "norway-2",
+        "poland-140",
+        "russia-white-list-1",
+        "vabb-shw"
+      ],
+      "host_organization": "https://openalex.org/P4310319908",
+      "host_organization_name": "Nature Portfolio",
+      "host_organization_lineage": [
+        "https://openalex.org/P4310319908",
+        "https://openalex.org/P4310319965"
+      ],
+      "host_organization_lineage_names": [
+        "Nature Portfolio",
+        "Springer Nature"
+      ],
+      "type": "journal"
+    },
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": "publishedVersion",
+    "is_accepted": true,
+    "is_published": true,
+    "raw_source_name": "Scientific Data",
+    "raw_type": "journal-article"
+  },
+  "parent_works": [],
+  "lineage": [
+    "https://openalex.org/W4396804163"
+  ],
+  "child_works_count": 0,
+  "type": "data-paper",
+  "is_traditional": true,
+  "indexed_in": [
+    "arxiv",
+    "crossref",
+    "datacite",
+    "doaj",
+    "pubmed"
+  ],
+  "open_access": {
+    "is_oa": true,
+    "oa_status": "gold",
+    "oa_url": "https://www.nature.com/articles/s41597-024-03185-4.pdf",
+    "any_repository_has_fulltext": true
+  },
+  "authorships": [
+    {
+      "author_position": "first",
+      "author": {
+        "id": "https://openalex.org/A5082377531",
+        "display_name": "Óscar Corcho",
+        "orcid": "https://orcid.org/0000-0002-9260-0753",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-9260-0753"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I88060688",
+          "display_name": "Universidad Politécnica de Madrid",
+          "ror": "https://ror.org/03n6nwv02",
+          "country_code": "ES",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I88060688"
+          ]
+        }
+      ],
+      "countries": [
+        "ES"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Oscar Corcho",
+      "raw_affiliation_strings": [
+        "Ontology Engineering Group (OEG), Computer Science School, Universidad Politécnica de Madrid, Madrid, Spain"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Ontology Engineering Group (OEG), Computer Science School, Universidad Politécnica de Madrid, Madrid, Spain",
+          "institution_ids": [
+            "https://openalex.org/I88060688"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5012198006",
+        "display_name": "Fajar J. Ekaputra",
+        "orcid": "https://orcid.org/0000-0003-4569-2496",
+        "observed_orcids": [
+          "https://orcid.org/0000-0003-4569-2496"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I102248843",
+          "display_name": "Vienna University of Economics and Business",
+          "ror": "https://ror.org/03yn8s215",
+          "country_code": "AT",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I102248843"
+          ]
+        },
+        {
+          "id": "https://openalex.org/I145847075",
+          "display_name": "TU Wien",
+          "ror": "https://ror.org/04d836q62",
+          "country_code": "AT",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I145847075"
+          ]
+        }
+      ],
+      "countries": [
+        "AT"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Fajar J. Ekaputra",
+      "raw_affiliation_strings": [
+        "DPKM, Vienna University of Economic and Business (WU), Vienna, Austria",
+        "Data Science Research Unit, TU Wien, Vienna, Austria"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "DPKM, Vienna University of Economic and Business (WU), Vienna, Austria",
+          "institution_ids": [
+            "https://openalex.org/I102248843"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Data Science Research Unit, TU Wien, Vienna, Austria",
+          "institution_ids": [
+            "https://openalex.org/I145847075"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5006728922",
+        "display_name": "Ivan Heibi",
+        "orcid": "https://orcid.org/0000-0001-5366-5194",
+        "observed_orcids": [
+          "https://orcid.org/0000-0001-5366-5194"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I9360294",
+          "display_name": "University of Bologna",
+          "ror": "https://ror.org/01111rn36",
+          "country_code": "IT",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I9360294"
+          ]
+        }
+      ],
+      "countries": [
+        "IT"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Ivan Heibi",
+      "raw_affiliation_strings": [
+        "Digital Humanities Advanced Research Centre (/DH.arc), Department of Classical Philology and Italian Studies, University of Bologna, Bologna, Italy",
+        "Research Centre for Open Scholarly Metadata, Department of Classical Philology and Italian Studies, University of Bologna, Bologna, Italy"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Digital Humanities Advanced Research Centre (/DH.arc), Department of Classical Philology and Italian Studies, University of Bologna, Bologna, Italy",
+          "institution_ids": [
+            "https://openalex.org/I9360294"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Research Centre for Open Scholarly Metadata, Department of Classical Philology and Italian Studies, University of Bologna, Bologna, Italy",
+          "institution_ids": [
+            "https://openalex.org/I9360294"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5064022148",
+        "display_name": "Clément Jonquet",
+        "orcid": "https://orcid.org/0000-0002-2404-1582",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-2404-1582"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I1294671590",
+          "display_name": "Centre National de la Recherche Scientifique",
+          "ror": "https://ror.org/02feahw73",
+          "country_code": "FR",
+          "type": "government",
+          "lineage": [
+            "https://openalex.org/I1294671590"
+          ]
+        },
+        {
+          "id": "https://openalex.org/I19894307",
+          "display_name": "Université de Montpellier",
+          "ror": "https://ror.org/051escj72",
+          "country_code": "FR",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I19894307"
+          ]
+        },
+        {
+          "id": "https://openalex.org/I24906876",
+          "display_name": "Institut Agro Montpellier",
+          "ror": "https://ror.org/03rnk6m14",
+          "country_code": "FR",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I24906876",
+            "https://openalex.org/I4210117091",
+            "https://openalex.org/I4399657933"
+          ]
+        },
+        {
+          "id": "https://openalex.org/I4210088668",
+          "display_name": "Institut National de Recherche pour l'Agriculture, l'Alimentation et l'Environnement",
+          "ror": "https://ror.org/003vg9w96",
+          "country_code": "FR",
+          "type": "government",
+          "lineage": [
+            "https://openalex.org/I4210088668"
+          ]
+        },
+        {
+          "id": "https://openalex.org/I4210101743",
+          "display_name": "Laboratoire d'Informatique, de Robotique et de Microélectronique de Montpellier",
+          "ror": "https://ror.org/013yean28",
+          "country_code": "FR",
+          "type": "facility",
+          "lineage": [
+            "https://openalex.org/I1294671590",
+            "https://openalex.org/I1326498283",
+            "https://openalex.org/I151295451",
+            "https://openalex.org/I19894307",
+            "https://openalex.org/I4210101743",
+            "https://openalex.org/I4210159245",
+            "https://openalex.org/I4405261681"
+          ]
+        },
+        {
+          "id": "https://openalex.org/I4210117045",
+          "display_name": "Mathématiques, Informatique et Statistique pour l'Environnement et l'Agronomie",
+          "ror": "https://ror.org/01pd2sz18",
+          "country_code": "FR",
+          "type": "facility",
+          "lineage": [
+            "https://openalex.org/I4210088668",
+            "https://openalex.org/I4210117045",
+            "https://openalex.org/I4210117091",
+            "https://openalex.org/I4399657933"
+          ]
+        }
+      ],
+      "countries": [
+        "FR"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Clement Jonquet",
+      "raw_affiliation_strings": [
+        "LIRMM, University of Montpellier & CNRS, Montpellier, France",
+        "MISTEA, University of Montpellier, INRAE & Institut Agro, Montpellier, France"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "LIRMM, University of Montpellier & CNRS, Montpellier, France",
+          "institution_ids": [
+            "https://openalex.org/I1294671590",
+            "https://openalex.org/I19894307",
+            "https://openalex.org/I4210101743"
+          ]
+        },
+        {
+          "raw_affiliation_string": "MISTEA, University of Montpellier, INRAE & Institut Agro, Montpellier, France",
+          "institution_ids": [
+            "https://openalex.org/I19894307",
+            "https://openalex.org/I24906876",
+            "https://openalex.org/I4210088668",
+            "https://openalex.org/I4210117045"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5036918970",
+        "display_name": "András Micsik",
+        "orcid": "https://orcid.org/0000-0001-9859-9186",
+        "observed_orcids": [
+          "https://orcid.org/0000-0001-9859-9186"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4210117195",
+          "display_name": "HUN-REN Institute for Computer Science and Control",
+          "ror": "https://ror.org/0249v7n71",
+          "country_code": "HU",
+          "type": "facility",
+          "lineage": [
+            "https://openalex.org/I4210117195",
+            "https://openalex.org/I4387152226"
+          ]
+        },
+        {
+          "id": "https://openalex.org/I4387152226",
+          "display_name": "Hungarian Research Network",
+          "ror": "https://ror.org/04w6pnc49",
+          "country_code": "HU",
+          "type": "other",
+          "lineage": [
+            "https://openalex.org/I4387152226"
+          ]
+        }
+      ],
+      "countries": [
+        "HU"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Andras Micsik",
+      "raw_affiliation_strings": [
+        "Department of Distributed Systems (DSD), Institute for Computer Science and Control (SZTAKI), Hungarian Research Network (HUN-REN), Budapest, Hungary"
+      ],
+      "raw_orcid": "https://orcid.org/0000-0001-9859-9186",
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Department of Distributed Systems (DSD), Institute for Computer Science and Control (SZTAKI), Hungarian Research Network (HUN-REN), Budapest, Hungary",
+          "institution_ids": [
+            "https://openalex.org/I4210117195",
+            "https://openalex.org/I4387152226"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5031461768",
+        "display_name": "Silvio Peroni",
+        "orcid": "https://orcid.org/0000-0003-0530-4305",
+        "observed_orcids": [
+          "https://orcid.org/0000-0003-0530-4305"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I9360294",
+          "display_name": "University of Bologna",
+          "ror": "https://ror.org/01111rn36",
+          "country_code": "IT",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I9360294"
+          ]
+        }
+      ],
+      "countries": [
+        "IT"
+      ],
+      "is_corresponding": true,
+      "raw_author_name": "Silvio Peroni",
+      "raw_affiliation_strings": [
+        "Digital Humanities Advanced Research Centre (/DH.arc), Department of Classical Philology and Italian Studies, University of Bologna, Bologna, Italy. silvio.peroni@unibo.it",
+        "Research Centre for Open Scholarly Metadata, Department of Classical Philology and Italian Studies, University of Bologna, Bologna, Italy. silvio.peroni@unibo.it",
+        "Digital Humanities Advanced Research Centre (/DH.arc), Department of Classical Philology and Italian Studies, University of Bologna, Bologna, Italy",
+        "Research Centre for Open Scholarly Metadata, Department of Classical Philology and Italian Studies, University of Bologna, Bologna, Italy"
+      ],
+      "raw_orcid": "https://orcid.org/0000-0003-0530-4305",
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Digital Humanities Advanced Research Centre (/DH.arc), Department of Classical Philology and Italian Studies, University of Bologna, Bologna, Italy. silvio.peroni@unibo.it",
+          "institution_ids": [
+            "https://openalex.org/I9360294"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Research Centre for Open Scholarly Metadata, Department of Classical Philology and Italian Studies, University of Bologna, Bologna, Italy. silvio.peroni@unibo.it",
+          "institution_ids": [
+            "https://openalex.org/I9360294"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Digital Humanities Advanced Research Centre (/DH.arc), Department of Classical Philology and Italian Studies, University of Bologna, Bologna, Italy",
+          "institution_ids": [
+            "https://openalex.org/I9360294"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Research Centre for Open Scholarly Metadata, Department of Classical Philology and Italian Studies, University of Bologna, Bologna, Italy",
+          "institution_ids": [
+            "https://openalex.org/I9360294"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "last",
+      "author": {
+        "id": "https://openalex.org/A5064905000",
+        "display_name": "Emanuele Storti",
+        "orcid": "https://orcid.org/0000-0001-5966-6921",
+        "observed_orcids": [
+          "https://orcid.org/0000-0001-5966-6921"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I122534668",
+          "display_name": "Marche Polytechnic University",
+          "ror": "https://ror.org/00x69rs40",
+          "country_code": "IT",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I122534668"
+          ]
+        }
+      ],
+      "countries": [
+        "IT"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Emanuele Storti",
+      "raw_affiliation_strings": [
+        "Department of Information Engineering, Polytechnic University of Marche, Ancona, Italy",
+        "European Council of Doctoral Candidates and Junior Researchers (Eurodoc), Brussels, Belgium"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Department of Information Engineering, Polytechnic University of Marche, Ancona, Italy",
+          "institution_ids": [
+            "https://openalex.org/I122534668"
+          ]
+        },
+        {
+          "raw_affiliation_string": "European Council of Doctoral Candidates and Junior Researchers (Eurodoc), Brussels, Belgium",
+          "institution_ids": []
+        }
+      ]
+    }
+  ],
+  "institutions": [],
+  "countries_distinct_count": 5,
+  "institutions_distinct_count": 13,
+  "corresponding_author_ids": [
+    "https://openalex.org/A5031461768"
+  ],
+  "corresponding_institution_ids": [
+    "https://openalex.org/I9360294"
+  ],
+  "apc_list": {
+    "value": 2290,
+    "currency": "USD",
+    "value_usd": 2290
+  },
+  "apc_paid": {
+    "value": 2290,
+    "currency": "USD",
+    "value_usd": 2290
+  },
+  "fwci": null,
+  "has_fulltext": true,
+  "cited_by_count": 22,
+  "citation_normalized_percentile": null,
+  "cited_by_percentile_year": null,
+  "biblio": {
+    "volume": "11",
+    "issue": "1",
+    "first_page": "479",
+    "last_page": "479"
+  },
+  "is_retracted": false,
+  "is_paratext": false,
+  "is_xpac": false,
+  "primary_topic": {
+    "id": "https://openalex.org/T10215",
+    "display_name": "Semantic Web and Ontologies",
+    "score": 0.9071999788284302,
+    "subfield": {
+      "id": "https://openalex.org/subfields/1702",
+      "display_name": "Artificial Intelligence"
+    },
+    "field": {
+      "id": "https://openalex.org/fields/17",
+      "display_name": "Computer Science"
+    },
+    "domain": {
+      "id": "https://openalex.org/domains/3",
+      "display_name": "Physical Sciences"
+    }
+  },
+  "topics": [
+    {
+      "id": "https://openalex.org/T10215",
+      "display_name": "Semantic Web and Ontologies",
+      "score": 0.9071999788284302,
+      "subfield": {
+        "id": "https://openalex.org/subfields/1702",
+        "display_name": "Artificial Intelligence"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/17",
+        "display_name": "Computer Science"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/3",
+        "display_name": "Physical Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T11937",
+      "display_name": "Research Data Management Practices",
+      "score": 0.04320000112056732,
+      "subfield": {
+        "id": "https://openalex.org/subfields/1710",
+        "display_name": "Information Systems"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/17",
+        "display_name": "Computer Science"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/3",
+        "display_name": "Physical Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T14330",
+      "display_name": "Library Science and Information Systems",
+      "score": 0.0414000004529953,
+      "subfield": {
+        "id": "https://openalex.org/subfields/1710",
+        "display_name": "Information Systems"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/17",
+        "display_name": "Computer Science"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/3",
+        "display_name": "Physical Sciences"
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "id": "https://openalex.org/keywords/maturity-model",
+      "display_name": "maturity model",
+      "score": 0.9639999866485596
+    },
+    {
+      "id": "https://openalex.org/keywords/semantic-artefacts",
+      "display_name": "semantic artefacts",
+      "score": 0.906000018119812
+    },
+    {
+      "id": "https://openalex.org/keywords/semantic-interoperability",
+      "display_name": "semantic interoperability",
+      "score": 0.9990000128746033
+    },
+    {
+      "id": "https://openalex.org/keywords/metadata",
+      "display_name": "metadata",
+      "score": 0.6769999861717224
+    },
+    {
+      "id": "https://openalex.org/keywords/persistent-identifiers",
+      "display_name": "persistent identifiers",
+      "score": 0.7639999985694885
+    },
+    {
+      "id": "https://openalex.org/keywords/governance",
+      "display_name": "governance",
+      "score": 0.6919999718666077
+    },
+    {
+      "id": "https://openalex.org/keywords/sustainability",
+      "display_name": "sustainability",
+      "score": 0.7940000295639038
+    },
+    {
+      "id": "https://openalex.org/keywords/transparency",
+      "display_name": "transparency",
+      "score": 0.35100001096725464
+    },
+    {
+      "id": "https://openalex.org/keywords/quality-assessment",
+      "display_name": "quality assessment",
+      "score": 0.37599998712539673
+    }
+  ],
+  "concepts": [
+    {
+      "id": "https://openalex.org/C101433766",
+      "wikidata": "https://www.wikidata.org/wiki/Q3543263",
+      "display_name": "Maturity (psychological)",
+      "level": 2,
+      "score": 0.5218602418899536
+    },
+    {
+      "id": "https://openalex.org/C23123220",
+      "wikidata": "https://www.wikidata.org/wiki/Q816826",
+      "display_name": "Information retrieval",
+      "level": 1,
+      "score": 0.48437604308128357
+    },
+    {
+      "id": "https://openalex.org/C41008148",
+      "wikidata": "https://www.wikidata.org/wiki/Q21198",
+      "display_name": "Computer science",
+      "level": 0,
+      "score": 0.47770121693611145
+    },
+    {
+      "id": "https://openalex.org/C204321447",
+      "wikidata": "https://www.wikidata.org/wiki/Q30642",
+      "display_name": "Natural language processing",
+      "level": 1,
+      "score": 0.44403356313705444
+    },
+    {
+      "id": "https://openalex.org/C15744967",
+      "wikidata": "https://www.wikidata.org/wiki/Q9418",
+      "display_name": "Psychology",
+      "level": 0,
+      "score": 0.13636210560798645
+    },
+    {
+      "id": "https://openalex.org/C138496976",
+      "wikidata": "https://www.wikidata.org/wiki/Q175002",
+      "display_name": "Developmental psychology",
+      "level": 1,
+      "score": 0.0
+    }
+  ],
+  "mesh": [],
+  "locations_count": 12,
+  "locations": [
+    {
+      "id": "doi:10.1038/s41597-024-03185-4",
+      "doi": "https://doi.org/10.1038/s41597-024-03185-4",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.1038/s41597-024-03185-4",
+      "pdf_url": "https://www.nature.com/articles/s41597-024-03185-4.pdf",
+      "source": {
+        "id": "https://openalex.org/S2607323502",
+        "display_name": "Scientific Data",
+        "issn_l": "2052-4463",
+        "issn": [
+          "2052-4463"
+        ],
+        "is_oa": true,
+        "is_in_doaj": true,
+        "is_core": true,
+        "listed_in": [
+          "anvur-class-a",
+          "anvur-scientific",
+          "cwts-core",
+          "doaj",
+          "dongbi-b",
+          "jufo-1",
+          "ki-jl-1",
+          "medline",
+          "norway-2",
+          "poland-140",
+          "russia-white-list-1",
+          "vabb-shw"
+        ],
+        "host_organization": "https://openalex.org/P4310319908",
+        "host_organization_name": "Nature Portfolio",
+        "host_organization_lineage": [
+          "https://openalex.org/P4310319908",
+          "https://openalex.org/P4310319965"
+        ],
+        "host_organization_lineage_names": [
+          "Nature Portfolio",
+          "Springer Nature"
+        ],
+        "type": "journal"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "publishedVersion",
+      "is_accepted": true,
+      "is_published": true,
+      "raw_source_name": "Scientific Data",
+      "raw_type": "journal-article"
+    },
+    {
+      "id": "pmh:oai:pubmedcentral.nih.gov:11087458",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/11087458",
+      "pdf_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11087458/pdf/41597_2024_Article_3185.pdf",
+      "source": {
+        "id": "https://openalex.org/S2764455111",
+        "display_name": "PubMed Central",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": true,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I1299303238",
+        "host_organization_name": "National Institutes of Health",
+        "host_organization_lineage": [
+          "https://openalex.org/I1299303238"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "publishedVersion",
+      "is_accepted": true,
+      "is_published": true,
+      "raw_source_name": "Sci Data",
+      "raw_type": "Text"
+    },
+    {
+      "id": "pmid:38730252",
+      "doi": null,
+      "is_oa": false,
+      "landing_page_url": "https://pubmed.ncbi.nlm.nih.gov/38730252",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306525036",
+        "display_name": "PubMed",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I1299303238",
+        "host_organization_name": "National Institutes of Health",
+        "host_organization_lineage": [
+          "https://openalex.org/I1299303238"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": "publishedVersion",
+      "is_accepted": true,
+      "is_published": true,
+      "raw_source_name": "Scientific data",
+      "raw_type": "Journal Article"
+    },
+    {
+      "id": "pmh:oai:research.wu.ac.at:openaire/eb73f4ad-663d-4360-a55b-41c83574b302",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://research.wu.ac.at/de/publications/eb73f4ad-663d-4360-a55b-41c83574b302",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S7407055123",
+        "display_name": "WU Research",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": null,
+        "host_organization_name": null,
+        "host_organization_lineage": [],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "publishedVersion",
+      "is_accepted": true,
+      "is_published": true,
+      "raw_source_name": "Corcho, O, Ekaputra, F J, Heibi, I, Jonquet, C, Micsik, A, Peroni, S & Storti, E 2024, 'A maturity model for catalogues of semantic artefacts', Scientific data, vol. 11, 479. https://doi.org/10.1038/s41597-024-03185-4",
+      "raw_type": "info:eu-repo/semantics/article"
+    },
+    {
+      "id": "pmh:oai:arXiv.org:2305.06746",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "http://arxiv.org/abs/2305.06746",
+      "pdf_url": "https://arxiv.org/pdf/2305.06746",
+      "source": {
+        "id": "https://openalex.org/S4306400194",
+        "display_name": "arXiv (Cornell University)",
+        "issn_l": "2331-8422",
+        "issn": [
+          "2331-8422"
+        ],
+        "is_oa": true,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I205783295",
+        "host_organization_name": "Cornell University",
+        "host_organization_lineage": [
+          "https://openalex.org/I205783295"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "text"
+    },
+    {
+      "id": "pmh:oai:HAL:lirmm-04290896v1",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://hal-lirmm.ccsd.cnrs.fr/lirmm-04290896",
+      "pdf_url": "https://hal-lirmm.ccsd.cnrs.fr/lirmm-04290896v1/document",
+      "source": {
+        "id": "https://openalex.org/S4306402512",
+        "display_name": "HAL",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I4405252976",
+        "host_organization_name": "Centre pour la Communication Scientifique Directe",
+        "host_organization_lineage": [
+          "https://openalex.org/I4405252976"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "other-oa",
+      "license_id": "https://openalex.org/licenses/other-oa",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": "Scientific Data , 2024, 11 (1), pp.479. &#x27E8;10.1038/s41597-024-03185-4&#x27E9;",
+      "raw_type": "info:eu-repo/semantics/article"
+    },
+    {
+      "id": "pmh:oai:cris.unibo.it:11585/969499",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://www.nature.com/articles/s41597-024-03185-4",
+      "pdf_url": "https://cris.unibo.it/bitstream/11585/969499/1/s41597-024-03185-4-1.pdf",
+      "source": {
+        "id": "https://openalex.org/S4306402579",
+        "display_name": "Archivio istituzionale della ricerca (Alma Mater Studiorum Università di Bologna)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I4210117483",
+        "host_organization_name": "Istituto di Ematologia di Bologna",
+        "host_organization_lineage": [
+          "https://openalex.org/I4210117483"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "info:eu-repo/semantics/article"
+    },
+    {
+      "id": "pmh:oai:eprints.sztaki.hu:10723",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://eprints.sztaki.hu/10723/",
+      "pdf_url": "https://eprints.sztaki.hu/10723/1/Corcho_1_34848185_ny.pdf",
+      "source": {
+        "id": "https://openalex.org/S4306401907",
+        "display_name": "SZTAKI Publication Repository (Hungarian Academy of Sciences)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I7597260",
+        "host_organization_name": "Hungarian Academy of Sciences",
+        "host_organization_lineage": [
+          "https://openalex.org/I7597260"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "other-oa",
+      "license_id": "https://openalex.org/licenses/other-oa",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "Article"
+    },
+    {
+      "id": "pmh:oai:iris.univpm.it:11566/329843",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://hdl.handle.net/11566/329843",
+      "pdf_url": "https://iris.univpm.it/bitstream/11566/329843/1/Chorco_Maturity-model-catalogues-semantic-artefacts_2024.pdf",
+      "source": {
+        "id": "https://openalex.org/S4306402571",
+        "display_name": "Università Politecnica delle Marche (Università Politecnica delle Marche)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I122534668",
+        "host_organization_name": "Marche Polytechnic University",
+        "host_organization_lineage": [
+          "https://openalex.org/I122534668"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "info:eu-repo/semantics/article"
+    },
+    {
+      "id": "pmh:oai:doaj.org/article:41716e2c45784326a612a67f8840b47e",
+      "doi": null,
+      "is_oa": false,
+      "landing_page_url": "https://doaj.org/article/41716e2c45784326a612a67f8840b47e",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306401280",
+        "display_name": "DOAJ (DOAJ: Directory of Open Access Journals)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": null,
+        "host_organization_name": null,
+        "host_organization_lineage": [],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": "Scientific Data, Vol 11, Iss 1, Pp 1-13 (2024)",
+      "raw_type": "article"
+    },
+    {
+      "id": "pmh:oai:research.wu.ac.at:openaire/b4c2f166-9fd4-4beb-a913-dfccffad28dd",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://research.wu.ac.at/de/publications/b4c2f166-9fd4-4beb-a913-dfccffad28dd",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S7407055123",
+        "display_name": "WU Research",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": null,
+        "host_organization_name": null,
+        "host_organization_lineage": [],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "other-oa",
+      "license_id": "https://openalex.org/licenses/other-oa",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": "Corcho, O, Ekaputra, F J, Heibi, I, Jonquet, C, Micsik, A, Peroni, S & Storti, E 2023 'A maturity model for catalogues of semantic artefacts'. https://doi.org/10.48550/arXiv.2305.06746",
+      "raw_type": "info:eu-repo/semantics/workingPaper"
+    },
+    {
+      "id": "doi:10.48550/arxiv.2305.06746",
+      "doi": "https://doi.org/10.48550/arxiv.2305.06746",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.48550/arxiv.2305.06746",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306400194",
+        "display_name": "arXiv (Cornell University)",
+        "issn_l": "2331-8422",
+        "issn": [
+          "2331-8422"
+        ],
+        "is_oa": true,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I205783295",
+        "host_organization_name": "Cornell University",
+        "host_organization_lineage": [
+          "https://openalex.org/I205783295"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": null,
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "article-journal"
+    }
+  ],
+  "best_oa_location": {
+    "id": "doi:10.1038/s41597-024-03185-4",
+    "doi": "https://doi.org/10.1038/s41597-024-03185-4",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.1038/s41597-024-03185-4",
+    "pdf_url": "https://www.nature.com/articles/s41597-024-03185-4.pdf",
+    "source": {
+      "id": "https://openalex.org/S2607323502",
+      "display_name": "Scientific Data",
+      "issn_l": "2052-4463",
+      "issn": [
+        "2052-4463"
+      ],
+      "is_oa": true,
+      "is_in_doaj": true,
+      "is_core": true,
+      "listed_in": [
+        "anvur-class-a",
+        "anvur-scientific",
+        "cwts-core",
+        "doaj",
+        "dongbi-b",
+        "jufo-1",
+        "ki-jl-1",
+        "medline",
+        "norway-2",
+        "poland-140",
+        "russia-white-list-1",
+        "vabb-shw"
+      ],
+      "host_organization": "https://openalex.org/P4310319908",
+      "host_organization_name": "Nature Portfolio",
+      "host_organization_lineage": [
+        "https://openalex.org/P4310319908",
+        "https://openalex.org/P4310319965"
+      ],
+      "host_organization_lineage_names": [
+        "Nature Portfolio",
+        "Springer Nature"
+      ],
+      "type": "journal"
+    },
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": "publishedVersion",
+    "is_accepted": true,
+    "is_published": true,
+    "raw_source_name": "Scientific Data",
+    "raw_type": "journal-article"
+  },
+  "sustainable_development_goals": [],
+  "study_designs": [],
+  "awards": [
+    {
+      "id": "https://openalex.org/G1005094489",
+      "display_name": "GraspOS: next Generation Research Assessment to Promote Open Science",
+      "funder_award_id": "101095129",
+      "funder_id": "https://openalex.org/F4320320300",
+      "funder_display_name": "European Commission"
+    },
+    {
+      "id": "https://openalex.org/G2607973734",
+      "display_name": null,
+      "funder_award_id": "101057344",
+      "funder_id": "https://openalex.org/F4320334322",
+      "funder_display_name": "HORIZON EUROPE Framework Programme"
+    },
+    {
+      "id": "https://openalex.org/G2785911483",
+      "display_name": null,
+      "funder_award_id": "101095129",
+      "funder_id": "https://openalex.org/F4320334322",
+      "funder_display_name": "HORIZON EUROPE Framework Programme"
+    },
+    {
+      "id": "https://openalex.org/G3526086056",
+      "display_name": "Expanding FAIR Solutions across EOSC",
+      "funder_award_id": "101057344",
+      "funder_id": "https://openalex.org/F4320320300",
+      "funder_display_name": "European Commission"
+    },
+    {
+      "id": "https://openalex.org/G434337789",
+      "display_name": null,
+      "funder_award_id": "HORIZON2020",
+      "funder_id": "https://openalex.org/F4320320300",
+      "funder_display_name": "European Commission"
+    },
+    {
+      "id": "https://openalex.org/G6731515545",
+      "display_name": "OpenAIRE-Nexus Scholarly Communication Services for EOSC users",
+      "funder_award_id": "101017452",
+      "funder_id": "https://openalex.org/F4320320300",
+      "funder_display_name": "European Commission"
+    }
+  ],
+  "funders": [
+    {
+      "id": "https://openalex.org/F4320320300",
+      "display_name": "European Commission",
+      "ror": "https://ror.org/00k4n6c32"
+    },
+    {
+      "id": "https://openalex.org/F4320334322",
+      "display_name": "HORIZON EUROPE Framework Programme",
+      "ror": null
+    }
+  ],
+  "has_content": {
+    "grobid_xml": true,
+    "pdf": true
+  },
+  "content_urls": {
+    "pdf": "https://content.openalex.org/works/W4396804163.pdf",
+    "grobid_xml": "https://content.openalex.org/works/W4396804163.grobid-xml"
+  },
+  "referenced_works_count": 50,
+  "referenced_works": [
+    "https://openalex.org/W87108502",
+    "https://openalex.org/W108882079",
+    "https://openalex.org/W2034093528",
+    "https://openalex.org/W2077044157",
+    "https://openalex.org/W2113142309",
+    "https://openalex.org/W2131660156",
+    "https://openalex.org/W2158606791",
+    "https://openalex.org/W2162323699",
+    "https://openalex.org/W2281806033",
+    "https://openalex.org/W2302501749",
+    "https://openalex.org/W2404810405",
+    "https://openalex.org/W2473206977",
+    "https://openalex.org/W2531883117",
+    "https://openalex.org/W2593369898",
+    "https://openalex.org/W2760228070",
+    "https://openalex.org/W2772877400",
+    "https://openalex.org/W2891148407",
+    "https://openalex.org/W2926805670",
+    "https://openalex.org/W2934450419",
+    "https://openalex.org/W2950668200",
+    "https://openalex.org/W2969350715",
+    "https://openalex.org/W2982546989",
+    "https://openalex.org/W2985505473",
+    "https://openalex.org/W3024722698",
+    "https://openalex.org/W3035486184",
+    "https://openalex.org/W3045928001",
+    "https://openalex.org/W3096667064",
+    "https://openalex.org/W3113245274",
+    "https://openalex.org/W3119512548",
+    "https://openalex.org/W3197320265",
+    "https://openalex.org/W3199856201",
+    "https://openalex.org/W3210309511",
+    "https://openalex.org/W4245321602",
+    "https://openalex.org/W4247986096",
+    "https://openalex.org/W4249810877",
+    "https://openalex.org/W4312178829",
+    "https://openalex.org/W4313837910",
+    "https://openalex.org/W4327646417",
+    "https://openalex.org/W4388144070",
+    "https://openalex.org/W4390862748",
+    "https://openalex.org/W4391156021",
+    "https://openalex.org/W4393691013",
+    "https://openalex.org/W4393732757",
+    "https://openalex.org/W6888861590",
+    "https://openalex.org/W6893788584",
+    "https://openalex.org/W6894014335",
+    "https://openalex.org/W6894148176",
+    "https://openalex.org/W6968584628",
+    "https://openalex.org/W7100240232",
+    "https://openalex.org/W7228129674"
+  ],
+  "related_works": [
+    "https://openalex.org/W7167043215",
+    "https://openalex.org/W4402918695",
+    "https://openalex.org/W2231949987",
+    "https://openalex.org/W4401440196",
+    "https://openalex.org/W4389236107",
+    "https://openalex.org/W4414385140",
+    "https://openalex.org/W4392726500",
+    "https://openalex.org/W2084327723",
+    "https://openalex.org/W4407311656",
+    "https://openalex.org/W6968366539"
+  ],
+  "abstract_inverted_index": {
+    "This": [
+      0
+    ],
+    "work": [
+      1
+    ],
+    "presents": [
+      2
+    ],
+    "a": [
+      3,
+      93
+    ],
+    "maturity": [
+      4,
+      33,
+      62,
+      94
+    ],
+    "model": [
+      5,
+      34,
+      95
+    ],
+    "for": [
+      6,
+      105,
+      109
+    ],
+    "assessing": [
+      7
+    ],
+    "catalogues": [
+      8,
+      42,
+      55
+    ],
+    "of": [
+      9,
+      13,
+      20,
+      43,
+      60,
+      98
+    ],
+    "semantic": [
+      10,
+      18,
+      44,
+      113
+    ],
+    "artefacts,": [
+      11
+    ],
+    "one": [
+      12,
+      97
+    ],
+    "the": [
+      14,
+      24,
+      32,
+      37,
+      58,
+      61,
+      99
+    ],
+    "keystones": [
+      15
+    ],
+    "that": [
+      16
+    ],
+    "permit": [
+      17
+    ],
+    "interoperability": [
+      19,
+      118
+    ],
+    "systems.": [
+      21
+    ],
+    "We": [
+      22
+    ],
+    "defined": [
+      23
+    ],
+    "dimensions": [
+      25,
+      68
+    ],
+    "and": [
+      26,
+      40,
+      80,
+      82,
+      107,
+      111,
+      115
+    ],
+    "related": [
+      27,
+      84
+    ],
+    "features": [
+      28,
+      85
+    ],
+    "to": [
+      29,
+      56,
+      102
+    ],
+    "include": [
+      30
+    ],
+    "in": [
+      31
+    ],
+    "by": [
+      35,
+      47
+    ],
+    "analysing": [
+      36
+    ],
+    "current": [
+      38
+    ],
+    "literature": [
+      39
+    ],
+    "existing": [
+      41
+    ],
+    "artefacts": [
+      45,
+      114
+    ],
+    "provided": [
+      46
+    ],
+    "experts.": [
+      48
+    ],
+    "In": [
+      49
+    ],
+    "addition,": [
+      50
+    ],
+    "we": [
+      51
+    ],
+    "assessed": [
+      52
+    ],
+    "26": [
+      53
+    ],
+    "different": [
+      54,
+      67
+    ],
+    "demonstrate": [
+      57
+    ],
+    "effectiveness": [
+      59
+    ],
+    "model,": [
+      63
+    ],
+    "which": [
+      64
+    ],
+    "includes": [
+      65
+    ],
+    "12": [
+      66
+    ],
+    "(Metadata,": [
+      69
+    ],
+    "Openness,": [
+      70
+    ],
+    "Quality,": [
+      71
+    ],
+    "Availability,": [
+      72
+    ],
+    "Statistics,": [
+      73
+    ],
+    "PID,": [
+      74
+    ],
+    "Governance,": [
+      75
+    ],
+    "Community,": [
+      76
+    ],
+    "Sustainability,": [
+      77
+    ],
+    "Technology,": [
+      78
+    ],
+    "Transparency,": [
+      79
+    ],
+    "Assessment)": [
+      81
+    ],
+    "43": [
+      83
+    ],
+    "(or": [
+      86
+    ],
+    "sub-criteria)": [
+      87
+    ],
+    "associated": [
+      88
+    ],
+    "with": [
+      89
+    ],
+    "these": [
+      90
+    ],
+    "dimensions.": [
+      91
+    ],
+    "Such": [
+      92
+    ],
+    "is": [
+      96
+    ],
+    "first": [
+      100
+    ],
+    "attempts": [
+      101
+    ],
+    "provide": [
+      103
+    ],
+    "recommendations": [
+      104
+    ],
+    "governance": [
+      106
+    ],
+    "processes": [
+      108
+    ],
+    "preserving": [
+      110
+    ],
+    "maintaining": [
+      112
+    ],
+    "helps": [
+      116
+    ],
+    "assess/address": [
+      117
+    ],
+    "challenges.": [
+      119
+    ]
+  },
+  "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W4396804163",
+  "counts_by_year": [
+    {
+      "year": 2026,
+      "cited_by_count": 6
+    },
+    {
+      "year": 2025,
+      "cited_by_count": 10
+    },
+    {
+      "year": 2024,
+      "cited_by_count": 4
+    },
+    {
+      "year": 2023,
+      "cited_by_count": 2
+    }
+  ],
+  "updated_date": "2026-11-16T12:05:36.265796",
+  "created_date": "2024-05-11T00:00:00"
+}

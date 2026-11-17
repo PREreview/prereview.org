@@ -1,0 +1,1260 @@
+{
+  "id": "https://openalex.org/W4231730068",
+  "doi": "https://doi.org/10.31730/osf.io/xq6jh",
+  "title": "Cancer risk among adolescents and young adults living with HIV in South Africa: a national cohort study",
+  "display_name": "Cancer risk among adolescents and young adults living with HIV in South Africa: a national cohort study",
+  "alternate_titles": [],
+  "publication_year": 2021,
+  "publication_date": "2021-07-15",
+  "ids": {
+    "openalex": "https://openalex.org/W4231730068",
+    "doi": "https://doi.org/10.31730/osf.io/xq6jh"
+  },
+  "language": "en",
+  "primary_location": {
+    "id": "doi:10.31730/osf.io/xq6jh",
+    "doi": "https://doi.org/10.31730/osf.io/xq6jh",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.31730/osf.io/xq6jh",
+    "pdf_url": null,
+    "source": {
+      "id": "https://openalex.org/S4306402219",
+      "display_name": "AfricArXiv (OSF Preprints)",
+      "issn_l": null,
+      "issn": null,
+      "is_oa": false,
+      "is_in_doaj": false,
+      "is_core": false,
+      "listed_in": [],
+      "host_organization": "https://openalex.org/I2799848540",
+      "host_organization_name": "Center for Open Science",
+      "host_organization_lineage": [
+        "https://openalex.org/I2799848540"
+      ],
+      "host_organization_lineage_names": [],
+      "type": "repository"
+    },
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": "submittedVersion",
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "posted-content"
+  },
+  "parent_works": [],
+  "lineage": [
+    "https://openalex.org/W4231730068"
+  ],
+  "child_works_count": 0,
+  "type": "preprint",
+  "is_traditional": true,
+  "indexed_in": [
+    "crossref",
+    "datacite"
+  ],
+  "open_access": {
+    "is_oa": true,
+    "oa_status": "green",
+    "oa_url": "https://doi.org/10.31730/osf.io/xq6jh",
+    "any_repository_has_fulltext": true
+  },
+  "authorships": [
+    {
+      "author_position": "first",
+      "author": {
+        "id": "https://openalex.org/A5015576282",
+        "display_name": "Yann Ruffieux",
+        "orcid": "https://orcid.org/0000-0002-0891-2448",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-0891-2448"
+        ]
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Yann Ruffieux",
+      "raw_affiliation_strings": [],
+      "raw_orcid": "https://orcid.org/0000-0002-0891-2448",
+      "affiliations": []
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5035834215",
+        "display_name": "Tafadzwa Dhokotera",
+        "orcid": "https://orcid.org/0000-0002-4353-0787",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-4353-0787"
+        ]
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Tafadzwa Dhokotera",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5108914882",
+        "display_name": "Mazvita Molleen Muchengeti",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Mazvita Muchengeti",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5082360661",
+        "display_name": "Lina Bartels",
+        "orcid": "https://orcid.org/0000-0003-1330-5885",
+        "observed_orcids": [
+          "https://orcid.org/0000-0003-1330-5885"
+        ]
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Lina Bartels",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5037134838",
+        "display_name": "Victor Olago",
+        "orcid": "https://orcid.org/0000-0002-0154-0688",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-0154-0688"
+        ]
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Victor Olago",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5086157308",
+        "display_name": "Julia Bohlius",
+        "orcid": "https://orcid.org/0000-0003-1955-1585",
+        "observed_orcids": [
+          "https://orcid.org/0000-0003-1955-1585"
+        ]
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Julia Bohlius",
+      "raw_affiliation_strings": [],
+      "raw_orcid": "https://orcid.org/0000-0003-1955-1585",
+      "affiliations": []
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5071570450",
+        "display_name": "Elvira Singh",
+        "orcid": "https://orcid.org/0000-0003-1259-2122",
+        "observed_orcids": [
+          "https://orcid.org/0000-0003-1259-2122"
+        ]
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Elvira Singh",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5077161809",
+        "display_name": "Matthias Egger",
+        "orcid": "https://orcid.org/0000-0001-7462-5132",
+        "observed_orcids": [
+          "https://orcid.org/0000-0001-7462-5132"
+        ]
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Matthias Egger",
+      "raw_affiliation_strings": [],
+      "raw_orcid": "https://orcid.org/0000-0001-7462-5132",
+      "affiliations": []
+    },
+    {
+      "author_position": "last",
+      "author": {
+        "id": "https://openalex.org/A5032868808",
+        "display_name": "Eliane Rohner",
+        "orcid": "https://orcid.org/0000-0002-0554-2875",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-0554-2875"
+        ]
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Eliane Rohner",
+      "raw_affiliation_strings": [],
+      "raw_orcid": "https://orcid.org/0000-0002-0554-2875",
+      "affiliations": []
+    }
+  ],
+  "institutions": [],
+  "countries_distinct_count": 0,
+  "institutions_distinct_count": 0,
+  "corresponding_author_ids": [],
+  "corresponding_institution_ids": [],
+  "apc_list": null,
+  "apc_paid": null,
+  "fwci": null,
+  "has_fulltext": false,
+  "cited_by_count": 0,
+  "citation_normalized_percentile": null,
+  "cited_by_percentile_year": null,
+  "biblio": {
+    "volume": null,
+    "issue": null,
+    "first_page": null,
+    "last_page": null
+  },
+  "is_retracted": false,
+  "is_paratext": false,
+  "is_xpac": false,
+  "primary_topic": {
+    "id": "https://openalex.org/T10685",
+    "display_name": "Viral-associated cancers and disorders",
+    "score": 0.9854000210762024,
+    "subfield": {
+      "id": "https://openalex.org/subfields/2730",
+      "display_name": "Oncology"
+    },
+    "field": {
+      "id": "https://openalex.org/fields/27",
+      "display_name": "Medicine"
+    },
+    "domain": {
+      "id": "https://openalex.org/domains/4",
+      "display_name": "Health Sciences"
+    }
+  },
+  "topics": [
+    {
+      "id": "https://openalex.org/T10685",
+      "display_name": "Viral-associated cancers and disorders",
+      "score": 0.9854000210762024,
+      "subfield": {
+        "id": "https://openalex.org/subfields/2730",
+        "display_name": "Oncology"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/27",
+        "display_name": "Medicine"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/4",
+        "display_name": "Health Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T10082",
+      "display_name": "HIV/AIDS Research and Interventions",
+      "score": 0.007499999832361937,
+      "subfield": {
+        "id": "https://openalex.org/subfields/2725",
+        "display_name": "Infectious Diseases"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/27",
+        "display_name": "Medicine"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/4",
+        "display_name": "Health Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T11655",
+      "display_name": "HIV-related health complications and treatments",
+      "score": 0.0024999999441206455,
+      "subfield": {
+        "id": "https://openalex.org/subfields/2725",
+        "display_name": "Infectious Diseases"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/27",
+        "display_name": "Medicine"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/4",
+        "display_name": "Health Sciences"
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "id": "https://openalex.org/keywords/cancer-incidence",
+      "display_name": "cancer incidence",
+      "score": 0.746999979019165
+    },
+    {
+      "id": "https://openalex.org/keywords/adolescents-and-young-adults",
+      "display_name": "adolescents and young adults",
+      "score": 0.9020000100135803
+    },
+    {
+      "id": "https://openalex.org/keywords/hiv",
+      "display_name": "HIV",
+      "score": 0.9380000233650208
+    },
+    {
+      "id": "https://openalex.org/keywords/kaposi-sarcoma",
+      "display_name": "Kaposi's sarcoma",
+      "score": 0.9649999737739563
+    },
+    {
+      "id": "https://openalex.org/keywords/non-hodgkin-lymphoma",
+      "display_name": "non-Hodgkin lymphoma",
+      "score": 0.9980000257492065
+    },
+    {
+      "id": "https://openalex.org/keywords/hodgkin-lymphoma",
+      "display_name": "Hodgkin's disease",
+      "score": 0.9990000128746033
+    },
+    {
+      "id": "https://openalex.org/keywords/cervical-cancer",
+      "display_name": "cervical cancer",
+      "score": 0.9879999756813049
+    },
+    {
+      "id": "https://openalex.org/keywords/leukemia",
+      "display_name": "leukemia",
+      "score": 0.9909999966621399
+    },
+    {
+      "id": "https://openalex.org/keywords/cd4-count",
+      "display_name": "CD4 count",
+      "score": 0.9729999899864197
+    },
+    {
+      "id": "https://openalex.org/keywords/infection-related-cancers",
+      "display_name": "infection-associated cancer",
+      "score": 0.7400000095367432
+    },
+    {
+      "id": "https://openalex.org/keywords/risk-factors",
+      "display_name": "risk factors",
+      "score": 0.6340000033378601
+    },
+    {
+      "id": "https://openalex.org/keywords/south-africa",
+      "display_name": "South Africa",
+      "score": 0.7289999723434448
+    }
+  ],
+  "concepts": [
+    {
+      "id": "https://openalex.org/C71924100",
+      "wikidata": "https://www.wikidata.org/wiki/Q11190",
+      "display_name": "Medicine",
+      "level": 0,
+      "score": 0.8313832879066467
+    },
+    {
+      "id": "https://openalex.org/C2778527826",
+      "wikidata": "https://www.wikidata.org/wiki/Q1787017",
+      "display_name": "Cancer registry",
+      "level": 3,
+      "score": 0.7249672412872314
+    },
+    {
+      "id": "https://openalex.org/C121608353",
+      "wikidata": "https://www.wikidata.org/wiki/Q12078",
+      "display_name": "Cancer",
+      "level": 2,
+      "score": 0.6636469960212708
+    },
+    {
+      "id": "https://openalex.org/C207103383",
+      "wikidata": "https://www.wikidata.org/wiki/Q3930246",
+      "display_name": "Hazard ratio",
+      "level": 3,
+      "score": 0.6016795039176941
+    },
+    {
+      "id": "https://openalex.org/C2778256501",
+      "wikidata": "https://www.wikidata.org/wiki/Q223911",
+      "display_name": "Sarcoma",
+      "level": 2,
+      "score": 0.5868498086929321
+    },
+    {
+      "id": "https://openalex.org/C61511704",
+      "wikidata": "https://www.wikidata.org/wiki/Q1671857",
+      "display_name": "Incidence (geometry)",
+      "level": 2,
+      "score": 0.5767529010772705
+    },
+    {
+      "id": "https://openalex.org/C72563966",
+      "wikidata": "https://www.wikidata.org/wiki/Q1303415",
+      "display_name": "Cohort",
+      "level": 2,
+      "score": 0.5554823279380798
+    },
+    {
+      "id": "https://openalex.org/C2779338263",
+      "wikidata": "https://www.wikidata.org/wiki/Q208414",
+      "display_name": "Lymphoma",
+      "level": 2,
+      "score": 0.5293786525726318
+    },
+    {
+      "id": "https://openalex.org/C2778220009",
+      "wikidata": "https://www.wikidata.org/wiki/Q160105",
+      "display_name": "Cervical cancer",
+      "level": 3,
+      "score": 0.5134852528572083
+    },
+    {
+      "id": "https://openalex.org/C126322002",
+      "wikidata": "https://www.wikidata.org/wiki/Q11180",
+      "display_name": "Internal medicine",
+      "level": 1,
+      "score": 0.5112087726593018
+    },
+    {
+      "id": "https://openalex.org/C50382708",
+      "wikidata": "https://www.wikidata.org/wiki/Q223218",
+      "display_name": "Proportional hazards model",
+      "level": 2,
+      "score": 0.4481569230556488
+    },
+    {
+      "id": "https://openalex.org/C201903717",
+      "wikidata": "https://www.wikidata.org/wiki/Q1778788",
+      "display_name": "Cohort study",
+      "level": 2,
+      "score": 0.4409758448600769
+    },
+    {
+      "id": "https://openalex.org/C2992779791",
+      "wikidata": "https://www.wikidata.org/wiki/Q209369",
+      "display_name": "Hodgkin lymphoma",
+      "level": 3,
+      "score": 0.42083480954170227
+    },
+    {
+      "id": "https://openalex.org/C143998085",
+      "wikidata": "https://www.wikidata.org/wiki/Q162555",
+      "display_name": "Oncology",
+      "level": 1,
+      "score": 0.39844828844070435
+    },
+    {
+      "id": "https://openalex.org/C44249647",
+      "wikidata": "https://www.wikidata.org/wiki/Q208498",
+      "display_name": "Confidence interval",
+      "level": 2,
+      "score": 0.1478484869003296
+    },
+    {
+      "id": "https://openalex.org/C142724271",
+      "wikidata": "https://www.wikidata.org/wiki/Q7208",
+      "display_name": "Pathology",
+      "level": 1,
+      "score": 0.1442285180091858
+    },
+    {
+      "id": "https://openalex.org/C121332964",
+      "wikidata": "https://www.wikidata.org/wiki/Q413",
+      "display_name": "Physics",
+      "level": 0,
+      "score": 0.0
+    },
+    {
+      "id": "https://openalex.org/C120665830",
+      "wikidata": "https://www.wikidata.org/wiki/Q14620",
+      "display_name": "Optics",
+      "level": 1,
+      "score": 0.0
+    }
+  ],
+  "mesh": [],
+  "locations_count": 4,
+  "locations": [
+    {
+      "id": "doi:10.31730/osf.io/xq6jh",
+      "doi": "https://doi.org/10.31730/osf.io/xq6jh",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.31730/osf.io/xq6jh",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306402219",
+        "display_name": "AfricArXiv (OSF Preprints)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I2799848540",
+        "host_organization_name": "Center for Open Science",
+        "host_organization_lineage": [
+          "https://openalex.org/I2799848540"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "posted-content"
+    },
+    {
+      "id": "pmh:oai:share.osf.io:11844905-eb72-42b4-9026-1699ffc5754f",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://osf.io/xq6jh",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306402219",
+        "display_name": "AfricArXiv (OSF Preprints)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I2799848540",
+        "host_organization_name": "Center for Open Science",
+        "host_organization_lineage": [
+          "https://openalex.org/I2799848540"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "Preprint"
+    },
+    {
+      "id": "pmh:oai:share.osf.io:E0141-E8A-4B0",
+      "doi": null,
+      "is_oa": false,
+      "landing_page_url": "http://doi.org/10.31730/OSF.IO/XQ6JH",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306402219",
+        "display_name": "AfricArXiv (OSF Preprints)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I2799848540",
+        "host_organization_name": "Center for Open Science",
+        "host_organization_lineage": [
+          "https://openalex.org/I2799848540"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": "",
+      "raw_type": "preprint"
+    },
+    {
+      "id": "doi:10.60763/africarxiv/720",
+      "doi": "https://doi.org/10.60763/africarxiv/720",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.60763/africarxiv/720",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306402219",
+        "display_name": "AfricArXiv (OSF Preprints)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I2799848540",
+        "host_organization_name": "Center for Open Science",
+        "host_organization_lineage": [
+          "https://openalex.org/I2799848540"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": null,
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": null
+    }
+  ],
+  "best_oa_location": {
+    "id": "doi:10.31730/osf.io/xq6jh",
+    "doi": "https://doi.org/10.31730/osf.io/xq6jh",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.31730/osf.io/xq6jh",
+    "pdf_url": null,
+    "source": {
+      "id": "https://openalex.org/S4306402219",
+      "display_name": "AfricArXiv (OSF Preprints)",
+      "issn_l": null,
+      "issn": null,
+      "is_oa": false,
+      "is_in_doaj": false,
+      "is_core": false,
+      "listed_in": [],
+      "host_organization": "https://openalex.org/I2799848540",
+      "host_organization_name": "Center for Open Science",
+      "host_organization_lineage": [
+        "https://openalex.org/I2799848540"
+      ],
+      "host_organization_lineage_names": [],
+      "type": "repository"
+    },
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": "submittedVersion",
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "posted-content"
+  },
+  "sustainable_development_goals": [
+    {
+      "display_name": "Good health and well-being",
+      "score": 1.0,
+      "id": "https://metadata.un.org/sdg/3"
+    }
+  ],
+  "study_designs": [
+    {
+      "display_name": "Observational Study",
+      "id": "https://openalex.org/study-designs/observational-study"
+    }
+  ],
+  "awards": [],
+  "funders": [],
+  "has_content": {
+    "pdf": false,
+    "grobid_xml": false
+  },
+  "content_urls": null,
+  "referenced_works_count": 0,
+  "referenced_works": [],
+  "related_works": [
+    "https://openalex.org/W3198025015",
+    "https://openalex.org/W3199898150",
+    "https://openalex.org/W3050150368",
+    "https://openalex.org/W4310639245",
+    "https://openalex.org/W2794069255",
+    "https://openalex.org/W1983181929",
+    "https://openalex.org/W3126495928",
+    "https://openalex.org/W2033867958",
+    "https://openalex.org/W4234795319"
+  ],
+  "abstract_inverted_index": {
+    "Background:": [
+      0
+    ],
+    "We": [
+      1,
+      31,
+      71,
+      80,
+      103
+    ],
+    "studied": [
+      2
+    ],
+    "the": [
+      3,
+      40,
+      59,
+      67,
+      76,
+      139,
+      145,
+      213
+    ],
+    "incidence": [
+      4,
+      73
+    ],
+    "of": [
+      5,
+      12,
+      162,
+      201,
+      225,
+      239,
+      244
+    ],
+    "and": [
+      6,
+      16,
+      28,
+      64,
+      86,
+      91,
+      98,
+      130,
+      183,
+      207,
+      242
+    ],
+    "risk": [
+      7
+    ],
+    "factors": [
+      8
+    ],
+    "for": [
+      9,
+      75
+    ],
+    "various": [
+      10
+    ],
+    "types": [
+      11,
+      217
+    ],
+    "cancers": [
+      13,
+      85,
+      211,
+      227
+    ],
+    "in": [
+      14,
+      23,
+      138,
+      220
+    ],
+    "adolescents": [
+      15
+    ],
+    "young": [
+      17
+    ],
+    "adults": [
+      18
+    ],
+    "living": [
+      19
+    ],
+    "with": [
+      20,
+      159,
+      198
+    ],
+    "HIV": [
+      21,
+      43,
+      235
+    ],
+    "(AYALWH)": [
+      22
+    ],
+    "South": [
+      24,
+      41,
+      221
+    ],
+    "Africa": [
+      25
+    ],
+    "between": [
+      26,
+      54,
+      83
+    ],
+    "2004": [
+      27
+    ],
+    "2014.": [
+      29
+    ],
+    "Methods:": [
+      30
+    ],
+    "included": [
+      32,
+      104
+    ],
+    "individuals": [
+      33
+    ],
+    "aged": [
+      34
+    ],
+    "15": [
+      35
+    ],
+    "to": [
+      36
+    ],
+    "24": [
+      37
+    ],
+    "years": [
+      38
+    ],
+    "from": [
+      39,
+      51,
+      58,
+      66
+    ],
+    "African": [
+      42
+    ],
+    "Cancer": [
+      44,
+      69
+    ],
+    "Match": [
+      45
+    ],
+    "study,": [
+      46
+    ],
+    "a": [
+      47,
+      52
+    ],
+    "large": [
+      48
+    ],
+    "cohort": [
+      49
+    ],
+    "resulting": [
+      50
+    ],
+    "linkage": [
+      53
+    ],
+    "HIV-related": [
+      55
+    ],
+    "laboratory": [
+      56
+    ],
+    "measurements": [
+      57
+    ],
+    "National": [
+      60,
+      68
+    ],
+    "Health": [
+      61
+    ],
+    "Laboratory": [
+      62
+    ],
+    "Services": [
+      63
+    ],
+    "records": [
+      65
+    ],
+    "Registry.": [
+      70
+    ],
+    "computed": [
+      72
+    ],
+    "rates": [
+      74,
+      161,
+      200
+    ],
+    "most": [
+      77,
+      214
+    ],
+    "common": [
+      78,
+      137,
+      215
+    ],
+    "cancers.": [
+      79
+    ],
+    "assessed": [
+      81
+    ],
+    "associations": [
+      82
+    ],
+    "these": [
+      84,
+      226
+    ],
+    "sex,": [
+      87
+    ],
+    "age,": [
+      88
+    ],
+    "calendar": [
+      89
+    ],
+    "year,": [
+      90
+    ],
+    "CD4": [
+      92,
+      191
+    ],
+    "cell": [
+      93,
+      192
+    ],
+    "count": [
+      94
+    ],
+    "using": [
+      95
+    ],
+    "Cox": [
+      96
+    ],
+    "models": [
+      97
+    ],
+    "adjusted": [
+      99
+    ],
+    "hazard": [
+      100
+    ],
+    "ratios": [
+      101
+    ],
+    "(aHR).Findings:": [
+      102
+    ],
+    "782,454": [
+      105
+    ],
+    "AYALWH": [
+      106,
+      219
+    ],
+    "(89%": [
+      107
+    ],
+    "female).": [
+      108
+    ],
+    "Of": [
+      109
+    ],
+    "those,": [
+      110
+    ],
+    "867": [
+      111
+    ],
+    "developed": [
+      112,
+      118
+    ],
+    "incident": [
+      113
+    ],
+    "cancer": [
+      114,
+      216
+    ],
+    "including": [
+      115
+    ],
+    "429": [
+      116
+    ],
+    "who": [
+      117
+    ],
+    "Kaposi": [
+      119,
+      133,
+      163,
+      202
+    ],
+    "sarcoma,": [
+      120,
+      203
+    ],
+    "107": [
+      121
+    ],
+    "non-Hodgkin": [
+      122,
+      170,
+      206
+    ],
+    "lymphoma,": [
+      123,
+      126
+    ],
+    "48": [
+      124
+    ],
+    "Hodgkin": [
+      125,
+      177,
+      208
+    ],
+    "45": [
+      127
+    ],
+    "cervical": [
+      128,
+      204
+    ],
+    "cancer,": [
+      129,
+      205
+    ],
+    "32": [
+      131
+    ],
+    "leukaemia.": [
+      132
+    ],
+    "sarcoma": [
+      134,
+      164
+    ],
+    "was": [
+      135,
+      157
+    ],
+    "more": [
+      136
+    ],
+    "20-24": [
+      140
+    ],
+    "year": [
+      141,
+      147
+    ],
+    "age": [
+      142,
+      148
+    ],
+    "group": [
+      143,
+      149
+    ],
+    "than": [
+      144
+    ],
+    "15-19": [
+      146
+    ],
+    "(aHR": [
+      150,
+      165,
+      172,
+      179,
+      185
+    ],
+    "1.39,": [
+      151
+    ],
+    "95%": [
+      152,
+      167,
+      174,
+      181,
+      187
+    ],
+    "CI": [
+      153,
+      168,
+      175,
+      188
+    ],
+    "1.03-1.86).": [
+      154
+    ],
+    "Male": [
+      155
+    ],
+    "sex": [
+      156
+    ],
+    "associated": [
+      158,
+      197
+    ],
+    "higher": [
+      160,
+      199
+    ],
+    "2.06,": [
+      166
+    ],
+    "1.61-2.63),": [
+      169
+    ],
+    "lymphoma": [
+      171,
+      178
+    ],
+    "3.17,": [
+      173
+    ],
+    "2.06-4.89),": [
+      176
+    ],
+    "4.83,": [
+      180
+    ],
+    "2.61-8.93),": [
+      182
+    ],
+    "leukaemia": [
+      184
+    ],
+    "5.90,": [
+      186
+    ],
+    "2.87-12.1).": [
+      189
+    ],
+    "Lower": [
+      190
+    ],
+    "counts": [
+      193
+    ],
+    "at": [
+      194
+    ],
+    "baseline": [
+      195
+    ],
+    "were": [
+      196
+    ],
+    "lymphoma.Interpretation:": [
+      209
+    ],
+    "Infection-related": [
+      210
+    ],
+    "are": [
+      212
+    ],
+    "among": [
+      218
+    ],
+    "Africa.": [
+      222
+    ],
+    "The": [
+      223
+    ],
+    "burden": [
+      224
+    ],
+    "may": [
+      228
+    ],
+    "be": [
+      229
+    ],
+    "reduced": [
+      230
+    ],
+    "through": [
+      231
+    ],
+    "HPV": [
+      232
+    ],
+    "vaccination,": [
+      233
+    ],
+    "targeted": [
+      234
+    ],
+    "testing,": [
+      236
+    ],
+    "early": [
+      237
+    ],
+    "initiation": [
+      238
+    ],
+    "antiretroviral": [
+      240
+    ],
+    "therapy,": [
+      241
+    ],
+    "improvement": [
+      243
+    ],
+    "treatment": [
+      245
+    ],
+    "adherence.": [
+      246
+    ]
+  },
+  "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W4231730068",
+  "counts_by_year": [],
+  "updated_date": "2026-11-17T12:49:18.490984",
+  "created_date": "2022-05-12T00:00:00"
+}

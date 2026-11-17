@@ -1,0 +1,2054 @@
+{
+  "id": "https://openalex.org/W4412621262",
+  "doi": "https://doi.org/10.12688/gatesopenres.16355.1",
+  "title": "An expanded method for malaria parasite genetic surveillance using targeted nanopore sequencing",
+  "display_name": "An expanded method for malaria parasite genetic surveillance using targeted nanopore sequencing",
+  "alternate_titles": [],
+  "publication_year": 2025,
+  "publication_date": "2025-07-24",
+  "ids": {
+    "openalex": "https://openalex.org/W4412621262",
+    "doi": "https://doi.org/10.12688/gatesopenres.16355.1",
+    "pmid": "https://pubmed.ncbi.nlm.nih.gov/40718588",
+    "pmcid": "https://www.ncbi.nlm.nih.gov/pmc/articles/12290220"
+  },
+  "language": "en",
+  "primary_location": {
+    "id": "doi:10.12688/gatesopenres.16355.1",
+    "doi": "https://doi.org/10.12688/gatesopenres.16355.1",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.12688/gatesopenres.16355.1",
+    "pdf_url": "https://gatesopenresearch.org/articles/9-49/pdf",
+    "source": {
+      "id": "https://openalex.org/S4210224510",
+      "display_name": "Gates Open Research",
+      "issn_l": "2572-4754",
+      "issn": [
+        "2572-4754"
+      ],
+      "is_oa": true,
+      "is_in_doaj": true,
+      "is_core": true,
+      "listed_in": [
+        "cwts-core",
+        "doaj",
+        "medline",
+        "norway-1",
+        "poland-20",
+        "russia-white-list-1"
+      ],
+      "host_organization": "https://openalex.org/P4310315590",
+      "host_organization_name": "Bill & Melinda Gates Foundation",
+      "host_organization_lineage": [
+        "https://openalex.org/P4310315590"
+      ],
+      "host_organization_lineage_names": [
+        "Bill & Melinda Gates Foundation"
+      ],
+      "type": "journal"
+    },
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": "publishedVersion",
+    "is_accepted": true,
+    "is_published": true,
+    "raw_source_name": "Gates Open Research",
+    "raw_type": "journal-article"
+  },
+  "parent_works": [],
+  "lineage": [
+    "https://openalex.org/W4412621262"
+  ],
+  "child_works_count": 0,
+  "type": "article",
+  "is_traditional": true,
+  "indexed_in": [
+    "crossref",
+    "doaj",
+    "pubmed"
+  ],
+  "open_access": {
+    "is_oa": true,
+    "oa_status": "gold",
+    "oa_url": "https://gatesopenresearch.org/articles/9-49/pdf",
+    "any_repository_has_fulltext": true
+  },
+  "authorships": [
+    {
+      "author_position": "first",
+      "author": {
+        "id": "https://openalex.org/A5079510264",
+        "display_name": "Alexandria J. R. Harrott",
+        "orcid": "https://orcid.org/0000-0002-7050-7996",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-7050-7996"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I2802476451",
+          "display_name": "Wellcome Sanger Institute",
+          "ror": "https://ror.org/05cy4wa09",
+          "country_code": "GB",
+          "type": "nonprofit",
+          "lineage": [
+            "https://openalex.org/I2802476451",
+            "https://openalex.org/I87048295"
+          ]
+        },
+        {
+          "id": "https://openalex.org/I51601045",
+          "display_name": "University of Bath",
+          "ror": "https://ror.org/002h8g185",
+          "country_code": "GB",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I51601045"
+          ]
+        }
+      ],
+      "countries": [
+        "GB"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Alexandria J. R. Harrott",
+      "raw_affiliation_strings": [
+        "University of Bath Department of Life Sciences, Bath, England, BA2 7AZ, UK",
+        "Wellcome Sanger Institute, Hinxton, England, CB10 1RQ, UK"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "University of Bath Department of Life Sciences, Bath, England, BA2 7AZ, UK",
+          "institution_ids": [
+            "https://openalex.org/I51601045"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Wellcome Sanger Institute, Hinxton, England, CB10 1RQ, UK",
+          "institution_ids": [
+            "https://openalex.org/I2802476451"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5020226366",
+        "display_name": "Collins M. Morang’a",
+        "orcid": "https://orcid.org/0000-0002-6988-150X",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-6988-150X"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4405262780",
+          "display_name": "West African Centre for Cell Biology of Infectious Pathogens",
+          "ror": "https://ror.org/054yged29",
+          "country_code": "GH",
+          "type": "facility",
+          "lineage": [
+            "https://openalex.org/I4405262780"
+          ]
+        }
+      ],
+      "countries": [
+        "GH"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Collins M. Morang'a",
+      "raw_affiliation_strings": [
+        "West African Centre for Cell Biology of Infectious Pathogens, Legon, Accra, Ghana"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "West African Centre for Cell Biology of Infectious Pathogens, Legon, Accra, Ghana",
+          "institution_ids": [
+            "https://openalex.org/I4405262780"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5007529215",
+        "display_name": "Richard D. Pearson",
+        "orcid": "https://orcid.org/0000-0002-7386-3566",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-7386-3566"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I2802476451",
+          "display_name": "Wellcome Sanger Institute",
+          "ror": "https://ror.org/05cy4wa09",
+          "country_code": "GB",
+          "type": "nonprofit",
+          "lineage": [
+            "https://openalex.org/I2802476451",
+            "https://openalex.org/I87048295"
+          ]
+        }
+      ],
+      "countries": [
+        "GB"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Richard D. Pearson",
+      "raw_affiliation_strings": [
+        "Wellcome Sanger Institute, Hinxton, England, CB10 1RQ, UK"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Wellcome Sanger Institute, Hinxton, England, CB10 1RQ, UK",
+          "institution_ids": [
+            "https://openalex.org/I2802476451"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": null,
+        "display_name": "Mona-Liza Sakyi",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4405262780",
+          "display_name": "West African Centre for Cell Biology of Infectious Pathogens",
+          "ror": "https://ror.org/054yged29",
+          "country_code": "GH",
+          "type": "facility",
+          "lineage": [
+            "https://openalex.org/I4405262780"
+          ]
+        }
+      ],
+      "countries": [
+        "GH"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Mona-Liza Sakyi",
+      "raw_affiliation_strings": [
+        "West African Centre for Cell Biology of Infectious Pathogens, Legon, Accra, Ghana"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "West African Centre for Cell Biology of Infectious Pathogens, Legon, Accra, Ghana",
+          "institution_ids": [
+            "https://openalex.org/I4405262780"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5116609921",
+        "display_name": "Ahmed Osumanu",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4405262780",
+          "display_name": "West African Centre for Cell Biology of Infectious Pathogens",
+          "ror": "https://ror.org/054yged29",
+          "country_code": "GH",
+          "type": "facility",
+          "lineage": [
+            "https://openalex.org/I4405262780"
+          ]
+        }
+      ],
+      "countries": [
+        "GH"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Ahmed Osumanu",
+      "raw_affiliation_strings": [
+        "West African Centre for Cell Biology of Infectious Pathogens, Legon, Accra, Ghana"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "West African Centre for Cell Biology of Infectious Pathogens, Legon, Accra, Ghana",
+          "institution_ids": [
+            "https://openalex.org/I4405262780"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5041868273",
+        "display_name": "Enock  Kofi Amoako",
+        "orcid": "https://orcid.org/0009-0005-6035-9220",
+        "observed_orcids": [
+          "https://orcid.org/0009-0005-6035-9220"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4405262780",
+          "display_name": "West African Centre for Cell Biology of Infectious Pathogens",
+          "ror": "https://ror.org/054yged29",
+          "country_code": "GH",
+          "type": "facility",
+          "lineage": [
+            "https://openalex.org/I4405262780"
+          ]
+        }
+      ],
+      "countries": [
+        "GH"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Enock K. Amoako",
+      "raw_affiliation_strings": [
+        "West African Centre for Cell Biology of Infectious Pathogens, Legon, Accra, Ghana"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "West African Centre for Cell Biology of Infectious Pathogens, Legon, Accra, Ghana",
+          "institution_ids": [
+            "https://openalex.org/I4405262780"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5068890011",
+        "display_name": "Fagdéba David Bara",
+        "orcid": "https://orcid.org/0000-0002-6120-8054",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-6120-8054"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4405262780",
+          "display_name": "West African Centre for Cell Biology of Infectious Pathogens",
+          "ror": "https://ror.org/054yged29",
+          "country_code": "GH",
+          "type": "facility",
+          "lineage": [
+            "https://openalex.org/I4405262780"
+          ]
+        }
+      ],
+      "countries": [
+        "GH"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Fagdéba David Bara",
+      "raw_affiliation_strings": [
+        "West African Centre for Cell Biology of Infectious Pathogens, Legon, Accra, Ghana"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "West African Centre for Cell Biology of Infectious Pathogens, Legon, Accra, Ghana",
+          "institution_ids": [
+            "https://openalex.org/I4405262780"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5073280735",
+        "display_name": "Myra D.T. Hosmillo",
+        "orcid": "https://orcid.org/0000-0002-3514-7681",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-3514-7681"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I241749",
+          "display_name": "University of Cambridge",
+          "ror": "https://ror.org/013meh722",
+          "country_code": "GB",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I241749"
+          ]
+        }
+      ],
+      "countries": [
+        "GB"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Myra Hosmillo",
+      "raw_affiliation_strings": [
+        "University of Cambridge Department of Pathology, Cambridge, England, CB2 0QQ, UK"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "University of Cambridge Department of Pathology, Cambridge, England, CB2 0QQ, UK",
+          "institution_ids": [
+            "https://openalex.org/I241749"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": null,
+        "display_name": "Kess Rowe",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I241749",
+          "display_name": "University of Cambridge",
+          "ror": "https://ror.org/013meh722",
+          "country_code": "GB",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I241749"
+          ]
+        }
+      ],
+      "countries": [
+        "GB"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Kess Rowe",
+      "raw_affiliation_strings": [
+        "University of Cambridge Department of Pathology, Cambridge, England, CB2 0QQ, UK"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "University of Cambridge Department of Pathology, Cambridge, England, CB2 0QQ, UK",
+          "institution_ids": [
+            "https://openalex.org/I241749"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5048172568",
+        "display_name": "Yaw Aniweh",
+        "orcid": "https://orcid.org/0000-0002-8415-2727",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-8415-2727"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4405262780",
+          "display_name": "West African Centre for Cell Biology of Infectious Pathogens",
+          "ror": "https://ror.org/054yged29",
+          "country_code": "GH",
+          "type": "facility",
+          "lineage": [
+            "https://openalex.org/I4405262780"
+          ]
+        }
+      ],
+      "countries": [
+        "GH"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Yaw Aniweh",
+      "raw_affiliation_strings": [
+        "West African Centre for Cell Biology of Infectious Pathogens, Legon, Accra, Ghana"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "West African Centre for Cell Biology of Infectious Pathogens, Legon, Accra, Ghana",
+          "institution_ids": [
+            "https://openalex.org/I4405262780"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5026031023",
+        "display_name": "Gordon A. Awandare",
+        "orcid": "https://orcid.org/0000-0002-8793-3641",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-8793-3641"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4405262780",
+          "display_name": "West African Centre for Cell Biology of Infectious Pathogens",
+          "ror": "https://ror.org/054yged29",
+          "country_code": "GH",
+          "type": "facility",
+          "lineage": [
+            "https://openalex.org/I4405262780"
+          ]
+        }
+      ],
+      "countries": [
+        "GH"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Gordon A. Awandare",
+      "raw_affiliation_strings": [
+        "West African Centre for Cell Biology of Infectious Pathogens, Legon, Accra, Ghana"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "West African Centre for Cell Biology of Infectious Pathogens, Legon, Accra, Ghana",
+          "institution_ids": [
+            "https://openalex.org/I4405262780"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5033881010",
+        "display_name": "Francis Zeukeng",
+        "orcid": "https://orcid.org/0000-0002-2539-8057",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-2539-8057"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I1331070479",
+          "display_name": "Université de Yaoundé I",
+          "ror": "https://ror.org/022zbs961",
+          "country_code": "CM",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I1331070479"
+          ]
+        },
+        {
+          "id": "https://openalex.org/I144693123",
+          "display_name": "University of Buea",
+          "ror": "https://ror.org/041kdhz15",
+          "country_code": "CM",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I144693123"
+          ]
+        }
+      ],
+      "countries": [
+        "CM"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Francis Zeukeng",
+      "raw_affiliation_strings": [
+        "University of Buea, Buea, P.O. box 63 Buea, Cameroon",
+        "University of Yaoundé 1, Etetak-Yaounde, P.O. box 17673, Cameroon"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "University of Buea, Buea, P.O. box 63 Buea, Cameroon",
+          "institution_ids": [
+            "https://openalex.org/I144693123"
+          ]
+        },
+        {
+          "raw_affiliation_string": "University of Yaoundé 1, Etetak-Yaounde, P.O. box 17673, Cameroon",
+          "institution_ids": [
+            "https://openalex.org/I1331070479"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5011132357",
+        "display_name": "Ian Goodfellow",
+        "orcid": "https://orcid.org/0000-0002-9483-510X",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-9483-510X"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I241749",
+          "display_name": "University of Cambridge",
+          "ror": "https://ror.org/013meh722",
+          "country_code": "GB",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I241749"
+          ]
+        }
+      ],
+      "countries": [
+        "GB"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Ian Goodfellow",
+      "raw_affiliation_strings": [
+        "University of Cambridge Department of Pathology, Cambridge, England, CB2 0QQ, UK"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "University of Cambridge Department of Pathology, Cambridge, England, CB2 0QQ, UK",
+          "institution_ids": [
+            "https://openalex.org/I241749"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5113546659",
+        "display_name": "Cristina V. Ariani",
+        "orcid": "https://orcid.org/0009-0000-0887-5993",
+        "observed_orcids": [
+          "https://orcid.org/0009-0000-0887-5993"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I2802476451",
+          "display_name": "Wellcome Sanger Institute",
+          "ror": "https://ror.org/05cy4wa09",
+          "country_code": "GB",
+          "type": "nonprofit",
+          "lineage": [
+            "https://openalex.org/I2802476451",
+            "https://openalex.org/I87048295"
+          ]
+        }
+      ],
+      "countries": [
+        "GB"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Cristina V. Ariani",
+      "raw_affiliation_strings": [
+        "Wellcome Sanger Institute, Hinxton, England, CB10 1RQ, UK"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Wellcome Sanger Institute, Hinxton, England, CB10 1RQ, UK",
+          "institution_ids": [
+            "https://openalex.org/I2802476451"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5067928767",
+        "display_name": "Lucas Naam-Kayagre Amenga-Etego",
+        "orcid": "https://orcid.org/0000-0003-4468-0506",
+        "observed_orcids": [
+          "https://orcid.org/0000-0003-4468-0506"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4405262780",
+          "display_name": "West African Centre for Cell Biology of Infectious Pathogens",
+          "ror": "https://ror.org/054yged29",
+          "country_code": "GH",
+          "type": "facility",
+          "lineage": [
+            "https://openalex.org/I4405262780"
+          ]
+        }
+      ],
+      "countries": [
+        "GH"
+      ],
+      "is_corresponding": true,
+      "raw_author_name": "Lucas N. Amenga-Etego",
+      "raw_affiliation_strings": [
+        "West African Centre for Cell Biology of Infectious Pathogens, Legon, Accra, Ghana"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "West African Centre for Cell Biology of Infectious Pathogens, Legon, Accra, Ghana",
+          "institution_ids": [
+            "https://openalex.org/I4405262780"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "last",
+      "author": {
+        "id": null,
+        "display_name": "William L. Hamilton",
+        "orcid": "https://orcid.org/0000-0002-3330-353X",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-3330-353X"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I241749",
+          "display_name": "University of Cambridge",
+          "ror": "https://ror.org/013meh722",
+          "country_code": "GB",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I241749"
+          ]
+        },
+        {
+          "id": "https://openalex.org/I2802466933",
+          "display_name": "Cambridge University Hospitals NHS Foundation Trust",
+          "ror": "https://ror.org/04v54gj93",
+          "country_code": "GB",
+          "type": "healthcare",
+          "lineage": [
+            "https://openalex.org/I2802466933"
+          ]
+        },
+        {
+          "id": "https://openalex.org/I2802476451",
+          "display_name": "Wellcome Sanger Institute",
+          "ror": "https://ror.org/05cy4wa09",
+          "country_code": "GB",
+          "type": "nonprofit",
+          "lineage": [
+            "https://openalex.org/I2802476451",
+            "https://openalex.org/I87048295"
+          ]
+        }
+      ],
+      "countries": [
+        "GB"
+      ],
+      "is_corresponding": true,
+      "raw_author_name": "William L. Hamilton",
+      "raw_affiliation_strings": [
+        "Cambridge University Hospitals NHS Foundation Trust, Cambridge, England, CB2 0QQ, UK",
+        "University of Cambridge Department of Medicine, Cambridge, England, CB2 0QQ, UK",
+        "Wellcome Sanger Institute, Hinxton, England, CB10 1RQ, UK"
+      ],
+      "raw_orcid": "https://orcid.org/0000-0002-3330-353X",
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Cambridge University Hospitals NHS Foundation Trust, Cambridge, England, CB2 0QQ, UK",
+          "institution_ids": [
+            "https://openalex.org/I2802466933"
+          ]
+        },
+        {
+          "raw_affiliation_string": "University of Cambridge Department of Medicine, Cambridge, England, CB2 0QQ, UK",
+          "institution_ids": [
+            "https://openalex.org/I241749"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Wellcome Sanger Institute, Hinxton, England, CB10 1RQ, UK",
+          "institution_ids": [
+            "https://openalex.org/I2802476451"
+          ]
+        }
+      ]
+    }
+  ],
+  "institutions": [],
+  "countries_distinct_count": 3,
+  "institutions_distinct_count": 7,
+  "corresponding_author_ids": [
+    "https://openalex.org/A5067928767"
+  ],
+  "corresponding_institution_ids": [
+    "https://openalex.org/I241749",
+    "https://openalex.org/I2802466933",
+    "https://openalex.org/I2802476451",
+    "https://openalex.org/I4405262780"
+  ],
+  "apc_list": {
+    "value": 1150,
+    "currency": "USD",
+    "value_usd": 1150
+  },
+  "apc_paid": {
+    "value": 1150,
+    "currency": "USD",
+    "value_usd": 1150
+  },
+  "fwci": 1.365,
+  "has_fulltext": true,
+  "cited_by_count": 2,
+  "citation_normalized_percentile": {
+    "value": 0.7603223,
+    "is_in_top_1_percent": false,
+    "is_in_top_10_percent": false
+  },
+  "cited_by_percentile_year": {
+    "min": 95,
+    "max": 96
+  },
+  "biblio": {
+    "volume": "9",
+    "issue": null,
+    "first_page": "49",
+    "last_page": "49"
+  },
+  "is_retracted": false,
+  "is_paratext": false,
+  "is_xpac": false,
+  "primary_topic": {
+    "id": "https://openalex.org/T10091",
+    "display_name": "Malaria Research and Control",
+    "score": 1.0,
+    "subfield": {
+      "id": "https://openalex.org/subfields/2739",
+      "display_name": "Public Health, Environmental and Occupational Health"
+    },
+    "field": {
+      "id": "https://openalex.org/fields/27",
+      "display_name": "Medicine"
+    },
+    "domain": {
+      "id": "https://openalex.org/domains/4",
+      "display_name": "Health Sciences"
+    }
+  },
+  "topics": [
+    {
+      "id": "https://openalex.org/T10091",
+      "display_name": "Malaria Research and Control",
+      "score": 1.0,
+      "subfield": {
+        "id": "https://openalex.org/subfields/2739",
+        "display_name": "Public Health, Environmental and Occupational Health"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/27",
+        "display_name": "Medicine"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/4",
+        "display_name": "Health Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T12178",
+      "display_name": "Bird parasitology and diseases",
+      "score": 0.0,
+      "subfield": {
+        "id": "https://openalex.org/subfields/2405",
+        "display_name": "Parasitology"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/24",
+        "display_name": "Immunology and Microbiology"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/1",
+        "display_name": "Life Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T11393",
+      "display_name": "Biosensors and Analytical Detection",
+      "score": 0.0,
+      "subfield": {
+        "id": "https://openalex.org/subfields/2204",
+        "display_name": "Biomedical Engineering"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/22",
+        "display_name": "Engineering"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/3",
+        "display_name": "Physical Sciences"
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "id": "https://openalex.org/keywords/plasmodium-falciparum",
+      "display_name": "Plasmodium falciparum",
+      "score": 0.9929999709129333
+    },
+    {
+      "id": "https://openalex.org/keywords/nanopore-sequencing",
+      "display_name": "nanopore sequencing",
+      "score": 0.7549999952316284
+    },
+    {
+      "id": "https://openalex.org/keywords/targeted-sequencing",
+      "display_name": "targeted sequencing",
+      "score": 0.4569999873638153
+    },
+    {
+      "id": "https://openalex.org/keywords/merozoite-surface-protein-2",
+      "display_name": "merozoite surface protein 2",
+      "score": 0.9190000295639038
+    },
+    {
+      "id": "https://openalex.org/keywords/18s-rrna",
+      "display_name": "18S rRNA",
+      "score": 0.847000002861023
+    },
+    {
+      "id": "https://openalex.org/keywords/plasmodium-species-detection",
+      "display_name": "Plasmodium species detection",
+      "score": 0.8309999704360962
+    },
+    {
+      "id": "https://openalex.org/keywords/dried-blood-spots",
+      "display_name": "dried blood spots",
+      "score": 0.7850000262260437
+    },
+    {
+      "id": "https://openalex.org/keywords/contaminant-detection",
+      "display_name": "contamination detection",
+      "score": 0.6489999890327454
+    },
+    {
+      "id": "https://openalex.org/keywords/quality-control",
+      "display_name": "quality control",
+      "score": 0.7670000195503235
+    },
+    {
+      "id": "https://openalex.org/keywords/multiplex-pcr",
+      "display_name": "multiplex PCR",
+      "score": 0.7620000243186951
+    }
+  ],
+  "concepts": [
+    {
+      "id": "https://openalex.org/C2778371730",
+      "wikidata": "https://www.wikidata.org/wiki/Q311383",
+      "display_name": "Plasmodium falciparum",
+      "level": 3,
+      "score": 0.5414865016937256
+    },
+    {
+      "id": "https://openalex.org/C86803240",
+      "wikidata": "https://www.wikidata.org/wiki/Q420",
+      "display_name": "Biology",
+      "level": 0,
+      "score": 0.5243532657623291
+    },
+    {
+      "id": "https://openalex.org/C2778048844",
+      "wikidata": "https://www.wikidata.org/wiki/Q12156",
+      "display_name": "Malaria",
+      "level": 2,
+      "score": 0.44424569606781006
+    },
+    {
+      "id": "https://openalex.org/C159047783",
+      "wikidata": "https://www.wikidata.org/wiki/Q7215",
+      "display_name": "Virology",
+      "level": 1,
+      "score": 0.35907307267189026
+    },
+    {
+      "id": "https://openalex.org/C70721500",
+      "wikidata": "https://www.wikidata.org/wiki/Q177005",
+      "display_name": "Computational biology",
+      "level": 1,
+      "score": 0.34324413537979126
+    },
+    {
+      "id": "https://openalex.org/C203014093",
+      "wikidata": "https://www.wikidata.org/wiki/Q101929",
+      "display_name": "Immunology",
+      "level": 1,
+      "score": 0.0843493640422821
+    }
+  ],
+  "mesh": [
+    {
+      "descriptor_ui": "D000081414",
+      "descriptor_name": "Nanopore Sequencing",
+      "qualifier_ui": "Q000379",
+      "qualifier_name": "methods",
+      "is_major_topic": true
+    },
+    {
+      "descriptor_ui": "D000818",
+      "descriptor_name": "Animals",
+      "qualifier_ui": null,
+      "qualifier_name": null,
+      "is_major_topic": false
+    },
+    {
+      "descriptor_ui": "D000852",
+      "descriptor_name": "Anopheles",
+      "qualifier_ui": "Q000469",
+      "qualifier_name": "parasitology",
+      "is_major_topic": false
+    },
+    {
+      "descriptor_ui": "D000962",
+      "descriptor_name": "Antimalarials",
+      "qualifier_ui": "Q000494",
+      "qualifier_name": "pharmacology",
+      "is_major_topic": false
+    },
+    {
+      "descriptor_ui": "D000962",
+      "descriptor_name": "Antimalarials",
+      "qualifier_ui": "Q000627",
+      "qualifier_name": "therapeutic use",
+      "is_major_topic": false
+    },
+    {
+      "descriptor_ui": "D004351",
+      "descriptor_name": "Drug Resistance",
+      "qualifier_ui": "Q000235",
+      "qualifier_name": "genetics",
+      "is_major_topic": false
+    },
+    {
+      "descriptor_ui": "D005869",
+      "descriptor_name": "Ghana",
+      "qualifier_ui": "Q000453",
+      "qualifier_name": "epidemiology",
+      "is_major_topic": false
+    },
+    {
+      "descriptor_ui": "D006801",
+      "descriptor_name": "Humans",
+      "qualifier_ui": null,
+      "qualifier_name": null,
+      "is_major_topic": false
+    },
+    {
+      "descriptor_ui": "D008288",
+      "descriptor_name": "Malaria",
+      "qualifier_ui": "Q000469",
+      "qualifier_name": "parasitology",
+      "is_major_topic": true
+    },
+    {
+      "descriptor_ui": "D010963",
+      "descriptor_name": "Plasmodium falciparum",
+      "qualifier_ui": "Q000235",
+      "qualifier_name": "genetics",
+      "is_major_topic": true
+    },
+    {
+      "descriptor_ui": "D012337",
+      "descriptor_name": "RNA, Ribosomal, 18S",
+      "qualifier_ui": "Q000235",
+      "qualifier_name": "genetics",
+      "is_major_topic": false
+    },
+    {
+      "descriptor_ui": "D016778",
+      "descriptor_name": "Malaria, Falciparum",
+      "qualifier_ui": "Q000175",
+      "qualifier_name": "diagnosis",
+      "is_major_topic": true
+    },
+    {
+      "descriptor_ui": "D016778",
+      "descriptor_name": "Malaria, Falciparum",
+      "qualifier_ui": "Q000453",
+      "qualifier_name": "epidemiology",
+      "is_major_topic": true
+    },
+    {
+      "descriptor_ui": "D016778",
+      "descriptor_name": "Malaria, Falciparum",
+      "qualifier_ui": "Q000469",
+      "qualifier_name": "parasitology",
+      "is_major_topic": true
+    },
+    {
+      "descriptor_ui": "D020641",
+      "descriptor_name": "Polymorphism, Single Nucleotide",
+      "qualifier_ui": null,
+      "qualifier_name": null,
+      "is_major_topic": false
+    },
+    {
+      "descriptor_ui": "D058608",
+      "descriptor_name": "Nanopores",
+      "qualifier_ui": null,
+      "qualifier_name": null,
+      "is_major_topic": true
+    },
+    {
+      "descriptor_ui": "D060885",
+      "descriptor_name": "Multiplex Polymerase Chain Reaction",
+      "qualifier_ui": "Q000379",
+      "qualifier_name": "methods",
+      "is_major_topic": false
+    }
+  ],
+  "locations_count": 5,
+  "locations": [
+    {
+      "id": "doi:10.12688/gatesopenres.16355.1",
+      "doi": "https://doi.org/10.12688/gatesopenres.16355.1",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.12688/gatesopenres.16355.1",
+      "pdf_url": "https://gatesopenresearch.org/articles/9-49/pdf",
+      "source": {
+        "id": "https://openalex.org/S4210224510",
+        "display_name": "Gates Open Research",
+        "issn_l": "2572-4754",
+        "issn": [
+          "2572-4754"
+        ],
+        "is_oa": true,
+        "is_in_doaj": true,
+        "is_core": true,
+        "listed_in": [
+          "cwts-core",
+          "doaj",
+          "medline",
+          "norway-1",
+          "poland-20",
+          "russia-white-list-1"
+        ],
+        "host_organization": "https://openalex.org/P4310315590",
+        "host_organization_name": "Bill & Melinda Gates Foundation",
+        "host_organization_lineage": [
+          "https://openalex.org/P4310315590"
+        ],
+        "host_organization_lineage_names": [
+          "Bill & Melinda Gates Foundation"
+        ],
+        "type": "journal"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "publishedVersion",
+      "is_accepted": true,
+      "is_published": true,
+      "raw_source_name": "Gates Open Research",
+      "raw_type": "journal-article"
+    },
+    {
+      "id": "doi:10.12688/verixiv.630.1",
+      "doi": "https://doi.org/10.12688/verixiv.630.1",
+      "is_oa": false,
+      "landing_page_url": "https://doi.org/10.12688/verixiv.630.1",
+      "pdf_url": null,
+      "source": null,
+      "license": null,
+      "license_id": null,
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "posted-content"
+    },
+    {
+      "id": "pmid:40718588",
+      "doi": null,
+      "is_oa": false,
+      "landing_page_url": "https://pubmed.ncbi.nlm.nih.gov/40718588",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306525036",
+        "display_name": "PubMed",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I1299303238",
+        "host_organization_name": "National Institutes of Health",
+        "host_organization_lineage": [
+          "https://openalex.org/I1299303238"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": "publishedVersion",
+      "is_accepted": true,
+      "is_published": true,
+      "raw_source_name": "Gates open research",
+      "raw_type": "Journal Article"
+    },
+    {
+      "id": "pmh:oai:pubmedcentral.nih.gov:12290220",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12290220/",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S2764455111",
+        "display_name": "PubMed Central",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": true,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I1299303238",
+        "host_organization_name": "National Institutes of Health",
+        "host_organization_lineage": [
+          "https://openalex.org/I1299303238"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "publishedVersion",
+      "is_accepted": true,
+      "is_published": true,
+      "raw_source_name": "Gates Open Res",
+      "raw_type": "Text"
+    },
+    {
+      "id": "pmh:oai:doaj.org/article:e0375c7ccfaf4213af57c388ad01f8e3",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://doaj.org/article/e0375c7ccfaf4213af57c388ad01f8e3",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306401280",
+        "display_name": "DOAJ (DOAJ: Directory of Open Access Journals)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": null,
+        "host_organization_name": null,
+        "host_organization_lineage": [],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by-sa",
+      "license_id": "https://openalex.org/licenses/cc-by-sa",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": "Gates Open Research, Vol 9 (2025)",
+      "raw_type": "article"
+    }
+  ],
+  "best_oa_location": {
+    "id": "doi:10.12688/gatesopenres.16355.1",
+    "doi": "https://doi.org/10.12688/gatesopenres.16355.1",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.12688/gatesopenres.16355.1",
+    "pdf_url": "https://gatesopenresearch.org/articles/9-49/pdf",
+    "source": {
+      "id": "https://openalex.org/S4210224510",
+      "display_name": "Gates Open Research",
+      "issn_l": "2572-4754",
+      "issn": [
+        "2572-4754"
+      ],
+      "is_oa": true,
+      "is_in_doaj": true,
+      "is_core": true,
+      "listed_in": [
+        "cwts-core",
+        "doaj",
+        "medline",
+        "norway-1",
+        "poland-20",
+        "russia-white-list-1"
+      ],
+      "host_organization": "https://openalex.org/P4310315590",
+      "host_organization_name": "Bill & Melinda Gates Foundation",
+      "host_organization_lineage": [
+        "https://openalex.org/P4310315590"
+      ],
+      "host_organization_lineage_names": [
+        "Bill & Melinda Gates Foundation"
+      ],
+      "type": "journal"
+    },
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": "publishedVersion",
+    "is_accepted": true,
+    "is_published": true,
+    "raw_source_name": "Gates Open Research",
+    "raw_type": "journal-article"
+  },
+  "sustainable_development_goals": [
+    {
+      "id": "https://metadata.un.org/sdg/3",
+      "display_name": "Good health and well-being",
+      "score": 0.9537000060081482
+    }
+  ],
+  "study_designs": [],
+  "awards": [
+    {
+      "id": "https://openalex.org/G1003409198",
+      "display_name": "West African Centre for Cell Biology of Infectious Pathogens - to build laboratory and scientific capacity to integrate malaria parasite and genomic surveillance in Ghana.",
+      "funder_award_id": "INV-050873",
+      "funder_id": "https://openalex.org/F4320306137",
+      "funder_display_name": "Bill and Melinda Gates Foundation"
+    },
+    {
+      "id": "https://openalex.org/G3429147153",
+      "display_name": "Expansion and support of SARS-CoV-2 sequencing in West and Central Africa to support the COVID-19 pandemic response",
+      "funder_award_id": "223705/Z/21/Z",
+      "funder_id": "https://openalex.org/F4320311904",
+      "funder_display_name": "Wellcome Trust"
+    },
+    {
+      "id": "https://openalex.org/G6164114288",
+      "display_name": "Liverpool School of Tropical Medicine - to provide training and technical support in whole genome sequencing and bioinformatic analysis to the African Centre for Vector Genomics and other...",
+      "funder_award_id": "INV-068808",
+      "funder_id": "https://openalex.org/F4320306137",
+      "funder_display_name": "Bill and Melinda Gates Foundation"
+    },
+    {
+      "id": "https://openalex.org/G6608735128",
+      "display_name": "Liverpool School of Tropical Medicine - to build laboratory and scientific capacity to integrate malaria parasite and genomic surveillance in Ghana",
+      "funder_award_id": "INV-052827",
+      "funder_id": "https://openalex.org/F4320306137",
+      "funder_display_name": "Bill and Melinda Gates Foundation"
+    },
+    {
+      "id": "https://openalex.org/G8266474742",
+      "display_name": null,
+      "funder_award_id": "INV-050873, INV-052827, INV-069387, INV-071074, INV-068808",
+      "funder_id": "https://openalex.org/F4320306137",
+      "funder_display_name": "Bill and Melinda Gates Foundation"
+    },
+    {
+      "id": "https://openalex.org/G8751716619",
+      "display_name": "The Biotechnology Centre, University of Yaounde 1 - To build malaria molecular surveillance capacity in Cameroon using nanopore sequencing",
+      "funder_award_id": "INV-069387",
+      "funder_id": "https://openalex.org/F4320306137",
+      "funder_display_name": "Bill and Melinda Gates Foundation"
+    },
+    {
+      "id": "https://openalex.org/G972641390",
+      "display_name": null,
+      "funder_award_id": "INV-071074",
+      "funder_id": "https://openalex.org/F4320306137",
+      "funder_display_name": "Bill and Melinda Gates Foundation"
+    }
+  ],
+  "funders": [
+    {
+      "id": "https://openalex.org/F4320306137",
+      "display_name": "Bill and Melinda Gates Foundation",
+      "ror": "https://ror.org/0456r8d26"
+    },
+    {
+      "id": "https://openalex.org/F4320311904",
+      "display_name": "Wellcome Trust",
+      "ror": "https://ror.org/029chgv08"
+    },
+    {
+      "id": "https://openalex.org/F4320319990",
+      "display_name": "National Institute for Health and Care Research",
+      "ror": "https://ror.org/0187kwz08"
+    },
+    {
+      "id": "https://openalex.org/F4320320273",
+      "display_name": "University of Cambridge",
+      "ror": "https://ror.org/013meh722"
+    },
+    {
+      "id": "https://openalex.org/F4320330760",
+      "display_name": "Foreign, Commonwealth and Development Office",
+      "ror": "https://ror.org/037wke960"
+    }
+  ],
+  "has_content": {
+    "grobid_xml": true,
+    "pdf": true
+  },
+  "content_urls": {
+    "pdf": "https://content.openalex.org/works/W4412621262.pdf",
+    "grobid_xml": "https://content.openalex.org/works/W4412621262.grobid-xml"
+  },
+  "referenced_works_count": 24,
+  "referenced_works": [
+    "https://openalex.org/W1959579673",
+    "https://openalex.org/W2021341670",
+    "https://openalex.org/W2069995906",
+    "https://openalex.org/W2100303227",
+    "https://openalex.org/W2108234281",
+    "https://openalex.org/W2162098634",
+    "https://openalex.org/W2789843538",
+    "https://openalex.org/W2793388751",
+    "https://openalex.org/W2801980266",
+    "https://openalex.org/W2806885090",
+    "https://openalex.org/W2951816935",
+    "https://openalex.org/W3107925278",
+    "https://openalex.org/W3116657238",
+    "https://openalex.org/W3131055609",
+    "https://openalex.org/W3191429989",
+    "https://openalex.org/W4296029810",
+    "https://openalex.org/W4313430580",
+    "https://openalex.org/W4316495494",
+    "https://openalex.org/W4387661758",
+    "https://openalex.org/W4387783832",
+    "https://openalex.org/W4388939081",
+    "https://openalex.org/W4391839017",
+    "https://openalex.org/W6958966023",
+    "https://openalex.org/W7171620148"
+  ],
+  "related_works": [
+    "https://openalex.org/W4388939081",
+    "https://openalex.org/W4391839017",
+    "https://openalex.org/W4391428648",
+    "https://openalex.org/W7160861195",
+    "https://openalex.org/W4387783832",
+    "https://openalex.org/W4321493581",
+    "https://openalex.org/W2047791802",
+    "https://openalex.org/W7140208629"
+  ],
+  "abstract_inverted_index": {
+    "Malaria": [
+      0
+    ],
+    "causes": [
+      1
+    ],
+    "around": [
+      2
+    ],
+    "250": [
+      3
+    ],
+    "million": [
+      4
+    ],
+    "cases": [
+      5
+    ],
+    "and": [
+      6,
+      28,
+      44,
+      72,
+      97,
+      121,
+      126,
+      145,
+      154,
+      170,
+      179,
+      225,
+      248,
+      251
+    ],
+    "over": [
+      7,
+      116
+    ],
+    "600,000": [
+      8
+    ],
+    "deaths": [
+      9
+    ],
+    "annually,": [
+      10
+    ],
+    "with": [
+      11,
+      77,
+      130
+    ],
+    "the": [
+      12,
+      88,
+      98,
+      110,
+      113,
+      137,
+      201,
+      232
+    ],
+    "heaviest": [
+      13
+    ],
+    "burden": [
+      14
+    ],
+    "falling": [
+      15
+    ],
+    "on": [
+      16
+    ],
+    "young": [
+      17
+    ],
+    "children": [
+      18
+    ],
+    "living": [
+      19
+    ],
+    "in": [
+      20,
+      55,
+      177,
+      185,
+      203,
+      231,
+      245
+    ],
+    "sub-Saharan": [
+      21
+    ],
+    "Africa.": [
+      22
+    ],
+    "Molecular": [
+      23
+    ],
+    "surveillance": [
+      24,
+      54
+    ],
+    "of": [
+      25,
+      35,
+      112,
+      119,
+      133,
+      139,
+      221
+    ],
+    "Plasmodium": [
+      26,
+      105
+    ],
+    "parasites": [
+      27
+    ],
+    "Anopheles": [
+      29
+    ],
+    "mosquito": [
+      30
+    ],
+    "vectors": [
+      31
+    ],
+    "are": [
+      32,
+      151,
+      174,
+      228
+    ],
+    "key": [
+      33
+    ],
+    "components": [
+      34
+    ],
+    "effective": [
+      36
+    ],
+    "malaria": [
+      37,
+      215
+    ],
+    "control": [
+      38,
+      135,
+      223
+    ],
+    "decision-making.": [
+      39
+    ],
+    "Previously,": [
+      40
+    ],
+    "we": [
+      41,
+      58,
+      68,
+      208
+    ],
+    "have": [
+      42
+    ],
+    "designed": [
+      43
+    ],
+    "implemented": [
+      45
+    ],
+    "a": [
+      46,
+      117
+    ],
+    "nanopore-based": [
+      47,
+      212
+    ],
+    "workflow": [
+      48
+    ],
+    "for": [
+      49,
+      104,
+      142,
+      194,
+      214
+    ],
+    "targeted": [
+      50
+    ],
+    "P.": [
+      51
+    ],
+    "falciparum": [
+      52
+    ],
+    "molecular": [
+      53,
+      216
+    ],
+    "Ghana,": [
+      56
+    ],
+    "which": [
+      57,
+      173,
+      240
+    ],
+    "call": [
+      59
+    ],
+    "DRAG1": [
+      60
+    ],
+    "(drug": [
+      61
+    ],
+    "resistance": [
+      62,
+      86,
+      168
+    ],
+    "+": [
+      63
+    ],
+    "antigen": [
+      64,
+      91
+    ],
+    "multiplex": [
+      65,
+      74
+    ],
+    "PCR).": [
+      66
+    ],
+    "Here,": [
+      67
+    ],
+    "describe": [
+      69,
+      109,
+      209
+    ],
+    "an": [
+      70,
+      210
+    ],
+    "updated": [
+      71,
+      211
+    ],
+    "expanded": [
+      73
+    ],
+    "assay": [
+      75,
+      115,
+      202
+    ],
+    "(‘DRAG2’)": [
+      76
+    ],
+    "additional": [
+      78
+    ],
+    "amplicon": [
+      79
+    ],
+    "targets": [
+      80
+    ],
+    "that": [
+      81
+    ],
+    "incorporate": [
+      82
+    ],
+    "more": [
+      83
+    ],
+    "antimalarial": [
+      84
+    ],
+    "drug": [
+      85,
+      167
+    ],
+    "markers,": [
+      87,
+      169
+    ],
+    "polymorphic": [
+      89
+    ],
+    "surface": [
+      90,
+      93
+    ],
+    "merozoite": [
+      92
+    ],
+    "protein": [
+      94
+    ],
+    "2": [
+      95
+    ],
+    "(msp2),": [
+      96
+    ],
+    "18S": [
+      99
+    ],
+    "ribosomal": [
+      100
+    ],
+    "RNA": [
+      101
+    ],
+    "(rRNA)": [
+      102
+    ],
+    "gene": [
+      103
+    ],
+    "species": [
+      106
+    ],
+    "detection.": [
+      107
+    ],
+    "We": [
+      108,
+      188
+    ],
+    "performance": [
+      111
+    ],
+    "DRAG2": [
+      114
+    ],
+    "range": [
+      118
+    ],
+    "parasitaemias": [
+      120
+    ],
+    "sample": [
+      122
+    ],
+    "types": [
+      123
+    ],
+    "(venous": [
+      124
+    ],
+    "blood": [
+      125,
+      128
+    ],
+    "dried": [
+      127
+    ],
+    "spots),": [
+      129
+    ],
+    "suggested": [
+      131
+    ],
+    "systems": [
+      132
+    ],
+    "quality": [
+      134,
+      222
+    ],
+    "including": [
+      136,
+      218
+    ],
+    "use": [
+      138,
+      195
+    ],
+    "synthetic": [
+      140
+    ],
+    "plasmids": [
+      141,
+      150
+    ],
+    "positive": [
+      143
+    ],
+    "controls": [
+      144
+    ],
+    "recommended": [
+      146
+    ],
+    "coverage": [
+      147
+    ],
+    "thresholds.": [
+      148
+    ],
+    "The": [
+      149
+    ],
+    "highly": [
+      152
+    ],
+    "economical,": [
+      153
+    ],
+    "engineered": [
+      155
+    ],
+    "to": [
+      156,
+      199,
+      237
+    ],
+    "include": [
+      157
+    ],
+    "both": [
+      158
+    ],
+    "‘test’": [
+      159
+    ],
+    "single": [
+      160
+    ],
+    "nucleotide": [
+      161
+    ],
+    "polymorphisms": [
+      162
+    ],
+    "(SNPs),": [
+      163
+    ],
+    "such": [
+      164
+    ],
+    "as": [
+      165
+    ],
+    "known": [
+      166
+    ],
+    "‘control’": [
+      171
+    ],
+    "SNPs,": [
+      172
+    ],
+    "not": [
+      175
+    ],
+    "found": [
+      176
+    ],
+    "nature": [
+      178
+    ],
+    "thus": [
+      180
+    ],
+    "signal": [
+      181
+    ],
+    "contamination": [
+      182
+    ],
+    "if": [
+      183
+    ],
+    "detected": [
+      184
+    ],
+    "clinical": [
+      186
+    ],
+    "samples.": [
+      187
+    ],
+    "provide": [
+      189
+    ],
+    "standard": [
+      190
+    ],
+    "operating": [
+      191
+    ],
+    "procedures": [
+      192
+    ],
+    "(SOPs)": [
+      193
+    ],
+    "by": [
+      196
+    ],
+    "teams": [
+      197
+    ],
+    "aiming": [
+      198
+    ],
+    "implement": [
+      200
+    ],
+    "their": [
+      204
+    ],
+    "laboratory.": [
+      205
+    ],
+    "In": [
+      206
+    ],
+    "summary,": [
+      207
+    ],
+    "method": [
+      213
+    ],
+    "surveillance,": [
+      217
+    ],
+    "detailed": [
+      219
+    ],
+    "consideration": [
+      220
+    ],
+    "processes": [
+      224,
+      250
+    ],
+    "SOPs.": [
+      226
+    ],
+    "These": [
+      227
+    ],
+    "important": [
+      229
+    ],
+    "steps": [
+      230
+    ],
+    "transition": [
+      233
+    ],
+    "from": [
+      234
+    ],
+    "research": [
+      235
+    ],
+    "tool": [
+      236
+    ],
+    "diagnostic": [
+      238
+    ],
+    "assay,": [
+      239
+    ],
+    "will": [
+      241
+    ],
+    "require": [
+      242
+    ],
+    "further": [
+      243
+    ],
+    "testing": [
+      244
+    ],
+    "endemic": [
+      246
+    ],
+    "settings": [
+      247
+    ],
+    "regulatory": [
+      249
+    ],
+    "approvals.": [
+      252
+    ]
+  },
+  "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W4412621262",
+  "counts_by_year": [
+    {
+      "year": 2026,
+      "cited_by_count": 2
+    }
+  ],
+  "updated_date": "2026-11-17T12:49:18.490984",
+  "created_date": "2025-10-10T00:00:00"
+}

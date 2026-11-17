@@ -1,0 +1,1290 @@
+{
+  "id": "https://openalex.org/W3090735635",
+  "doi": "https://doi.org/10.26434/chemrxiv.12057846.v1",
+  "title": "Drug Repurposing Approach Targeted Against Main Protease of SARS-CoV-2 Exploiting ‘Neighbourhood Behaviour’ in 3D Protein Structural Space and 2D Chemical Space of Small Molecules",
+  "display_name": "Drug Repurposing Approach Targeted Against Main Protease of SARS-CoV-2 Exploiting ‘Neighbourhood Behaviour’ in 3D Protein Structural Space and 2D Chemical Space of Small Molecules",
+  "alternate_titles": [],
+  "publication_year": 2020,
+  "publication_date": "2020-04-02",
+  "ids": {
+    "openalex": "https://openalex.org/W3090735635",
+    "doi": "https://doi.org/10.26434/chemrxiv.12057846.v1",
+    "mag": "3090735635"
+  },
+  "language": "en",
+  "primary_location": {
+    "id": "doi:10.26434/chemrxiv.12057846.v1",
+    "doi": "https://doi.org/10.26434/chemrxiv.12057846.v1",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.26434/chemrxiv.12057846.v1",
+    "pdf_url": "https://chemrxiv.org/engage/api-gateway/chemrxiv/assets/orp/resource/item/60c74b3c337d6c2122e27a6a/original/drug-repurposing-approach-targeted-against-main-protease-of-sars-co-v-2-exploiting-neighbourhood-behaviour-in-3d-protein-structural-space-and-2d-chemical-space-of-small-molecules.pdf",
+    "source": {
+      "id": "https://openalex.org/S4393918830",
+      "display_name": "ChemRxiv",
+      "issn_l": "2573-2293",
+      "issn": [
+        "2573-2293"
+      ],
+      "is_oa": false,
+      "is_in_doaj": false,
+      "is_core": false,
+      "listed_in": [],
+      "host_organization": null,
+      "host_organization_name": null,
+      "host_organization_lineage": [],
+      "host_organization_lineage_names": [],
+      "type": "repository"
+    },
+    "license": "cc-by-nc-nd",
+    "license_id": "https://openalex.org/licenses/cc-by-nc-nd",
+    "version": "submittedVersion",
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "posted-content"
+  },
+  "parent_works": [],
+  "lineage": [
+    "https://openalex.org/W3090735635"
+  ],
+  "child_works_count": 0,
+  "type": "preprint",
+  "is_traditional": true,
+  "indexed_in": [
+    "crossref"
+  ],
+  "open_access": {
+    "is_oa": true,
+    "oa_status": "green",
+    "oa_url": "https://chemrxiv.org/engage/api-gateway/chemrxiv/assets/orp/resource/item/60c74b3c337d6c2122e27a6a/original/drug-repurposing-approach-targeted-against-main-protease-of-sars-co-v-2-exploiting-neighbourhood-behaviour-in-3d-protein-structural-space-and-2d-chemical-space-of-small-molecules.pdf",
+    "any_repository_has_fulltext": true
+  },
+  "authorships": [
+    {
+      "author_position": "first",
+      "author": {
+        "id": "https://openalex.org/A5069868466",
+        "display_name": "Sohini Chakraborti",
+        "orcid": "https://orcid.org/0000-0002-4591-2658",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-4591-2658"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I59270414",
+          "display_name": "Indian Institute of Science Bangalore",
+          "ror": "https://ror.org/04dese585",
+          "country_code": "IN",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I59270414"
+          ]
+        }
+      ],
+      "countries": [
+        "IN"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Sohini Chakraborti",
+      "raw_affiliation_strings": [
+        "Indian Institute of Science"
+      ],
+      "raw_orcid": "https://orcid.org/0000-0002-4591-2658",
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Indian Institute of Science",
+          "institution_ids": [
+            "https://openalex.org/I59270414"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "last",
+      "author": {
+        "id": "https://openalex.org/A5076920718",
+        "display_name": "Narayanaswamy Srinivasan",
+        "orcid": "https://orcid.org/0000-0002-6566-6239",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-6566-6239"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I59270414",
+          "display_name": "Indian Institute of Science Bangalore",
+          "ror": "https://ror.org/04dese585",
+          "country_code": "IN",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I59270414"
+          ]
+        }
+      ],
+      "countries": [
+        "IN"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Narayanaswamy Srinivasan",
+      "raw_affiliation_strings": [
+        "Molecular Biophysics Unit, Indian Institute of Science, Bengaluru 560012, India"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Molecular Biophysics Unit, Indian Institute of Science, Bengaluru 560012, India",
+          "institution_ids": [
+            "https://openalex.org/I59270414"
+          ]
+        }
+      ]
+    }
+  ],
+  "institutions": [],
+  "countries_distinct_count": 1,
+  "institutions_distinct_count": 1,
+  "corresponding_author_ids": [],
+  "corresponding_institution_ids": [
+    "https://openalex.org/I59270414"
+  ],
+  "apc_list": null,
+  "apc_paid": null,
+  "fwci": null,
+  "has_fulltext": true,
+  "cited_by_count": 7,
+  "citation_normalized_percentile": null,
+  "cited_by_percentile_year": null,
+  "biblio": {
+    "volume": null,
+    "issue": null,
+    "first_page": null,
+    "last_page": null
+  },
+  "is_retracted": false,
+  "is_paratext": false,
+  "is_xpac": false,
+  "primary_topic": {
+    "id": "https://openalex.org/T10211",
+    "display_name": "Computational Drug Discovery Methods",
+    "score": 0.9961000084877014,
+    "subfield": {
+      "id": "https://openalex.org/subfields/3002",
+      "display_name": "Drug Discovery"
+    },
+    "field": {
+      "id": "https://openalex.org/fields/30",
+      "display_name": "Pharmacology, Toxicology and Pharmaceutics"
+    },
+    "domain": {
+      "id": "https://openalex.org/domains/1",
+      "display_name": "Life Sciences"
+    }
+  },
+  "topics": [
+    {
+      "id": "https://openalex.org/T10211",
+      "display_name": "Computational Drug Discovery Methods",
+      "score": 0.9961000084877014,
+      "subfield": {
+        "id": "https://openalex.org/subfields/3002",
+        "display_name": "Drug Discovery"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/30",
+        "display_name": "Pharmacology, Toxicology and Pharmaceutics"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/1",
+        "display_name": "Life Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T10118",
+      "display_name": "SARS-CoV-2 and COVID-19 Research",
+      "score": 0.0024999999441206455,
+      "subfield": {
+        "id": "https://openalex.org/subfields/2725",
+        "display_name": "Infectious Diseases"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/27",
+        "display_name": "Medicine"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/4",
+        "display_name": "Health Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T12576",
+      "display_name": "vaccines and immunoinformatics approaches",
+      "score": 9.999999747378752e-05,
+      "subfield": {
+        "id": "https://openalex.org/subfields/1312",
+        "display_name": "Molecular Biology"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/13",
+        "display_name": "Biochemistry, Genetics and Molecular Biology"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/1",
+        "display_name": "Life Sciences"
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "id": "https://openalex.org/keywords/drug-repurposing",
+      "display_name": "drug repurposing",
+      "score": 0.9879999756813049
+    },
+    {
+      "id": "https://openalex.org/keywords/sars-cov-2",
+      "display_name": "SARS-CoV-2",
+      "score": 0.9470000267028809
+    },
+    {
+      "id": "https://openalex.org/keywords/main-protease",
+      "display_name": "main protease",
+      "score": 0.9779999852180481
+    },
+    {
+      "id": "https://openalex.org/keywords/covid-19",
+      "display_name": "COVID-19 pandemic",
+      "score": 0.8320000171661377
+    },
+    {
+      "id": "https://openalex.org/keywords/3d-protein-structure",
+      "display_name": "protein 3D structure",
+      "score": 0.7839999794960022
+    },
+    {
+      "id": "https://openalex.org/keywords/small-molecules",
+      "display_name": "small molecules",
+      "score": 0.5580000281333923
+    },
+    {
+      "id": "https://openalex.org/keywords/vinca-alkaloids",
+      "display_name": "vinca alkaloids",
+      "score": 0.859000027179718
+    },
+    {
+      "id": "https://openalex.org/keywords/camptothecin-derivatives",
+      "display_name": "camptothecin derivatives",
+      "score": 0.9200000166893005
+    },
+    {
+      "id": "https://openalex.org/keywords/phytochemicals",
+      "display_name": "phytochemicals",
+      "score": 0.9279999732971191
+    },
+    {
+      "id": "https://openalex.org/keywords/protein-ligand-binding",
+      "display_name": "protein-ligand binding",
+      "score": 0.8270000219345093
+    }
+  ],
+  "concepts": [
+    {
+      "id": "https://openalex.org/C103637391",
+      "wikidata": "https://www.wikidata.org/wiki/Q5308921",
+      "display_name": "Drug repositioning",
+      "level": 3,
+      "score": 0.7082472443580627
+    },
+    {
+      "id": "https://openalex.org/C99726746",
+      "wikidata": "https://www.wikidata.org/wiki/Q906396",
+      "display_name": "Chemical space",
+      "level": 3,
+      "score": 0.6571356654167175
+    },
+    {
+      "id": "https://openalex.org/C519536355",
+      "wikidata": "https://www.wikidata.org/wiki/Q21021151",
+      "display_name": "Repurposing",
+      "level": 2,
+      "score": 0.6324481964111328
+    },
+    {
+      "id": "https://openalex.org/C70721500",
+      "wikidata": "https://www.wikidata.org/wiki/Q177005",
+      "display_name": "Computational biology",
+      "level": 1,
+      "score": 0.6205319762229919
+    },
+    {
+      "id": "https://openalex.org/C74187038",
+      "wikidata": "https://www.wikidata.org/wiki/Q1418791",
+      "display_name": "Drug discovery",
+      "level": 2,
+      "score": 0.5953181982040405
+    },
+    {
+      "id": "https://openalex.org/C2777096885",
+      "wikidata": "https://www.wikidata.org/wiki/Q220925",
+      "display_name": "Vinca",
+      "level": 2,
+      "score": 0.5897853374481201
+    },
+    {
+      "id": "https://openalex.org/C2780035454",
+      "wikidata": "https://www.wikidata.org/wiki/Q8386",
+      "display_name": "Drug",
+      "level": 2,
+      "score": 0.4962802529335022
+    },
+    {
+      "id": "https://openalex.org/C2776714187",
+      "wikidata": "https://www.wikidata.org/wiki/Q212410",
+      "display_name": "Protease",
+      "level": 3,
+      "score": 0.48296135663986206
+    },
+    {
+      "id": "https://openalex.org/C41685203",
+      "wikidata": "https://www.wikidata.org/wiki/Q1974042",
+      "display_name": "Docking (animal)",
+      "level": 2,
+      "score": 0.4243500232696533
+    },
+    {
+      "id": "https://openalex.org/C86803240",
+      "wikidata": "https://www.wikidata.org/wiki/Q420",
+      "display_name": "Biology",
+      "level": 0,
+      "score": 0.42084062099456787
+    },
+    {
+      "id": "https://openalex.org/C98274493",
+      "wikidata": "https://www.wikidata.org/wiki/Q128406",
+      "display_name": "Pharmacology",
+      "level": 1,
+      "score": 0.2686741352081299
+    },
+    {
+      "id": "https://openalex.org/C71924100",
+      "wikidata": "https://www.wikidata.org/wiki/Q11190",
+      "display_name": "Medicine",
+      "level": 0,
+      "score": 0.2229348123073578
+    },
+    {
+      "id": "https://openalex.org/C60644358",
+      "wikidata": "https://www.wikidata.org/wiki/Q128570",
+      "display_name": "Bioinformatics",
+      "level": 1,
+      "score": 0.2038327157497406
+    },
+    {
+      "id": "https://openalex.org/C55493867",
+      "wikidata": "https://www.wikidata.org/wiki/Q7094",
+      "display_name": "Biochemistry",
+      "level": 1,
+      "score": 0.12394413352012634
+    },
+    {
+      "id": "https://openalex.org/C159110408",
+      "wikidata": "https://www.wikidata.org/wiki/Q121176",
+      "display_name": "Nursing",
+      "level": 1,
+      "score": 0.0
+    },
+    {
+      "id": "https://openalex.org/C181199279",
+      "wikidata": "https://www.wikidata.org/wiki/Q8047",
+      "display_name": "Enzyme",
+      "level": 2,
+      "score": 0.0
+    },
+    {
+      "id": "https://openalex.org/C18903297",
+      "wikidata": "https://www.wikidata.org/wiki/Q7150",
+      "display_name": "Ecology",
+      "level": 1,
+      "score": 0.0
+    }
+  ],
+  "mesh": [],
+  "locations_count": 1,
+  "locations": [
+    {
+      "id": "doi:10.26434/chemrxiv.12057846.v1",
+      "doi": "https://doi.org/10.26434/chemrxiv.12057846.v1",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.26434/chemrxiv.12057846.v1",
+      "pdf_url": "https://chemrxiv.org/engage/api-gateway/chemrxiv/assets/orp/resource/item/60c74b3c337d6c2122e27a6a/original/drug-repurposing-approach-targeted-against-main-protease-of-sars-co-v-2-exploiting-neighbourhood-behaviour-in-3d-protein-structural-space-and-2d-chemical-space-of-small-molecules.pdf",
+      "source": {
+        "id": "https://openalex.org/S4393918830",
+        "display_name": "ChemRxiv",
+        "issn_l": "2573-2293",
+        "issn": [
+          "2573-2293"
+        ],
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": null,
+        "host_organization_name": null,
+        "host_organization_lineage": [],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by-nc-nd",
+      "license_id": "https://openalex.org/licenses/cc-by-nc-nd",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "posted-content"
+    }
+  ],
+  "best_oa_location": {
+    "id": "doi:10.26434/chemrxiv.12057846.v1",
+    "doi": "https://doi.org/10.26434/chemrxiv.12057846.v1",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.26434/chemrxiv.12057846.v1",
+    "pdf_url": "https://chemrxiv.org/engage/api-gateway/chemrxiv/assets/orp/resource/item/60c74b3c337d6c2122e27a6a/original/drug-repurposing-approach-targeted-against-main-protease-of-sars-co-v-2-exploiting-neighbourhood-behaviour-in-3d-protein-structural-space-and-2d-chemical-space-of-small-molecules.pdf",
+    "source": {
+      "id": "https://openalex.org/S4393918830",
+      "display_name": "ChemRxiv",
+      "issn_l": "2573-2293",
+      "issn": [
+        "2573-2293"
+      ],
+      "is_oa": false,
+      "is_in_doaj": false,
+      "is_core": false,
+      "listed_in": [],
+      "host_organization": null,
+      "host_organization_name": null,
+      "host_organization_lineage": [],
+      "host_organization_lineage_names": [],
+      "type": "repository"
+    },
+    "license": "cc-by-nc-nd",
+    "license_id": "https://openalex.org/licenses/cc-by-nc-nd",
+    "version": "submittedVersion",
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "posted-content"
+  },
+  "sustainable_development_goals": [
+    {
+      "score": 0.9391000270843506,
+      "display_name": "Good health and well-being",
+      "id": "https://metadata.un.org/sdg/3"
+    }
+  ],
+  "study_designs": [],
+  "awards": [],
+  "funders": [
+    {
+      "id": "https://openalex.org/F4320310071",
+      "display_name": "Indian Institute of Science",
+      "ror": "https://ror.org/04dese585"
+    },
+    {
+      "id": "https://openalex.org/F4320320717",
+      "display_name": "Department of Biotechnology, Ministry of Science and Technology, India",
+      "ror": "https://ror.org/03tjsyq23"
+    },
+    {
+      "id": "https://openalex.org/F4320320719",
+      "display_name": "Department of Science and Technology, Ministry of Science and Technology, India",
+      "ror": "https://ror.org/0101xrq71"
+    },
+    {
+      "id": "https://openalex.org/F4320322724",
+      "display_name": "Ministry of Education, India",
+      "ror": "https://ror.org/048xjjh50"
+    },
+    {
+      "id": "https://openalex.org/F4320337407",
+      "display_name": "Division of Human Resource Development",
+      "ror": "https://ror.org/03mamvh39"
+    }
+  ],
+  "has_content": {
+    "grobid_xml": true,
+    "pdf": true
+  },
+  "content_urls": {
+    "pdf": "https://content.openalex.org/works/W3090735635.pdf",
+    "grobid_xml": "https://content.openalex.org/works/W3090735635.grobid-xml"
+  },
+  "referenced_works_count": 51,
+  "referenced_works": [
+    "https://openalex.org/W1711193969",
+    "https://openalex.org/W1970699966",
+    "https://openalex.org/W1972896770",
+    "https://openalex.org/W1980705613",
+    "https://openalex.org/W2005302698",
+    "https://openalex.org/W2021083597",
+    "https://openalex.org/W2024755629",
+    "https://openalex.org/W2055043387",
+    "https://openalex.org/W2086353181",
+    "https://openalex.org/W2096729078",
+    "https://openalex.org/W2097270746",
+    "https://openalex.org/W2130479394",
+    "https://openalex.org/W2134967712",
+    "https://openalex.org/W2156077095",
+    "https://openalex.org/W2164674138",
+    "https://openalex.org/W2169395813",
+    "https://openalex.org/W2170146596",
+    "https://openalex.org/W2412446857",
+    "https://openalex.org/W2509449660",
+    "https://openalex.org/W2737191629",
+    "https://openalex.org/W2896002881",
+    "https://openalex.org/W2905221255",
+    "https://openalex.org/W2906872406",
+    "https://openalex.org/W2920509585",
+    "https://openalex.org/W2935101654",
+    "https://openalex.org/W2954851300",
+    "https://openalex.org/W2959798450",
+    "https://openalex.org/W2990155150",
+    "https://openalex.org/W3005212621",
+    "https://openalex.org/W3008526620",
+    "https://openalex.org/W3009912996",
+    "https://openalex.org/W3011304951",
+    "https://openalex.org/W3011698812",
+    "https://openalex.org/W3011701533",
+    "https://openalex.org/W3011957742",
+    "https://openalex.org/W3012495758",
+    "https://openalex.org/W3013058647",
+    "https://openalex.org/W3013065538",
+    "https://openalex.org/W3015608194",
+    "https://openalex.org/W3022285953",
+    "https://openalex.org/W3083499986",
+    "https://openalex.org/W3124781739",
+    "https://openalex.org/W3124788592",
+    "https://openalex.org/W3125818577",
+    "https://openalex.org/W3136918052",
+    "https://openalex.org/W4230090597",
+    "https://openalex.org/W4412167515",
+    "https://openalex.org/W6786699900",
+    "https://openalex.org/W6903145943",
+    "https://openalex.org/W6945163018",
+    "https://openalex.org/W7129045484"
+  ],
+  "related_works": [
+    "https://openalex.org/W3037832460",
+    "https://openalex.org/W4206373589",
+    "https://openalex.org/W3107421821",
+    "https://openalex.org/W3135992418",
+    "https://openalex.org/W4220812290",
+    "https://openalex.org/W4247688403",
+    "https://openalex.org/W3114622474",
+    "https://openalex.org/W4211098593",
+    "https://openalex.org/W3082505166",
+    "https://openalex.org/W4248789776"
+  ],
+  "abstract_inverted_index": {
+    "The": [
+      0,
+      219
+    ],
+    "current": [
+      1
+    ],
+    "global": [
+      2
+    ],
+    "crisis": [
+      3
+    ],
+    "due": [
+      4
+    ],
+    "to": [
+      5,
+      12,
+      34,
+      69,
+      75,
+      146,
+      155,
+      194,
+      196,
+      229,
+      240,
+      252
+    ],
+    "COVID-19": [
+      6
+    ],
+    "has": [
+      7,
+      44
+    ],
+    "almost": [
+      8
+    ],
+    "brought": [
+      9
+    ],
+    "normal": [
+      10
+    ],
+    "life": [
+      11
+    ],
+    "standstill": [
+      13
+    ],
+    "in": [
+      14,
+      53,
+      55,
+      81,
+      91,
+      244
+    ],
+    "most": [
+      15
+    ],
+    "parts": [
+      16
+    ],
+    "of": [
+      17,
+      48,
+      88,
+      99,
+      149,
+      199,
+      222,
+      256
+    ],
+    "the": [
+      18,
+      36,
+      40,
+      86,
+      120,
+      150,
+      192,
+      213,
+      230,
+      234,
+      250,
+      254,
+      288
+    ],
+    "world.": [
+      19
+    ],
+    "With": [
+      20
+    ],
+    "our": [
+      21,
+      70,
+      125,
+      172,
+      204,
+      242
+    ],
+    "research": [
+      22,
+      269
+    ],
+    "interest": [
+      23
+    ],
+    "on": [
+      24,
+      39,
+      85,
+      124,
+      203
+    ],
+    "repurposing": [
+      25
+    ],
+    "known": [
+      26,
+      136
+    ],
+    "drugs/drug": [
+      27,
+      109,
+      137
+    ],
+    "candidates": [
+      28,
+      110,
+      138
+    ],
+    "targeting": [
+      29
+    ],
+    "various": [
+      30
+    ],
+    "diseases,": [
+      31
+    ],
+    "we": [
+      32,
+      65,
+      105,
+      128,
+      210,
+      215,
+      272
+    ],
+    "decided": [
+      33
+    ],
+    "analyse": [
+      35
+    ],
+    "available": [
+      37,
+      228
+    ],
+    "data": [
+      38
+    ],
+    "deadly": [
+      41
+    ],
+    "pathogen": [
+      42
+    ],
+    "that": [
+      43,
+      176,
+      275
+    ],
+    "already": [
+      45
+    ],
+    "taken": [
+      46
+    ],
+    "thousands": [
+      47
+    ],
+    "lives": [
+      49
+    ],
+    "since": [
+      50
+    ],
+    "its": [
+      51,
+      189
+    ],
+    "outbreak": [
+      52
+    ],
+    "China": [
+      54
+    ],
+    "December": [
+      56
+    ],
+    "2019.": [
+      57
+    ],
+    "Our": [
+      58,
+      262
+    ],
+    "host": [
+      59
+    ],
+    "institute": [
+      60
+    ],
+    "is": [
+      61,
+      232
+    ],
+    "now": [
+      62
+    ],
+    "shutdown": [
+      63
+    ],
+    "and": [
+      64,
+      95,
+      101,
+      184,
+      188,
+      237,
+      248,
+      271
+    ],
+    "are": [
+      66,
+      206,
+      211
+    ],
+    "confining": [
+      67
+    ],
+    "ourselves": [
+      68
+    ],
+    "homes": [
+      71
+    ],
+    "with": [
+      72
+    ],
+    "limited": [
+      73
+    ],
+    "access": [
+      74
+    ],
+    "computational": [
+      76
+    ],
+    "resources.": [
+      77
+    ],
+    "Using": [
+      78
+    ],
+    "a": [
+      79
+    ],
+    "simple": [
+      80
+    ],
+    "silico": [
+      82
+    ],
+    "approach": [
+      83
+    ],
+    "based": [
+      84
+    ],
+    "principle": [
+      87
+    ],
+    "‘neighbourhood": [
+      89
+    ],
+    "behaviour’": [
+      90
+    ],
+    "three-dimensional": [
+      92
+    ],
+    "(3D)": [
+      93
+    ],
+    "space": [
+      94,
+      98
+    ],
+    "two-dimensional": [
+      96
+    ],
+    "(2D)": [
+      97
+    ],
+    "protein": [
+      100,
+      116
+    ],
+    "small": [
+      102
+    ],
+    "molecules": [
+      103
+    ],
+    "respectively,": [
+      104
+    ],
+    "have": [
+      106,
+      129,
+      191
+    ],
+    "identified": [
+      107
+    ],
+    "potential": [
+      108,
+      193,
+      255
+    ],
+    "which": [
+      111,
+      139
+    ],
+    "can": [
+      112
+    ],
+    "be": [
+      113,
+      266
+    ],
+    "repurposed": [
+      114
+    ],
+    "against": [
+      115
+    ],
+    "targets": [
+      117
+    ],
+    "encoded": [
+      118
+    ],
+    "by": [
+      119,
+      144
+    ],
+    "SARS-CoV-2": [
+      121
+    ],
+    "genome.": [
+      122
+    ],
+    "Based": [
+      123
+    ],
+    "preliminary": [
+      126,
+      225
+    ],
+    "analysis,": [
+      127
+    ],
+    "so": [
+      130,
+      217
+    ],
+    "far": [
+      131
+    ],
+    "prioritized": [
+      132
+    ],
+    "more": [
+      133
+    ],
+    "than": [
+      134
+    ],
+    "20": [
+      135
+    ],
+    "might": [
+      140
+    ],
+    "elucidate": [
+      141
+    ],
+    "anti-coronavirus": [
+      142
+    ],
+    "properties": [
+      143
+    ],
+    "binding": [
+      145
+    ],
+    "main": [
+      147,
+      197
+    ],
+    "protease": [
+      148,
+      198
+    ],
+    "pathogen.": [
+      151
+    ],
+    "These": [
+      152
+    ],
+    "drugs": [
+      153
+    ],
+    "belong": [
+      154
+    ],
+    "diverse": [
+      156
+    ],
+    "therapeutic": [
+      157
+    ],
+    "areas": [
+      158
+    ],
+    "such": [
+      159
+    ],
+    "as": [
+      160
+    ],
+    "antiviral,": [
+      161
+    ],
+    "anticancer,": [
+      162
+    ],
+    "antibacterial": [
+      163
+    ],
+    "agents": [
+      164
+    ],
+    "etc.": [
+      165
+    ],
+    "Notably,": [
+      166
+    ],
+    "apart": [
+      167
+    ],
+    "from": [
+      168,
+      179,
+      291
+    ],
+    "many": [
+      169
+    ],
+    "synthetic": [
+      170
+    ],
+    "molecules,": [
+      171
+    ],
+    "analysis": [
+      173
+    ],
+    "also": [
+      174
+    ],
+    "hints": [
+      175
+    ],
+    "phytochemicals": [
+      177
+    ],
+    "obtained": [
+      178,
+      216
+    ],
+    "vinca": [
+      180
+    ],
+    "plant": [
+      181
+    ],
+    "(vinca": [
+      182
+    ],
+    "alkaloids)": [
+      183
+    ],
+    "camptotheca": [
+      185
+    ],
+    "tree": [
+      186
+    ],
+    "(camptothecin": [
+      187
+    ],
+    "derivatives)": [
+      190
+    ],
+    "bind": [
+      195
+    ],
+    "SARS-CoV-2.": [
+      200
+    ],
+    "In-depth": [
+      201
+    ],
+    "investigation": [
+      202
+    ],
+    "findings": [
+      205,
+      226,
+      258,
+      263,
+      281
+    ],
+    "currently": [
+      207
+    ],
+    "on-going.": [
+      208
+    ],
+    "Here": [
+      209
+    ],
+    "presenting": [
+      212
+    ],
+    "results": [
+      214
+    ],
+    "far.": [
+      218
+    ],
+    "sole": [
+      220
+    ],
+    "purpose": [
+      221
+    ],
+    "making": [
+      223
+    ],
+    "these": [
+      224,
+      257,
+      280
+    ],
+    "openly": [
+      227
+    ],
+    "community": [
+      231
+    ],
+    "for": [
+      233,
+      249,
+      259,
+      268,
+      282
+    ],
+    "experimental": [
+      235,
+      245
+    ],
+    "biologists": [
+      236
+    ],
+    "biomedical": [
+      238
+    ],
+    "researchers": [
+      239
+    ],
+    "investigate": [
+      241
+    ],
+    "predictions": [
+      243
+    ],
+    "set": [
+      246
+    ],
+    "ups": [
+      247
+    ],
+    "clinicians": [
+      251
+    ],
+    "evaluate": [
+      253
+    ],
+    "anti-COVID-19": [
+      260
+    ],
+    "treatment.": [
+      261
+    ],
+    "should": [
+      264,
+      278
+    ],
+    "only": [
+      265
+    ],
+    "used": [
+      267
+    ],
+    "purposes": [
+      270
+    ],
+    "strongly": [
+      273
+    ],
+    "urge": [
+      274
+    ],
+    "no": [
+      276
+    ],
+    "individual": [
+      277
+    ],
+    "interpret": [
+      279
+    ],
+    "any": [
+      283
+    ],
+    "self-diagnosis": [
+      284
+    ],
+    "or": [
+      285
+    ],
+    "self-medication": [
+      286
+    ],
+    "without": [
+      287
+    ],
+    "prior": [
+      289
+    ],
+    "approval": [
+      290
+    ],
+    "competent": [
+      292
+    ],
+    "international": [
+      293
+    ],
+    "health/medical": [
+      294
+    ],
+    "regulatory": [
+      295
+    ],
+    "agencies.": [
+      296
+    ]
+  },
+  "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W3090735635",
+  "counts_by_year": [
+    {
+      "year": 2021,
+      "cited_by_count": 3
+    },
+    {
+      "year": 2020,
+      "cited_by_count": 4
+    }
+  ],
+  "updated_date": "2026-11-16T12:05:36.265796",
+  "created_date": "2020-10-08T00:00:00"
+}

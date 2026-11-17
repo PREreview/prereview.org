@@ -1,0 +1,1848 @@
+{
+  "id": "https://openalex.org/W4310113674",
+  "doi": "https://doi.org/10.7554/elife.83071",
+  "title": "Systemic racial disparities in funding rates at the National Science Foundation",
+  "display_name": "Systemic racial disparities in funding rates at the National Science Foundation",
+  "alternate_titles": [],
+  "publication_year": 2022,
+  "publication_date": "2022-11-16",
+  "ids": {
+    "openalex": "https://openalex.org/W4310113674",
+    "doi": "https://doi.org/10.7554/elife.83071",
+    "pmid": "https://pubmed.ncbi.nlm.nih.gov/36444975",
+    "pmcid": "https://www.ncbi.nlm.nih.gov/pmc/articles/9708090"
+  },
+  "language": "en",
+  "primary_location": {
+    "id": "doi:10.7554/elife.83071",
+    "doi": "https://doi.org/10.7554/elife.83071",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.7554/elife.83071",
+    "pdf_url": null,
+    "source": {
+      "id": "https://openalex.org/S1336409049",
+      "display_name": "eLife",
+      "issn_l": "2050-084X",
+      "issn": [
+        "2050-084X"
+      ],
+      "is_oa": true,
+      "is_in_doaj": true,
+      "is_core": true,
+      "listed_in": [
+        "anvur-scientific",
+        "cwts-core",
+        "doaj",
+        "dongbi-a",
+        "jufo-2",
+        "ki-jl-2",
+        "medline",
+        "norway-2",
+        "oarl",
+        "poland-200",
+        "russia-white-list-1",
+        "vabb-shw"
+      ],
+      "host_organization": "https://openalex.org/P4310311710",
+      "host_organization_name": "eLife Sciences Publications Ltd",
+      "host_organization_lineage": [
+        "https://openalex.org/P4310311710"
+      ],
+      "host_organization_lineage_names": [
+        "eLife Sciences Publications Ltd"
+      ],
+      "type": "journal"
+    },
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": "publishedVersion",
+    "is_accepted": true,
+    "is_published": true,
+    "raw_source_name": "eLife",
+    "raw_type": "journal-article"
+  },
+  "parent_works": [],
+  "lineage": [
+    "https://openalex.org/W4310113674"
+  ],
+  "child_works_count": 0,
+  "type": "article",
+  "is_traditional": true,
+  "indexed_in": [
+    "crossref",
+    "doaj",
+    "pubmed"
+  ],
+  "open_access": {
+    "is_oa": true,
+    "oa_status": "gold",
+    "oa_url": "https://doi.org/10.7554/elife.83071",
+    "any_repository_has_fulltext": true
+  },
+  "authorships": [
+    {
+      "author_position": "first",
+      "author": {
+        "id": "https://openalex.org/A5070189524",
+        "display_name": "Christine Yifeng Chen",
+        "orcid": "https://orcid.org/0000-0002-9580-6925",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-9580-6925"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I1282311441",
+          "display_name": "Lawrence Livermore National Laboratory",
+          "ror": "https://ror.org/041nk4h53",
+          "country_code": "US",
+          "type": "facility",
+          "lineage": [
+            "https://openalex.org/I1282311441",
+            "https://openalex.org/I1330989302",
+            "https://openalex.org/I198811213",
+            "https://openalex.org/I4210138311"
+          ]
+        },
+        {
+          "id": "https://openalex.org/I161318765",
+          "display_name": "University of California, Los Angeles",
+          "ror": "https://ror.org/046rm7j60",
+          "country_code": "US",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I161318765"
+          ]
+        }
+      ],
+      "countries": [
+        "US"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Christine Y Chen",
+      "raw_affiliation_strings": [
+        "Center for Diverse Leadership in Science , University of California , Los Angeles ; Los Angeles , CA , USA",
+        "Chemical and Isotopic Signatures Group , Division of Nuclear and Chemical Sciences , Lawrence Livermore National Laboratory ; Livermore , CA , USA",
+        "Center for Diverse Leadership in Science, University of California, Los Angeles",
+        "Center for Diverse Leadership in Science, University of California, Los Angeles; Chemical and Isotopic Signatures Group, Division of Nuclear and Chemical Sciences, Lawrence Livermore National Laboratory"
+      ],
+      "raw_orcid": "https://orcid.org/0000-0002-9580-6925",
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Center for Diverse Leadership in Science , University of California , Los Angeles ; Los Angeles , CA , USA",
+          "institution_ids": [
+            "https://openalex.org/I161318765"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Chemical and Isotopic Signatures Group , Division of Nuclear and Chemical Sciences , Lawrence Livermore National Laboratory ; Livermore , CA , USA",
+          "institution_ids": [
+            "https://openalex.org/I1282311441"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Center for Diverse Leadership in Science, University of California, Los Angeles",
+          "institution_ids": [
+            "https://openalex.org/I161318765"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Center for Diverse Leadership in Science, University of California, Los Angeles; Chemical and Isotopic Signatures Group, Division of Nuclear and Chemical Sciences, Lawrence Livermore National Laboratory",
+          "institution_ids": [
+            "https://openalex.org/I1282311441",
+            "https://openalex.org/I161318765"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5014895892",
+        "display_name": "Sara S. Kahanamoku",
+        "orcid": "https://orcid.org/0000-0003-4157-4791",
+        "observed_orcids": [
+          "https://orcid.org/0000-0003-4157-4791"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I95457486",
+          "display_name": "University of California, Berkeley",
+          "ror": "https://ror.org/01an7q238",
+          "country_code": "US",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I95457486"
+          ]
+        }
+      ],
+      "countries": [
+        "US"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Sara S. Kahanamoku",
+      "raw_affiliation_strings": [
+        "Department of Integrative Biology and Museum of Paleontology , University of California , Berkeley ; Berkeley , CA , USA",
+        "Department of Integrative Biology and Museum of Paleontology, University of California, Berkeley"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Department of Integrative Biology and Museum of Paleontology , University of California , Berkeley ; Berkeley , CA , USA",
+          "institution_ids": [
+            "https://openalex.org/I95457486"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Department of Integrative Biology and Museum of Paleontology, University of California, Berkeley",
+          "institution_ids": [
+            "https://openalex.org/I95457486"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5000983151",
+        "display_name": "Aradhna Tripati",
+        "orcid": "https://orcid.org/0000-0002-1695-1754",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-1695-1754"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I161318765",
+          "display_name": "University of California, Los Angeles",
+          "ror": "https://ror.org/046rm7j60",
+          "country_code": "US",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I161318765"
+          ]
+        },
+        {
+          "id": "https://openalex.org/I36234482",
+          "display_name": "University of Bristol",
+          "ror": "https://ror.org/0524sp257",
+          "country_code": "GB",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I36234482"
+          ]
+        }
+      ],
+      "countries": [
+        "GB",
+        "US"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Aradhna Tripati",
+      "raw_affiliation_strings": [
+        "Center for Diverse Leadership in Science, University of California, Los Angeles; Department of Earth Sciences, University of Bristol; Department of Earth, Planetary, and Space Sciences, Department of Atmospheric and Oceanic Sciences, Institute of the Environment and Sustainability, and American Indian Studies Center, University of California, Los Angeles",
+        "Department of Earth Sciences, University of Bristol",
+        "Department of Earth, Planetary, and Space Sciences, Department of Atmospheric and Oceanic Sciences, Institute of the Environment and Sustainability, and American Indian Studies Center, University of California, Los Angeles"
+      ],
+      "raw_orcid": "https://orcid.org/0000-0002-1695-1754",
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Center for Diverse Leadership in Science, University of California, Los Angeles; Department of Earth Sciences, University of Bristol; Department of Earth, Planetary, and Space Sciences, Department of Atmospheric and Oceanic Sciences, Institute of the Environment and Sustainability, and American Indian Studies Center, University of California, Los Angeles",
+          "institution_ids": [
+            "https://openalex.org/I161318765",
+            "https://openalex.org/I36234482"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Department of Earth Sciences, University of Bristol",
+          "institution_ids": [
+            "https://openalex.org/I36234482"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Department of Earth, Planetary, and Space Sciences, Department of Atmospheric and Oceanic Sciences, Institute of the Environment and Sustainability, and American Indian Studies Center, University of California, Los Angeles",
+          "institution_ids": [
+            "https://openalex.org/I161318765"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5016090464",
+        "display_name": "Rosanna ʻAnolani Alegado",
+        "orcid": "https://orcid.org/0000-0003-3615-5613",
+        "observed_orcids": [
+          "https://orcid.org/0000-0003-3615-5613"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I117965899",
+          "display_name": "University of Hawaiʻi at Mānoa",
+          "ror": "https://ror.org/01wspgy28",
+          "country_code": "US",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I117965899"
+          ]
+        },
+        {
+          "id": "https://openalex.org/I4210154776",
+          "display_name": "University of Hawaiʻi Sea Grant",
+          "ror": "https://ror.org/053598c22",
+          "country_code": "US",
+          "type": "other",
+          "lineage": [
+            "https://openalex.org/I117965899",
+            "https://openalex.org/I1308126019",
+            "https://openalex.org/I1343035065",
+            "https://openalex.org/I2802992173",
+            "https://openalex.org/I4210154776",
+            "https://openalex.org/I4405269913"
+          ]
+        }
+      ],
+      "countries": [
+        "US"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Rosanna A. Alegado",
+      "raw_affiliation_strings": [
+        "Department of Oceanography and Sea Grant College Program , Daniel K. Inouye Center for Microbial Oceanogra- phy: Research and Education , University of Hawaiʻi at Mānoa ; Honolulu , HI , USA",
+        "Department of Oceanography and Sea Grant College Program, Daniel K Inouye Center for Microbial Oceanography: Research and Education, University of Hawaiʻi at Mānoa"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Department of Oceanography and Sea Grant College Program , Daniel K. Inouye Center for Microbial Oceanogra- phy: Research and Education , University of Hawaiʻi at Mānoa ; Honolulu , HI , USA",
+          "institution_ids": [
+            "https://openalex.org/I117965899",
+            "https://openalex.org/I4210154776"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Department of Oceanography and Sea Grant College Program, Daniel K Inouye Center for Microbial Oceanography: Research and Education, University of Hawaiʻi at Mānoa",
+          "institution_ids": [
+            "https://openalex.org/I117965899"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5032466196",
+        "display_name": "Vernon R. Morris",
+        "orcid": "https://orcid.org/0000-0002-6828-4017",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-6828-4017"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I55732556",
+          "display_name": "Arizona State University",
+          "ror": "https://ror.org/03efmqc40",
+          "country_code": "US",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I55732556"
+          ]
+        }
+      ],
+      "countries": [
+        "US"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Vernon R. Morris",
+      "raw_affiliation_strings": [
+        "School of Mathematical and Natural Sciences , New College of Interdisciplinary Arts and Sciences , Arizona State University ; Phoenix , AZ , USA",
+        "School of Mathematical and Natural Sciences, New College of Interdisciplinary Arts and Sciences, Arizona State University"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "School of Mathematical and Natural Sciences , New College of Interdisciplinary Arts and Sciences , Arizona State University ; Phoenix , AZ , USA",
+          "institution_ids": [
+            "https://openalex.org/I55732556"
+          ]
+        },
+        {
+          "raw_affiliation_string": "School of Mathematical and Natural Sciences, New College of Interdisciplinary Arts and Sciences, Arizona State University",
+          "institution_ids": [
+            "https://openalex.org/I55732556"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5052288978",
+        "display_name": "Karen Andrade",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I161318765",
+          "display_name": "University of California, Los Angeles",
+          "ror": "https://ror.org/046rm7j60",
+          "country_code": "US",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I161318765"
+          ]
+        }
+      ],
+      "countries": [
+        "US"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Karen Andrade",
+      "raw_affiliation_strings": [
+        "Center for Diverse Leadership in Science , University of California , Los Angeles ; Los Angeles , CA , USA",
+        "Center for Diverse Leadership in Science, University of California, Los Angeles"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Center for Diverse Leadership in Science , University of California , Los Angeles ; Los Angeles , CA , USA",
+          "institution_ids": [
+            "https://openalex.org/I161318765"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Center for Diverse Leadership in Science, University of California, Los Angeles",
+          "institution_ids": [
+            "https://openalex.org/I161318765"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "last",
+      "author": {
+        "id": "https://openalex.org/A5054351690",
+        "display_name": "Justin Hosbey",
+        "orcid": "https://orcid.org/0000-0003-0947-4002",
+        "observed_orcids": [
+          "https://orcid.org/0000-0003-0947-4002"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I95457486",
+          "display_name": "University of California, Berkeley",
+          "ror": "https://ror.org/01an7q238",
+          "country_code": "US",
+          "type": "education",
+          "lineage": [
+            "https://openalex.org/I95457486"
+          ]
+        }
+      ],
+      "countries": [
+        "US"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Justin Hosbey",
+      "raw_affiliation_strings": [
+        "Department of City and Regional Planning , College of Environmental Design , University of California , Berkeley ; Berkeley , CA , USA",
+        "Department of City and Regional Planning, College of Environmental Design, University of California, Berkeley"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Department of City and Regional Planning , College of Environmental Design , University of California , Berkeley ; Berkeley , CA , USA",
+          "institution_ids": [
+            "https://openalex.org/I95457486"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Department of City and Regional Planning, College of Environmental Design, University of California, Berkeley",
+          "institution_ids": [
+            "https://openalex.org/I95457486"
+          ]
+        }
+      ]
+    }
+  ],
+  "institutions": [],
+  "countries_distinct_count": 2,
+  "institutions_distinct_count": 7,
+  "corresponding_author_ids": [],
+  "corresponding_institution_ids": [],
+  "apc_list": {
+    "value": 3000,
+    "currency": "USD",
+    "value_usd": 2500
+  },
+  "apc_paid": {
+    "value": 3000,
+    "currency": "USD",
+    "value_usd": 2500
+  },
+  "fwci": 27.7,
+  "has_fulltext": false,
+  "cited_by_count": 182,
+  "citation_normalized_percentile": {
+    "value": 0.99808711,
+    "is_in_top_1_percent": true,
+    "is_in_top_10_percent": true
+  },
+  "cited_by_percentile_year": {
+    "min": 99,
+    "max": 100
+  },
+  "biblio": {
+    "volume": "11",
+    "issue": null,
+    "first_page": null,
+    "last_page": null
+  },
+  "is_retracted": false,
+  "is_paratext": false,
+  "is_xpac": false,
+  "primary_topic": {
+    "id": "https://openalex.org/T14185",
+    "display_name": "Research, Science, and Academia",
+    "score": 0.48730000853538513,
+    "subfield": {
+      "id": "https://openalex.org/subfields/1405",
+      "display_name": "Management of Technology and Innovation"
+    },
+    "field": {
+      "id": "https://openalex.org/fields/14",
+      "display_name": "Business, Management and Accounting"
+    },
+    "domain": {
+      "id": "https://openalex.org/domains/2",
+      "display_name": "Social Sciences"
+    }
+  },
+  "topics": [
+    {
+      "id": "https://openalex.org/T14185",
+      "display_name": "Research, Science, and Academia",
+      "score": 0.48730000853538513,
+      "subfield": {
+        "id": "https://openalex.org/subfields/1405",
+        "display_name": "Management of Technology and Innovation"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/14",
+        "display_name": "Business, Management and Accounting"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/2",
+        "display_name": "Social Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T10726",
+      "display_name": "Career Development and Diversity",
+      "score": 0.2667999863624573,
+      "subfield": {
+        "id": "https://openalex.org/subfields/3202",
+        "display_name": "Applied Psychology"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/32",
+        "display_name": "Psychology"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/2",
+        "display_name": "Social Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T11384",
+      "display_name": "Critical Race Theory in Education",
+      "score": 0.04470000043511391,
+      "subfield": {
+        "id": "https://openalex.org/subfields/3312",
+        "display_name": "Sociology and Political Science"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/33",
+        "display_name": "Social Sciences"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/2",
+        "display_name": "Social Sciences"
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "id": "https://openalex.org/keywords/racial-disparities",
+      "display_name": "racial disparities",
+      "score": 0.7929999828338623
+    },
+    {
+      "id": "https://openalex.org/keywords/research-funding",
+      "display_name": "research funding",
+      "score": 0.9129999876022339
+    },
+    {
+      "id": "https://openalex.org/keywords/national-science-foundation",
+      "display_name": "National Science Foundation",
+      "score": 0.9449999928474426
+    },
+    {
+      "id": "https://openalex.org/keywords/principal-investigators",
+      "display_name": "principal investigators",
+      "score": 0.8889999985694885
+    },
+    {
+      "id": "https://openalex.org/keywords/systemic-racism",
+      "display_name": "systemic racism",
+      "score": 0.7839999794960022
+    },
+    {
+      "id": "https://openalex.org/keywords/review-scores",
+      "display_name": "review scores",
+      "score": 0.6140000224113464
+    },
+    {
+      "id": "https://openalex.org/keywords/matthew-effect",
+      "display_name": "Matthew effect",
+      "score": 0.7549999952316284
+    },
+    {
+      "id": "https://openalex.org/keywords/racial-bias-in-science",
+      "display_name": "racial bias in science",
+      "score": 0.5429999828338623
+    },
+    {
+      "id": "https://openalex.org/keywords/equity-in-stem",
+      "display_name": "STEM equity",
+      "score": 0.3089999854564667
+    }
+  ],
+  "concepts": [
+    {
+      "id": "https://openalex.org/C56273599",
+      "wikidata": "https://www.wikidata.org/wiki/Q3122841",
+      "display_name": "White (mutation)",
+      "level": 3,
+      "score": 0.5607513785362244
+    },
+    {
+      "id": "https://openalex.org/C8795937",
+      "wikidata": "https://www.wikidata.org/wiki/Q11862829",
+      "display_name": "Discipline",
+      "level": 2,
+      "score": 0.516007661819458
+    },
+    {
+      "id": "https://openalex.org/C139838865",
+      "wikidata": "https://www.wikidata.org/wiki/Q8461",
+      "display_name": "Racism",
+      "level": 2,
+      "score": 0.5007808208465576
+    },
+    {
+      "id": "https://openalex.org/C76509639",
+      "wikidata": "https://www.wikidata.org/wiki/Q918036",
+      "display_name": "Race (biology)",
+      "level": 2,
+      "score": 0.4986131191253662
+    },
+    {
+      "id": "https://openalex.org/C17744445",
+      "wikidata": "https://www.wikidata.org/wiki/Q36442",
+      "display_name": "Political science",
+      "level": 0,
+      "score": 0.4796760082244873
+    },
+    {
+      "id": "https://openalex.org/C2780966255",
+      "wikidata": "https://www.wikidata.org/wiki/Q5474306",
+      "display_name": "Foundation (evidence)",
+      "level": 2,
+      "score": 0.4187876880168915
+    },
+    {
+      "id": "https://openalex.org/C149923435",
+      "wikidata": "https://www.wikidata.org/wiki/Q37732",
+      "display_name": "Demography",
+      "level": 1,
+      "score": 0.3235364556312561
+    },
+    {
+      "id": "https://openalex.org/C144024400",
+      "wikidata": "https://www.wikidata.org/wiki/Q21201",
+      "display_name": "Sociology",
+      "level": 0,
+      "score": 0.23475953936576843
+    },
+    {
+      "id": "https://openalex.org/C86803240",
+      "wikidata": "https://www.wikidata.org/wiki/Q420",
+      "display_name": "Biology",
+      "level": 0,
+      "score": 0.16761240363121033
+    },
+    {
+      "id": "https://openalex.org/C199539241",
+      "wikidata": "https://www.wikidata.org/wiki/Q7748",
+      "display_name": "Law",
+      "level": 1,
+      "score": 0.10410147905349731
+    },
+    {
+      "id": "https://openalex.org/C107993555",
+      "wikidata": "https://www.wikidata.org/wiki/Q1662673",
+      "display_name": "Gender studies",
+      "level": 1,
+      "score": 0.08763846755027771
+    },
+    {
+      "id": "https://openalex.org/C55493867",
+      "wikidata": "https://www.wikidata.org/wiki/Q7094",
+      "display_name": "Biochemistry",
+      "level": 1,
+      "score": 0.0
+    },
+    {
+      "id": "https://openalex.org/C104317684",
+      "wikidata": "https://www.wikidata.org/wiki/Q7187",
+      "display_name": "Gene",
+      "level": 2,
+      "score": 0.0
+    }
+  ],
+  "mesh": [
+    {
+      "descriptor_ui": "D000091722",
+      "descriptor_name": "Systemic Racism",
+      "qualifier_ui": null,
+      "qualifier_name": null,
+      "is_major_topic": false
+    },
+    {
+      "descriptor_ui": "D004738",
+      "descriptor_name": "Engineering",
+      "qualifier_ui": null,
+      "qualifier_name": null,
+      "is_major_topic": true
+    },
+    {
+      "descriptor_ui": "D007167",
+      "descriptor_name": "Immunotherapy",
+      "qualifier_ui": null,
+      "qualifier_name": null,
+      "is_major_topic": true
+    }
+  ],
+  "locations_count": 12,
+  "locations": [
+    {
+      "id": "doi:10.7554/elife.83071",
+      "doi": "https://doi.org/10.7554/elife.83071",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.7554/elife.83071",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S1336409049",
+        "display_name": "eLife",
+        "issn_l": "2050-084X",
+        "issn": [
+          "2050-084X"
+        ],
+        "is_oa": true,
+        "is_in_doaj": true,
+        "is_core": true,
+        "listed_in": [
+          "anvur-scientific",
+          "cwts-core",
+          "doaj",
+          "dongbi-a",
+          "jufo-2",
+          "ki-jl-2",
+          "medline",
+          "norway-2",
+          "oarl",
+          "poland-200",
+          "russia-white-list-1",
+          "vabb-shw"
+        ],
+        "host_organization": "https://openalex.org/P4310311710",
+        "host_organization_name": "eLife Sciences Publications Ltd",
+        "host_organization_lineage": [
+          "https://openalex.org/P4310311710"
+        ],
+        "host_organization_lineage_names": [
+          "eLife Sciences Publications Ltd"
+        ],
+        "type": "journal"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "publishedVersion",
+      "is_accepted": true,
+      "is_published": true,
+      "raw_source_name": "eLife",
+      "raw_type": "journal-article"
+    },
+    {
+      "id": "doi:10.31219/osf.io/xb57u",
+      "doi": "https://doi.org/10.31219/osf.io/xb57u",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.31219/osf.io/xb57u",
+      "pdf_url": "https://osf.io/xb57u/download",
+      "source": {
+        "id": "https://openalex.org/S4306401127",
+        "display_name": "OSF Preprints (OSF Preprints)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I2799848540",
+        "host_organization_name": "Center for Open Science",
+        "host_organization_lineage": [
+          "https://openalex.org/I2799848540"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "public-domain",
+      "license_id": "https://openalex.org/licenses/public-domain",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "posted-content"
+    },
+    {
+      "id": "pmid:36444975",
+      "doi": null,
+      "is_oa": false,
+      "landing_page_url": "https://pubmed.ncbi.nlm.nih.gov/36444975",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306525036",
+        "display_name": "PubMed",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I1299303238",
+        "host_organization_name": "National Institutes of Health",
+        "host_organization_lineage": [
+          "https://openalex.org/I1299303238"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": "publishedVersion",
+      "is_accepted": true,
+      "is_published": true,
+      "raw_source_name": "eLife",
+      "raw_type": "Journal Article"
+    },
+    {
+      "id": "pmh:oai:pubmedcentral.nih.gov:9708090",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9708090/",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S2764455111",
+        "display_name": "PubMed Central",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": true,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I1299303238",
+        "host_organization_name": "National Institutes of Health",
+        "host_organization_lineage": [
+          "https://openalex.org/I1299303238"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "public-domain",
+      "license_id": "https://openalex.org/licenses/public-domain",
+      "version": "publishedVersion",
+      "is_accepted": true,
+      "is_published": true,
+      "raw_source_name": "eLife",
+      "raw_type": "Text"
+    },
+    {
+      "id": "pmh:oai:doaj.org/article:c4e7df2573c242d19d22842e3689c9db",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://doaj.org/article/c4e7df2573c242d19d22842e3689c9db",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306401280",
+        "display_name": "DOAJ (DOAJ: Directory of Open Access Journals)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": null,
+        "host_organization_name": null,
+        "host_organization_lineage": [],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by-sa",
+      "license_id": "https://openalex.org/licenses/cc-by-sa",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": "eLife, Vol 11 (2022)",
+      "raw_type": "article"
+    },
+    {
+      "id": "pmh:oai:escholarship.org:ark:/13030/qt0cs6n74d",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://escholarship.org/uc/item/0cs6n74d",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306400115",
+        "display_name": "eScholarship (California Digital Library)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I2801248553",
+        "host_organization_name": "California Digital Library",
+        "host_organization_lineage": [
+          "https://openalex.org/I2801248553"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "public-domain",
+      "license_id": "https://openalex.org/licenses/public-domain",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": "eLife, vol 11",
+      "raw_type": "article"
+    },
+    {
+      "id": "pmh:oai:noaa.stacks:noaa:50406",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://repository.library.noaa.gov/view/noaa/50406",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4377196172",
+        "display_name": "NOAA Institutional Repository",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": null,
+        "host_organization_name": null,
+        "host_organization_lineage": [],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": "eLife 11:e83071",
+      "raw_type": null
+    },
+    {
+      "id": "pmh:oai:osti.gov:1900078",
+      "doi": null,
+      "is_oa": false,
+      "landing_page_url": "https://www.osti.gov/biblio/1900078",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306402487",
+        "display_name": "OSTI OAI (U.S. Department of Energy Office of Scientific and Technical Information)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I139351228",
+        "host_organization_name": "Office of Scientific and Technical Information",
+        "host_organization_lineage": [
+          "https://openalex.org/I139351228"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": null
+    },
+    {
+      "id": "pmh:oai:osti.gov:1900080",
+      "doi": null,
+      "is_oa": false,
+      "landing_page_url": "https://www.osti.gov/biblio/1900080",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306402487",
+        "display_name": "OSTI OAI (U.S. Department of Energy Office of Scientific and Technical Information)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I139351228",
+        "host_organization_name": "Office of Scientific and Technical Information",
+        "host_organization_lineage": [
+          "https://openalex.org/I139351228"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": null
+    },
+    {
+      "id": "pmh:oai:osti.gov:2007263",
+      "doi": null,
+      "is_oa": false,
+      "landing_page_url": "https://www.osti.gov/biblio/2007263",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306402487",
+        "display_name": "OSTI OAI (U.S. Department of Energy Office of Scientific and Technical Information)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I139351228",
+        "host_organization_name": "Office of Scientific and Technical Information",
+        "host_organization_lineage": [
+          "https://openalex.org/I139351228"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": null
+    },
+    {
+      "id": "pmh:oai:share.osf.io:8b0b0cbe-ac3d-4d6b-bed9-f6416b2ee6ec",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://osf.io/xb57u",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306401127",
+        "display_name": "OSF Preprints (OSF Preprints)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I2799848540",
+        "host_organization_name": "Center for Open Science",
+        "host_organization_lineage": [
+          "https://openalex.org/I2799848540"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "public-domain",
+      "license_id": "https://openalex.org/licenses/public-domain",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "Preprint"
+    },
+    {
+      "id": "pmh:oai:share.osf.io:E015D-1AD-A57",
+      "doi": null,
+      "is_oa": false,
+      "landing_page_url": "http://doi.org/10.31219/OSF.IO/XB57U",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306401127",
+        "display_name": "OSF Preprints (OSF Preprints)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I2799848540",
+        "host_organization_name": "Center for Open Science",
+        "host_organization_lineage": [
+          "https://openalex.org/I2799848540"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": "",
+      "raw_type": "preprint"
+    }
+  ],
+  "best_oa_location": {
+    "id": "doi:10.7554/elife.83071",
+    "doi": "https://doi.org/10.7554/elife.83071",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.7554/elife.83071",
+    "pdf_url": null,
+    "source": {
+      "id": "https://openalex.org/S1336409049",
+      "display_name": "eLife",
+      "issn_l": "2050-084X",
+      "issn": [
+        "2050-084X"
+      ],
+      "is_oa": true,
+      "is_in_doaj": true,
+      "is_core": true,
+      "listed_in": [
+        "anvur-scientific",
+        "cwts-core",
+        "doaj",
+        "dongbi-a",
+        "jufo-2",
+        "ki-jl-2",
+        "medline",
+        "norway-2",
+        "oarl",
+        "poland-200",
+        "russia-white-list-1",
+        "vabb-shw"
+      ],
+      "host_organization": "https://openalex.org/P4310311710",
+      "host_organization_name": "eLife Sciences Publications Ltd",
+      "host_organization_lineage": [
+        "https://openalex.org/P4310311710"
+      ],
+      "host_organization_lineage_names": [
+        "eLife Sciences Publications Ltd"
+      ],
+      "type": "journal"
+    },
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": "publishedVersion",
+    "is_accepted": true,
+    "is_published": true,
+    "raw_source_name": "eLife",
+    "raw_type": "journal-article"
+  },
+  "sustainable_development_goals": [
+    {
+      "id": "https://metadata.un.org/sdg/10",
+      "display_name": "Reduced inequalities",
+      "score": 1.0
+    }
+  ],
+  "study_designs": [],
+  "awards": [
+    {
+      "id": "https://openalex.org/G1088636562",
+      "display_name": null,
+      "funder_award_id": "DE-AC52-07-NA27344",
+      "funder_id": "https://openalex.org/F4320306076",
+      "funder_display_name": "National Science Foundation"
+    },
+    {
+      "id": "https://openalex.org/G1356433355",
+      "display_name": null,
+      "funder_award_id": "DE‐AC5207NA27344",
+      "funder_id": "https://openalex.org/F4320338286",
+      "funder_display_name": "Lawrence Livermore National Laboratory"
+    },
+    {
+      "id": "https://openalex.org/G14554683",
+      "display_name": null,
+      "funder_award_id": "DEAC5207NA27344",
+      "funder_id": "https://openalex.org/F4320306084",
+      "funder_display_name": "U.S. Department of Energy"
+    },
+    {
+      "id": "https://openalex.org/G2145270357",
+      "display_name": null,
+      "funder_award_id": "AC52‐07NA27344",
+      "funder_id": "https://openalex.org/F4320306084",
+      "funder_display_name": "U.S. Department of Energy"
+    },
+    {
+      "id": "https://openalex.org/G4343739756",
+      "display_name": null,
+      "funder_award_id": "Contract DE-AC52-07NA27344",
+      "funder_id": "https://openalex.org/F4320338286",
+      "funder_display_name": "Lawrence Livermore National Laboratory"
+    },
+    {
+      "id": "https://openalex.org/G4860326269",
+      "display_name": null,
+      "funder_award_id": "2012-2016",
+      "funder_id": "https://openalex.org/F4320306151",
+      "funder_display_name": "Alfred P. Sloan Foundation"
+    },
+    {
+      "id": "https://openalex.org/G6852334964",
+      "display_name": "Graduate Research Fellowship Program (GRFP)",
+      "funder_award_id": "2146752",
+      "funder_id": "https://openalex.org/F4320306076",
+      "funder_display_name": "National Science Foundation"
+    },
+    {
+      "id": "https://openalex.org/G69709960",
+      "display_name": null,
+      "funder_award_id": "Contract DE-AC52-07NA27344",
+      "funder_id": "https://openalex.org/F4320306084",
+      "funder_display_name": "U.S. Department of Energy"
+    },
+    {
+      "id": "https://openalex.org/G7841199887",
+      "display_name": null,
+      "funder_award_id": "DE-AC52-07NA27344",
+      "funder_id": "https://openalex.org/F4320306151",
+      "funder_display_name": "Alfred P. Sloan Foundation"
+    },
+    {
+      "id": "https://openalex.org/G8751405378",
+      "display_name": null,
+      "funder_award_id": "DGE 2146 752",
+      "funder_id": "https://openalex.org/F4320306076",
+      "funder_display_name": "National Science Foundation"
+    },
+    {
+      "id": "https://openalex.org/G991281326",
+      "display_name": null,
+      "funder_award_id": "AC52-07NA27344",
+      "funder_id": "https://openalex.org/F4320338286",
+      "funder_display_name": "Lawrence Livermore National Laboratory"
+    }
+  ],
+  "funders": [
+    {
+      "id": "https://openalex.org/F4320306076",
+      "display_name": "National Science Foundation",
+      "ror": "https://ror.org/021nxhr62"
+    },
+    {
+      "id": "https://openalex.org/F4320306079",
+      "display_name": "David and Lucile Packard Foundation",
+      "ror": "https://ror.org/032atxq54"
+    },
+    {
+      "id": "https://openalex.org/F4320306084",
+      "display_name": "U.S. Department of Energy",
+      "ror": "https://ror.org/01bj3aw27"
+    },
+    {
+      "id": "https://openalex.org/F4320306151",
+      "display_name": "Alfred P. Sloan Foundation",
+      "ror": "https://ror.org/052csg198"
+    },
+    {
+      "id": "https://openalex.org/F4320338286",
+      "display_name": "Lawrence Livermore National Laboratory",
+      "ror": "https://ror.org/041nk4h53"
+    }
+  ],
+  "has_content": {
+    "pdf": true,
+    "grobid_xml": true
+  },
+  "content_urls": {
+    "pdf": "https://content.openalex.org/works/W4310113674.pdf",
+    "grobid_xml": "https://content.openalex.org/works/W4310113674.grobid-xml"
+  },
+  "referenced_works_count": 140,
+  "referenced_works": [
+    "https://openalex.org/W77281324",
+    "https://openalex.org/W102369086",
+    "https://openalex.org/W331455060",
+    "https://openalex.org/W1185348476",
+    "https://openalex.org/W1489733730",
+    "https://openalex.org/W1575437605",
+    "https://openalex.org/W1580626384",
+    "https://openalex.org/W1590076977",
+    "https://openalex.org/W1625972382",
+    "https://openalex.org/W1956475302",
+    "https://openalex.org/W1980669377",
+    "https://openalex.org/W1992826861",
+    "https://openalex.org/W1998907525",
+    "https://openalex.org/W2014525484",
+    "https://openalex.org/W2017669310",
+    "https://openalex.org/W2019315455",
+    "https://openalex.org/W2041710630",
+    "https://openalex.org/W2045887548",
+    "https://openalex.org/W2050990045",
+    "https://openalex.org/W2057714095",
+    "https://openalex.org/W2058271572",
+    "https://openalex.org/W2064248928",
+    "https://openalex.org/W2066520537",
+    "https://openalex.org/W2073144276",
+    "https://openalex.org/W2086731424",
+    "https://openalex.org/W2096354859",
+    "https://openalex.org/W2096998441",
+    "https://openalex.org/W2102017123",
+    "https://openalex.org/W2108353027",
+    "https://openalex.org/W2110912171",
+    "https://openalex.org/W2111982668",
+    "https://openalex.org/W2140088292",
+    "https://openalex.org/W2142701897",
+    "https://openalex.org/W2146127733",
+    "https://openalex.org/W2147878130",
+    "https://openalex.org/W2149617253",
+    "https://openalex.org/W2149651081",
+    "https://openalex.org/W2152573571",
+    "https://openalex.org/W2154347050",
+    "https://openalex.org/W2156434198",
+    "https://openalex.org/W2169557639",
+    "https://openalex.org/W2170508806",
+    "https://openalex.org/W2188475214",
+    "https://openalex.org/W2272176192",
+    "https://openalex.org/W2273766569",
+    "https://openalex.org/W2312846756",
+    "https://openalex.org/W2335214455",
+    "https://openalex.org/W2398783847",
+    "https://openalex.org/W2443110710",
+    "https://openalex.org/W2586354152",
+    "https://openalex.org/W2605304535",
+    "https://openalex.org/W2616051103",
+    "https://openalex.org/W2623655084",
+    "https://openalex.org/W2732930869",
+    "https://openalex.org/W2756364188",
+    "https://openalex.org/W2765918009",
+    "https://openalex.org/W2768281947",
+    "https://openalex.org/W2770449548",
+    "https://openalex.org/W2788481061",
+    "https://openalex.org/W2799668269",
+    "https://openalex.org/W2800938674",
+    "https://openalex.org/W2801779380",
+    "https://openalex.org/W2802509651",
+    "https://openalex.org/W2806180023",
+    "https://openalex.org/W2809090948",
+    "https://openalex.org/W2897340965",
+    "https://openalex.org/W2901560247",
+    "https://openalex.org/W2904714936",
+    "https://openalex.org/W2908760468",
+    "https://openalex.org/W2911488183",
+    "https://openalex.org/W2911537195",
+    "https://openalex.org/W2919977181",
+    "https://openalex.org/W2942862229",
+    "https://openalex.org/W2948604923",
+    "https://openalex.org/W2954912165",
+    "https://openalex.org/W2973151561",
+    "https://openalex.org/W2979296990",
+    "https://openalex.org/W2990224909",
+    "https://openalex.org/W2992319600",
+    "https://openalex.org/W2992645909",
+    "https://openalex.org/W3000299920",
+    "https://openalex.org/W3003646990",
+    "https://openalex.org/W3006753318",
+    "https://openalex.org/W3009748544",
+    "https://openalex.org/W3033797387",
+    "https://openalex.org/W3037877047",
+    "https://openalex.org/W3041931951",
+    "https://openalex.org/W3042006593",
+    "https://openalex.org/W3045595131",
+    "https://openalex.org/W3048186973",
+    "https://openalex.org/W3048457647",
+    "https://openalex.org/W3088881958",
+    "https://openalex.org/W3092330694",
+    "https://openalex.org/W3097954009",
+    "https://openalex.org/W3099052861",
+    "https://openalex.org/W3103164731",
+    "https://openalex.org/W3103976293",
+    "https://openalex.org/W3111105858",
+    "https://openalex.org/W3121797224",
+    "https://openalex.org/W3123874968",
+    "https://openalex.org/W3127893850",
+    "https://openalex.org/W3132864499",
+    "https://openalex.org/W3134215724",
+    "https://openalex.org/W3134908893",
+    "https://openalex.org/W3145953065",
+    "https://openalex.org/W3147753165",
+    "https://openalex.org/W3154223147",
+    "https://openalex.org/W3158981426",
+    "https://openalex.org/W3160622435",
+    "https://openalex.org/W3168716819",
+    "https://openalex.org/W3197244229",
+    "https://openalex.org/W3205612217",
+    "https://openalex.org/W3205638639",
+    "https://openalex.org/W3206766816",
+    "https://openalex.org/W3211727490",
+    "https://openalex.org/W3217211156",
+    "https://openalex.org/W4200109380",
+    "https://openalex.org/W4205172373",
+    "https://openalex.org/W4205475170",
+    "https://openalex.org/W4214607535",
+    "https://openalex.org/W4220673914",
+    "https://openalex.org/W4226023781",
+    "https://openalex.org/W4231491754",
+    "https://openalex.org/W4231625505",
+    "https://openalex.org/W4243669715",
+    "https://openalex.org/W4249292692",
+    "https://openalex.org/W4281757053",
+    "https://openalex.org/W4282945214",
+    "https://openalex.org/W4283759677",
+    "https://openalex.org/W4292887282",
+    "https://openalex.org/W4293194788",
+    "https://openalex.org/W4297081765",
+    "https://openalex.org/W4300952221",
+    "https://openalex.org/W4301374049",
+    "https://openalex.org/W4306174738",
+    "https://openalex.org/W4388064047",
+    "https://openalex.org/W6602673515",
+    "https://openalex.org/W6809680140",
+    "https://openalex.org/W7024103744",
+    "https://openalex.org/W7110028375"
+  ],
+  "related_works": [
+    "https://openalex.org/W4291910386",
+    "https://openalex.org/W4312156218",
+    "https://openalex.org/W4288425127",
+    "https://openalex.org/W3123874968",
+    "https://openalex.org/W3163805907",
+    "https://openalex.org/W1993296232",
+    "https://openalex.org/W4324124684",
+    "https://openalex.org/W4290546736",
+    "https://openalex.org/W4252267120",
+    "https://openalex.org/W3091326690"
+  ],
+  "abstract_inverted_index": {
+    "Concerns": [
+      0
+    ],
+    "about": [
+      1
+    ],
+    "systemic": [
+      2
+    ],
+    "racism": [
+      3
+    ],
+    "at": [
+      4,
+      50
+    ],
+    "academic": [
+      5
+    ],
+    "and": [
+      6,
+      34,
+      83,
+      122,
+      147
+    ],
+    "research": [
+      7,
+      29,
+      87,
+      111
+    ],
+    "institutions": [
+      8
+    ],
+    "have": [
+      9,
+      62,
+      106,
+      130
+    ],
+    "increased": [
+      10
+    ],
+    "over": [
+      11
+    ],
+    "the": [
+      12,
+      20,
+      31,
+      81
+    ],
+    "past": [
+      13
+    ],
+    "decade.": [
+      14
+    ],
+    "Here,": [
+      15
+    ],
+    "we": [
+      16
+    ],
+    "investigate": [
+      17
+    ],
+    "data": [
+      18
+    ],
+    "from": [
+      19
+    ],
+    "National": [
+      21
+    ],
+    "Science": [
+      22
+    ],
+    "Foundation": [
+      23
+    ],
+    "(NSF),": [
+      24
+    ],
+    "a": [
+      25,
+      135
+    ],
+    "major": [
+      26
+    ],
+    "funder": [
+      27
+    ],
+    "of": [
+      28,
+      91,
+      124,
+      143
+    ],
+    "in": [
+      30,
+      109,
+      128
+    ],
+    "United": [
+      32
+    ],
+    "States,": [
+      33
+    ],
+    "find": [
+      35
+    ],
+    "evidence": [
+      36
+    ],
+    "for": [
+      37,
+      59,
+      86
+    ],
+    "pervasive": [
+      38
+    ],
+    "racial": [
+      39,
+      116,
+      126
+    ],
+    "disparities.": [
+      40
+    ],
+    "In": [
+      41
+    ],
+    "particular,": [
+      42
+    ],
+    "white": [
+      43,
+      60,
+      139
+    ],
+    "principal": [
+      44
+    ],
+    "investigators": [
+      45
+    ],
+    "(PIs)": [
+      46
+    ],
+    "are": [
+      47,
+      84,
+      118
+    ],
+    "consistently": [
+      48
+    ],
+    "funded": [
+      49
+    ],
+    "higher": [
+      51
+    ],
+    "rates": [
+      52,
+      58,
+      70
+    ],
+    "than": [
+      53
+    ],
+    "most": [
+      54
+    ],
+    "non-white": [
+      55
+    ],
+    "PIs.": [
+      56
+    ],
+    "Funding": [
+      57
+    ],
+    "PIs": [
+      61,
+      140
+    ],
+    "also": [
+      63,
+      96
+    ],
+    "been": [
+      64,
+      107
+    ],
+    "increasing": [
+      65
+    ],
+    "relative": [
+      66
+    ],
+    "to": [
+      67,
+      138
+    ],
+    "annual": [
+      68
+    ],
+    "overall": [
+      69
+    ],
+    "with": [
+      71
+    ],
+    "time.": [
+      72
+    ],
+    "Moreover,": [
+      73
+    ],
+    "disparities": [
+      74,
+      117,
+      127
+    ],
+    "occur": [
+      75
+    ],
+    "across": [
+      76,
+      141
+    ],
+    "all": [
+      77,
+      142
+    ],
+    "disciplinary": [
+      78
+    ],
+    "directorates": [
+      79
+    ],
+    "within": [
+      80
+    ],
+    "NSF": [
+      82
+    ],
+    "greater": [
+      85
+    ],
+    "proposals.": [
+      88
+    ],
+    "The": [
+      89,
+      120
+    ],
+    "distributions": [
+      90
+    ],
+    "average": [
+      92
+    ],
+    "external": [
+      93
+    ],
+    "review": [
+      94
+    ],
+    "scores": [
+      95
+    ],
+    "exhibit": [
+      97
+    ],
+    "systematic": [
+      98
+    ],
+    "offsets": [
+      99
+    ],
+    "based": [
+      100
+    ],
+    "on": [
+      101
+    ],
+    "PI": [
+      102
+    ],
+    "race.": [
+      103
+    ],
+    "Similar": [
+      104
+    ],
+    "patterns": [
+      105
+    ],
+    "described": [
+      108
+    ],
+    "other": [
+      110
+    ],
+    "funding": [
+      112,
+      129
+    ],
+    "bodies,": [
+      113
+    ],
+    "suggesting": [
+      114
+    ],
+    "that": [
+      115,
+      133
+    ],
+    "widespread.": [
+      119
+    ],
+    "prevalence": [
+      121
+    ],
+    "persistence": [
+      123
+    ],
+    "these": [
+      125
+    ],
+    "cascading": [
+      131
+    ],
+    "impacts": [
+      132
+    ],
+    "perpetuate": [
+      134
+    ],
+    "cumulative": [
+      136
+    ],
+    "advantage": [
+      137
+    ],
+    "science,": [
+      144
+    ],
+    "technology,": [
+      145
+    ],
+    "engineering,": [
+      146
+    ],
+    "mathematics.": [
+      148
+    ]
+  },
+  "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W4310113674",
+  "counts_by_year": [
+    {
+      "year": 2026,
+      "cited_by_count": 24
+    },
+    {
+      "year": 2025,
+      "cited_by_count": 44
+    },
+    {
+      "year": 2024,
+      "cited_by_count": 64
+    },
+    {
+      "year": 2023,
+      "cited_by_count": 39
+    },
+    {
+      "year": 2022,
+      "cited_by_count": 11
+    }
+  ],
+  "updated_date": "2026-11-16T12:05:36.265796",
+  "created_date": "2022-11-30T00:00:00"
+}

@@ -1,0 +1,1302 @@
+{
+  "id": "https://openalex.org/W7161267424",
+  "doi": "https://doi.org/10.2196/preprints.100170",
+  "title": "Clinical Integration of Wearable Biosensors and Patient-Generated Digital Data in Pediatric Cardiology: A Scoping Review (Preprint)",
+  "display_name": "Clinical Integration of Wearable Biosensors and Patient-Generated Digital Data in Pediatric Cardiology: A Scoping Review (Preprint)",
+  "alternate_titles": [],
+  "publication_year": 2026,
+  "publication_date": "2026-05-03",
+  "ids": {
+    "openalex": "https://openalex.org/W7161267424",
+    "doi": "https://doi.org/10.2196/preprints.100170"
+  },
+  "language": "en",
+  "primary_location": {
+    "id": "doi:10.2196/preprints.100170",
+    "doi": "https://doi.org/10.2196/preprints.100170",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.2196/preprints.100170",
+    "pdf_url": null,
+    "source": null,
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": "submittedVersion",
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "posted-content"
+  },
+  "parent_works": [],
+  "lineage": [
+    "https://openalex.org/W7161267424"
+  ],
+  "child_works_count": 0,
+  "type": "preprint",
+  "is_traditional": true,
+  "indexed_in": [
+    "crossref"
+  ],
+  "open_access": {
+    "is_oa": true,
+    "oa_status": "green",
+    "oa_url": "https://doi.org/10.2196/preprints.100170",
+    "any_repository_has_fulltext": null
+  },
+  "authorships": [
+    {
+      "author_position": "first",
+      "author": {
+        "id": "https://openalex.org/A5136200986",
+        "display_name": "Abenezer Feleke Kebede",
+        "orcid": "https://orcid.org/0009-0002-4319-9921",
+        "observed_orcids": [
+          "https://orcid.org/0009-0002-4319-9921"
+        ]
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Abenezer Feleke Kebede",
+      "raw_affiliation_strings": [],
+      "raw_orcid": "https://orcid.org/0009-0002-4319-9921",
+      "affiliations": []
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5135377979",
+        "display_name": "Ziad Chemaly",
+        "orcid": "https://orcid.org/0009-0007-1894-3954",
+        "observed_orcids": [
+          "https://orcid.org/0009-0007-1894-3954"
+        ]
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Ziad Chemaly",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5032175161",
+        "display_name": "Maria Pestana",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Maria Pestana",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5133375782",
+        "display_name": "Ana Aquino",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Ana Aquino",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    },
+    {
+      "author_position": "last",
+      "author": {
+        "id": "https://openalex.org/A5136595103",
+        "display_name": "JUSTIN SCOTT GOUCHER",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Justin Goucher",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    }
+  ],
+  "institutions": [],
+  "countries_distinct_count": 0,
+  "institutions_distinct_count": 0,
+  "corresponding_author_ids": [],
+  "corresponding_institution_ids": [],
+  "apc_list": null,
+  "apc_paid": null,
+  "fwci": null,
+  "has_fulltext": false,
+  "cited_by_count": 0,
+  "citation_normalized_percentile": null,
+  "cited_by_percentile_year": null,
+  "biblio": {
+    "volume": null,
+    "issue": null,
+    "first_page": null,
+    "last_page": null
+  },
+  "is_retracted": false,
+  "is_paratext": false,
+  "is_xpac": false,
+  "primary_topic": {
+    "id": "https://openalex.org/T11446",
+    "display_name": "Mobile Health and mHealth Applications",
+    "score": 0.7006999850273132,
+    "subfield": {
+      "id": "https://openalex.org/subfields/3600",
+      "display_name": "General Health Professions"
+    },
+    "field": {
+      "id": "https://openalex.org/fields/36",
+      "display_name": "Health Professions"
+    },
+    "domain": {
+      "id": "https://openalex.org/domains/4",
+      "display_name": "Health Sciences"
+    }
+  },
+  "topics": [
+    {
+      "id": "https://openalex.org/T11446",
+      "display_name": "Mobile Health and mHealth Applications",
+      "score": 0.7006999850273132,
+      "subfield": {
+        "id": "https://openalex.org/subfields/3600",
+        "display_name": "General Health Professions"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/36",
+        "display_name": "Health Professions"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/4",
+        "display_name": "Health Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T10300",
+      "display_name": "Congenital Heart Disease Studies",
+      "score": 0.09000000357627869,
+      "subfield": {
+        "id": "https://openalex.org/subfields/2705",
+        "display_name": "Cardiology and Cardiovascular Medicine"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/27",
+        "display_name": "Medicine"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/4",
+        "display_name": "Health Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T11196",
+      "display_name": "Non-Invasive Vital Sign Monitoring",
+      "score": 0.07209999859333038,
+      "subfield": {
+        "id": "https://openalex.org/subfields/2204",
+        "display_name": "Biomedical Engineering"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/22",
+        "display_name": "Engineering"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/3",
+        "display_name": "Physical Sciences"
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "id": "https://openalex.org/keywords/wearable-biosensors",
+      "display_name": "wearable biosensors",
+      "score": 0.9990000128746033
+    },
+    {
+      "id": "https://openalex.org/keywords/patient-generated-health-data",
+      "display_name": "patient-generated health data",
+      "score": 0.9760000109672546
+    },
+    {
+      "id": "https://openalex.org/keywords/pediatric-cardiology",
+      "display_name": "pediatric cardiology",
+      "score": 0.9670000076293945
+    },
+    {
+      "id": "https://openalex.org/keywords/congenital-heart-disease",
+      "display_name": "congenital heart disease",
+      "score": 0.9940000176429749
+    },
+    {
+      "id": "https://openalex.org/keywords/mobile-health",
+      "display_name": "mobile health",
+      "score": 0.7990000247955322
+    },
+    {
+      "id": "https://openalex.org/keywords/home-monitoring",
+      "display_name": "home monitoring",
+      "score": 0.5699999928474426
+    },
+    {
+      "id": "https://openalex.org/keywords/telemedicine",
+      "display_name": "telemedicine",
+      "score": 0.6179999709129333
+    },
+    {
+      "id": "https://openalex.org/keywords/digital-stethoscope",
+      "display_name": "digital stethoscope",
+      "score": 0.8019999861717224
+    },
+    {
+      "id": "https://openalex.org/keywords/arrhythmia-detection",
+      "display_name": "arrhythmia detection",
+      "score": 0.7900000214576721
+    },
+    {
+      "id": "https://openalex.org/keywords/digital-biomarkers",
+      "display_name": "digital biomarkers",
+      "score": 0.5849999785423279
+    },
+    {
+      "id": "https://openalex.org/keywords/clinical-integration",
+      "display_name": "clinical integration",
+      "score": 0.5889999866485596
+    },
+    {
+      "id": "https://openalex.org/keywords/implementation-barriers",
+      "display_name": "implementation barriers",
+      "score": 0.7390000224113464
+    },
+    {
+      "id": "https://openalex.org/keywords/health-equity",
+      "display_name": "health equity",
+      "score": 0.6100000143051147
+    }
+  ],
+  "concepts": [
+    {
+      "id": "https://openalex.org/C150594956",
+      "wikidata": "https://www.wikidata.org/wiki/Q1334829",
+      "display_name": "Wearable computer",
+      "level": 2,
+      "score": 0.7228000164031982
+    },
+    {
+      "id": "https://openalex.org/C177212765",
+      "wikidata": "https://www.wikidata.org/wiki/Q627335",
+      "display_name": "Workflow",
+      "level": 2,
+      "score": 0.6220999956130981
+    },
+    {
+      "id": "https://openalex.org/C71924100",
+      "wikidata": "https://www.wikidata.org/wiki/Q11190",
+      "display_name": "Medicine",
+      "level": 0,
+      "score": 0.6086999773979187
+    },
+    {
+      "id": "https://openalex.org/C2780433410",
+      "wikidata": "https://www.wikidata.org/wiki/Q5276090",
+      "display_name": "Digital health",
+      "level": 3,
+      "score": 0.5803999900817871
+    },
+    {
+      "id": "https://openalex.org/C54290928",
+      "wikidata": "https://www.wikidata.org/wiki/Q4845080",
+      "display_name": "Wearable technology",
+      "level": 3,
+      "score": 0.5288000106811523
+    },
+    {
+      "id": "https://openalex.org/C2522767166",
+      "wikidata": "https://www.wikidata.org/wiki/Q2374463",
+      "display_name": "Data science",
+      "level": 1,
+      "score": 0.38429999351501465
+    },
+    {
+      "id": "https://openalex.org/C186967261",
+      "wikidata": "https://www.wikidata.org/wiki/Q5082128",
+      "display_name": "Mobile device",
+      "level": 2,
+      "score": 0.37619999051094055
+    },
+    {
+      "id": "https://openalex.org/C2779473830",
+      "wikidata": "https://www.wikidata.org/wiki/Q1540899",
+      "display_name": "MEDLINE",
+      "level": 2,
+      "score": 0.37220001220703125
+    },
+    {
+      "id": "https://openalex.org/C2779891985",
+      "wikidata": "https://www.wikidata.org/wiki/Q46994",
+      "display_name": "Telemedicine",
+      "level": 3,
+      "score": 0.35679998993873596
+    },
+    {
+      "id": "https://openalex.org/C41008148",
+      "wikidata": "https://www.wikidata.org/wiki/Q21198",
+      "display_name": "Computer science",
+      "level": 0,
+      "score": 0.34380000829696655
+    },
+    {
+      "id": "https://openalex.org/C3020144179",
+      "wikidata": "https://www.wikidata.org/wiki/Q10871684",
+      "display_name": "Electronic health record",
+      "level": 3,
+      "score": 0.3278000056743622
+    },
+    {
+      "id": "https://openalex.org/C26517878",
+      "wikidata": "https://www.wikidata.org/wiki/Q228039",
+      "display_name": "Key (lock)",
+      "level": 2,
+      "score": 0.32280001044273376
+    },
+    {
+      "id": "https://openalex.org/C2780074459",
+      "wikidata": "https://www.wikidata.org/wiki/Q389735",
+      "display_name": "Heart disease",
+      "level": 2,
+      "score": 0.30550000071525574
+    },
+    {
+      "id": "https://openalex.org/C72634772",
+      "wikidata": "https://www.wikidata.org/wiki/Q386824",
+      "display_name": "Data integration",
+      "level": 2,
+      "score": 0.30300000309944153
+    },
+    {
+      "id": "https://openalex.org/C175079658",
+      "wikidata": "https://www.wikidata.org/wiki/Q7312165",
+      "display_name": "Remote patient monitoring",
+      "level": 2,
+      "score": 0.295199990272522
+    },
+    {
+      "id": "https://openalex.org/C545542383",
+      "wikidata": "https://www.wikidata.org/wiki/Q2751242",
+      "display_name": "Medical emergency",
+      "level": 1,
+      "score": 0.2922999858856201
+    },
+    {
+      "id": "https://openalex.org/C2780385302",
+      "wikidata": "https://www.wikidata.org/wiki/Q367158",
+      "display_name": "Protocol (science)",
+      "level": 3,
+      "score": 0.29109999537467957
+    },
+    {
+      "id": "https://openalex.org/C133462117",
+      "wikidata": "https://www.wikidata.org/wiki/Q4929239",
+      "display_name": "Data collection",
+      "level": 2,
+      "score": 0.2897999882698059
+    },
+    {
+      "id": "https://openalex.org/C2779134260",
+      "wikidata": "https://www.wikidata.org/wiki/Q12136",
+      "display_name": "Disease",
+      "level": 2,
+      "score": 0.2800999879837036
+    },
+    {
+      "id": "https://openalex.org/C19527891",
+      "wikidata": "https://www.wikidata.org/wiki/Q1120908",
+      "display_name": "Medical physics",
+      "level": 1,
+      "score": 0.2799000144004822
+    },
+    {
+      "id": "https://openalex.org/C2778805511",
+      "wikidata": "https://www.wikidata.org/wiki/Q1713",
+      "display_name": "Citation",
+      "level": 2,
+      "score": 0.27090001106262207
+    },
+    {
+      "id": "https://openalex.org/C195910791",
+      "wikidata": "https://www.wikidata.org/wiki/Q1324077",
+      "display_name": "Medical record",
+      "level": 2,
+      "score": 0.26989999413490295
+    },
+    {
+      "id": "https://openalex.org/C116834253",
+      "wikidata": "https://www.wikidata.org/wiki/Q2039217",
+      "display_name": "Identification (biology)",
+      "level": 2,
+      "score": 0.2669999897480011
+    },
+    {
+      "id": "https://openalex.org/C3019952477",
+      "wikidata": "https://www.wikidata.org/wiki/Q1324077",
+      "display_name": "Health records",
+      "level": 3,
+      "score": 0.2653999924659729
+    },
+    {
+      "id": "https://openalex.org/C160735492",
+      "wikidata": "https://www.wikidata.org/wiki/Q31207",
+      "display_name": "Health care",
+      "level": 2,
+      "score": 0.2639000117778778
+    }
+  ],
+  "mesh": [],
+  "locations_count": 1,
+  "locations": [
+    {
+      "id": "doi:10.2196/preprints.100170",
+      "doi": "https://doi.org/10.2196/preprints.100170",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.2196/preprints.100170",
+      "pdf_url": null,
+      "source": null,
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "posted-content"
+    }
+  ],
+  "best_oa_location": {
+    "id": "doi:10.2196/preprints.100170",
+    "doi": "https://doi.org/10.2196/preprints.100170",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.2196/preprints.100170",
+    "pdf_url": null,
+    "source": null,
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": "submittedVersion",
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "posted-content"
+  },
+  "sustainable_development_goals": [
+    {
+      "score": 0.9907000064849854,
+      "display_name": "Good health and well-being",
+      "id": "https://metadata.un.org/sdg/3"
+    }
+  ],
+  "study_designs": [
+    {
+      "display_name": "Systematic Review",
+      "id": "https://openalex.org/study-designs/systematic-review"
+    }
+  ],
+  "awards": [],
+  "funders": [],
+  "has_content": {
+    "pdf": false,
+    "grobid_xml": false
+  },
+  "content_urls": null,
+  "referenced_works_count": 29,
+  "referenced_works": [
+    "https://openalex.org/W2075950485",
+    "https://openalex.org/W2080051494",
+    "https://openalex.org/W2084154288",
+    "https://openalex.org/W2094146523",
+    "https://openalex.org/W2800229273",
+    "https://openalex.org/W2891378911",
+    "https://openalex.org/W2966580920",
+    "https://openalex.org/W3048474698",
+    "https://openalex.org/W3191696746",
+    "https://openalex.org/W4205723508",
+    "https://openalex.org/W4225540152",
+    "https://openalex.org/W4282941032",
+    "https://openalex.org/W4294152303",
+    "https://openalex.org/W4295564702",
+    "https://openalex.org/W4353048338",
+    "https://openalex.org/W4379598950",
+    "https://openalex.org/W4380927302",
+    "https://openalex.org/W4388288780",
+    "https://openalex.org/W4388793914",
+    "https://openalex.org/W4389088299",
+    "https://openalex.org/W4389168084",
+    "https://openalex.org/W4389676227",
+    "https://openalex.org/W4398785478",
+    "https://openalex.org/W4399994016",
+    "https://openalex.org/W4403304433",
+    "https://openalex.org/W4403700942",
+    "https://openalex.org/W4406083189",
+    "https://openalex.org/W4406563912",
+    "https://openalex.org/W7117572057"
+  ],
+  "related_works": [
+    "https://openalex.org/W4393266673",
+    "https://openalex.org/W4415543366",
+    "https://openalex.org/W3092546427",
+    "https://openalex.org/W7161623616",
+    "https://openalex.org/W4404141818",
+    "https://openalex.org/W7094940525",
+    "https://openalex.org/W4294952475",
+    "https://openalex.org/W7128064909",
+    "https://openalex.org/W2966580920",
+    "https://openalex.org/W4353048338"
+  ],
+  "abstract_inverted_index": {
+    "BACKGROUND": [
+      0
+    ],
+    "Wearable": [
+      1,
+      247
+    ],
+    "biosensors,": [
+      2,
+      137
+    ],
+    "remote": [
+      3,
+      138,
+      203,
+      290
+    ],
+    "physiologic": [
+      4
+    ],
+    "monitoring,": [
+      5,
+      139,
+      287
+    ],
+    "and": [
+      6,
+      41,
+      46,
+      63,
+      70,
+      83,
+      97,
+      106,
+      134,
+      205,
+      221,
+      230,
+      249,
+      274,
+      293,
+      308
+    ],
+    "patient-generated": [
+      7,
+      64,
+      250
+    ],
+    "digital": [
+      8,
+      65,
+      152,
+      195,
+      251
+    ],
+    "data": [
+      9,
+      30,
+      66,
+      153,
+      252,
+      268
+    ],
+    "are": [
+      10,
+      253
+    ],
+    "increasingly": [
+      11
+    ],
+    "visible": [
+      12
+    ],
+    "in": [
+      13,
+      67,
+      217,
+      257,
+      282
+    ],
+    "pediatric": [
+      14,
+      68,
+      155,
+      222,
+      258,
+      302
+    ],
+    "cardiology,": [
+      15
+    ],
+    "but": [
+      16,
+      296
+    ],
+    "their": [
+      17
+    ],
+    "clinical": [
+      18,
+      36,
+      77,
+      212,
+      265
+    ],
+    "use": [
+      19,
+      281
+    ],
+    "remains": [
+      20
+    ],
+    "uneven.": [
+      21
+    ],
+    "Pediatric": [
+      22
+    ],
+    "cardiology": [
+      23,
+      69,
+      156,
+      259
+    ],
+    "clinics": [
+      24
+    ],
+    "need": [
+      25
+    ],
+    "practical": [
+      26
+    ],
+    "guidance": [
+      27
+    ],
+    "on": [
+      28,
+      60,
+      76,
+      111
+    ],
+    "which": [
+      29
+    ],
+    "streams": [
+      31
+    ],
+    "have": [
+      32
+    ],
+    "been": [
+      33
+    ],
+    "studied,": [
+      34
+    ],
+    "what": [
+      35,
+      42
+    ],
+    "decisions": [
+      37
+    ],
+    "they": [
+      38
+    ],
+    "can": [
+      39
+    ],
+    "support,": [
+      40
+    ],
+    "safety,": [
+      43,
+      82
+    ],
+    "workflow,": [
+      44
+    ],
+    "validation,": [
+      45,
+      81,
+      303
+    ],
+    "equity": [
+      47
+    ],
+    "barriers": [
+      48
+    ],
+    "must": [
+      49
+    ],
+    "be": [
+      50
+    ],
+    "addressed": [
+      51
+    ],
+    "before": [
+      52
+    ],
+    "routine": [
+      53,
+      297
+    ],
+    "integration.": [
+      54
+    ],
+    "OBJECTIVE": [
+      55
+    ],
+    "To": [
+      56
+    ],
+    "map": [
+      57
+    ],
+    "the": [
+      58,
+      94
+    ],
+    "literature": [
+      59
+    ],
+    "wearable": [
+      61,
+      136,
+      207
+    ],
+    "biosensors": [
+      62,
+      248
+    ],
+    "congenital": [
+      71,
+      130,
+      187,
+      284
+    ],
+    "heart": [
+      72,
+      131,
+      188,
+      285
+    ],
+    "disease,": [
+      73
+    ],
+    "with": [
+      74,
+      115,
+      173
+    ],
+    "emphasis": [
+      75
+    ],
+    "applications,": [
+      78
+    ],
+    "implementation": [
+      79,
+      310
+    ],
+    "pathways,": [
+      80
+    ],
+    "evidence": [
+      84,
+      214,
+      278
+    ],
+    "gaps.": [
+      85
+    ],
+    "METHODS": [
+      86
+    ],
+    "A": [
+      87
+    ],
+    "scoping": [
+      88
+    ],
+    "review": [
+      89
+    ],
+    "protocol": [
+      90
+    ],
+    "was": [
+      91,
+      215
+    ],
+    "developed": [
+      92
+    ],
+    "using": [
+      93
+    ],
+    "Population-Concept-Context": [
+      95
+    ],
+    "framework": [
+      96
+    ],
+    "PRISMA-ScR": [
+      98
+    ],
+    "reporting": [
+      99
+    ],
+    "principles.": [
+      100
+    ],
+    "Publicly": [
+      101
+    ],
+    "accessible": [
+      102
+    ],
+    "PubMed/MEDLINE,": [
+      103
+    ],
+    "PubMed": [
+      104
+    ],
+    "Central,": [
+      105
+    ],
+    "web-indexed": [
+      107
+    ],
+    "searches": [
+      108
+    ],
+    "were": [
+      109,
+      163,
+      171
+    ],
+    "performed": [
+      110
+    ],
+    "May": [
+      112
+    ],
+    "3,": [
+      113
+    ],
+    "2026,": [
+      114
+    ],
+    "citation": [
+      116
+    ],
+    "chasing": [
+      117
+    ],
+    "of": [
+      118,
+      151
+    ],
+    "key": [
+      119
+    ],
+    "background": [
+      120,
+      176
+    ],
+    "sources.": [
+      121
+    ],
+    "Eligible": [
+      122
+    ],
+    "records": [
+      123,
+      162,
+      170
+    ],
+    "involved": [
+      124
+    ],
+    "children,": [
+      125
+    ],
+    "adolescents,": [
+      126
+    ],
+    "young": [
+      127
+    ],
+    "adults,": [
+      128
+    ],
+    "or": [
+      129,
+      144,
+      148,
+      167,
+      177,
+      232,
+      244
+    ],
+    "disease": [
+      132,
+      189,
+      286
+    ],
+    "populations": [
+      133
+    ],
+    "evaluated": [
+      135
+    ],
+    "mobile": [
+      140,
+      190
+    ],
+    "health": [
+      141,
+      146,
+      191
+    ],
+    "tools,": [
+      142
+    ],
+    "patient-": [
+      143
+    ],
+    "family-generated": [
+      145
+    ],
+    "data,": [
+      147
+    ],
+    "clinician-facing": [
+      149
+    ],
+    "integration": [
+      150,
+      213
+    ],
+    "into": [
+      154,
+      182
+    ],
+    "workflows.": [
+      157
+    ],
+    "RESULTS": [
+      158
+    ],
+    "Thirty-five": [
+      159
+    ],
+    "unique": [
+      160
+    ],
+    "candidate": [
+      161
+    ],
+    "screened.": [
+      164
+    ],
+    "Twenty-two": [
+      165
+    ],
+    "primary": [
+      166
+    ],
+    "clinically": [
+      168,
+      255
+    ],
+    "extractable": [
+      169
+    ],
+    "mapped,": [
+      172
+    ],
+    "11": [
+      174
+    ],
+    "additional": [
+      175
+    ],
+    "source-mining": [
+      178
+    ],
+    "records.": [
+      179
+    ],
+    "Evidence": [
+      180
+    ],
+    "clustered": [
+      181
+    ],
+    "single-ventricle": [
+      183,
+      219
+    ],
+    "interstage/home": [
+      184
+    ],
+    "monitoring;": [
+      185,
+      194,
+      204
+    ],
+    "high-risk": [
+      186
+    ],
+    "programs;": [
+      192
+    ],
+    "telemedicine-linked": [
+      193
+    ],
+    "stethoscopes;": [
+      196
+    ],
+    "smartwatch/mobile": [
+      197
+    ],
+    "electrocardiography;": [
+      198
+    ],
+    "cardiac": [
+      199
+    ],
+    "implantable": [
+      200
+    ],
+    "electronic": [
+      201
+    ],
+    "device": [
+      202,
+      291
+    ],
+    "advanced": [
+      206
+    ],
+    "biomarker": [
+      208
+    ],
+    "validation.": [
+      209
+    ],
+    "The": [
+      210
+    ],
+    "strongest": [
+      211
+    ],
+    "found": [
+      216
+    ],
+    "interstage": [
+      218,
+      283
+    ],
+    "monitoring": [
+      220
+    ],
+    "rhythm": [
+      223
+    ],
+    "evaluation.": [
+      224
+    ],
+    "Across": [
+      225
+    ],
+    "categories,": [
+      226
+    ],
+    "studies": [
+      227
+    ],
+    "emphasized": [
+      228
+    ],
+    "feasibility": [
+      229
+    ],
+    "diagnostic": [
+      231
+    ],
+    "workflow": [
+      233,
+      304
+    ],
+    "utility": [
+      234
+    ],
+    "more": [
+      235
+    ],
+    "often": [
+      236
+    ],
+    "than": [
+      237
+    ],
+    "long-term": [
+      238
+    ],
+    "outcome": [
+      239
+    ],
+    "effects,": [
+      240
+    ],
+    "cost-effectiveness,": [
+      241
+    ],
+    "interoperability,": [
+      242
+    ],
+    "privacy,": [
+      243
+    ],
+    "equity.": [
+      245
+    ],
+    "CONCLUSIONS": [
+      246
+    ],
+    "most": [
+      254
+    ],
+    "actionable": [
+      256
+    ],
+    "when": [
+      260
+    ],
+    "linked": [
+      261
+    ],
+    "to": [
+      262
+    ],
+    "a": [
+      263
+    ],
+    "predefined": [
+      264
+    ],
+    "question,": [
+      266
+    ],
+    "validated": [
+      267
+    ],
+    "stream,": [
+      269
+    ],
+    "responsible": [
+      270
+    ],
+    "reviewer,": [
+      271
+    ],
+    "escalation": [
+      272
+    ],
+    "threshold,": [
+      273
+    ],
+    "documentation": [
+      275
+    ],
+    "pathway.": [
+      276
+    ],
+    "Current": [
+      277
+    ],
+    "supports": [
+      279
+    ],
+    "selective": [
+      280
+    ],
+    "arrhythmia": [
+      288
+    ],
+    "capture,": [
+      289
+    ],
+    "surveillance,": [
+      292
+    ],
+    "telecardiology": [
+      294
+    ],
+    "adjuncts,": [
+      295
+    ],
+    "broad": [
+      298
+    ],
+    "deployment": [
+      299
+    ],
+    "requires": [
+      300
+    ],
+    "stronger": [
+      301
+    ],
+    "design,": [
+      305
+    ],
+    "safety": [
+      306
+    ],
+    "standards,": [
+      307
+    ],
+    "equity-focused": [
+      309
+    ],
+    "research.": [
+      311
+    ]
+  },
+  "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W7161267424",
+  "counts_by_year": [],
+  "updated_date": "2026-11-09T13:22:03.289127",
+  "created_date": "2026-05-16T00:00:00"
+}

@@ -1,0 +1,971 @@
+{
+  "id": "https://openalex.org/W7128694182",
+  "doi": "https://doi.org/10.36227/techrxiv.177092213.38234529/v1",
+  "title": "Design of a Hardware-Efficient SOC and SOH Estimator for Electric Vehicle Batteries",
+  "display_name": "Design of a Hardware-Efficient SOC and SOH Estimator for Electric Vehicle Batteries",
+  "alternate_titles": [],
+  "publication_year": 2026,
+  "publication_date": "2026-02-12",
+  "ids": {
+    "openalex": "https://openalex.org/W7128694182",
+    "doi": "https://doi.org/10.36227/techrxiv.177092213.38234529/v1"
+  },
+  "language": "en",
+  "primary_location": {
+    "id": "doi:10.36227/techrxiv.177092213.38234529/v1",
+    "doi": "https://doi.org/10.36227/techrxiv.177092213.38234529/v1",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.36227/techrxiv.177092213.38234529/v1",
+    "pdf_url": "https://www.techrxiv.org/doi/pdf/10.36227/techrxiv.177092213.38234529",
+    "source": null,
+    "license": "cc-by-nc-sa",
+    "license_id": "https://openalex.org/licenses/cc-by-nc-sa",
+    "version": "submittedVersion",
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "posted-content"
+  },
+  "parent_works": [],
+  "lineage": [
+    "https://openalex.org/W7128694182"
+  ],
+  "child_works_count": 0,
+  "type": "preprint",
+  "is_traditional": true,
+  "indexed_in": [
+    "crossref"
+  ],
+  "open_access": {
+    "is_oa": true,
+    "oa_status": "green",
+    "oa_url": "https://www.techrxiv.org/doi/pdf/10.36227/techrxiv.177092213.38234529",
+    "any_repository_has_fulltext": null
+  },
+  "authorships": [
+    {
+      "author_position": "first",
+      "author": {
+        "id": "https://openalex.org/A5029335887",
+        "display_name": "H. N. Vidyasaraswathi",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Vidyasaraswathi H. N",
+      "raw_affiliation_strings": [
+        "Bangalore Institute of Technology"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Bangalore Institute of Technology",
+          "institution_ids": []
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5125773796",
+        "display_name": "Lakshmi C. R.",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Lakshmi C. R.",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5125740211",
+        "display_name": "Kruthika D. S.",
+        "orcid": "https://orcid.org/0009-0006-0773-8341",
+        "observed_orcids": [
+          "https://orcid.org/0009-0006-0773-8341"
+        ]
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": true,
+      "raw_author_name": "Kruthika D. S.",
+      "raw_affiliation_strings": [],
+      "raw_orcid": "https://orcid.org/0009-0006-0773-8341",
+      "affiliations": []
+    },
+    {
+      "author_position": "last",
+      "author": {
+        "id": "https://openalex.org/A5125686538",
+        "display_name": "Madhavi C.",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": false,
+      "raw_author_name": "Madhavi C.",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    }
+  ],
+  "institutions": [],
+  "countries_distinct_count": 0,
+  "institutions_distinct_count": 0,
+  "corresponding_author_ids": [
+    "https://openalex.org/A5125740211"
+  ],
+  "corresponding_institution_ids": [],
+  "apc_list": null,
+  "apc_paid": null,
+  "fwci": null,
+  "has_fulltext": true,
+  "cited_by_count": 1,
+  "citation_normalized_percentile": null,
+  "cited_by_percentile_year": null,
+  "biblio": {
+    "volume": null,
+    "issue": null,
+    "first_page": null,
+    "last_page": null
+  },
+  "is_retracted": false,
+  "is_paratext": false,
+  "is_xpac": false,
+  "primary_topic": {
+    "id": "https://openalex.org/T10663",
+    "display_name": "Battery Modeling and Management",
+    "score": 0.9994999766349792,
+    "subfield": {
+      "id": "https://openalex.org/subfields/2203",
+      "display_name": "Automotive Engineering"
+    },
+    "field": {
+      "id": "https://openalex.org/fields/22",
+      "display_name": "Engineering"
+    },
+    "domain": {
+      "id": "https://openalex.org/domains/3",
+      "display_name": "Physical Sciences"
+    }
+  },
+  "topics": [
+    {
+      "id": "https://openalex.org/T10663",
+      "display_name": "Battery Modeling and Management",
+      "score": 0.9994999766349792,
+      "subfield": {
+        "id": "https://openalex.org/subfields/2203",
+        "display_name": "Automotive Engineering"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/22",
+        "display_name": "Engineering"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/3",
+        "display_name": "Physical Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T10323",
+      "display_name": "Analog and Mixed-Signal Circuit Design",
+      "score": 0.00019999999494757503,
+      "subfield": {
+        "id": "https://openalex.org/subfields/2208",
+        "display_name": "Electrical and Electronic Engineering"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/22",
+        "display_name": "Engineering"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/3",
+        "display_name": "Physical Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T10018",
+      "display_name": "Advancements in Battery Materials",
+      "score": 0.0,
+      "subfield": {
+        "id": "https://openalex.org/subfields/2208",
+        "display_name": "Electrical and Electronic Engineering"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/22",
+        "display_name": "Engineering"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/3",
+        "display_name": "Physical Sciences"
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "id": "https://openalex.org/keywords/state-of-charge-estimation",
+      "display_name": "state of charge estimation",
+      "score": 0.9779999852180481
+    },
+    {
+      "id": "https://openalex.org/keywords/state-of-health-estimation",
+      "display_name": "state of health estimation",
+      "score": 1.0
+    },
+    {
+      "id": "https://openalex.org/keywords/electric-vehicle-batteries",
+      "display_name": "electric vehicle batteries",
+      "score": 0.828000009059906
+    },
+    {
+      "id": "https://openalex.org/keywords/lithium-ion-batteries",
+      "display_name": "lithium-ion batteries",
+      "score": 0.984000027179718
+    },
+    {
+      "id": "https://openalex.org/keywords/battery-management-systems",
+      "display_name": "battery management systems",
+      "score": 0.859000027179718
+    },
+    {
+      "id": "https://openalex.org/keywords/internal-resistance-measurement",
+      "display_name": "internal resistance measurement",
+      "score": 0.8980000019073486
+    },
+    {
+      "id": "https://openalex.org/keywords/voltage-sag",
+      "display_name": "voltage sag",
+      "score": 0.593999981880188
+    },
+    {
+      "id": "https://openalex.org/keywords/operational-amplifier-circuits",
+      "display_name": "operational amplifier circuits",
+      "score": 0.7940000295639038
+    },
+    {
+      "id": "https://openalex.org/keywords/low-power-analog-circuits",
+      "display_name": "low-power analog circuits",
+      "score": 0.7630000114440918
+    }
+  ],
+  "concepts": [
+    {
+      "id": "https://openalex.org/C555008776",
+      "wikidata": "https://www.wikidata.org/wiki/Q267298",
+      "display_name": "Battery (electricity)",
+      "level": 3,
+      "score": 0.620199978351593
+    },
+    {
+      "id": "https://openalex.org/C2777294910",
+      "wikidata": "https://www.wikidata.org/wiki/Q4050070",
+      "display_name": "State of health",
+      "level": 4,
+      "score": 0.6172999739646912
+    },
+    {
+      "id": "https://openalex.org/C157286648",
+      "wikidata": "https://www.wikidata.org/wiki/Q846780",
+      "display_name": "Kalman filter",
+      "level": 2,
+      "score": 0.5889000296592712
+    },
+    {
+      "id": "https://openalex.org/C2776582896",
+      "wikidata": "https://www.wikidata.org/wiki/Q5368536",
+      "display_name": "State of charge",
+      "level": 4,
+      "score": 0.5825999975204468
+    },
+    {
+      "id": "https://openalex.org/C185429906",
+      "wikidata": "https://www.wikidata.org/wiki/Q1130160",
+      "display_name": "Estimator",
+      "level": 2,
+      "score": 0.5503000020980835
+    },
+    {
+      "id": "https://openalex.org/C41008148",
+      "wikidata": "https://www.wikidata.org/wiki/Q21198",
+      "display_name": "Computer science",
+      "level": 0,
+      "score": 0.4984000027179718
+    },
+    {
+      "id": "https://openalex.org/C165801399",
+      "wikidata": "https://www.wikidata.org/wiki/Q25428",
+      "display_name": "Voltage",
+      "level": 2,
+      "score": 0.4708999991416931
+    },
+    {
+      "id": "https://openalex.org/C171146098",
+      "wikidata": "https://www.wikidata.org/wiki/Q124192",
+      "display_name": "Automotive engineering",
+      "level": 1,
+      "score": 0.4675999879837036
+    },
+    {
+      "id": "https://openalex.org/C127413603",
+      "wikidata": "https://www.wikidata.org/wiki/Q11023",
+      "display_name": "Engineering",
+      "level": 0,
+      "score": 0.45489999651908875
+    },
+    {
+      "id": "https://openalex.org/C106945098",
+      "wikidata": "https://www.wikidata.org/wiki/Q2527701",
+      "display_name": "Internal resistance",
+      "level": 4,
+      "score": 0.4392000138759613
+    },
+    {
+      "id": "https://openalex.org/C73916439",
+      "wikidata": "https://www.wikidata.org/wiki/Q837718",
+      "display_name": "Energy storage",
+      "level": 3,
+      "score": 0.4259999990463257
+    },
+    {
+      "id": "https://openalex.org/C186370098",
+      "wikidata": "https://www.wikidata.org/wiki/Q442787",
+      "display_name": "Energy (signal processing)",
+      "level": 2,
+      "score": 0.42489999532699585
+    },
+    {
+      "id": "https://openalex.org/C163258240",
+      "wikidata": "https://www.wikidata.org/wiki/Q25342",
+      "display_name": "Power (physics)",
+      "level": 2,
+      "score": 0.39980000257492065
+    },
+    {
+      "id": "https://openalex.org/C206833254",
+      "wikidata": "https://www.wikidata.org/wiki/Q5421817",
+      "display_name": "Extended Kalman filter",
+      "level": 3,
+      "score": 0.3824999928474426
+    },
+    {
+      "id": "https://openalex.org/C2776422217",
+      "wikidata": "https://www.wikidata.org/wiki/Q13629441",
+      "display_name": "Electric vehicle",
+      "level": 3,
+      "score": 0.3824999928474426
+    },
+    {
+      "id": "https://openalex.org/C79518650",
+      "wikidata": "https://www.wikidata.org/wiki/Q2081431",
+      "display_name": "Integrator",
+      "level": 3,
+      "score": 0.3790999948978424
+    },
+    {
+      "id": "https://openalex.org/C24326235",
+      "wikidata": "https://www.wikidata.org/wiki/Q126095",
+      "display_name": "Electronic engineering",
+      "level": 1,
+      "score": 0.37790000438690186
+    },
+    {
+      "id": "https://openalex.org/C7817414",
+      "wikidata": "https://www.wikidata.org/wiki/Q1779504",
+      "display_name": "Energy management",
+      "level": 3,
+      "score": 0.37389999628067017
+    },
+    {
+      "id": "https://openalex.org/C89227174",
+      "wikidata": "https://www.wikidata.org/wiki/Q2388981",
+      "display_name": "Electric power system",
+      "level": 3,
+      "score": 0.36480000615119934
+    },
+    {
+      "id": "https://openalex.org/C133731056",
+      "wikidata": "https://www.wikidata.org/wiki/Q4917288",
+      "display_name": "Control engineering",
+      "level": 1,
+      "score": 0.3305000066757202
+    },
+    {
+      "id": "https://openalex.org/C194257627",
+      "wikidata": "https://www.wikidata.org/wiki/Q211554",
+      "display_name": "Amplifier",
+      "level": 3,
+      "score": 0.3199999928474426
+    },
+    {
+      "id": "https://openalex.org/C2781134633",
+      "wikidata": "https://www.wikidata.org/wiki/Q14945479",
+      "display_name": "Voltage sag",
+      "level": 4,
+      "score": 0.3073999881744385
+    },
+    {
+      "id": "https://openalex.org/C48103436",
+      "wikidata": "https://www.wikidata.org/wiki/Q599031",
+      "display_name": "State (computer science)",
+      "level": 2,
+      "score": 0.3050999939441681
+    },
+    {
+      "id": "https://openalex.org/C47446073",
+      "wikidata": "https://www.wikidata.org/wiki/Q5165890",
+      "display_name": "Control theory (sociology)",
+      "level": 3,
+      "score": 0.30079999566078186
+    },
+    {
+      "id": "https://openalex.org/C2777125575",
+      "wikidata": "https://www.wikidata.org/wiki/Q14088448",
+      "display_name": "Cadence",
+      "level": 2,
+      "score": 0.28540000319480896
+    },
+    {
+      "id": "https://openalex.org/C2780799671",
+      "wikidata": "https://www.wikidata.org/wiki/Q17087362",
+      "display_name": "Transient (computer programming)",
+      "level": 2,
+      "score": 0.28110000491142273
+    },
+    {
+      "id": "https://openalex.org/C2781260460",
+      "wikidata": "https://www.wikidata.org/wiki/Q6139999",
+      "display_name": "Energy management system",
+      "level": 4,
+      "score": 0.2782999873161316
+    },
+    {
+      "id": "https://openalex.org/C118021083",
+      "wikidata": "https://www.wikidata.org/wiki/Q610398",
+      "display_name": "System on a chip",
+      "level": 2,
+      "score": 0.2653999924659729
+    },
+    {
+      "id": "https://openalex.org/C200601418",
+      "wikidata": "https://www.wikidata.org/wiki/Q2193887",
+      "display_name": "Reliability engineering",
+      "level": 1,
+      "score": 0.2581999897956848
+    },
+    {
+      "id": "https://openalex.org/C52421305",
+      "wikidata": "https://www.wikidata.org/wiki/Q1151499",
+      "display_name": "Particle filter",
+      "level": 3,
+      "score": 0.25690001249313354
+    },
+    {
+      "id": "https://openalex.org/C194739806",
+      "wikidata": "https://www.wikidata.org/wiki/Q66221",
+      "display_name": "Computer data storage",
+      "level": 2,
+      "score": 0.25429999828338623
+    },
+    {
+      "id": "https://openalex.org/C167928553",
+      "wikidata": "https://www.wikidata.org/wiki/Q1376021",
+      "display_name": "Estimation theory",
+      "level": 2,
+      "score": 0.2515000104904175
+    }
+  ],
+  "mesh": [],
+  "locations_count": 1,
+  "locations": [
+    {
+      "id": "doi:10.36227/techrxiv.177092213.38234529/v1",
+      "doi": "https://doi.org/10.36227/techrxiv.177092213.38234529/v1",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.36227/techrxiv.177092213.38234529/v1",
+      "pdf_url": "https://www.techrxiv.org/doi/pdf/10.36227/techrxiv.177092213.38234529",
+      "source": null,
+      "license": "cc-by-nc-sa",
+      "license_id": "https://openalex.org/licenses/cc-by-nc-sa",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "posted-content"
+    }
+  ],
+  "best_oa_location": {
+    "id": "doi:10.36227/techrxiv.177092213.38234529/v1",
+    "doi": "https://doi.org/10.36227/techrxiv.177092213.38234529/v1",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.36227/techrxiv.177092213.38234529/v1",
+    "pdf_url": "https://www.techrxiv.org/doi/pdf/10.36227/techrxiv.177092213.38234529",
+    "source": null,
+    "license": "cc-by-nc-sa",
+    "license_id": "https://openalex.org/licenses/cc-by-nc-sa",
+    "version": "submittedVersion",
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "posted-content"
+  },
+  "sustainable_development_goals": [
+    {
+      "display_name": "Affordable and clean energy",
+      "score": 0.9090999960899353,
+      "id": "https://metadata.un.org/sdg/7"
+    },
+    {
+      "display_name": "Industry, innovation and infrastructure",
+      "score": 0.7207000255584717,
+      "id": "https://metadata.un.org/sdg/9"
+    }
+  ],
+  "study_designs": [],
+  "awards": [],
+  "funders": [],
+  "has_content": {
+    "pdf": true,
+    "grobid_xml": true
+  },
+  "content_urls": {
+    "pdf": "https://content.openalex.org/works/W7128694182.pdf",
+    "grobid_xml": "https://content.openalex.org/works/W7128694182.grobid-xml"
+  },
+  "referenced_works_count": 15,
+  "referenced_works": [
+    "https://openalex.org/W3093884647",
+    "https://openalex.org/W3095904092",
+    "https://openalex.org/W3100496887",
+    "https://openalex.org/W3113347008",
+    "https://openalex.org/W3145366481",
+    "https://openalex.org/W3161090034",
+    "https://openalex.org/W3173168578",
+    "https://openalex.org/W3188518847",
+    "https://openalex.org/W4281827116",
+    "https://openalex.org/W4290043173",
+    "https://openalex.org/W4391468042",
+    "https://openalex.org/W4400350827",
+    "https://openalex.org/W4405303996",
+    "https://openalex.org/W4410737669",
+    "https://openalex.org/W4415593441"
+  ],
+  "related_works": [
+    "https://openalex.org/W7204572083",
+    "https://openalex.org/W4386533119",
+    "https://openalex.org/W4406260611",
+    "https://openalex.org/W4409060403",
+    "https://openalex.org/W7218311934",
+    "https://openalex.org/W7219134857",
+    "https://openalex.org/W4417119845",
+    "https://openalex.org/W4413205415",
+    "https://openalex.org/W4414332380",
+    "https://openalex.org/W4410639434"
+  ],
+  "abstract_inverted_index": {
+    "The": [
+      0,
+      116
+    ],
+    "increasing": [
+      1
+    ],
+    "reliance": [
+      2
+    ],
+    "on": [
+      3
+    ],
+    "lithium-ion": [
+      4
+    ],
+    "batteries": [
+      5,
+      110
+    ],
+    "in": [
+      6,
+      137
+    ],
+    "Electric": [
+      7
+    ],
+    "Vehicles": [
+      8
+    ],
+    "(EVs)": [
+      9
+    ],
+    "and": [
+      10,
+      23,
+      36,
+      48,
+      64,
+      108,
+      124,
+      140
+    ],
+    "energy": [
+      11,
+      142
+    ],
+    "storage": [
+      12,
+      143
+    ],
+    "systems": [
+      13
+    ],
+    "demands": [
+      14
+    ],
+    "accurate,": [
+      15
+    ],
+    "real-time": [
+      16,
+      132
+    ],
+    "estimation": [
+      17,
+      30,
+      58
+    ],
+    "of": [
+      18,
+      20,
+      25
+    ],
+    "State": [
+      19,
+      24
+    ],
+    "Charge": [
+      21
+    ],
+    "(SOC)": [
+      22
+    ],
+    "Health": [
+      26
+    ],
+    "(SOH).": [
+      27
+    ],
+    "Conventional": [
+      28
+    ],
+    "digital": [
+      29
+    ],
+    "methods": [
+      31
+    ],
+    "such": [
+      32
+    ],
+    "as": [
+      33
+    ],
+    "Kalman": [
+      34
+    ],
+    "Filters": [
+      35
+    ],
+    "machine-learning": [
+      37
+    ],
+    "models": [
+      38
+    ],
+    "provide": [
+      39
+    ],
+    "high": [
+      40,
+      49
+    ],
+    "accuracy": [
+      41
+    ],
+    "but": [
+      42
+    ],
+    "require": [
+      43
+    ],
+    "complex": [
+      44
+    ],
+    "computation,": [
+      45
+    ],
+    "expensive": [
+      46
+    ],
+    "microcontrollers,": [
+      47
+    ],
+    "power": [
+      50
+    ],
+    "consumption.": [
+      51
+    ],
+    "This": [
+      52
+    ],
+    "project": [
+      53
+    ],
+    "presents": [
+      54
+    ],
+    "a": [
+      55,
+      86
+    ],
+    "hardware-efficient,": [
+      56
+    ],
+    "analog-centric": [
+      57
+    ],
+    "system": [
+      59,
+      121
+    ],
+    "that": [
+      60
+    ],
+    "performs": [
+      61
+    ],
+    "both": [
+      62
+    ],
+    "SOC": [
+      63,
+      83
+    ],
+    "SOH": [
+      65,
+      96
+    ],
+    "analysis": [
+      66
+    ],
+    "using": [
+      67
+    ],
+    "low-power": [
+      68
+    ],
+    "operational": [
+      69
+    ],
+    "amplifier": [
+      70
+    ],
+    "circuits.": [
+      71
+    ],
+    "A": [
+      72
+    ],
+    "Hybrid": [
+      73
+    ],
+    "Coulomb": [
+      74
+    ],
+    "Counting": [
+      75
+    ],
+    "technique,": [
+      76
+    ],
+    "combined": [
+      77
+    ],
+    "with": [
+      78
+    ],
+    "voltage-based": [
+      79
+    ],
+    "correction,": [
+      80
+    ],
+    "enables": [
+      81
+    ],
+    "driftfree": [
+      82
+    ],
+    "tracking,": [
+      84
+    ],
+    "while": [
+      85
+    ],
+    "pulse-based": [
+      87
+    ],
+    "internal": [
+      88
+    ],
+    "resistance": [
+      89
+    ],
+    "measurement": [
+      90
+    ],
+    "accurately": [
+      91
+    ],
+    "detects": [
+      92
+    ],
+    "battery": [
+      93
+    ],
+    "degradation": [
+      94
+    ],
+    "for": [
+      95,
+      130
+    ],
+    "estimation.": [
+      97
+    ],
+    "Cadence": [
+      98
+    ],
+    "Virtuoso": [
+      99
+    ],
+    "simulations": [
+      100
+    ],
+    "validate": [
+      101
+    ],
+    "the": [
+      102
+    ],
+    "design's": [
+      103
+    ],
+    "ability": [
+      104
+    ],
+    "to": [
+      105
+    ],
+    "distinguish": [
+      106
+    ],
+    "healthy": [
+      107
+    ],
+    "degraded": [
+      109
+    ],
+    "through": [
+      111
+    ],
+    "measurable": [
+      112
+    ],
+    "voltage": [
+      113
+    ],
+    "sag": [
+      114
+    ],
+    "characteristics.": [
+      115
+    ],
+    "proposed": [
+      117
+    ],
+    "approach": [
+      118
+    ],
+    "significantly": [
+      119
+    ],
+    "reduces": [
+      120
+    ],
+    "complexity,": [
+      122
+    ],
+    "cost,": [
+      123
+    ],
+    "computational": [
+      125
+    ],
+    "load,": [
+      126
+    ],
+    "making": [
+      127
+    ],
+    "it": [
+      128
+    ],
+    "suitable": [
+      129
+    ],
+    "compact,": [
+      131
+    ],
+    "Battery": [
+      133
+    ],
+    "Management": [
+      134
+    ],
+    "Systems": [
+      135
+    ],
+    "(BMS)": [
+      136
+    ],
+    "low-cost": [
+      138
+    ],
+    "EVs": [
+      139
+    ],
+    "stationary": [
+      141
+    ],
+    "applications.": [
+      144
+    ]
+  },
+  "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W7128694182",
+  "counts_by_year": [
+    {
+      "year": 2026,
+      "cited_by_count": 1
+    }
+  ],
+  "updated_date": "2026-11-16T12:05:36.265796",
+  "created_date": "2026-02-13T00:00:00"
+}

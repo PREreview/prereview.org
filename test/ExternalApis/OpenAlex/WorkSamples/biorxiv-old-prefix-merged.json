@@ -1,0 +1,1881 @@
+{
+  "id": "https://openalex.org/W4386084807",
+  "doi": "https://doi.org/10.1371/journal.pone.0290046",
+  "title": "Nanograms of SARS-CoV-2 spike protein delivered by exosomes induce potent neutralization of both delta and omicron variants",
+  "display_name": "Nanograms of SARS-CoV-2 spike protein delivered by exosomes induce potent neutralization of both delta and omicron variants",
+  "alternate_titles": [],
+  "publication_year": 2023,
+  "publication_date": "2023-08-22",
+  "ids": {
+    "openalex": "https://openalex.org/W4386084807",
+    "doi": "https://doi.org/10.1371/journal.pone.0290046",
+    "pmid": "https://pubmed.ncbi.nlm.nih.gov/37607200",
+    "pmcid": "https://www.ncbi.nlm.nih.gov/pmc/articles/10443850"
+  },
+  "language": "en",
+  "primary_location": {
+    "id": "doi:10.1371/journal.pone.0290046",
+    "doi": "https://doi.org/10.1371/journal.pone.0290046",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.1371/journal.pone.0290046",
+    "pdf_url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0290046&type=printable",
+    "source": {
+      "id": "https://openalex.org/S202381698",
+      "display_name": "PLoS ONE",
+      "issn_l": "1932-6203",
+      "issn": [
+        "1932-6203"
+      ],
+      "is_oa": true,
+      "is_in_doaj": true,
+      "is_core": true,
+      "listed_in": [
+        "anvur-class-a",
+        "anvur-scientific",
+        "cwts-core",
+        "doaj",
+        "dongbi-c",
+        "doyens",
+        "erih-plus",
+        "jufo-1",
+        "ki-jl-1",
+        "medline",
+        "norway-1",
+        "poland-100",
+        "russia-white-list-1",
+        "vabb-shw"
+      ],
+      "host_organization": "https://openalex.org/P4310315706",
+      "host_organization_name": "Public Library of Science",
+      "host_organization_lineage": [
+        "https://openalex.org/P4310315706"
+      ],
+      "host_organization_lineage_names": [
+        "Public Library of Science"
+      ],
+      "type": "journal"
+    },
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": "publishedVersion",
+    "is_accepted": true,
+    "is_published": true,
+    "raw_source_name": "PLOS ONE",
+    "raw_type": "journal-article"
+  },
+  "parent_works": [],
+  "lineage": [
+    "https://openalex.org/W4386084807"
+  ],
+  "child_works_count": 13,
+  "type": "article",
+  "is_traditional": true,
+  "indexed_in": [
+    "crossref",
+    "doaj",
+    "pubmed"
+  ],
+  "open_access": {
+    "is_oa": true,
+    "oa_status": "gold",
+    "oa_url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0290046&type=printable",
+    "any_repository_has_fulltext": true
+  },
+  "authorships": [
+    {
+      "author_position": "first",
+      "author": {
+        "id": "https://openalex.org/A5075171792",
+        "display_name": "Mafalda Cacciottolo",
+        "orcid": "https://orcid.org/0000-0003-3093-0535",
+        "observed_orcids": [
+          "https://orcid.org/0000-0003-3093-0535"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4210123539",
+          "display_name": "Capricor Therapeutics (United States)",
+          "ror": "https://ror.org/029mmrr68",
+          "country_code": "US",
+          "type": "company",
+          "lineage": [
+            "https://openalex.org/I4210123539"
+          ]
+        }
+      ],
+      "countries": [
+        "US"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Mafalda Cacciottolo",
+      "raw_affiliation_strings": [
+        "Capricor Therapeutics, Inc., 10865 Road to the Cure, San Diego, CA, 92121",
+        "Capricor Therapeutics, Inc., San Diego, California, United States of America"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Capricor Therapeutics, Inc., 10865 Road to the Cure, San Diego, CA, 92121",
+          "institution_ids": [
+            "https://openalex.org/I4210123539"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Capricor Therapeutics, Inc., San Diego, California, United States of America",
+          "institution_ids": [
+            "https://openalex.org/I4210123539"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5100680672",
+        "display_name": "Yujia Li",
+        "orcid": "https://orcid.org/0000-0002-1024-9243",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-1024-9243",
+          "https://orcid.org/0000-0002-3199-5595"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4210123539",
+          "display_name": "Capricor Therapeutics (United States)",
+          "ror": "https://ror.org/029mmrr68",
+          "country_code": "US",
+          "type": "company",
+          "lineage": [
+            "https://openalex.org/I4210123539"
+          ]
+        }
+      ],
+      "countries": [
+        "US"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Yujia Li",
+      "raw_affiliation_strings": [
+        "Capricor Therapeutics, Inc., 10865 Road to the Cure, San Diego, CA, 92121",
+        "Capricor Therapeutics, Inc., San Diego, California, United States of America"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Capricor Therapeutics, Inc., 10865 Road to the Cure, San Diego, CA, 92121",
+          "institution_ids": [
+            "https://openalex.org/I4210123539"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Capricor Therapeutics, Inc., San Diego, California, United States of America",
+          "institution_ids": [
+            "https://openalex.org/I4210123539"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5069779068",
+        "display_name": "Justin B. Nice",
+        "orcid": "https://orcid.org/0000-0002-9272-5505",
+        "observed_orcids": [
+          "https://orcid.org/0000-0002-9272-5505"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4210123539",
+          "display_name": "Capricor Therapeutics (United States)",
+          "ror": "https://ror.org/029mmrr68",
+          "country_code": "US",
+          "type": "company",
+          "lineage": [
+            "https://openalex.org/I4210123539"
+          ]
+        }
+      ],
+      "countries": [
+        "US"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Justin B Nice",
+      "raw_affiliation_strings": [
+        "Capricor Therapeutics, Inc., 10865 Road to the Cure, San Diego, CA, 92121",
+        "Capricor Therapeutics, Inc., San Diego, California, United States of America"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Capricor Therapeutics, Inc., 10865 Road to the Cure, San Diego, CA, 92121",
+          "institution_ids": [
+            "https://openalex.org/I4210123539"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Capricor Therapeutics, Inc., San Diego, California, United States of America",
+          "institution_ids": [
+            "https://openalex.org/I4210123539"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5013528630",
+        "display_name": "Michael J. LeClaire",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4210123539",
+          "display_name": "Capricor Therapeutics (United States)",
+          "ror": "https://ror.org/029mmrr68",
+          "country_code": "US",
+          "type": "company",
+          "lineage": [
+            "https://openalex.org/I4210123539"
+          ]
+        }
+      ],
+      "countries": [
+        "US"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Michael J. LeClaire",
+      "raw_affiliation_strings": [
+        "Capricor Therapeutics, Inc., 10865 Road to the Cure, San Diego, CA, 92121",
+        "Capricor Therapeutics, Inc., San Diego, California, United States of America"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Capricor Therapeutics, Inc., 10865 Road to the Cure, San Diego, CA, 92121",
+          "institution_ids": [
+            "https://openalex.org/I4210123539"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Capricor Therapeutics, Inc., San Diego, California, United States of America",
+          "institution_ids": [
+            "https://openalex.org/I4210123539"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5059703197",
+        "display_name": "Ryan Twaddle",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4210123539",
+          "display_name": "Capricor Therapeutics (United States)",
+          "ror": "https://ror.org/029mmrr68",
+          "country_code": "US",
+          "type": "company",
+          "lineage": [
+            "https://openalex.org/I4210123539"
+          ]
+        }
+      ],
+      "countries": [
+        "US"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Ryan Twaddle",
+      "raw_affiliation_strings": [
+        "Capricor Therapeutics, Inc., 10865 Road to the Cure, San Diego, CA, 92121",
+        "Capricor Therapeutics, Inc., San Diego, California, United States of America"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Capricor Therapeutics, Inc., 10865 Road to the Cure, San Diego, CA, 92121",
+          "institution_ids": [
+            "https://openalex.org/I4210123539"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Capricor Therapeutics, Inc., San Diego, California, United States of America",
+          "institution_ids": [
+            "https://openalex.org/I4210123539"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5091576851",
+        "display_name": "Ciana L. Mora",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4210123539",
+          "display_name": "Capricor Therapeutics (United States)",
+          "ror": "https://ror.org/029mmrr68",
+          "country_code": "US",
+          "type": "company",
+          "lineage": [
+            "https://openalex.org/I4210123539"
+          ]
+        }
+      ],
+      "countries": [
+        "US"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Ciana L. Mora",
+      "raw_affiliation_strings": [
+        "Capricor Therapeutics, Inc., 10865 Road to the Cure, San Diego, CA, 92121",
+        "Capricor Therapeutics, Inc., San Diego, California, United States of America"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Capricor Therapeutics, Inc., 10865 Road to the Cure, San Diego, CA, 92121",
+          "institution_ids": [
+            "https://openalex.org/I4210123539"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Capricor Therapeutics, Inc., San Diego, California, United States of America",
+          "institution_ids": [
+            "https://openalex.org/I4210123539"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5055614502",
+        "display_name": "Stephanie Y. Adachi",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4210123539",
+          "display_name": "Capricor Therapeutics (United States)",
+          "ror": "https://ror.org/029mmrr68",
+          "country_code": "US",
+          "type": "company",
+          "lineage": [
+            "https://openalex.org/I4210123539"
+          ]
+        }
+      ],
+      "countries": [
+        "US"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Stephanie Y. Adachi",
+      "raw_affiliation_strings": [
+        "Capricor Therapeutics, Inc., 10865 Road to the Cure, San Diego, CA, 92121",
+        "Capricor Therapeutics, Inc., San Diego, California, United States of America"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Capricor Therapeutics, Inc., 10865 Road to the Cure, San Diego, CA, 92121",
+          "institution_ids": [
+            "https://openalex.org/I4210123539"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Capricor Therapeutics, Inc., San Diego, California, United States of America",
+          "institution_ids": [
+            "https://openalex.org/I4210123539"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5035395898",
+        "display_name": "Meredith Young",
+        "orcid": "https://orcid.org/0009-0001-5575-8332",
+        "observed_orcids": [
+          "https://orcid.org/0009-0001-5575-8332"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4210123539",
+          "display_name": "Capricor Therapeutics (United States)",
+          "ror": "https://ror.org/029mmrr68",
+          "country_code": "US",
+          "type": "company",
+          "lineage": [
+            "https://openalex.org/I4210123539"
+          ]
+        }
+      ],
+      "countries": [
+        "US"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Meredith Young",
+      "raw_affiliation_strings": [
+        "Capricor Therapeutics, Inc., 10865 Road to the Cure, San Diego, CA, 92121",
+        "Capricor Therapeutics, Inc., San Diego, California, United States of America"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Capricor Therapeutics, Inc., 10865 Road to the Cure, San Diego, CA, 92121",
+          "institution_ids": [
+            "https://openalex.org/I4210123539"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Capricor Therapeutics, Inc., San Diego, California, United States of America",
+          "institution_ids": [
+            "https://openalex.org/I4210123539"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5066717749",
+        "display_name": "Jenna Angeles",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4210123539",
+          "display_name": "Capricor Therapeutics (United States)",
+          "ror": "https://ror.org/029mmrr68",
+          "country_code": "US",
+          "type": "company",
+          "lineage": [
+            "https://openalex.org/I4210123539"
+          ]
+        }
+      ],
+      "countries": [
+        "US"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Jenna Angeles",
+      "raw_affiliation_strings": [
+        "Capricor Therapeutics, Inc., 10865 Road to the Cure, San Diego, CA, 92121",
+        "Capricor Therapeutics, Inc., San Diego, California, United States of America"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Capricor Therapeutics, Inc., 10865 Road to the Cure, San Diego, CA, 92121",
+          "institution_ids": [
+            "https://openalex.org/I4210123539"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Capricor Therapeutics, Inc., San Diego, California, United States of America",
+          "institution_ids": [
+            "https://openalex.org/I4210123539"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "middle",
+      "author": {
+        "id": "https://openalex.org/A5075661179",
+        "display_name": "Kristi Elliott",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4210123539",
+          "display_name": "Capricor Therapeutics (United States)",
+          "ror": "https://ror.org/029mmrr68",
+          "country_code": "US",
+          "type": "company",
+          "lineage": [
+            "https://openalex.org/I4210123539"
+          ]
+        }
+      ],
+      "countries": [
+        "US"
+      ],
+      "is_corresponding": false,
+      "raw_author_name": "Kristi Elliott",
+      "raw_affiliation_strings": [
+        "Capricor Therapeutics, Inc., 10865 Road to the Cure, San Diego, CA, 92121",
+        "Capricor Therapeutics, Inc., San Diego, California, United States of America"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Capricor Therapeutics, Inc., 10865 Road to the Cure, San Diego, CA, 92121",
+          "institution_ids": [
+            "https://openalex.org/I4210123539"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Capricor Therapeutics, Inc., San Diego, California, United States of America",
+          "institution_ids": [
+            "https://openalex.org/I4210123539"
+          ]
+        }
+      ]
+    },
+    {
+      "author_position": "last",
+      "author": {
+        "id": "https://openalex.org/A5040972592",
+        "display_name": "Minghao Sun",
+        "orcid": "https://orcid.org/0009-0009-1756-6506",
+        "observed_orcids": [
+          "https://orcid.org/0009-0009-1756-6506"
+        ]
+      },
+      "institutions": [
+        {
+          "id": "https://openalex.org/I4210123539",
+          "display_name": "Capricor Therapeutics (United States)",
+          "ror": "https://ror.org/029mmrr68",
+          "country_code": "US",
+          "type": "company",
+          "lineage": [
+            "https://openalex.org/I4210123539"
+          ]
+        }
+      ],
+      "countries": [
+        "US"
+      ],
+      "is_corresponding": true,
+      "raw_author_name": "Minghao Sun",
+      "raw_affiliation_strings": [
+        "Capricor Therapeutics, Inc., 10865 Road to the Cure, San Diego, CA, 92121",
+        "Capricor Therapeutics, Inc., San Diego, California, United States of America"
+      ],
+      "raw_orcid": null,
+      "affiliations": [
+        {
+          "raw_affiliation_string": "Capricor Therapeutics, Inc., 10865 Road to the Cure, San Diego, CA, 92121",
+          "institution_ids": [
+            "https://openalex.org/I4210123539"
+          ]
+        },
+        {
+          "raw_affiliation_string": "Capricor Therapeutics, Inc., San Diego, California, United States of America",
+          "institution_ids": [
+            "https://openalex.org/I4210123539"
+          ]
+        }
+      ]
+    }
+  ],
+  "institutions": [],
+  "countries_distinct_count": 1,
+  "institutions_distinct_count": 1,
+  "corresponding_author_ids": [
+    "https://openalex.org/A5040972592"
+  ],
+  "corresponding_institution_ids": [
+    "https://openalex.org/I4210123539"
+  ],
+  "apc_list": {
+    "value": 1805,
+    "currency": "USD",
+    "value_usd": 1805
+  },
+  "apc_paid": {
+    "value": 1805,
+    "currency": "USD",
+    "value_usd": 1805
+  },
+  "fwci": 3.5891,
+  "has_fulltext": true,
+  "cited_by_count": 19,
+  "citation_normalized_percentile": {
+    "value": 0.9339991,
+    "is_in_top_1_percent": false,
+    "is_in_top_10_percent": true
+  },
+  "cited_by_percentile_year": {
+    "min": 87,
+    "max": 99
+  },
+  "biblio": {
+    "volume": "18",
+    "issue": "8",
+    "first_page": "e0290046",
+    "last_page": "e0290046"
+  },
+  "is_retracted": false,
+  "is_paratext": false,
+  "is_xpac": false,
+  "primary_topic": {
+    "id": "https://openalex.org/T10118",
+    "display_name": "SARS-CoV-2 and COVID-19 Research",
+    "score": 0.9721999764442444,
+    "subfield": {
+      "id": "https://openalex.org/subfields/2725",
+      "display_name": "Infectious Diseases"
+    },
+    "field": {
+      "id": "https://openalex.org/fields/27",
+      "display_name": "Medicine"
+    },
+    "domain": {
+      "id": "https://openalex.org/domains/4",
+      "display_name": "Health Sciences"
+    }
+  },
+  "topics": [
+    {
+      "id": "https://openalex.org/T10118",
+      "display_name": "SARS-CoV-2 and COVID-19 Research",
+      "score": 0.9721999764442444,
+      "subfield": {
+        "id": "https://openalex.org/subfields/2725",
+        "display_name": "Infectious Diseases"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/27",
+        "display_name": "Medicine"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/4",
+        "display_name": "Health Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T10773",
+      "display_name": "Extracellular vesicles in disease",
+      "score": 0.023099999874830246,
+      "subfield": {
+        "id": "https://openalex.org/subfields/1312",
+        "display_name": "Molecular Biology"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/13",
+        "display_name": "Biochemistry, Genetics and Molecular Biology"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/1",
+        "display_name": "Life Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T10063",
+      "display_name": "Nanoparticle-Based Drug Delivery",
+      "score": 0.00039999998989515007,
+      "subfield": {
+        "id": "https://openalex.org/subfields/2502",
+        "display_name": "Biomaterials"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/25",
+        "display_name": "Materials Science"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/3",
+        "display_name": "Physical Sciences"
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "id": "https://openalex.org/keywords/exosomes",
+      "display_name": "exosomes",
+      "score": 0.7900000214576721
+    },
+    {
+      "id": "https://openalex.org/keywords/sars-cov-2-spike-protein",
+      "display_name": "SARS-CoV-2 spike protein",
+      "score": 0.9670000076293945
+    },
+    {
+      "id": "https://openalex.org/keywords/protein-based-vaccines",
+      "display_name": "protein-based vaccines",
+      "score": 0.7580000162124634
+    },
+    {
+      "id": "https://openalex.org/keywords/neutralizing-antibodies",
+      "display_name": "neutralizing antibodies",
+      "score": 0.7710000276565552
+    },
+    {
+      "id": "https://openalex.org/keywords/omicron-variant",
+      "display_name": "Omicron variant",
+      "score": 0.9089999794960022
+    },
+    {
+      "id": "https://openalex.org/keywords/delta-variant",
+      "display_name": "Delta variant",
+      "score": 0.7200000286102295
+    },
+    {
+      "id": "https://openalex.org/keywords/t-cell-response",
+      "display_name": "T cell response",
+      "score": 0.7229999899864197
+    },
+    {
+      "id": "https://openalex.org/keywords/multivalent-vaccine",
+      "display_name": "multivalent vaccine",
+      "score": 0.6639999747276306
+    }
+  ],
+  "concepts": [
+    {
+      "id": "https://openalex.org/C2781261824",
+      "wikidata": "https://www.wikidata.org/wiki/Q903634",
+      "display_name": "Exosome",
+      "level": 5,
+      "score": 0.7304421663284302
+    },
+    {
+      "id": "https://openalex.org/C14086860",
+      "wikidata": "https://www.wikidata.org/wiki/Q337120",
+      "display_name": "Neutralization",
+      "level": 3,
+      "score": 0.7300441265106201
+    },
+    {
+      "id": "https://openalex.org/C159047783",
+      "wikidata": "https://www.wikidata.org/wiki/Q7215",
+      "display_name": "Virology",
+      "level": 1,
+      "score": 0.6599380970001221
+    },
+    {
+      "id": "https://openalex.org/C2777863537",
+      "wikidata": "https://www.wikidata.org/wiki/Q357896",
+      "display_name": "Adjuvant",
+      "level": 2,
+      "score": 0.6236656904220581
+    },
+    {
+      "id": "https://openalex.org/C8891405",
+      "wikidata": "https://www.wikidata.org/wiki/Q1059",
+      "display_name": "Immune system",
+      "level": 2,
+      "score": 0.6092569828033447
+    },
+    {
+      "id": "https://openalex.org/C2780801004",
+      "wikidata": "https://www.wikidata.org/wiki/Q1415366",
+      "display_name": "Immunization",
+      "level": 3,
+      "score": 0.5766204595565796
+    },
+    {
+      "id": "https://openalex.org/C22070199",
+      "wikidata": "https://www.wikidata.org/wiki/Q192995",
+      "display_name": "Vaccination",
+      "level": 2,
+      "score": 0.5758934020996094
+    },
+    {
+      "id": "https://openalex.org/C2779261636",
+      "wikidata": "https://www.wikidata.org/wiki/Q7003054",
+      "display_name": "Neutralizing antibody",
+      "level": 3,
+      "score": 0.5252090096473694
+    },
+    {
+      "id": "https://openalex.org/C20518536",
+      "wikidata": "https://www.wikidata.org/wiki/Q6840469",
+      "display_name": "Microvesicles",
+      "level": 4,
+      "score": 0.5050085186958313
+    },
+    {
+      "id": "https://openalex.org/C159654299",
+      "wikidata": "https://www.wikidata.org/wiki/Q79460",
+      "display_name": "Antibody",
+      "level": 2,
+      "score": 0.45993876457214355
+    },
+    {
+      "id": "https://openalex.org/C40767141",
+      "wikidata": "https://www.wikidata.org/wiki/Q285697",
+      "display_name": "Recombinant DNA",
+      "level": 3,
+      "score": 0.44781211018562317
+    },
+    {
+      "id": "https://openalex.org/C86803240",
+      "wikidata": "https://www.wikidata.org/wiki/Q420",
+      "display_name": "Biology",
+      "level": 0,
+      "score": 0.42491644620895386
+    },
+    {
+      "id": "https://openalex.org/C123894998",
+      "wikidata": "https://www.wikidata.org/wiki/Q425158",
+      "display_name": "Fusion protein",
+      "level": 4,
+      "score": 0.4202514886856079
+    },
+    {
+      "id": "https://openalex.org/C203014093",
+      "wikidata": "https://www.wikidata.org/wiki/Q101929",
+      "display_name": "Immunology",
+      "level": 1,
+      "score": 0.3016126751899719
+    },
+    {
+      "id": "https://openalex.org/C2522874641",
+      "wikidata": "https://www.wikidata.org/wiki/Q808",
+      "display_name": "Virus",
+      "level": 2,
+      "score": 0.23069238662719727
+    },
+    {
+      "id": "https://openalex.org/C104317684",
+      "wikidata": "https://www.wikidata.org/wiki/Q7187",
+      "display_name": "Gene",
+      "level": 2,
+      "score": 0.15798816084861755
+    },
+    {
+      "id": "https://openalex.org/C54355233",
+      "wikidata": "https://www.wikidata.org/wiki/Q7162",
+      "display_name": "Genetics",
+      "level": 1,
+      "score": 0.09306100010871887
+    },
+    {
+      "id": "https://openalex.org/C145059251",
+      "wikidata": "https://www.wikidata.org/wiki/Q310899",
+      "display_name": "microRNA",
+      "level": 3,
+      "score": 0.0
+    }
+  ],
+  "mesh": [
+    {
+      "descriptor_ui": "D000086382",
+      "descriptor_name": "COVID-19",
+      "qualifier_ui": "Q000517",
+      "qualifier_name": "prevention & control",
+      "is_major_topic": true
+    },
+    {
+      "descriptor_ui": "D000086402",
+      "descriptor_name": "SARS-CoV-2",
+      "qualifier_ui": "Q000235",
+      "qualifier_name": "genetics",
+      "is_major_topic": false
+    },
+    {
+      "descriptor_ui": "D006801",
+      "descriptor_name": "Humans",
+      "qualifier_ui": null,
+      "qualifier_name": null,
+      "is_major_topic": false
+    },
+    {
+      "descriptor_ui": "D055354",
+      "descriptor_name": "Exosomes",
+      "qualifier_ui": null,
+      "qualifier_name": null,
+      "is_major_topic": true
+    },
+    {
+      "descriptor_ui": "D064370",
+      "descriptor_name": "Spike Glycoprotein, Coronavirus",
+      "qualifier_ui": "Q000235",
+      "qualifier_name": "genetics",
+      "is_major_topic": false
+    }
+  ],
+  "locations_count": 5,
+  "locations": [
+    {
+      "id": "doi:10.1371/journal.pone.0290046",
+      "doi": "https://doi.org/10.1371/journal.pone.0290046",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.1371/journal.pone.0290046",
+      "pdf_url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0290046&type=printable",
+      "source": {
+        "id": "https://openalex.org/S202381698",
+        "display_name": "PLoS ONE",
+        "issn_l": "1932-6203",
+        "issn": [
+          "1932-6203"
+        ],
+        "is_oa": true,
+        "is_in_doaj": true,
+        "is_core": true,
+        "listed_in": [
+          "anvur-class-a",
+          "anvur-scientific",
+          "cwts-core",
+          "doaj",
+          "dongbi-c",
+          "doyens",
+          "erih-plus",
+          "jufo-1",
+          "ki-jl-1",
+          "medline",
+          "norway-1",
+          "poland-100",
+          "russia-white-list-1",
+          "vabb-shw"
+        ],
+        "host_organization": "https://openalex.org/P4310315706",
+        "host_organization_name": "Public Library of Science",
+        "host_organization_lineage": [
+          "https://openalex.org/P4310315706"
+        ],
+        "host_organization_lineage_names": [
+          "Public Library of Science"
+        ],
+        "type": "journal"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "publishedVersion",
+      "is_accepted": true,
+      "is_published": true,
+      "raw_source_name": "PLOS ONE",
+      "raw_type": "journal-article"
+    },
+    {
+      "id": "doi:10.1101/2023.03.20.533560",
+      "doi": "https://doi.org/10.1101/2023.03.20.533560",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.1101/2023.03.20.533560",
+      "pdf_url": "https://www.biorxiv.org/content/biorxiv/early/2023/03/21/2023.03.20.533560.full.pdf",
+      "source": {
+        "id": "https://openalex.org/S4306402567",
+        "display_name": "bioRxiv (Cold Spring Harbor Laboratory)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I2750212522",
+        "host_organization_name": "Cold Spring Harbor Laboratory",
+        "host_organization_lineage": [
+          "https://openalex.org/I2750212522"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": "bioRxiv",
+      "raw_type": "posted-content"
+    },
+    {
+      "id": "pmh:oai:pubmedcentral.nih.gov:10443850",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/10443850",
+      "pdf_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10443850/pdf/pone.0290046.pdf",
+      "source": {
+        "id": "https://openalex.org/S2764455111",
+        "display_name": "PubMed Central",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": true,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I1299303238",
+        "host_organization_name": "National Institutes of Health",
+        "host_organization_lineage": [
+          "https://openalex.org/I1299303238"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by",
+      "license_id": "https://openalex.org/licenses/cc-by",
+      "version": "publishedVersion",
+      "is_accepted": true,
+      "is_published": true,
+      "raw_source_name": "PLoS One",
+      "raw_type": "Text"
+    },
+    {
+      "id": "pmid:37607200",
+      "doi": null,
+      "is_oa": false,
+      "landing_page_url": "https://pubmed.ncbi.nlm.nih.gov/37607200",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306525036",
+        "display_name": "PubMed",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I1299303238",
+        "host_organization_name": "National Institutes of Health",
+        "host_organization_lineage": [
+          "https://openalex.org/I1299303238"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": "publishedVersion",
+      "is_accepted": true,
+      "is_published": true,
+      "raw_source_name": "PloS one",
+      "raw_type": "Journal Article"
+    },
+    {
+      "id": "pmh:oai:doaj.org/article:f83251a4027f4fc09a36841ef38d96a2",
+      "doi": null,
+      "is_oa": true,
+      "landing_page_url": "https://doaj.org/article/f83251a4027f4fc09a36841ef38d96a2",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306401280",
+        "display_name": "DOAJ (DOAJ: Directory of Open Access Journals)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": null,
+        "host_organization_name": null,
+        "host_organization_lineage": [],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": "cc-by-sa",
+      "license_id": "https://openalex.org/licenses/cc-by-sa",
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": "PLoS ONE, Vol 18, Iss 8, p e0290046 (2023)",
+      "raw_type": "article"
+    }
+  ],
+  "best_oa_location": {
+    "id": "doi:10.1371/journal.pone.0290046",
+    "doi": "https://doi.org/10.1371/journal.pone.0290046",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.1371/journal.pone.0290046",
+    "pdf_url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0290046&type=printable",
+    "source": {
+      "id": "https://openalex.org/S202381698",
+      "display_name": "PLoS ONE",
+      "issn_l": "1932-6203",
+      "issn": [
+        "1932-6203"
+      ],
+      "is_oa": true,
+      "is_in_doaj": true,
+      "is_core": true,
+      "listed_in": [
+        "anvur-class-a",
+        "anvur-scientific",
+        "cwts-core",
+        "doaj",
+        "dongbi-c",
+        "doyens",
+        "erih-plus",
+        "jufo-1",
+        "ki-jl-1",
+        "medline",
+        "norway-1",
+        "poland-100",
+        "russia-white-list-1",
+        "vabb-shw"
+      ],
+      "host_organization": "https://openalex.org/P4310315706",
+      "host_organization_name": "Public Library of Science",
+      "host_organization_lineage": [
+        "https://openalex.org/P4310315706"
+      ],
+      "host_organization_lineage_names": [
+        "Public Library of Science"
+      ],
+      "type": "journal"
+    },
+    "license": "cc-by",
+    "license_id": "https://openalex.org/licenses/cc-by",
+    "version": "publishedVersion",
+    "is_accepted": true,
+    "is_published": true,
+    "raw_source_name": "PLOS ONE",
+    "raw_type": "journal-article"
+  },
+  "sustainable_development_goals": [
+    {
+      "display_name": "Good health and well-being",
+      "score": 0.9763000011444092,
+      "id": "https://metadata.un.org/sdg/3"
+    }
+  ],
+  "study_designs": [],
+  "awards": [],
+  "funders": [],
+  "has_content": {
+    "pdf": true,
+    "grobid_xml": true
+  },
+  "content_urls": {
+    "pdf": "https://content.openalex.org/works/W4386084807.pdf",
+    "grobid_xml": "https://content.openalex.org/works/W4386084807.grobid-xml"
+  },
+  "referenced_works_count": 45,
+  "referenced_works": [
+    "https://openalex.org/W2003055084",
+    "https://openalex.org/W2009465867",
+    "https://openalex.org/W2014734052",
+    "https://openalex.org/W2020032658",
+    "https://openalex.org/W2038363115",
+    "https://openalex.org/W2049286784",
+    "https://openalex.org/W2062984171",
+    "https://openalex.org/W2068104571",
+    "https://openalex.org/W2091868933",
+    "https://openalex.org/W2169259155",
+    "https://openalex.org/W2336831722",
+    "https://openalex.org/W2396565570",
+    "https://openalex.org/W2522766264",
+    "https://openalex.org/W2614721558",
+    "https://openalex.org/W2777638483",
+    "https://openalex.org/W2791048211",
+    "https://openalex.org/W2804846127",
+    "https://openalex.org/W2896109093",
+    "https://openalex.org/W3005104290",
+    "https://openalex.org/W3006645647",
+    "https://openalex.org/W3008394341",
+    "https://openalex.org/W3083934582",
+    "https://openalex.org/W3087924281",
+    "https://openalex.org/W3110533927",
+    "https://openalex.org/W3123053754",
+    "https://openalex.org/W3132217836",
+    "https://openalex.org/W3154091431",
+    "https://openalex.org/W3161153162",
+    "https://openalex.org/W3169755681",
+    "https://openalex.org/W3200035370",
+    "https://openalex.org/W3201739341",
+    "https://openalex.org/W3203630421",
+    "https://openalex.org/W3213613146",
+    "https://openalex.org/W4200180765",
+    "https://openalex.org/W4213433194",
+    "https://openalex.org/W4220870024",
+    "https://openalex.org/W4221022921",
+    "https://openalex.org/W4224120598",
+    "https://openalex.org/W4226195148",
+    "https://openalex.org/W4229377541",
+    "https://openalex.org/W4229448444",
+    "https://openalex.org/W4291157258",
+    "https://openalex.org/W4313368906",
+    "https://openalex.org/W4317666420",
+    "https://openalex.org/W4366822130"
+  ],
+  "related_works": [
+    "https://openalex.org/W4366822130",
+    "https://openalex.org/W3095845174",
+    "https://openalex.org/W4409981207",
+    "https://openalex.org/W4408028379",
+    "https://openalex.org/W4390771024",
+    "https://openalex.org/W4417316997",
+    "https://openalex.org/W7160934669",
+    "https://openalex.org/W2014734052",
+    "https://openalex.org/W4220870024",
+    "https://openalex.org/W4368362147"
+  ],
+  "abstract_inverted_index": {
+    "Exosomes": [
+      0
+    ],
+    "are": [
+      1
+    ],
+    "emerging": [
+      2
+    ],
+    "as": [
+      3,
+      111,
+      259
+    ],
+    "potent": [
+      4,
+      107,
+      171
+    ],
+    "and": [
+      5,
+      13,
+      47,
+      132,
+      144
+    ],
+    "safe": [
+      6
+    ],
+    "delivery": [
+      7,
+      85,
+      256
+    ],
+    "carriers": [
+      8
+    ],
+    "for": [
+      9,
+      18,
+      83,
+      90,
+      196,
+      246,
+      254
+    ],
+    "use": [
+      10,
+      64
+    ],
+    "in": [
+      11,
+      216,
+      229,
+      280
+    ],
+    "vaccinology": [
+      12,
+      268
+    ],
+    "therapeutics.": [
+      14
+    ],
+    "A": [
+      15
+    ],
+    "better": [
+      16,
+      204
+    ],
+    "vaccine": [
+      17,
+      89,
+      97,
+      237
+    ],
+    "severe": [
+      19
+    ],
+    "acute": [
+      20
+    ],
+    "respiratory": [
+      21
+    ],
+    "syndrome": [
+      22
+    ],
+    "coronavirus": [
+      23
+    ],
+    "2": [
+      24
+    ],
+    "(SARS-CoV-2)": [
+      25
+    ],
+    "is": [
+      26,
+      175
+    ],
+    "needed": [
+      27,
+      167
+    ],
+    "to": [
+      28,
+      68,
+      71,
+      168,
+      221,
+      251,
+      266
+    ],
+    "provide": [
+      29
+    ],
+    "improved,": [
+      30
+    ],
+    "broader,": [
+      31
+    ],
+    "longer": [
+      32
+    ],
+    "lasting": [
+      33
+    ],
+    "neutralization": [
+      34
+    ],
+    "of": [
+      35,
+      53,
+      58,
+      86,
+      105,
+      116,
+      155,
+      164,
+      199,
+      219,
+      227,
+      232,
+      257
+    ],
+    "SARS-CoV-2,": [
+      36,
+      220
+    ],
+    "a": [
+      37,
+      87,
+      99,
+      106,
+      170,
+      176,
+      203,
+      230,
+      281
+    ],
+    "more": [
+      38
+    ],
+    "robust": [
+      39
+    ],
+    "T": [
+      40,
+      146
+    ],
+    "cell": [
+      41,
+      147
+    ],
+    "response,": [
+      42
+    ],
+    "enable": [
+      43
+    ],
+    "widespread": [
+      44
+    ],
+    "global": [
+      45
+    ],
+    "usage,": [
+      46
+    ],
+    "further": [
+      48
+    ],
+    "enhance": [
+      49
+    ],
+    "the": [
+      50,
+      56,
+      81,
+      84,
+      103,
+      122,
+      191,
+      197,
+      217,
+      225,
+      241
+    ],
+    "safety": [
+      51,
+      205
+    ],
+    "profile": [
+      52
+    ],
+    "vaccines": [
+      54,
+      184,
+      201
+    ],
+    "given": [
+      55
+    ],
+    "likelihood": [
+      57
+    ],
+    "repeated": [
+      59
+    ],
+    "booster": [
+      60
+    ],
+    "vaccinations.": [
+      61
+    ],
+    "Here,": [
+      62
+    ],
+    "we": [
+      63
+    ],
+    "Capricor's": [
+      65
+    ],
+    "StealthXTM": [
+      66,
+      192
+    ],
+    "platform": [
+      67,
+      194,
+      210
+    ],
+    "engineer": [
+      69
+    ],
+    "exosomes": [
+      70,
+      228,
+      253
+    ],
+    "express": [
+      72
+    ],
+    "native": [
+      73
+    ],
+    "SARS-CoV-2": [
+      74,
+      93,
+      124
+    ],
+    "spike": [
+      75,
+      156
+    ],
+    "Delta": [
+      76
+    ],
+    "variant": [
+      77
+    ],
+    "(STX-S)": [
+      78
+    ],
+    "protein": [
+      79,
+      157,
+      165,
+      183
+    ],
+    "on": [
+      80
+    ],
+    "surface": [
+      82,
+      226
+    ],
+    "protein-based": [
+      88
+    ],
+    "immunization": [
+      91,
+      101
+    ],
+    "against": [
+      92,
+      121
+    ],
+    "infection.": [
+      94
+    ],
+    "The": [
+      95,
+      249
+    ],
+    "STX-S": [
+      96
+    ],
+    "induced": [
+      98
+    ],
+    "strong": [
+      100
+    ],
+    "with": [
+      102,
+      185,
+      202,
+      235
+    ],
+    "production": [
+      104
+    ],
+    "humoral": [
+      108
+    ],
+    "immune": [
+      109,
+      172
+    ],
+    "response": [
+      110
+    ],
+    "demonstrated": [
+      112,
+      260
+    ],
+    "by": [
+      113,
+      158,
+      261,
+      269
+    ],
+    "high": [
+      114
+    ],
+    "levels": [
+      115
+    ],
+    "neutralizing": [
+      117
+    ],
+    "antibody": [
+      118,
+      284
+    ],
+    "not": [
+      119
+    ],
+    "only": [
+      120,
+      162
+    ],
+    "delta": [
+      123
+    ],
+    "virus": [
+      125
+    ],
+    "but": [
+      126,
+      239
+    ],
+    "also": [
+      127
+    ],
+    "two": [
+      128
+    ],
+    "Omicron": [
+      129
+    ],
+    "variants": [
+      130,
+      215
+    ],
+    "(BA.1": [
+      131
+    ],
+    "BA.5),": [
+      133
+    ],
+    "providing": [
+      134
+    ],
+    "broader": [
+      135
+    ],
+    "protection": [
+      136
+    ],
+    "than": [
+      137,
+      180
+    ],
+    "current": [
+      138
+    ],
+    "mRNA": [
+      139,
+      236,
+      247
+    ],
+    "vaccines.": [
+      140,
+      248
+    ],
+    "Additionally,": [
+      141
+    ],
+    "both": [
+      142
+    ],
+    "CD4+": [
+      143
+    ],
+    "CD8+": [
+      145
+    ],
+    "responses": [
+      148
+    ],
+    "were": [
+      149,
+      166
+    ],
+    "increased": [
+      150
+    ],
+    "significantly": [
+      151,
+      177
+    ],
+    "after": [
+      152
+    ],
+    "treatment.": [
+      153
+    ],
+    "Quantification": [
+      154
+    ],
+    "ELISA": [
+      159
+    ],
+    "showed": [
+      160
+    ],
+    "that": [
+      161
+    ],
+    "nanograms": [
+      163
+    ],
+    "induce": [
+      169
+    ],
+    "response.": [
+      173,
+      285
+    ],
+    "This": [
+      174
+    ],
+    "lower": [
+      178
+    ],
+    "dose": [
+      179,
+      278
+    ],
+    "traditional": [
+      181
+    ],
+    "recombinant": [
+      182
+    ],
+    "no": [
+      186
+    ],
+    "adjuvant": [
+      187
+    ],
+    "required,": [
+      188
+    ],
+    "which": [
+      189
+    ],
+    "makes": [
+      190
+    ],
+    "exosome": [
+      193,
+      209
+    ],
+    "ideal": [
+      195
+    ],
+    "development": [
+      198
+    ],
+    "multivalent": [
+      200
+    ],
+    "profile.": [
+      206
+    ],
+    "Importantly,": [
+      207
+    ],
+    "our": [
+      208
+    ],
+    "allows": [
+      211
+    ],
+    "novel": [
+      212
+    ],
+    "proteins,": [
+      213,
+      258
+    ],
+    "or": [
+      214
+    ],
+    "case": [
+      218
+    ],
+    "be": [
+      222
+    ],
+    "engineered": [
+      223
+    ],
+    "onto": [
+      224
+    ],
+    "matter": [
+      231
+    ],
+    "weeks,": [
+      233
+    ],
+    "comparable": [
+      234
+    ],
+    "technology,": [
+      238
+    ],
+    "without": [
+      240
+    ],
+    "cold": [
+      242
+    ],
+    "storage": [
+      243
+    ],
+    "requirements": [
+      244
+    ],
+    "necessary": [
+      245
+    ],
+    "ability": [
+      250
+    ],
+    "utilize": [
+      252
+    ],
+    "cellular": [
+      255
+    ],
+    "STX-S,": [
+      262
+    ],
+    "has": [
+      263
+    ],
+    "enormous": [
+      264
+    ],
+    "potential": [
+      265
+    ],
+    "revolutionize": [
+      267
+    ],
+    "rapidly": [
+      270
+    ],
+    "facilitating": [
+      271
+    ],
+    "antigen": [
+      272
+    ],
+    "presentation": [
+      273
+    ],
+    "at": [
+      274
+    ],
+    "an": [
+      275
+    ],
+    "extremely": [
+      276
+    ],
+    "low": [
+      277
+    ],
+    "resulting": [
+      279
+    ],
+    "potent,": [
+      282
+    ],
+    "broad": [
+      283
+    ]
+  },
+  "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W4386084807",
+  "counts_by_year": [
+    {
+      "year": 2026,
+      "cited_by_count": 4
+    },
+    {
+      "year": 2025,
+      "cited_by_count": 8
+    },
+    {
+      "year": 2024,
+      "cited_by_count": 6
+    },
+    {
+      "year": 2023,
+      "cited_by_count": 1
+    }
+  ],
+  "updated_date": "2026-11-15T12:55:33.944570",
+  "created_date": "2023-08-24T00:00:00"
+}

@@ -1,0 +1,1006 @@
+{
+  "id": "https://openalex.org/W6920769110",
+  "doi": "https://doi.org/10.60763/africarxiv/1417",
+  "title": "LA COVID 19 DANS LA VILLE DE TOUBA : DE LA RÉSISTANCE À LA RÉSILIENCE COMMUNAUTAIRE.",
+  "display_name": "LA COVID 19 DANS LA VILLE DE TOUBA : DE LA RÉSISTANCE À LA RÉSILIENCE COMMUNAUTAIRE.",
+  "alternate_titles": [],
+  "publication_year": 2023,
+  "publication_date": "2023-10-05",
+  "ids": {
+    "openalex": "https://openalex.org/W6920769110",
+    "doi": "https://doi.org/10.60763/africarxiv/1417"
+  },
+  "language": "en",
+  "primary_location": {
+    "id": "doi:10.60763/africarxiv/1417",
+    "doi": "https://doi.org/10.60763/africarxiv/1417",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.60763/africarxiv/1417",
+    "pdf_url": null,
+    "source": {
+      "id": "https://openalex.org/S4306402219",
+      "display_name": "AfricArXiv (OSF Preprints)",
+      "issn_l": null,
+      "issn": null,
+      "is_oa": false,
+      "is_in_doaj": false,
+      "is_core": false,
+      "listed_in": [],
+      "host_organization": "https://openalex.org/I2799848540",
+      "host_organization_name": "Center for Open Science",
+      "host_organization_lineage": [
+        "https://openalex.org/I2799848540"
+      ],
+      "host_organization_lineage_names": [],
+      "type": "repository"
+    },
+    "license": null,
+    "license_id": null,
+    "version": null,
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "article-journal"
+  },
+  "parent_works": [],
+  "lineage": [
+    "https://openalex.org/W6920769110"
+  ],
+  "child_works_count": 0,
+  "type": "preprint",
+  "is_traditional": true,
+  "indexed_in": [
+    "datacite"
+  ],
+  "open_access": {
+    "is_oa": true,
+    "oa_status": "green",
+    "oa_url": "https://doi.org/10.60763/africarxiv/1417",
+    "any_repository_has_fulltext": true
+  },
+  "authorships": [
+    {
+      "author_position": "first",
+      "author": {
+        "id": null,
+        "display_name": "TOURE, Mamadou Ndong",
+        "orcid": null,
+        "observed_orcids": []
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": true,
+      "raw_author_name": "TOURE, Mamadou Ndong",
+      "raw_affiliation_strings": [],
+      "raw_orcid": null,
+      "affiliations": []
+    }
+  ],
+  "institutions": [],
+  "countries_distinct_count": 0,
+  "institutions_distinct_count": 0,
+  "corresponding_author_ids": [],
+  "corresponding_institution_ids": [],
+  "apc_list": null,
+  "apc_paid": null,
+  "fwci": null,
+  "has_fulltext": false,
+  "cited_by_count": 0,
+  "citation_normalized_percentile": null,
+  "cited_by_percentile_year": null,
+  "biblio": {
+    "volume": null,
+    "issue": null,
+    "first_page": null,
+    "last_page": null
+  },
+  "is_retracted": false,
+  "is_paratext": false,
+  "is_xpac": true,
+  "primary_topic": {
+    "id": "https://openalex.org/T13032",
+    "display_name": "COVID-19 Prevention and Impact",
+    "score": 0.7128999829292297,
+    "subfield": {
+      "id": "https://openalex.org/subfields/3312",
+      "display_name": "Sociology and Political Science"
+    },
+    "field": {
+      "id": "https://openalex.org/fields/33",
+      "display_name": "Social Sciences"
+    },
+    "domain": {
+      "id": "https://openalex.org/domains/2",
+      "display_name": "Social Sciences"
+    }
+  },
+  "topics": [
+    {
+      "id": "https://openalex.org/T13032",
+      "display_name": "COVID-19 Prevention and Impact",
+      "score": 0.7128999829292297,
+      "subfield": {
+        "id": "https://openalex.org/subfields/3312",
+        "display_name": "Sociology and Political Science"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/33",
+        "display_name": "Social Sciences"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/2",
+        "display_name": "Social Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T10410",
+      "display_name": "COVID-19 epidemiological studies",
+      "score": 0.2808000147342682,
+      "subfield": {
+        "id": "https://openalex.org/subfields/2611",
+        "display_name": "Modeling and Simulation"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/26",
+        "display_name": "Mathematics"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/3",
+        "display_name": "Physical Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T13979",
+      "display_name": "Communication and COVID-19 Impact",
+      "score": 0.0007999999797903001,
+      "subfield": {
+        "id": "https://openalex.org/subfields/3315",
+        "display_name": "Communication"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/33",
+        "display_name": "Social Sciences"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/2",
+        "display_name": "Social Sciences"
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "id": "https://openalex.org/keywords/covid-19",
+      "display_name": "COVID-19 pandemic",
+      "score": 0.8989999890327454
+    },
+    {
+      "id": "https://openalex.org/keywords/touba",
+      "display_name": "Touba",
+      "score": 0.8399999737739563
+    },
+    {
+      "id": "https://openalex.org/keywords/community-resilience",
+      "display_name": "community resilience",
+      "score": 0.8519999980926514
+    },
+    {
+      "id": "https://openalex.org/keywords/community-opposition",
+      "display_name": "community resistance",
+      "score": 0.722000002861023
+    },
+    {
+      "id": "https://openalex.org/keywords/community-based-approach",
+      "display_name": "community-based approach",
+      "score": 0.5249999761581421
+    },
+    {
+      "id": "https://openalex.org/keywords/community-transmission",
+      "display_name": "community transmission",
+      "score": 0.5569999814033508
+    },
+    {
+      "id": "https://openalex.org/keywords/precarious-living-conditions",
+      "display_name": "precarious living conditions",
+      "score": 0.6930000185966492
+    },
+    {
+      "id": "https://openalex.org/keywords/tradespeople",
+      "display_name": "tradesmen",
+      "score": 0.4359999895095825
+    },
+    {
+      "id": "https://openalex.org/keywords/transport-workers",
+      "display_name": "transport workers",
+      "score": 0.9900000095367432
+    },
+    {
+      "id": "https://openalex.org/keywords/markets",
+      "display_name": "markets",
+      "score": 0.5070000290870667
+    },
+    {
+      "id": "https://openalex.org/keywords/bus-stations",
+      "display_name": "bus terminal",
+      "score": 0.9399999976158142
+    },
+    {
+      "id": "https://openalex.org/keywords/socio-spatial-dynamics",
+      "display_name": "socio-spatial dynamics",
+      "score": 0.8659999966621399
+    }
+  ],
+  "concepts": [
+    {
+      "id": "https://openalex.org/C89623803",
+      "wikidata": "https://www.wikidata.org/wiki/Q12184",
+      "display_name": "Pandemic",
+      "level": 5,
+      "score": 0.5860999822616577
+    },
+    {
+      "id": "https://openalex.org/C2908647359",
+      "wikidata": "https://www.wikidata.org/wiki/Q2625603",
+      "display_name": "Population",
+      "level": 2,
+      "score": 0.48410001397132874
+    },
+    {
+      "id": "https://openalex.org/C205649164",
+      "wikidata": "https://www.wikidata.org/wiki/Q1071",
+      "display_name": "Geography",
+      "level": 0,
+      "score": 0.45660001039505005
+    },
+    {
+      "id": "https://openalex.org/C26760741",
+      "wikidata": "https://www.wikidata.org/wiki/Q160402",
+      "display_name": "Perception",
+      "level": 2,
+      "score": 0.42419999837875366
+    },
+    {
+      "id": "https://openalex.org/C2780900520",
+      "wikidata": "https://www.wikidata.org/wiki/Q100268981",
+      "display_name": "Denial",
+      "level": 2,
+      "score": 0.41370001435279846
+    },
+    {
+      "id": "https://openalex.org/C144024400",
+      "wikidata": "https://www.wikidata.org/wiki/Q21201",
+      "display_name": "Sociology",
+      "level": 0,
+      "score": 0.39160001277923584
+    },
+    {
+      "id": "https://openalex.org/C56995899",
+      "wikidata": "https://www.wikidata.org/wiki/Q1126687",
+      "display_name": "Focus group",
+      "level": 2,
+      "score": 0.3522999882698059
+    },
+    {
+      "id": "https://openalex.org/C204036174",
+      "wikidata": "https://www.wikidata.org/wiki/Q909380",
+      "display_name": "Stock (firearms)",
+      "level": 2,
+      "score": 0.3422999978065491
+    },
+    {
+      "id": "https://openalex.org/C203663800",
+      "wikidata": "https://www.wikidata.org/wiki/Q848979",
+      "display_name": "Citizen journalism",
+      "level": 2,
+      "score": 0.3391999900341034
+    },
+    {
+      "id": "https://openalex.org/C45355965",
+      "wikidata": "https://www.wikidata.org/wiki/Q1643441",
+      "display_name": "Socioeconomics",
+      "level": 1,
+      "score": 0.3181000053882599
+    },
+    {
+      "id": "https://openalex.org/C50522688",
+      "wikidata": "https://www.wikidata.org/wiki/Q189833",
+      "display_name": "Economic growth",
+      "level": 1,
+      "score": 0.3151000142097473
+    },
+    {
+      "id": "https://openalex.org/C57473165",
+      "wikidata": "https://www.wikidata.org/wiki/Q7315604",
+      "display_name": "Resistance (ecology)",
+      "level": 2,
+      "score": 0.3050999939441681
+    },
+    {
+      "id": "https://openalex.org/C3008058167",
+      "wikidata": "https://www.wikidata.org/wiki/Q84263196",
+      "display_name": "Coronavirus disease 2019 (COVID-19)",
+      "level": 4,
+      "score": 0.3027999997138977
+    },
+    {
+      "id": "https://openalex.org/C17744445",
+      "wikidata": "https://www.wikidata.org/wiki/Q36442",
+      "display_name": "Political science",
+      "level": 0,
+      "score": 0.28700000047683716
+    }
+  ],
+  "mesh": [],
+  "locations_count": 1,
+  "locations": [
+    {
+      "id": "doi:10.60763/africarxiv/1417",
+      "doi": "https://doi.org/10.60763/africarxiv/1417",
+      "is_oa": true,
+      "landing_page_url": "https://doi.org/10.60763/africarxiv/1417",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306402219",
+        "display_name": "AfricArXiv (OSF Preprints)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I2799848540",
+        "host_organization_name": "Center for Open Science",
+        "host_organization_lineage": [
+          "https://openalex.org/I2799848540"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": null,
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "article-journal"
+    }
+  ],
+  "best_oa_location": {
+    "id": "doi:10.60763/africarxiv/1417",
+    "doi": "https://doi.org/10.60763/africarxiv/1417",
+    "is_oa": true,
+    "landing_page_url": "https://doi.org/10.60763/africarxiv/1417",
+    "pdf_url": null,
+    "source": {
+      "id": "https://openalex.org/S4306402219",
+      "display_name": "AfricArXiv (OSF Preprints)",
+      "issn_l": null,
+      "issn": null,
+      "is_oa": false,
+      "is_in_doaj": false,
+      "is_core": false,
+      "listed_in": [],
+      "host_organization": "https://openalex.org/I2799848540",
+      "host_organization_name": "Center for Open Science",
+      "host_organization_lineage": [
+        "https://openalex.org/I2799848540"
+      ],
+      "host_organization_lineage_names": [],
+      "type": "repository"
+    },
+    "license": null,
+    "license_id": null,
+    "version": null,
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "article-journal"
+  },
+  "sustainable_development_goals": [
+    {
+      "score": 0.8999999761581421,
+      "display_name": "Good health and well-being",
+      "id": "https://metadata.un.org/sdg/3"
+    },
+    {
+      "score": 0.7646999955177307,
+      "display_name": "Sustainable cities and communities",
+      "id": "https://metadata.un.org/sdg/11"
+    }
+  ],
+  "study_designs": [
+    {
+      "display_name": "Observational Study",
+      "id": "https://openalex.org/study-designs/observational-study"
+    }
+  ],
+  "awards": [],
+  "funders": [],
+  "has_content": {
+    "grobid_xml": false,
+    "pdf": false
+  },
+  "content_urls": null,
+  "referenced_works_count": 0,
+  "referenced_works": [],
+  "related_works": [
+    "https://openalex.org/W4413923108",
+    "https://openalex.org/W4403455589",
+    "https://openalex.org/W4313250910",
+    "https://openalex.org/W4402574420",
+    "https://openalex.org/W4412632936",
+    "https://openalex.org/W4205443896",
+    "https://openalex.org/W4412738585",
+    "https://openalex.org/W4226076252",
+    "https://openalex.org/W3216229289",
+    "https://openalex.org/W4394828088"
+  ],
+  "abstract_inverted_index": {
+    "This": [
+      0
+    ],
+    "article": [
+      1
+    ],
+    "comes": [
+      2
+    ],
+    "from": [
+      3,
+      43,
+      201
+    ],
+    "the": [
+      4,
+      15,
+      19,
+      24,
+      29,
+      35,
+      39,
+      51,
+      57,
+      64,
+      72,
+      81,
+      85,
+      97,
+      107,
+      113,
+      118,
+      123,
+      134,
+      138,
+      142,
+      145,
+      159,
+      163,
+      171,
+      228,
+      254
+    ],
+    "research": [
+      5,
+      164
+    ],
+    "project": [
+      6,
+      165
+    ],
+    "\"Transmission": [
+      7
+    ],
+    "of": [
+      8,
+      14,
+      18,
+      21,
+      26,
+      31,
+      38,
+      53,
+      56,
+      66,
+      71,
+      80,
+      84,
+      96,
+      106,
+      120,
+      133,
+      144,
+      150,
+      162,
+      170,
+      179,
+      198,
+      232,
+      247
+    ],
+    "Covid": [
+      9,
+      114
+    ],
+    "19": [
+      10,
+      115
+    ],
+    "in": [
+      11,
+      23,
+      63,
+      75,
+      117,
+      148,
+      245,
+      250
+    ],
+    "Senegal:": [
+      12
+    ],
+    "analysis": [
+      13
+    ],
+    "socio-spatial": [
+      16
+    ],
+    "dynamics": [
+      17,
+      109
+    ],
+    "factors": [
+      20,
+      73
+    ],
+    "propagation": [
+      22
+    ],
+    "region": [
+      25
+    ],
+    "Dakar": [
+      27
+    ],
+    "and": [
+      28,
+      60,
+      78,
+      83,
+      91,
+      136,
+      152,
+      190,
+      219,
+      239,
+      258
+    ],
+    "town": [
+      30,
+      65
+    ],
+    "Touba\",": [
+      32
+    ],
+    "implemented": [
+      33
+    ],
+    "by": [
+      34
+    ],
+    "LEIDI": [
+      36
+    ],
+    "Laboratory": [
+      37
+    ],
+    "Gaston": [
+      40
+    ],
+    "Berger": [
+      41
+    ],
+    "University": [
+      42
+    ],
+    "2021": [
+      44
+    ],
+    "to": [
+      45,
+      77,
+      100,
+      102,
+      126,
+      182,
+      215,
+      227,
+      241,
+      253
+    ],
+    "2022": [
+      46
+    ],
+    "(02": [
+      47
+    ],
+    "years).": [
+      48
+    ],
+    "It": [
+      49,
+      68
+    ],
+    "analyses": [
+      50
+    ],
+    "problem": [
+      52
+    ],
+    "community": [
+      54,
+      108,
+      128
+    ],
+    "perception": [
+      55,
+      132
+    ],
+    "COVID-19": [
+      58
+    ],
+    "pandemic": [
+      59,
+      116
+    ],
+    "its": [
+      61
+    ],
+    "evolution": [
+      62
+    ],
+    "Touba.": [
+      67,
+      121
+    ],
+    "takes": [
+      69
+    ],
+    "stock": [
+      70
+    ],
+    "involved": [
+      74
+    ],
+    "resistance": [
+      76
+    ],
+    "denial": [
+      79
+    ],
+    "disease,": [
+      82,
+      135
+    ],
+    "occupational": [
+      86
+    ],
+    "categories": [
+      87
+    ],
+    "most": [
+      88
+    ],
+    "affected": [
+      89
+    ],
+    "(commerce": [
+      90
+    ],
+    "transport).": [
+      92
+    ],
+    "The": [
+      93,
+      154,
+      168,
+      205
+    ],
+    "overall": [
+      94,
+      160
+    ],
+    "aim": [
+      95,
+      124
+    ],
+    "study": [
+      98
+    ],
+    "is": [
+      99,
+      125,
+      156,
+      224,
+      236
+    ],
+    "contribute": [
+      101
+    ],
+    "a": [
+      103,
+      196,
+      233
+    ],
+    "better": [
+      104
+    ],
+    "understanding": [
+      105
+    ],
+    "that": [
+      110,
+      140,
+      209,
+      235
+    ],
+    "prevailed": [
+      111
+    ],
+    "during": [
+      112
+    ],
+    "city": [
+      119
+    ],
+    "Specifically,": [
+      122
+    ],
+    "question": [
+      127
+    ],
+    "players": [
+      129
+    ],
+    "about": [
+      130
+    ],
+    "their": [
+      131,
+      180
+    ],
+    "then": [
+      137
+    ],
+    "characteristics": [
+      139
+    ],
+    "explain": [
+      141
+    ],
+    "spread": [
+      143
+    ],
+    "pandemic,": [
+      146
+    ],
+    "particularly": [
+      147
+    ],
+    "terms": [
+      149
+    ],
+    "trade": [
+      151
+    ],
+    "transport.": [
+      153
+    ],
+    "methodology": [
+      155,
+      161
+    ],
+    "based": [
+      157
+    ],
+    "on": [
+      158
+    ],
+    "mentioned": [
+      166
+    ],
+    "above.": [
+      167
+    ],
+    "tools": [
+      169
+    ],
+    "Active": [
+      172
+    ],
+    "Participatory": [
+      173
+    ],
+    "Research": [
+      174
+    ],
+    "Method": [
+      175
+    ],
+    "were": [
+      176
+    ],
+    "favoured": [
+      177,
+      214
+    ],
+    "because": [
+      178
+    ],
+    "ability": [
+      181
+    ],
+    "capture": [
+      183
+    ],
+    "socio-economic": [
+      184
+    ],
+    "realities": [
+      185
+    ],
+    "through": [
+      186
+    ],
+    "focus": [
+      187
+    ],
+    "groups,": [
+      188
+    ],
+    "interviews": [
+      189
+    ],
+    "testimonials,": [
+      191
+    ],
+    "which": [
+      192
+    ],
+    "we": [
+      193
+    ],
+    "combined": [
+      194
+    ],
+    "with": [
+      195,
+      217
+    ],
+    "survey": [
+      197
+    ],
+    "500": [
+      199
+    ],
+    "individuals": [
+      200
+    ],
+    "different": [
+      202
+    ],
+    "socio-professional": [
+      203
+    ],
+    "categories.": [
+      204
+    ],
+    "main": [
+      206
+    ],
+    "findings": [
+      207
+    ],
+    "are": [
+      208
+    ],
+    "community-based": [
+      210
+    ],
+    "approaches": [
+      211
+    ],
+    "should": [
+      212
+    ],
+    "be": [
+      213
+    ],
+    "deal": [
+      216
+    ],
+    "pandemics": [
+      218
+    ],
+    "future": [
+      220
+    ],
+    "epidemics.": [
+      221
+    ],
+    "Community": [
+      222
+    ],
+    "transmission": [
+      223
+    ],
+    "generally": [
+      225
+    ],
+    "linked": [
+      226
+    ],
+    "precarious": [
+      229
+    ],
+    "living": [
+      230
+    ],
+    "conditions": [
+      231
+    ],
+    "population": [
+      234
+    ],
+    "often": [
+      237
+    ],
+    "hard-working": [
+      238
+    ],
+    "obliged": [
+      240
+    ],
+    "travel": [
+      242
+    ],
+    "every": [
+      243
+    ],
+    "day": [
+      244
+    ],
+    "search": [
+      246
+    ],
+    "daily": [
+      248
+    ],
+    "expenses": [
+      249
+    ],
+    "places": [
+      251
+    ],
+    "open": [
+      252
+    ],
+    "public,": [
+      255
+    ],
+    "notably": [
+      256
+    ],
+    "markets": [
+      257
+    ],
+    "bus": [
+      259
+    ],
+    "stations.": [
+      260
+    ]
+  },
+  "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W6920769110",
+  "counts_by_year": [],
+  "updated_date": "2026-10-27T15:51:10.671819",
+  "created_date": "2025-10-10T00:00:00"
+}

@@ -1,0 +1,1210 @@
+{
+  "id": "https://openalex.org/W7171729290",
+  "doi": "https://doi.org/10.35542/osf.io/dhmwb_v1",
+  "title": "Tracing Fairness Disparities Across the Machine Learning Pipeline: A Stage-Resolved Bias Provenance and Propagation Framework for Educational Prediction",
+  "display_name": "Tracing Fairness Disparities Across the Machine Learning Pipeline: A Stage-Resolved Bias Provenance and Propagation Framework for Educational Prediction",
+  "alternate_titles": [],
+  "publication_year": 2026,
+  "publication_date": "2026-07-30",
+  "ids": {
+    "openalex": "https://openalex.org/W7171729290",
+    "doi": "https://doi.org/10.35542/osf.io/dhmwb_v1"
+  },
+  "language": "en",
+  "primary_location": {
+    "id": "doi:10.35542/osf.io/dhmwb_v1",
+    "doi": "https://doi.org/10.35542/osf.io/dhmwb_v1",
+    "is_oa": false,
+    "landing_page_url": "https://doi.org/10.35542/osf.io/dhmwb_v1",
+    "pdf_url": null,
+    "source": {
+      "id": "https://openalex.org/S4306402530",
+      "display_name": "EdArXiv (OSF Preprints)",
+      "issn_l": null,
+      "issn": null,
+      "is_oa": false,
+      "is_in_doaj": false,
+      "is_core": false,
+      "listed_in": [],
+      "host_organization": "https://openalex.org/I2799848540",
+      "host_organization_name": "Center for Open Science",
+      "host_organization_lineage": [
+        "https://openalex.org/I2799848540"
+      ],
+      "host_organization_lineage_names": [],
+      "type": "repository"
+    },
+    "license": null,
+    "license_id": null,
+    "version": "submittedVersion",
+    "is_accepted": false,
+    "is_published": false,
+    "raw_source_name": null,
+    "raw_type": "posted-content"
+  },
+  "parent_works": [],
+  "lineage": [
+    "https://openalex.org/W7171729290"
+  ],
+  "child_works_count": 0,
+  "type": "preprint",
+  "is_traditional": true,
+  "indexed_in": [
+    "crossref"
+  ],
+  "open_access": {
+    "is_oa": false,
+    "oa_status": "closed",
+    "oa_url": null,
+    "any_repository_has_fulltext": false
+  },
+  "authorships": [
+    {
+      "author_position": "first",
+      "author": {
+        "id": "https://openalex.org/A5140723189",
+        "display_name": "MD ISLAM",
+        "orcid": "https://orcid.org/0009-0006-8813-6317",
+        "observed_orcids": [
+          "https://orcid.org/0009-0006-8813-6317"
+        ]
+      },
+      "institutions": [],
+      "countries": [],
+      "is_corresponding": true,
+      "raw_author_name": "RAFIQUL ISLAM",
+      "raw_affiliation_strings": [],
+      "raw_orcid": "https://orcid.org/0009-0006-8813-6317",
+      "affiliations": []
+    }
+  ],
+  "institutions": [],
+  "countries_distinct_count": 0,
+  "institutions_distinct_count": 0,
+  "corresponding_author_ids": [
+    "https://openalex.org/A5140723189"
+  ],
+  "corresponding_institution_ids": [],
+  "apc_list": null,
+  "apc_paid": null,
+  "fwci": null,
+  "has_fulltext": false,
+  "cited_by_count": 0,
+  "citation_normalized_percentile": null,
+  "cited_by_percentile_year": null,
+  "biblio": {
+    "volume": null,
+    "issue": null,
+    "first_page": null,
+    "last_page": null
+  },
+  "is_retracted": false,
+  "is_paratext": false,
+  "is_xpac": false,
+  "primary_topic": {
+    "id": "https://openalex.org/T10883",
+    "display_name": "Ethics and Social Impacts of AI",
+    "score": 0.9589999914169312,
+    "subfield": {
+      "id": "https://openalex.org/subfields/1702",
+      "display_name": "Artificial Intelligence"
+    },
+    "field": {
+      "id": "https://openalex.org/fields/17",
+      "display_name": "Computer Science"
+    },
+    "domain": {
+      "id": "https://openalex.org/domains/3",
+      "display_name": "Physical Sciences"
+    }
+  },
+  "topics": [
+    {
+      "id": "https://openalex.org/T10883",
+      "display_name": "Ethics and Social Impacts of AI",
+      "score": 0.9589999914169312,
+      "subfield": {
+        "id": "https://openalex.org/subfields/1702",
+        "display_name": "Artificial Intelligence"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/17",
+        "display_name": "Computer Science"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/3",
+        "display_name": "Physical Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T11122",
+      "display_name": "Online Learning and Analytics",
+      "score": 0.025599999353289604,
+      "subfield": {
+        "id": "https://openalex.org/subfields/1706",
+        "display_name": "Computer Science Applications"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/17",
+        "display_name": "Computer Science"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/3",
+        "display_name": "Physical Sciences"
+      }
+    },
+    {
+      "id": "https://openalex.org/T12026",
+      "display_name": "Explainable Artificial Intelligence (XAI)",
+      "score": 0.00139999995008111,
+      "subfield": {
+        "id": "https://openalex.org/subfields/1702",
+        "display_name": "Artificial Intelligence"
+      },
+      "field": {
+        "id": "https://openalex.org/fields/17",
+        "display_name": "Computer Science"
+      },
+      "domain": {
+        "id": "https://openalex.org/domains/3",
+        "display_name": "Physical Sciences"
+      }
+    }
+  ],
+  "keywords": [
+    {
+      "id": "https://openalex.org/keywords/algorithmic-fairness",
+      "display_name": "algorithmic fairness",
+      "score": 0.9470000267028809
+    },
+    {
+      "id": "https://openalex.org/keywords/bias-propagation",
+      "display_name": "bias propagation",
+      "score": 0.9660000205039978
+    },
+    {
+      "id": "https://openalex.org/keywords/distribution-shift",
+      "display_name": "distribution shift",
+      "score": 0.6650000214576721
+    },
+    {
+      "id": "https://openalex.org/keywords/fairness-audits",
+      "display_name": "fairness auditing",
+      "score": 0.5830000042915344
+    },
+    {
+      "id": "https://openalex.org/keywords/disability-bias",
+      "display_name": "disability bias",
+      "score": 0.47600001096725464
+    },
+    {
+      "id": "https://openalex.org/keywords/gender-bias",
+      "display_name": "gender bias",
+      "score": 0.47600001096725464
+    },
+    {
+      "id": "https://openalex.org/keywords/post-processing",
+      "display_name": "post-processing",
+      "score": 0.4699999988079071
+    },
+    {
+      "id": "https://openalex.org/keywords/open-university-learning-analytics-dataset",
+      "display_name": "Open University Learning Analytics Dataset",
+      "score": 0.6769999861717224
+    }
+  ],
+  "concepts": [
+    {
+      "id": "https://openalex.org/C41008148",
+      "wikidata": "https://www.wikidata.org/wiki/Q21198",
+      "display_name": "Computer science",
+      "level": 0,
+      "score": 0.6525999903678894
+    },
+    {
+      "id": "https://openalex.org/C119857082",
+      "wikidata": "https://www.wikidata.org/wiki/Q2539",
+      "display_name": "Machine learning",
+      "level": 1,
+      "score": 0.6141999959945679
+    },
+    {
+      "id": "https://openalex.org/C154945302",
+      "wikidata": "https://www.wikidata.org/wiki/Q11660",
+      "display_name": "Artificial intelligence",
+      "level": 1,
+      "score": 0.6140999794006348
+    },
+    {
+      "id": "https://openalex.org/C2777548347",
+      "wikidata": "https://www.wikidata.org/wiki/Q5456937",
+      "display_name": "Flagging",
+      "level": 2,
+      "score": 0.6108999848365784
+    },
+    {
+      "id": "https://openalex.org/C2776401178",
+      "wikidata": "https://www.wikidata.org/wiki/Q12050496",
+      "display_name": "Feature (linguistics)",
+      "level": 2,
+      "score": 0.5855000019073486
+    },
+    {
+      "id": "https://openalex.org/C199521495",
+      "wikidata": "https://www.wikidata.org/wiki/Q181487",
+      "display_name": "Audit",
+      "level": 2,
+      "score": 0.4909999966621399
+    },
+    {
+      "id": "https://openalex.org/C79158427",
+      "wikidata": "https://www.wikidata.org/wiki/Q485396",
+      "display_name": "Analytics",
+      "level": 2,
+      "score": 0.4555000066757202
+    },
+    {
+      "id": "https://openalex.org/C132964779",
+      "wikidata": "https://www.wikidata.org/wiki/Q2110223",
+      "display_name": "Raw data",
+      "level": 2,
+      "score": 0.38960000872612
+    },
+    {
+      "id": "https://openalex.org/C2779458634",
+      "wikidata": "https://www.wikidata.org/wiki/Q24963715",
+      "display_name": "Debiasing",
+      "level": 2,
+      "score": 0.3718000054359436
+    },
+    {
+      "id": "https://openalex.org/C149782125",
+      "wikidata": "https://www.wikidata.org/wiki/Q160039",
+      "display_name": "Econometrics",
+      "level": 1,
+      "score": 0.3684999942779541
+    },
+    {
+      "id": "https://openalex.org/C116834253",
+      "wikidata": "https://www.wikidata.org/wiki/Q2039217",
+      "display_name": "Identification (biology)",
+      "level": 2,
+      "score": 0.3684000074863434
+    },
+    {
+      "id": "https://openalex.org/C2780009758",
+      "wikidata": "https://www.wikidata.org/wiki/Q6804172",
+      "display_name": "Measure (data warehouse)",
+      "level": 2,
+      "score": 0.3650999963283539
+    },
+    {
+      "id": "https://openalex.org/C93518851",
+      "wikidata": "https://www.wikidata.org/wiki/Q180160",
+      "display_name": "Metadata",
+      "level": 2,
+      "score": 0.3587999939918518
+    },
+    {
+      "id": "https://openalex.org/C124101348",
+      "wikidata": "https://www.wikidata.org/wiki/Q172491",
+      "display_name": "Data mining",
+      "level": 1,
+      "score": 0.3562999963760376
+    },
+    {
+      "id": "https://openalex.org/C138673069",
+      "wikidata": "https://www.wikidata.org/wiki/Q322229",
+      "display_name": "Tracing",
+      "level": 2,
+      "score": 0.3458000123500824
+    },
+    {
+      "id": "https://openalex.org/C45804977",
+      "wikidata": "https://www.wikidata.org/wiki/Q7239673",
+      "display_name": "Predictive modelling",
+      "level": 2,
+      "score": 0.3441999852657318
+    },
+    {
+      "id": "https://openalex.org/C90673727",
+      "wikidata": "https://www.wikidata.org/wiki/Q901718",
+      "display_name": "Product (mathematics)",
+      "level": 2,
+      "score": 0.31540000438690186
+    },
+    {
+      "id": "https://openalex.org/C165064840",
+      "wikidata": "https://www.wikidata.org/wiki/Q1321061",
+      "display_name": "Matching (statistics)",
+      "level": 2,
+      "score": 0.31200000643730164
+    },
+    {
+      "id": "https://openalex.org/C53605480",
+      "wikidata": "https://www.wikidata.org/wiki/Q852595",
+      "display_name": "Geotagging",
+      "level": 2,
+      "score": 0.30869999527931213
+    },
+    {
+      "id": "https://openalex.org/C2777648619",
+      "wikidata": "https://www.wikidata.org/wiki/Q2845208",
+      "display_name": "Learning analytics",
+      "level": 2,
+      "score": 0.30239999294281006
+    },
+    {
+      "id": "https://openalex.org/C43214815",
+      "wikidata": "https://www.wikidata.org/wiki/Q7310987",
+      "display_name": "Reliability (semiconductor)",
+      "level": 3,
+      "score": 0.2928999960422516
+    },
+    {
+      "id": "https://openalex.org/C111696304",
+      "wikidata": "https://www.wikidata.org/wiki/Q2303697",
+      "display_name": "Sorting",
+      "level": 2,
+      "score": 0.28459998965263367
+    },
+    {
+      "id": "https://openalex.org/C45942800",
+      "wikidata": "https://www.wikidata.org/wiki/Q245652",
+      "display_name": "Ensemble learning",
+      "level": 2,
+      "score": 0.2752000093460083
+    },
+    {
+      "id": "https://openalex.org/C158154518",
+      "wikidata": "https://www.wikidata.org/wiki/Q7310970",
+      "display_name": "Relevance (law)",
+      "level": 2,
+      "score": 0.2750999927520752
+    },
+    {
+      "id": "https://openalex.org/C12725497",
+      "wikidata": "https://www.wikidata.org/wiki/Q810247",
+      "display_name": "Baseline (sea)",
+      "level": 2,
+      "score": 0.2669999897480011
+    },
+    {
+      "id": "https://openalex.org/C2909264111",
+      "wikidata": "https://www.wikidata.org/wiki/Q740419",
+      "display_name": "Financial Audit",
+      "level": 3,
+      "score": 0.266400009393692
+    },
+    {
+      "id": "https://openalex.org/C52622490",
+      "wikidata": "https://www.wikidata.org/wiki/Q1026626",
+      "display_name": "Feature extraction",
+      "level": 2,
+      "score": 0.2653000056743622
+    },
+    {
+      "id": "https://openalex.org/C133462117",
+      "wikidata": "https://www.wikidata.org/wiki/Q4929239",
+      "display_name": "Data collection",
+      "level": 2,
+      "score": 0.26440000534057617
+    },
+    {
+      "id": "https://openalex.org/C3018260909",
+      "wikidata": "https://www.wikidata.org/wiki/Q1322871",
+      "display_name": "Exploratory analysis",
+      "level": 2,
+      "score": 0.26010000705718994
+    },
+    {
+      "id": "https://openalex.org/C105795698",
+      "wikidata": "https://www.wikidata.org/wiki/Q12483",
+      "display_name": "Statistics",
+      "level": 1,
+      "score": 0.25600001215934753
+    },
+    {
+      "id": "https://openalex.org/C126042441",
+      "wikidata": "https://www.wikidata.org/wiki/Q1324888",
+      "display_name": "Frame (networking)",
+      "level": 2,
+      "score": 0.2540999948978424
+    }
+  ],
+  "mesh": [],
+  "locations_count": 2,
+  "locations": [
+    {
+      "id": "doi:10.35542/osf.io/dhmwb_v1",
+      "doi": "https://doi.org/10.35542/osf.io/dhmwb_v1",
+      "is_oa": false,
+      "landing_page_url": "https://doi.org/10.35542/osf.io/dhmwb_v1",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306402530",
+        "display_name": "EdArXiv (OSF Preprints)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I2799848540",
+        "host_organization_name": "Center for Open Science",
+        "host_organization_lineage": [
+          "https://openalex.org/I2799848540"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "posted-content"
+    },
+    {
+      "id": "pmh:oai:share.osf.io:5ffa18bb-1620-4001-a0ab-76c4a959d019",
+      "doi": null,
+      "is_oa": false,
+      "landing_page_url": "https://osf.io/dhmwb",
+      "pdf_url": null,
+      "source": {
+        "id": "https://openalex.org/S4306402530",
+        "display_name": "EdArXiv (OSF Preprints)",
+        "issn_l": null,
+        "issn": null,
+        "is_oa": false,
+        "is_in_doaj": false,
+        "is_core": false,
+        "listed_in": [],
+        "host_organization": "https://openalex.org/I2799848540",
+        "host_organization_name": "Center for Open Science",
+        "host_organization_lineage": [
+          "https://openalex.org/I2799848540"
+        ],
+        "host_organization_lineage_names": [],
+        "type": "repository"
+      },
+      "license": null,
+      "license_id": null,
+      "version": "submittedVersion",
+      "is_accepted": false,
+      "is_published": false,
+      "raw_source_name": null,
+      "raw_type": "Preprint"
+    }
+  ],
+  "best_oa_location": null,
+  "sustainable_development_goals": [
+    {
+      "id": "https://metadata.un.org/sdg/10",
+      "display_name": "Reduced inequalities",
+      "score": 0.9629999995231628
+    },
+    {
+      "id": "https://metadata.un.org/sdg/4",
+      "display_name": "Quality education",
+      "score": 0.4156000018119812
+    }
+  ],
+  "study_designs": [],
+  "awards": [],
+  "funders": [],
+  "has_content": {
+    "grobid_xml": false,
+    "pdf": false
+  },
+  "content_urls": null,
+  "referenced_works_count": 0,
+  "referenced_works": [],
+  "related_works": [
+    "https://openalex.org/W7155218247",
+    "https://openalex.org/W4382318599",
+    "https://openalex.org/W7155579999",
+    "https://openalex.org/W4408833289",
+    "https://openalex.org/W4214905862",
+    "https://openalex.org/W7106240870",
+    "https://openalex.org/W4391136348",
+    "https://openalex.org/W7204559523",
+    "https://openalex.org/W4412748618",
+    "https://openalex.org/W7158388059"
+  ],
+  "abstract_inverted_index": {
+    "Predictive": [
+      0
+    ],
+    "models": [
+      1
+    ],
+    "are": [
+      2,
+      92
+    ],
+    "now": [
+      3
+    ],
+    "embedded": [
+      4
+    ],
+    "across": [
+      5,
+      249
+    ],
+    "education,": [
+      6
+    ],
+    "flagging": [
+      7
+    ],
+    "at-risk": [
+      8
+    ],
+    "students": [
+      9
+    ],
+    "and": [
+      10,
+      26,
+      50,
+      69,
+      128,
+      169,
+      174,
+      181
+    ],
+    "shaping": [
+      11
+    ],
+    "the": [
+      12,
+      23,
+      38,
+      73,
+      98,
+      138,
+      154,
+      166,
+      209
+    ],
+    "support": [
+      13
+    ],
+    "they": [
+      14
+    ],
+    "receive.": [
+      15
+    ],
+    "Most": [
+      16
+    ],
+    "fairness": [
+      17,
+      124,
+      243
+    ],
+    "audits": [
+      18
+    ],
+    "measure": [
+      19
+    ],
+    "group": [
+      20
+    ],
+    "disparity": [
+      21,
+      61,
+      157
+    ],
+    "in": [
+      22,
+      165
+    ],
+    "final": [
+      24
+    ],
+    "prediction": [
+      25
+    ],
+    "then": [
+      27
+    ],
+    "apply": [
+      28
+    ],
+    "a": [
+      29,
+      53,
+      56,
+      63,
+      66,
+      70,
+      109,
+      118,
+      132,
+      147,
+      254
+    ],
+    "fix,": [
+      30
+    ],
+    "but": [
+      31
+    ],
+    "this": [
+      32
+    ],
+    "end-of-pipeline": [
+      33
+    ],
+    "view": [
+      34
+    ],
+    "cannot": [
+      35
+    ],
+    "say": [
+      36
+    ],
+    "where": [
+      37,
+      123,
+      253
+    ],
+    "unfairness": [
+      39
+    ],
+    "originated": [
+      40
+    ],
+    "or": [
+      41
+    ],
+    "how": [
+      42
+    ],
+    "far": [
+      43
+    ],
+    "it": [
+      44,
+      162,
+      183
+    ],
+    "travelled.": [
+      45
+    ],
+    "We": [
+      46
+    ],
+    "introduce": [
+      47
+    ],
+    "Bias": [
+      48
+    ],
+    "Provenance": [
+      49
+    ],
+    "Propagation": [
+      51
+    ],
+    "(BPP),": [
+      52
+    ],
+    "measurement": [
+      54
+    ],
+    "framework—not": [
+      55
+    ],
+    "new": [
+      57
+    ],
+    "mitigation": [
+      58
+    ],
+    "method—that": [
+      59
+    ],
+    "treats": [
+      60
+    ],
+    "as": [
+      62,
+      233,
+      245
+    ],
+    "quantity": [
+      64
+    ],
+    "with": [
+      65,
+      131
+    ],
+    "source": [
+      67
+    ],
+    "stage": [
+      68,
+      199
+    ],
+    "path": [
+      71
+    ],
+    "through": [
+      72,
+      108
+    ],
+    "machine-learning": [
+      74
+    ],
+    "pipeline.": [
+      75
+    ],
+    "Five": [
+      76
+    ],
+    "stages": [
+      77
+    ],
+    "(sampling,": [
+      78
+    ],
+    "preprocessing,": [
+      79
+    ],
+    "feature": [
+      80,
+      187
+    ],
+    "engineering,": [
+      81
+    ],
+    "model": [
+      82
+    ],
+    "training,": [
+      83
+    ],
+    "evaluation)": [
+      84
+    ],
+    "plus": [
+      85
+    ],
+    "an": [
+      86,
+      246
+    ],
+    "exploratory": [
+      87
+    ],
+    "simulation": [
+      88
+    ],
+    "of": [
+      89,
+      156,
+      227
+    ],
+    "distribution": [
+      90
+    ],
+    "shift": [
+      91
+    ],
+    "placed": [
+      93
+    ],
+    "on": [
+      94,
+      146
+    ],
+    "one": [
+      95
+    ],
+    "threshold-independent": [
+      96
+    ],
+    "scale,": [
+      97
+    ],
+    "Absolute": [
+      99
+    ],
+    "Between-ROC": [
+      100
+    ],
+    "Area": [
+      101
+    ],
+    "(ABROCA),": [
+      102
+    ],
+    "by": [
+      103
+    ],
+    "projecting": [
+      104
+    ],
+    "each": [
+      105,
+      130
+    ],
+    "stage's": [
+      106
+    ],
+    "information": [
+      107
+    ],
+    "single": [
+      110
+    ],
+    "frozen": [
+      111
+    ],
+    "reference": [
+      112
+    ],
+    "model.": [
+      113
+    ],
+    "Two": [
+      114
+    ],
+    "derived": [
+      115
+    ],
+    "measures": [
+      116
+    ],
+    "form": [
+      117
+    ],
+    "bias": [
+      119
+    ],
+    "ledger": [
+      120
+    ],
+    "that": [
+      121,
+      153
+    ],
+    "records": [
+      122
+    ],
+    "debt": [
+      125
+    ],
+    "is": [
+      126,
+      158,
+      163,
+      184
+    ],
+    "incurred": [
+      127
+    ],
+    "repaid,": [
+      129
+    ],
+    "bootstrap": [
+      133
+    ],
+    "confidence": [
+      134
+    ],
+    "interval.": [
+      135
+    ],
+    "Applied": [
+      136
+    ],
+    "to": [
+      137
+    ],
+    "Open": [
+      139
+    ],
+    "University": [
+      140
+    ],
+    "Learning": [
+      141
+    ],
+    "Analytics": [
+      142
+    ],
+    "Dataset": [
+      143
+    ],
+    "(32,593": [
+      144
+    ],
+    "records)": [
+      145
+    ],
+    "leakage-free": [
+      148
+    ],
+    "early-warning": [
+      149
+    ],
+    "task,": [
+      150
+    ],
+    "BPP": [
+      151,
+      241
+    ],
+    "shows": [
+      152
+    ],
+    "origin": [
+      155,
+      198
+    ],
+    "attribute-specific:": [
+      159
+    ],
+    "for": [
+      160,
+      179
+    ],
+    "disability": [
+      161
+    ],
+    "present": [
+      164
+    ],
+    "raw": [
+      167
+    ],
+    "data": [
+      168
+    ],
+    "attenuates": [
+      170
+    ],
+    "once": [
+      171
+    ],
+    "early": [
+      172
+    ],
+    "assessment": [
+      173
+    ],
+    "registration": [
+      175
+    ],
+    "features": [
+      176
+    ],
+    "enter,": [
+      177
+    ],
+    "whereas": [
+      178
+    ],
+    "sex/gender": [
+      180
+    ],
+    "deprivation": [
+      182
+    ],
+    "introduced": [
+      185
+    ],
+    "at": [
+      186
+    ],
+    "engineering.": [
+      188
+    ],
+    "Several": [
+      189
+    ],
+    "pre-specified": [
+      190,
+      223
+    ],
+    "hypotheses": [
+      191
+    ],
+    "were": [
+      192,
+      219
+    ],
+    "not": [
+      193
+    ],
+    "supported—in": [
+      194
+    ],
+    "particular,": [
+      195
+    ],
+    "no": [
+      196
+    ],
+    "universal": [
+      197
+    ],
+    "exists": [
+      200
+    ],
+    "(Kendall's": [
+      201
+    ],
+    "W": [
+      202
+    ],
+    "=": [
+      203
+    ],
+    "0.11)—and,": [
+      204
+    ],
+    "tellingly,": [
+      205
+    ],
+    "output-only": [
+      206
+    ],
+    "post-processing": [
+      207
+    ],
+    "reduces": [
+      208
+    ],
+    "operating-point": [
+      210
+    ],
+    "gap": [
+      211
+    ],
+    "while": [
+      212
+    ],
+    "leaving": [
+      213
+    ],
+    "ABROCA": [
+      214
+    ],
+    "untouched.": [
+      215
+    ],
+    "All": [
+      216
+    ],
+    "observed": [
+      217
+    ],
+    "disparities": [
+      218
+    ],
+    "modest,": [
+      220
+    ],
+    "below": [
+      221
+    ],
+    "our": [
+      222
+    ],
+    "0.08": [
+      224
+    ],
+    "minimum": [
+      225
+    ],
+    "effect": [
+      226
+    ],
+    "interest,": [
+      228
+    ],
+    "so": [
+      229
+    ],
+    "we": [
+      230
+    ],
+    "frame": [
+      231
+    ],
+    "them": [
+      232
+    ],
+    "consistent,": [
+      234
+    ],
+    "stage-localised": [
+      235
+    ],
+    "patterns": [
+      236
+    ],
+    "rather": [
+      237
+    ],
+    "than": [
+      238
+    ],
+    "confirmed": [
+      239
+    ],
+    "effects.": [
+      240
+    ],
+    "reframes": [
+      242
+    ],
+    "auditing": [
+      244
+    ],
+    "accounting": [
+      247
+    ],
+    "problem": [
+      248
+    ],
+    "stages,": [
+      250
+    ],
+    "showing": [
+      251
+    ],
+    "practitioners": [
+      252
+    ],
+    "fix": [
+      255
+    ],
+    "will": [
+      256
+    ],
+    "actually": [
+      257
+    ],
+    "pay": [
+      258
+    ],
+    "off.": [
+      259
+    ]
+  },
+  "cited_by_api_url": "https://api.openalex.org/works?filter=cites:W7171729290",
+  "counts_by_year": [],
+  "updated_date": "2026-11-09T13:22:03.289127",
+  "created_date": "2026-07-30T00:00:00"
+}
