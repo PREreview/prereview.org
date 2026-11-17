@@ -1,3 +1,4 @@
+import { RateLimiter } from 'effect/persistence'
 import { Layer, pipe } from 'effect'
 import * as AuthorInvites from './Domain/AuthorInvites/index.ts'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
@@ -88,7 +89,7 @@ const ExternalApis = Layer.mergeAll(
   Layer.provide(Ghost.layer, CachingHttpClient.layer('10 seconds')),
   Layer.provide(JapanLinkCenter.layer, CachingHttpClient.layer('1 day')),
   Layer.provide(OpenAlex.layer, CachingHttpClient.layer('10 minutes')),
-  Layer.provide(Orcid.layer, CachingHttpClient.layer('1 day')),
+  pipe(Orcid.layer, Layer.provide(CachingHttpClient.layer('1 day')), Layer.provide(Orcid.layerRateLimitedHttpClient)),
   Layer.provide(Philsci.layer, CachingHttpClient.layer('1 day')),
   Slack.layer,
   Zenodo.layer,
@@ -105,6 +106,7 @@ const Infrastructure = pipe(
       EventDispatcher.EventDispatcherLayer,
       Uuid.layer,
       CachingHttpClient.layerRevalidationQueue,
+      Layer.provide(RateLimiter.layer, RateLimiter.layerStoreMemory),
       CookieSignature.layer,
     ),
   ),

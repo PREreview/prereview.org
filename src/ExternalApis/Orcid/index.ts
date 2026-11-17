@@ -1,7 +1,8 @@
-import type { HttpClient } from 'effect/http'
-import { Context, Effect, flow, Layer, Scope } from 'effect'
+import { HttpClient } from 'effect/http'
+import { RateLimiter } from 'effect/persistence'
+import { Array, Context, Effect, flow, Layer, Scope } from 'effect'
 import { GetPersonalDetails } from './GetPersonalDetails/index.ts'
-import type { OrcidApi } from './OrcidApi.ts'
+import { OrcidApi } from './OrcidApi.ts'
 
 export * from './OrcidApi.ts'
 
@@ -29,3 +30,28 @@ const make: Effect.Effect<typeof Orcid.Service, never, HttpClient.HttpClient | O
 })
 
 export const layer = Layer.effect(Orcid, make)
+
+const memberApiHosts = ['api.orcid.org', 'api.sandbox.orcid.org']
+
+const requestsPerSecond = (api: typeof OrcidApi.Service) =>
+  Array.contains(memberApiHosts, api.origin.hostname) ? 24 : 12
+
+export const layerRateLimitedHttpClient = Layer.effect(
+  HttpClient.HttpClient,
+  Effect.gen(function* () {
+    const httpClient = yield* HttpClient.HttpClient
+    const limiter = yield* RateLimiter.RateLimiter
+    const api = yield* OrcidApi
+
+    return httpClient.pipe(
+      HttpClient.withRateLimiter({
+        limiter,
+        key: 'orcid',
+        algorithm: 'token-bucket',
+        limit: requestsPerSecond(api),
+        window: '1 second',
+      }),
+      HttpClient.catchTag('RateLimiterError', Effect.die),
+    )
+  }),
+)
