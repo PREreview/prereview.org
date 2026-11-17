@@ -670,6 +670,9 @@ export const openAlexWork = ({
   fc.record(
     {
       title: fc.string(),
+      type: fc.string(),
+      publication_date: plainDate(),
+      primary_location: maybe(fc.record({ landing_page_url: maybe(url()) })),
       abstract_inverted_index: abstract_inverted_index ?? maybe(fc.dictionary(fc.string(), fc.array(fc.nat()))),
       authorships:
         authorships ??
@@ -679,7 +682,7 @@ export const openAlexWork = ({
             raw_author_name: name(),
           }),
         ),
-      language: languageCode(),
+      language: maybe(languageCode()),
       keywords: fc.array(
         fc.record({
           display_name: name(),

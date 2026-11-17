@@ -1,10 +1,18 @@
 import { Data, Schema } from 'effect'
-import { Name, OrcidId } from '../../types/index.ts'
+import { Name, OrcidId, Temporal } from '../../types/index.ts'
 
 export type Work = typeof WorkSchema.Type
 
 export const WorkSchema = Schema.Struct({
   title: Schema.String,
+  type: Schema.String,
+  publication_date: Temporal.PlainDateSchema,
+  language: Schema.OptionFromNullOr(Schema.String),
+  primary_location: Schema.OptionFromNullOr(
+    Schema.Struct({
+      landing_page_url: Schema.OptionFromNullOr(Schema.URLFromString),
+    }),
+  ),
   abstract_inverted_index: Schema.OptionFromNullOr(Schema.Record(Schema.String, Schema.Array(Schema.Int))),
   authorships: Schema.Array(
     Schema.Struct({
