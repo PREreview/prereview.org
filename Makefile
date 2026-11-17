@@ -19,6 +19,10 @@ update-incontext-locale: SHELL := /usr/bin/env bash
 update-incontext-locale:
 	source .env && crowdin download --language=lol --token=$${CROWDIN_PERSONAL_TOKEN}
 
+.PHONY: update-openalex
+update-openalex: .env node_modules
+	node --env-file=.env scripts/scrape-openalex.ts
+
 .cache/locales.stamp: node_modules $(shell find locales -type f)
 	echo 'building locales'
 	node scripts/intlc.ts
