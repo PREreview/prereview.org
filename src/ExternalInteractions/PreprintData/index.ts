@@ -1,10 +1,11 @@
 import { Array, Context, Effect, Layer, Match, pipe, Scope, Struct } from 'effect'
-import type { Crossref, Datacite, JapanLinkCenter, Philsci } from '../../ExternalApis/index.ts'
+import type { Crossref, Datacite, JapanLinkCenter, OpenAlex, Philsci } from '../../ExternalApis/index.ts'
 import * as Preprints from '../../Domain/Preprints/index.ts'
 import type * as LanguageDetection from '../LanguageDetection/index.ts'
 import { getPreprintFromCrossref, isCrossrefPreprintId } from './Crossref/index.ts'
 import { getPreprintFromDatacite, isDatacitePreprintId } from './Datacite/index.ts'
 import { getPreprintFromJapanLinkCenter, isJapanLinkCenterPreprintId } from './JapanLinkCenter/index.ts'
+import { getPreprintFromOpenAlex } from './OpenAlex/index.ts'
 import { getPreprintFromPhilsci } from './Philsci/index.ts'
 
 export const layer = Layer.effect(
@@ -15,6 +16,7 @@ export const layer = Layer.effect(
         | Crossref.Crossref
         | Datacite.Datacite
         | JapanLinkCenter.JapanLinkCenter
+        | OpenAlex.OpenAlex
         | Philsci.Philsci
         | LanguageDetection.LanguageDetection
       >(),
@@ -25,7 +27,17 @@ export const layer = Layer.effect(
       Match.type<Preprints.IndeterminatePreprintId>(),
       Match.tag('PhilsciPreprintId', getPreprintFromPhilsci),
       Match.when(isCrossrefPreprintId, getPreprintFromCrossref),
-      Match.when(isDatacitePreprintId, getPreprintFromDatacite),
+      Match.when(isDatacitePreprintId, id =>
+        pipe(
+          getPreprintFromDatacite(id),
+          Effect.catchTag('PreprintIsNotFound', error =>
+            pipe(
+              getPreprintFromOpenAlex(id),
+              Effect.catchTag('NotAPreprint', () => Effect.fail(error)),
+            ),
+          ),
+        ),
+      ),
       Match.when(isJapanLinkCenterPreprintId, getPreprintFromJapanLinkCenter),
       Match.tag('LifecycleJournalPreprintId', Effect.die),
       Match.exhaustive,
