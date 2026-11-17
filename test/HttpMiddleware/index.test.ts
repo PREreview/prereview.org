@@ -1,6 +1,6 @@
 import { HttpBody, HttpPlatform, HttpServerRequest, HttpServerResponse } from 'effect/http'
 import { describe, expect, it } from '../vitest.ts'
-import { ByteSize, Effect, FileSystem, Layer, Path, PlatformError } from 'effect'
+import { ByteSize, Effect, FileSystem, Layer, Path, PlatformError, Tracer } from 'effect'
 import path from 'node:path'
 import * as _ from '../../src/HttpMiddleware/index.ts'
 import { PublicUrl } from '../../src/public-url.ts'
@@ -104,6 +104,35 @@ describe('stopSuspiciousRequests', () => {
     }).pipe(Effect.provide([requestLayer(url)])),
   )
 })
+
+describe('addTraceIdHeader', () => {
+  it.effect('adds the trace ID', () =>
+    Effect.gen(function* () {
+      const span = yield* Effect.currentSpan
+      const actual = yield* _.addTraceIdHeader(app)
+
+      expect(actual.headers['x-trace-id']).toStrictEqual(span.traceId)
+    }).pipe(Effect.withSpan('test'), Effect.withTracer(exportingTracer), Effect.provide([requestLayer('/')])),
+  )
+
+  it.effect('leaves the response when there is no span', () =>
+    Effect.gen(function* () {
+      const actual = yield* _.addTraceIdHeader(app)
+
+      expect(actual.headers['x-trace-id']).toBeUndefined()
+    }).pipe(Effect.withTracer(exportingTracer), Effect.provide([requestLayer('/')])),
+  )
+
+  it.effect("leaves the response when traces aren't exported", () =>
+    Effect.gen(function* () {
+      const actual = yield* _.addTraceIdHeader(app)
+
+      expect(actual.headers['x-trace-id']).toBeUndefined()
+    }).pipe(Effect.withSpan('test'), Effect.provide([requestLayer('/')])),
+  )
+})
+
+const exportingTracer = Tracer.make({ span: options => new Tracer.NativeSpan(options) })
 
 const app = Effect.sync(() => HttpServerResponse.text('app'))
 

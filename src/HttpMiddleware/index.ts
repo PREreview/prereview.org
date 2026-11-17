@@ -1,4 +1,18 @@
-import { FileSystem, Path, Array, Cause, Duration, Effect, Layer, Option, pipe, Redacted, Schema, String } from 'effect'
+import {
+  FileSystem,
+  Path,
+  Array,
+  Cause,
+  Duration,
+  Effect,
+  Layer,
+  Option,
+  pipe,
+  Redacted,
+  Schema,
+  String,
+  Tracer,
+} from 'effect'
 import { Headers, HttpMethod, HttpMiddleware, HttpServerRequest, HttpServerResponse } from 'effect/http'
 import { AllowSiteCrawlers, FlashMessage, Locale, ScietyListToken, SessionStore } from '../Context.ts'
 import * as CookieSignature from '../CookieSignature.ts'
@@ -127,6 +141,24 @@ export const addXRobotsTagHeader = HttpMiddleware.make(app =>
     }
 
     return HttpServerResponse.setHeader(response, 'X-Robots-Tag', 'none, noarchive')
+  }),
+)
+
+export const addTraceIdHeader = HttpMiddleware.make(app =>
+  Effect.gen(function* () {
+    const response = yield* app
+    const tracer = yield* Effect.tracer
+
+    if (tracer === Tracer.nativeTracer) {
+      return response
+    }
+
+    const span = yield* Effect.option(Effect.currentSpan)
+
+    return Option.match(span, {
+      onNone: () => response,
+      onSome: span => HttpServerResponse.setHeader(response, 'X-Trace-Id', span.traceId),
+    })
   }),
 )
 

@@ -26,6 +26,7 @@ export const layer = pipe(
         HttpMiddleware.removeTrailingSlashes,
         HttpMiddleware.addSecurityHeaders,
         HttpMiddleware.addXRobotsTagHeader,
+        HttpMiddleware.addTraceIdHeader,
         HttpMiddleware.getFlashMessage,
         HttpMiddleware.getLoggedInUser,
         HttpMiddleware.getLocale,
