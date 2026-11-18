@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import { match } from 'ts-pattern'
+import { Match } from 'effect'
 import { html, plainText } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { ResearchInterests } from '../../../Domain/Prereviewers/index.ts'
@@ -34,9 +34,10 @@ export const ResearchInterestsVisibilityPage = ({
                   type="radio"
                   value="public"
                   aria-describedby="research-interests-visibility-tip-public"
-                  ${match(researchInterests.visibility)
-                    .with('public', () => 'checked')
-                    .otherwise(() => '')}
+                  ${Match.value(researchInterests.visibility).pipe(
+                    Match.when('public', () => 'checked'),
+                    Match.orElse(() => ''),
+                  )}
                 />
                 ${translate(locale, 'my-details', 'everyone')()}
               </label>
@@ -52,9 +53,10 @@ export const ResearchInterestsVisibilityPage = ({
                   type="radio"
                   value="restricted"
                   aria-describedby="research-interests-visibility-tip-restricted"
-                  ${match(researchInterests.visibility)
-                    .with('restricted', () => 'checked')
-                    .otherwise(() => '')}
+                  ${Match.value(researchInterests.visibility).pipe(
+                    Match.when('restricted', () => 'checked'),
+                    Match.orElse(() => ''),
+                  )}
                 />
                 ${translate(locale, 'my-details', 'onlyPrereview')()}
               </label>

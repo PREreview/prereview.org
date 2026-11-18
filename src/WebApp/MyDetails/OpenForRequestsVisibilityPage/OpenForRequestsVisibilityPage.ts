@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import { match } from 'ts-pattern'
+import { Match } from 'effect'
 import { html, plainText } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import type { IsOpenForRequests } from '../../../Domain/Prereviewers/index.ts'
@@ -34,9 +34,10 @@ export const OpenForRequestsVisibilityPage = ({
                   type="radio"
                   value="public"
                   aria-describedby="open-for-requests-visibility-tip-public"
-                  ${match(openForRequests.visibility)
-                    .with('public', () => 'checked')
-                    .otherwise(() => '')}
+                  ${Match.value(openForRequests.visibility).pipe(
+                    Match.when('public', () => 'checked'),
+                    Match.orElse(() => ''),
+                  )}
                 />
                 ${translate(locale, 'my-details', 'everyone')()}
               </label>
@@ -52,9 +53,10 @@ export const OpenForRequestsVisibilityPage = ({
                   type="radio"
                   value="restricted"
                   aria-describedby="open-for-requests-visibility-tip-restricted"
-                  ${match(openForRequests.visibility)
-                    .with('restricted', () => 'checked')
-                    .otherwise(() => '')}
+                  ${Match.value(openForRequests.visibility).pipe(
+                    Match.when('restricted', () => 'checked'),
+                    Match.orElse(() => ''),
+                  )}
                 />
                 ${translate(locale, 'my-details', 'onlyPrereview')()}
               </label>

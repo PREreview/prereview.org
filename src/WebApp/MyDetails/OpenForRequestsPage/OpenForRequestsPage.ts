@@ -1,6 +1,5 @@
-import { pipe, type Option } from 'effect'
+import { pipe, Match, type Option } from 'effect'
 import { format } from 'fp-ts-routing'
-import { match } from 'ts-pattern'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { IsOpenForRequests } from '../../../Domain/Prereviewers/index.ts'
@@ -71,9 +70,10 @@ export const OpenForRequestsPage = ({
                     type="radio"
                     value="yes"
                     id="open-for-requests-yes"
-                    ${match(openForRequests)
-                      .with({ value: { value: true } }, () => 'checked')
-                      .otherwise(() => '')}
+                    ${Match.value(openForRequests).pipe(
+                      Match.when({ value: { value: true } }, () => 'checked'),
+                      Match.orElse(() => ''),
+                    )}
                   />
                   ${translate(locale, 'my-details', 'yes')()}
                 </label>
@@ -84,9 +84,10 @@ export const OpenForRequestsPage = ({
                     name="openForRequests"
                     type="radio"
                     value="no"
-                    ${match(openForRequests)
-                      .with({ value: { value: false } }, () => 'checked')
-                      .otherwise(() => '')}
+                    ${Match.value(openForRequests).pipe(
+                      Match.when({ value: { value: false } }, () => 'checked'),
+                      Match.orElse(() => ''),
+                    )}
                   />
                   ${translate(locale, 'my-details', 'no')()}
                 </label>

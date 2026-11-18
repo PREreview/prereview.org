@@ -1,6 +1,5 @@
-import { pipe, type Option } from 'effect'
+import { Match, pipe, type Option } from 'effect'
 import { format } from 'fp-ts-routing'
-import { match } from 'ts-pattern'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { CareerStage } from '../../../Domain/Prereviewers/index.ts'
@@ -66,9 +65,10 @@ export const CareerStagePage = ({
                     type="radio"
                     value="early"
                     id="career-stage-early"
-                    ${match(careerStage)
-                      .with({ value: { value: 'early' } }, () => 'checked')
-                      .otherwise(() => '')}
+                    ${Match.value(careerStage).pipe(
+                      Match.when({ value: { value: 'early' } }, () => 'checked'),
+                      Match.orElse(() => ''),
+                    )}
                   />
                   ${translate(locale, 'my-details', 'early')()}
                 </label>
@@ -79,9 +79,10 @@ export const CareerStagePage = ({
                     name="careerStage"
                     type="radio"
                     value="mid"
-                    ${match(careerStage)
-                      .with({ value: { value: 'mid' } }, () => 'checked')
-                      .otherwise(() => '')}
+                    ${Match.value(careerStage).pipe(
+                      Match.when({ value: { value: 'mid' } }, () => 'checked'),
+                      Match.orElse(() => ''),
+                    )}
                   />
                   ${translate(locale, 'my-details', 'mid')()}
                 </label>
@@ -92,9 +93,10 @@ export const CareerStagePage = ({
                     name="careerStage"
                     type="radio"
                     value="late"
-                    ${match(careerStage)
-                      .with({ value: { value: 'late' } }, () => 'checked')
-                      .otherwise(() => '')}
+                    ${Match.value(careerStage).pipe(
+                      Match.when({ value: { value: 'late' } }, () => 'checked'),
+                      Match.orElse(() => ''),
+                    )}
                   />
                   ${translate(locale, 'my-details', 'late')()}
                 </label>

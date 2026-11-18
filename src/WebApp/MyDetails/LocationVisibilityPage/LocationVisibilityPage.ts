@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import { match } from 'ts-pattern'
+import { Match } from 'effect'
 import { html, plainText } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { Location } from '../../../Domain/Prereviewers/index.ts'
@@ -28,9 +28,10 @@ export const LocationVisibilityPage = ({ locale, location }: { locale: Supported
                   type="radio"
                   value="public"
                   aria-describedby="location-visibility-tip-public"
-                  ${match(location.visibility)
-                    .with('public', () => 'checked')
-                    .otherwise(() => '')}
+                  ${Match.value(location.visibility).pipe(
+                    Match.when('public', () => 'checked'),
+                    Match.orElse(() => ''),
+                  )}}
                 />
                 ${translate(locale, 'my-details', 'everyone')()}
               </label>
@@ -46,9 +47,10 @@ export const LocationVisibilityPage = ({ locale, location }: { locale: Supported
                   type="radio"
                   value="restricted"
                   aria-describedby="location-visibility-tip-restricted"
-                  ${match(location.visibility)
-                    .with('restricted', () => 'checked')
-                    .otherwise(() => '')}
+                  ${Match.value(location.visibility).pipe(
+                    Match.when('restricted', () => 'checked'),
+                    Match.orElse(() => ''),
+                  )}
                 />
                 ${translate(locale, 'my-details', 'onlyPrereview')()}
               </label>
