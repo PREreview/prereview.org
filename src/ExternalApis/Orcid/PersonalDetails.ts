@@ -13,6 +13,10 @@ export class PersonalDetails extends Schema.Class<PersonalDetails>('PersonalDeta
 
 export class PersonalDetailsAreNotFound extends Data.TaggedError('PersonalDetailsAreNotFound')<{ cause?: unknown }> {}
 
+export class PersonalDetailsAreInaccessible extends Data.TaggedError('PersonalDetailsAreInaccessible')<{
+  cause?: unknown
+}> {}
+
 export class PersonalDetailsAreUnavailable extends Data.TaggedError('PersonalDetailsAreUnavailable')<{
   cause?: unknown
 }> {}

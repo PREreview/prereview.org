@@ -77,12 +77,28 @@ describe('HandleResponse', () => {
     )
   })
 
+  describe('with a 409 status code', () => {
+    it.effect.prop(
+      'returns an error',
+      [fc.httpClientResponse({ status: fc.constant(StatusCodes.Conflict) })],
+      ([response]) =>
+        Effect.gen(function* () {
+          const actual = yield* Effect.flip(_.HandleResponse(response))
+
+          expect(actual._tag).toStrictEqual('PersonalDetailsAreInaccessible')
+          expect(actual.cause).toMatchObject({ _tag: 'HttpClientError', reason: { _tag: 'StatusCodeError', response } })
+        }),
+    )
+  })
+
   describe('with another status code', () => {
     it.effect.prop(
       'returns an error',
       [
         fc.httpClientResponse({
-          status: fc.statusCode().filter(status => ![StatusCodes.OK, StatusCodes.NotFound].includes(status)),
+          status: fc
+            .statusCode()
+            .filter(status => ![StatusCodes.OK, StatusCodes.NotFound, StatusCodes.Conflict].includes(status)),
         }),
       ],
       ([response]) =>
