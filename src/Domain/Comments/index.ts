@@ -4,10 +4,11 @@ import * as Commands from '../../Commands.ts'
 import type { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
 import * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
-import { UnableToQuery } from '../../Queries.ts'
+import { makeOnDemandQuery, UnableToQuery } from '../../Queries.ts'
 import * as ReviewPage from '../../WebApp/review-page/index.ts'
 import {
   GetComment,
+  GetCommentIdForDoi,
   GetNextExpectedCommandForUser,
   GetNextExpectedCommandForUserOnAComment,
   HandleCommentCommand,
@@ -19,6 +20,7 @@ import {
 import { DecideComment } from './Decide.ts'
 import { CommentEventTypes, type CommentEvent } from './Events.ts'
 import { EvolveComment } from './Evolve.ts'
+import { GetCommentIdForDoi as GetCommentIdForDoiQuery } from './GetCommentIdForDoi.ts'
 import { ImportPublicationDateForComment as ImportPublicationDateForCommentCommand } from './ImportPublicationDateForComment.ts'
 import * as Queries from './Queries.ts'
 import * as React from './React.ts'
@@ -148,6 +150,7 @@ export const layer = Layer.mergeAll(
   Layer.effect(GetNextExpectedCommandForUser, makeGetNextExpectedCommandForUser),
   Layer.effect(GetNextExpectedCommandForUserOnAComment, makeGetNextExpectedCommandForUserOnAComment),
   Layer.effect(GetComment, makeGetComment),
+  Layer.effect(GetCommentIdForDoi, makeOnDemandQuery(GetCommentIdForDoiQuery)),
   Layer.effect(ImportPublicationDateForComment, Commands.makeCommand(ImportPublicationDateForCommentCommand)),
 )
 
