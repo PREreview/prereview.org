@@ -6,7 +6,7 @@ import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../htm
 import { languageAttributesFor } from '../../Locales.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import * as Routes from '../../routes.ts'
-import { preprintReviewsMatch, profileMatch, reviewMatch } from '../../routes.ts'
+import { preprintReviewsMatch, profileMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { toUrl } from '../../types/Doi.ts'
 import { ProfileId } from '../../types/index.ts'
@@ -256,7 +256,7 @@ export const createPreprintReviewPage = ({
       </article>
     `,
     skipToLabel: 'prereview',
-    canonical: format(reviewMatch.formatter, { id }),
+    canonical: Routes.Review.href({ id }),
   })
 }
 

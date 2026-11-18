@@ -21,7 +21,7 @@ export const CreateEmail: (details: {
   requester: Requester
   review: Review
 }) => Effect.Effect<Nodemailer.Email, never, PublicUrl> = Effect.fnUntraced(function* ({ requester, review }) {
-  const reviewUrl = yield* forRoute(Routes.reviewMatch.formatter, { id: review.id })
+  const reviewUrl = yield* forRoute(Routes.Review, { id: review.id })
 
   return {
     from: { name: 'PREreview', address: EmailAddress.EmailAddress('help@prereview.org') },

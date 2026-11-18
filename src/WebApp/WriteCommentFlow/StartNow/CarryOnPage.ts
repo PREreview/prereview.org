@@ -1,4 +1,3 @@
-import { format } from 'fp-ts-routing'
 import { html, plainText } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
@@ -21,7 +20,7 @@ export const CarryOnPage = ({
   PageResponse({
     title: plainText(translate(locale, 'write-comment-flow', 'writeCommentTitle')()),
     nav: html`
-      <a href="${format(Routes.reviewMatch.formatter, { id: prereview.id })}" class="back"
+      <a href="${Routes.Review.href({ id: prereview.id })}" class="back"
         >${translate(locale, 'write-comment-flow', 'backToPrereview')()}</a
       >
     `,

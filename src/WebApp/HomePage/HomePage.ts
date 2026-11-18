@@ -10,7 +10,7 @@ import * as Prereviewers from '../../Domain/Prereviewers/index.ts'
 import type * as Prereviews from '../../Domain/Prereviews/index.ts'
 import type * as ReviewRequests from '../../Domain/ReviewRequests/index.ts'
 import * as Routes from '../../routes.ts'
-import { reviewAPreprintMatch, reviewMatch, reviewsMatch, writeReviewMatch } from '../../routes.ts'
+import { reviewAPreprintMatch, reviewsMatch, writeReviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import { getSubfieldName } from '../../types/subfield.ts'
@@ -137,7 +137,7 @@ export const createPage = ({
                           })}
                         </h3>
 
-                        <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
+                        <a href="${Routes.Review.href({ id: prereview.id })}">
                           ${
                             prereview.club
                               ? translate(

@@ -1,5 +1,4 @@
 import { Array, Boolean, flow, Match, pipe } from 'effect'
-import { format } from 'fp-ts-routing'
 import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
@@ -22,7 +21,7 @@ export const WriteCommentPage = ({
   return PageResponse({
     title: plainText(t('write-comment-flow', 'writeCommentTitle')()),
     nav: html`
-      <a href="${format(Routes.reviewMatch.formatter, { id: prereview.id })}" class="back"
+      <a href="${Routes.Review.href({ id: prereview.id })}" class="back"
         >${t('write-comment-flow', 'backToPrereview')()}</a
       >
     `,

@@ -1,5 +1,4 @@
 import { absurd, Result, Match, pipe } from 'effect'
-import { format } from 'fp-ts-routing'
 import { type Html, html, plainText } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -29,7 +28,7 @@ export const EnterCommentPage = ({
       plainText,
     ),
     nav: html`
-      <a href="${format(Routes.reviewMatch.formatter, { id: prereviewId })}" class="back"
+      <a href="${Routes.Review.href({ id: prereviewId })}" class="back"
         >${translate(locale, 'write-comment-flow', 'backToPrereview')()}</a
       >
     `,

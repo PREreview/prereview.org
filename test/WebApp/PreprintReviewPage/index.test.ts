@@ -3,10 +3,9 @@ import { Effect, Layer } from 'effect'
 import { Locale } from '../../../src/Context.ts'
 import { Comments, CommentsAreUnavailable } from '../../../src/Domain/Comments/index.ts'
 import * as PreprintReviews from '../../../src/Domain/PreprintReviews/index.ts'
-import { reviewMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
+import * as Routes from '../../../src/routes.ts'
 import * as _ from '../../../src/WebApp/PreprintReviewPage/index.ts'
-import { format } from 'fp-ts-routing'
 import * as fc from '../../fc.ts'
 
 const publishedComment = fc.record({
@@ -31,7 +30,7 @@ describe('PreprintReviewPage', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          canonical: format(reviewMatch.formatter, { id }),
+          canonical: Routes.Review.href({ id }),
           status: StatusCodes.OK,
           title: expect.anything(),
           description: expect.anything(),

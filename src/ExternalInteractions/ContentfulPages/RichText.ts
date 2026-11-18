@@ -15,7 +15,6 @@ import {
   type Types,
   Filter,
 } from 'effect'
-import { format } from 'fp-ts-routing'
 import slugify from 'slugify'
 import { Locale } from '../../Context.ts'
 import * as Datasets from '../../Domain/Datasets/index.ts'
@@ -42,7 +41,6 @@ import * as Preprints from '../../Domain/Preprints/index.ts'
 import * as Prereviewers from '../../Domain/Prereviewers/index.ts'
 import * as Prereviews from '../../Domain/Prereviews/index.ts'
 import * as Routes from '../../routes.ts'
-import { reviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import { Slug } from '../../types/Slug.ts'
@@ -183,7 +181,7 @@ const EmbeddedEntryToHtml = Match.typeTags<
             RecentPreprintPrereview: prereview => html`
               <li>
                 <article>
-                  <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
+                  <a href="${Routes.Review.href({ id: prereview.id })}">
                     ${
                       prereview.club
                         ? translate(

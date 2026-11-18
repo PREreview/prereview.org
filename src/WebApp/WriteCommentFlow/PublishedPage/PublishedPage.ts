@@ -1,4 +1,3 @@
-import { format } from 'fp-ts-routing'
 import { html, plainText } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
@@ -35,7 +34,7 @@ export const PublishedPage = ({
 
       <p>${translate(locale, 'write-comment-flow', 'publishedSeeShortlyMessage')()}</p>
 
-      <a href="${format(Routes.reviewMatch.formatter, { id: prereviewId })}" class="button"
+      <a href="${Routes.Review.href({ id: prereviewId })}" class="button"
         >${translate(locale, 'write-comment-flow', 'backToPrereview')()}</a
       >
     `,

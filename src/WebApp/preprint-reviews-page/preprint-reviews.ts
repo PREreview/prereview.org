@@ -9,7 +9,7 @@ import type { PreprintPrereview, RapidPrereview } from '../../Domain/PreprintRev
 import * as Preprints from '../../Domain/Preprints/index.ts'
 import * as Prereviewers from '../../Domain/Prereviewers/index.ts'
 import * as Routes from '../../routes.ts'
-import { preprintReviewsMatch, profileMatch, reviewMatch, writeReviewMatch } from '../../routes.ts'
+import { preprintReviewsMatch, profileMatch, writeReviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { isDoi, toUrl } from '../../types/Doi.ts'
 import { ProfileId } from '../../types/index.ts'
@@ -201,7 +201,7 @@ function showReview(review: PreprintPrereview, locale: SupportedLocale) {
           )}
         </div>
 
-        <a href="${format(reviewMatch.formatter, { id: review.id })}" class="more">
+        <a href="${Routes.Review.href({ id: review.id })}" class="more">
           ${match([countAuthors(review), review.club])
             .with([1, P.nonNullable], ([, club]) =>
               t('readPrereviewByOneAuthorInClub')({

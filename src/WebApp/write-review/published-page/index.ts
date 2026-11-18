@@ -13,7 +13,8 @@ import {
 } from '../../../Domain/Preprints/index.ts'
 import { toUrl, type PublicUrlEnv } from '../../../public-url.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
-import { reviewMatch, writeReviewMatch } from '../../../routes.ts'
+import { writeReviewMatch } from '../../../routes.ts'
+import * as Routes from '../../../routes.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
 import { RedirectResponse, type Response } from '../../Response/index.ts'
@@ -72,6 +73,6 @@ const showSuccessMessage = ({
 }) =>
   pipe(
     R.of({ review, preprint, user, locale }),
-    R.apS('url', toUrl(reviewMatch.formatter, { id: review.id })),
+    R.apS('url', toUrl(Routes.Review, { id: review.id })),
     R.map(publishedPage),
   )

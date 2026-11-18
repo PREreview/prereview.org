@@ -55,6 +55,7 @@ import type { NewPrereview } from '../../Domain/PreprintReviews/index.ts'
 import * as PreprintReviewTypes from '../../Domain/PreprintReviews/GetPublishedPreprintReview/Types.ts' // oxlint-disable-line module-boundaries/use-index
 import * as PreprintReview from '../../Domain/PreprintReviews/Prereview.ts' // oxlint-disable-line module-boundaries/use-index
 import * as Preprints from '../../Domain/Preprints/index.ts'
+import * as Routes from '../../routes.ts'
 import {
   type IndeterminatePreprintId,
   type NotAPreprint,
@@ -69,7 +70,6 @@ import type * as Prereviewers from '../../Domain/Prereviewers/index.ts'
 import * as Prereview from '../../Domain/Prereviews/Prereview.ts' // oxlint-disable-line module-boundaries/use-index
 import { type PublicUrlEnv, toUrl } from '../../public-url.ts'
 import { EffectToFpts, FptsToEffect } from '../../RefactoringUtilities/index.ts'
-import { reviewMatch } from '../../routes.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { type Doi, isDoi } from '../../types/Doi.ts'
 import { DomainIdFromOpenAlexUrlSchema } from '../../types/domain.ts'
@@ -722,7 +722,7 @@ export const createRecordOnZenodo: (
 
 function createDepositMetadataForComment(comment: CommentToPublish) {
   return pipe(
-    toUrl(reviewMatch.formatter, { id: comment.prereview.id }),
+    toUrl(Routes.Review, { id: comment.prereview.id }),
     R.map(
       url =>
         ({
@@ -764,7 +764,7 @@ function createDepositMetadata(
   requested: boolean,
 ) {
   return pipe(
-    toUrl(reviewMatch.formatter, { id: deposition.id }),
+    toUrl(Routes.Review, { id: deposition.id }),
     R.map(
       url =>
         ({

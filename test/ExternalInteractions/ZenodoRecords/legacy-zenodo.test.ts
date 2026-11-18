@@ -3,7 +3,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { SystemClock } from 'clock-ts'
 import { Array, Effect, Layer, Match, Option, pipe, String } from 'effect'
 import fetchMock from 'fetch-mock'
-import { format } from 'fp-ts-routing'
+import * as Routes from '../../../src/routes.ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as IO from 'fp-ts/lib/IO.js'
 import * as T from 'fp-ts/lib/Task.js'
@@ -31,7 +31,6 @@ import * as PreprintReviews from '../../../src/Domain/PreprintReviews/index.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Domain/Preprints/index.ts'
 import type * as Prereviewers from '../../../src/Domain/Prereviewers/index.ts'
 import * as Prereviews from '../../../src/Domain/Prereviews/index.ts'
-import { reviewMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { Doi } from '../../../src/types/Doi.ts'
 import { OrcidId, Uuid } from '../../../src/types/index.ts'
@@ -4699,7 +4698,7 @@ describe('createCommentOnZenodo', () => {
           state: 'unsubmitted',
           submitted: false,
         }
-        const reviewUrl = `${publicUrl.href.slice(0, -1)}${format(reviewMatch.formatter, { id: comment.prereview.id })}`
+        const reviewUrl = `${publicUrl.href.slice(0, -1)}${Routes.Review.href({ id: comment.prereview.id })}`
         const fetch = fetchMock
           .createInstance()
           .postOnce({
@@ -5068,7 +5067,7 @@ describe('createRecordOnZenodo', () => {
             state: 'done',
             submitted: true,
           }
-          const reviewUrl = `${publicUrl.href.slice(0, -1)}${format(reviewMatch.formatter, { id: 1 })}`
+          const reviewUrl = `${publicUrl.href.slice(0, -1)}${Routes.Review.href({ id: 1 })}`
 
           const actual = yield* Effect.promise(
             _.createRecordOnZenodo(newPrereview)({
@@ -5258,7 +5257,7 @@ ${newPrereview.review.toString()}`,
             state: 'done',
             submitted: true,
           }
-          const reviewUrl = `${publicUrl.href.slice(0, -1)}${format(reviewMatch.formatter, { id: 1 })}`
+          const reviewUrl = `${publicUrl.href.slice(0, -1)}${Routes.Review.href({ id: 1 })}`
 
           const actual = yield* Effect.promise(
             _.createRecordOnZenodo(newPrereview)({
@@ -5439,7 +5438,7 @@ ${newPrereview.review.toString()}`,
             state: 'done',
             submitted: true,
           }
-          const reviewUrl = `${publicUrl.href.slice(0, -1)}${format(reviewMatch.formatter, { id: 1 })}`
+          const reviewUrl = `${publicUrl.href.slice(0, -1)}${Routes.Review.href({ id: 1 })}`
 
           const actual = yield* Effect.promise(
             _.createRecordOnZenodo(newPrereview)({
@@ -5611,7 +5610,7 @@ ${newPrereview.review.toString()}`,
             state: 'done',
             submitted: true,
           }
-          const reviewUrl = `${publicUrl.href.slice(0, -1)}${format(reviewMatch.formatter, { id: 1 })}`
+          const reviewUrl = `${publicUrl.href.slice(0, -1)}${Routes.Review.href({ id: 1 })}`
 
           const actual = yield* Effect.promise(
             _.createRecordOnZenodo(newPrereview)({

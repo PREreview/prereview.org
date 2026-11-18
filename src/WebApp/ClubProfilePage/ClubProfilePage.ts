@@ -10,7 +10,7 @@ import * as Preprints from '../../Domain/Preprints/index.ts'
 import * as Prereviewers from '../../Domain/Prereviewers/index.ts'
 import type * as Prereviews from '../../Domain/Prereviews/index.ts'
 import * as Routes from '../../routes.ts'
-import { profileMatch, reviewMatch } from '../../routes.ts'
+import { profileMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import { ProfileId } from '../../types/index.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
@@ -142,7 +142,7 @@ export function createPage({
                 RecentPreprintPrereview: prereview => html`
                   <li>
                     <article>
-                      <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
+                      <a href="${Routes.Review.href({ id: prereview.id })}">
                         ${translate(
                           locale,
                           'reviews-list',

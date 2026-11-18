@@ -60,7 +60,7 @@ export const NotifyPreprintServer = Effect.fn('PreprintReviews.notifyPreprintSer
       target: target.value,
       context,
       object: {
-        id: yield* PublicUrl.forRoute(Routes.reviewMatch.formatter, { id: prereview.id }),
+        id: yield* PublicUrl.forRoute(Routes.Review, { id: prereview.id }),
         'ietf:cite-as': prereview.doi,
         type: ['Page', 'sorg:Review'],
       },

@@ -10,7 +10,7 @@ export const NotifyCommunitySlack = Effect.fn('PreprintReviews.notifyCommunitySl
     const prereview = yield* PreprintReviews.getPreprintReview(reviewId)
 
     const author = Array.headNonEmpty(prereview.authors.named).name
-    const url = yield* PublicUrl.forRoute(Routes.reviewMatch.formatter, { id: prereview.id })
+    const url = yield* PublicUrl.forRoute(Routes.Review, { id: prereview.id })
 
     yield* CommunitySlack.sharePreprintReview({ author, url })
   },

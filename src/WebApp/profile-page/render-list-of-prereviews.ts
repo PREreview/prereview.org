@@ -1,5 +1,4 @@
 import { Array, flow, Match, pipe, Struct } from 'effect'
-import { format } from 'fp-ts-routing'
 import * as Datasets from '../../Domain/Datasets/index.ts'
 import { type Html, html, rawHtml } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
@@ -8,7 +7,6 @@ import * as Preprints from '../../Domain/Preprints/index.ts'
 import * as Prereviewers from '../../Domain/Prereviewers/index.ts'
 import type { RecentDatasetPrereview } from '../../Domain/Prereviews/index.ts'
 import * as Routes from '../../routes.ts'
-import { reviewMatch } from '../../routes.ts'
 import { renderDate } from '../../time.ts'
 import type { Name } from '../../types/Name.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
@@ -37,7 +35,7 @@ export function renderListOfPrereviews(prereviews: Prereviews, name: Name | unde
             RecentPreprintPrereview: prereview => html`
               <li>
                 <article>
-                  <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
+                  <a href="${Routes.Review.href({ id: prereview.id })}">
                     ${
                       prereview.club
                         ? translate(

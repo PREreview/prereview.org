@@ -13,8 +13,8 @@ import {
   authorInviteDeclineMatch,
   authorInviteMatch,
   authorInvitePublishedMatch,
-  reviewMatch,
 } from '../../routes.ts'
+import * as Routes from '../../routes.ts'
 import type { Doi } from '../../types/Doi.ts'
 import type { Uuid } from '../../types/Uuid.ts'
 import type { User } from '../../user.ts'
@@ -96,7 +96,7 @@ function publishedPage({
   locale: SupportedLocale
 }) {
   const t = translate(locale, 'author-invite-flow')
-  const prereviewLink = (text: Html) => html`<a href="${format(reviewMatch.formatter, { id: reviewId })}">${text}</a>`
+  const prereviewLink = (text: Html) => html`<a href="${Routes.Review.href({ id: reviewId })}">${text}</a>`
   return StreamlinePageResponse({
     title: pipe(t('nameAdded')(), plainText),
     main: html`
