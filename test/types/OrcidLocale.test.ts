@@ -51,7 +51,7 @@ describe('parse', () => {
 
   it.prop(
     'with a non-ORCID locale',
-    [fc.string({ minLength: 3 })],
+    [fc.string().filter(isNotAnOrcidLanguage)],
     ([input]) => {
       const actual = _.parse(input)
 
@@ -64,3 +64,16 @@ describe('parse', () => {
     },
   )
 })
+
+const orcidLanguages = new Set(_.OrcidLocales.map(locale => locale.split('_')[0]))
+
+const languageOf = (value: string) => {
+  try {
+    return new Intl.Locale(value).language
+  } catch {
+    return undefined
+  }
+}
+
+const isNotAnOrcidLanguage = (value: string) =>
+  !orcidLanguages.has(value.split(/[-_]/)[0]?.toLowerCase() ?? '') && !orcidLanguages.has(languageOf(value) ?? '')
