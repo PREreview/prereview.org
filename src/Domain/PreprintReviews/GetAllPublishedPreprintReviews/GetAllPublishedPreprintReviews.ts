@@ -1,8 +1,13 @@
-import { Effect, pipe } from 'effect'
+import { Array, Effect, Option, pipe, Predicate } from 'effect'
 import type * as EventDispatcher from '../../../EventDispatcher.ts'
+import * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../../Queries.ts'
 import { WasPrereviewRemoved } from '../WasPrereviewRemoved.ts'
-import type { GetPublishedPreprintReview, PublishedPreprintReview } from '../GetPublishedPreprintReview/index.ts'
+import type {
+  GetPublishedPreprintReview,
+  PrereviewIsUnavailable,
+  PublishedPreprintReview,
+} from '../GetPublishedPreprintReview/index.ts'
 import { ListAllPreprintReviewIds } from './ListAllPreprintReviewIds.ts'
 import { PrereviewsAreUnavailable } from './Types.ts'
 
@@ -20,7 +25,27 @@ export const GetAllPublishedPreprintReviews = (
 
     return pipe(
       listAllPreprintReviewIds(),
-      Effect.andThen(Effect.forEach(getPublishedPreprintReview, { concurrency: 10 })),
+      Effect.andThen(
+        Effect.forEach(
+          id =>
+            pipe(
+              getPublishedPreprintReview(id),
+              Effect.map(Option.some),
+              Effect.catchIf(
+                error => Predicate.isTagged(error, 'PrereviewIsUnavailable') && isNotAPreprint(error),
+                error =>
+                  Effect.as(
+                    Effect.logWarning('Skipping a PREreview of something that is not a preprint').pipe(
+                      Effect.annotateLogs({ id, error }),
+                    ),
+                    Option.none(),
+                  ),
+              ),
+            ),
+          { concurrency: 10 },
+        ),
+      ),
+      Effect.map(Array.getSomes),
       Effect.catchTag(
         ['PrereviewIsNotFound', 'PrereviewIsUnavailable', 'PrereviewWasRemoved'],
         error => new PrereviewsAreUnavailable({ cause: error }),
@@ -28,3 +53,6 @@ export const GetAllPublishedPreprintReviews = (
       Effect.withSpan('PreprintReviews.getAllPublishedPreprintReviews'),
     )
   })
+
+const isNotAPreprint = (error: PrereviewIsUnavailable): boolean =>
+  error.cause instanceof Preprints.PreprintIsNotFound && error.cause.cause instanceof Preprints.NotAPreprint
