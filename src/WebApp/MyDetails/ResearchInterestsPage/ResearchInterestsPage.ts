@@ -1,6 +1,5 @@
-import { Option } from 'effect'
+import { flow, Option, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
-import { P, match } from 'ts-pattern'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { ResearchInterests } from '../../../Domain/Prereviewers/index.ts'
@@ -18,10 +17,10 @@ export const ResearchInterestsPage = (researchInterests: Option.Option<ResearchI
         <h1><label for="research-interests">${translate(locale, 'my-details', 'whatResearchInterests')()}</label></h1>
 
         <textarea name="researchInterests" id="research-interests" placeholder=" " dir="auto" rows="5">
-${match(researchInterests)
-  .with({ value: { value: P.select() } }, rawHtml)
-  .when(Option.isNone, () => '')
-  .exhaustive()}</textarea>
+${Option.match(researchInterests, {
+  onSome: flow(Struct.get('value'), rawHtml),
+  onNone: () => '',
+})}</textarea>
 
         <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
       </form>

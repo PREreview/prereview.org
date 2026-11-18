@@ -4,7 +4,7 @@ import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as D from 'io-ts/lib/Decoder.js'
-import { P, match } from 'ts-pattern'
+import { match } from 'ts-pattern'
 import { ContactEmailAddresses } from '../../Domain/ContactEmailAddresses/index.ts'
 import { getInput, invalidE, missingE } from '../../form.ts'
 import type { EnvFor } from '../../Fpts.ts'
@@ -73,10 +73,10 @@ const handleChangeContactEmailAddressForm = ({
   pipe(
     RTE.fromEither(EmailAddressFieldD.decode(body)),
     RTE.orElseW(error =>
-      match(getInput('emailAddress')(error))
-        .with({ value: P.select() }, flow(invalidE, RTE.left))
-        .when(Option.isNone, () => RTE.right(undefined))
-        .exhaustive(),
+      Option.match(getInput('emailAddress')(error), {
+        onSome: flow(invalidE, RTE.left),
+        onNone: () => RTE.right(undefined),
+      }),
     ),
     RTE.matchEW(
       state => RT.of(createFormPage({ emailAddress: E.left(state) }, locale)),

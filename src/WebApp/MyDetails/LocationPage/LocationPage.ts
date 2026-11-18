@@ -1,6 +1,5 @@
 import { Option } from 'effect'
 import { format } from 'fp-ts-routing'
-import { P, match } from 'ts-pattern'
 import { html, plainText } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import type { Location } from '../../../Domain/Prereviewers/index.ts'
@@ -23,10 +22,10 @@ export const LocationPage = (location: Option.Option<Location>, locale: Supporte
           type="text"
           placeholder=" "
           dir="auto"
-          ${match(location)
-            .with({ value: { value: P.select() } }, location => html`value="${location}"`)
-            .when(Option.isNone, () => '')
-            .exhaustive()}
+          ${Option.match(location, {
+            onSome: location => html`value="${location.value}"`,
+            onNone: () => '',
+          })}
         />
 
         <button>${translate(locale, 'forms', 'saveContinueButton')()}</button>
