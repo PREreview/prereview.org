@@ -9,11 +9,6 @@ import { EvolveComment } from './Evolve.ts'
 import * as ExpectedCommand from './ExpectedCommand.ts'
 import { CommentNotStarted, type CommentState } from './State.ts'
 
-export const GetPrereviewId = (eventsForComment: ReadonlyArray<CommentEvent>): Option.Option<number> =>
-  Array.findFirst(eventsForComment, event =>
-    event._tag === 'CommentWasStarted' ? Option.some(event.prereviewId) : Option.none(),
-  )
-
 export const GetNextExpectedCommandForUser =
   (events: ReadonlyArray<CommentEvent>) =>
   ({

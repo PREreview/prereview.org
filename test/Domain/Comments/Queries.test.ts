@@ -9,29 +9,6 @@ import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Uuid } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 
-describe('GetPrereviewId', () => {
-  const commentId = Uuid.Uuid('20d4a551-54fe-48e0-890b-3e08a98f54a2')
-  const authorId = OrcidId('0000-0002-1825-0097')
-  const prereviewId = 123
-  const commentWasStarted = new Comments.CommentWasStarted({ commentId, authorId, prereviewId })
-
-  describe('when a comment flow exists', () => {
-    test('returns the PREreview ID', () => {
-      const result = _.GetPrereviewId([commentWasStarted])
-
-      expect(result).toStrictEqual(Option.some(prereviewId))
-    })
-  })
-
-  describe('when the comment flow does not exist', () => {
-    test('returns none', () => {
-      const result = _.GetPrereviewId([])
-
-      expect(result).toStrictEqual(Option.none())
-    })
-  })
-})
-
 describe('GetNextExpectedCommandForUser', () => {
   const authorId = OrcidId('0000-0002-1825-0097')
   const prereviewId = 123
