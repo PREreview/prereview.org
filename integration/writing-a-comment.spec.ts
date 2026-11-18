@@ -119,6 +119,21 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishACommen
         await expect(page.getByRole('heading', { level: 1 })).toHaveText('Comment published')
       }).toPass()
     }
+
+    await page.getByRole('link', { name: 'Back to PREreview' }).click()
+
+    const comments = page.getByRole('article', { name: 'Comments', exact: true })
+
+    await expect(comments).toContainText('Some title')
+    if (javaScriptEnabled) {
+      await expect(comments).toContainText('Lorem ipsum dolor sit “amet”, consectetur adipiscing elit.')
+    } else {
+      await expect(comments).toContainText('Lorem ipsum dolor sit "amet", consectetur adipiscing elit.')
+    }
+    await expect(comments).toContainText('Josiah Carberry')
+    await expect(comments).toContainText(
+      'Competing interests The author of this comment declares that they have no competing interests.',
+    )
   },
 )
 
