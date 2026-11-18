@@ -1,4 +1,4 @@
-import { Context, Data, Effect, Layer, Option, pipe, Schema } from 'effect'
+import { Context, Data, Effect, flow, Layer, Option, pipe, Schema } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
 import * as RedisKeyValueStore from '../../RedisKeyValueStore.ts'
 import { NonEmptyString, type OrcidId } from '../../types/index.ts'
@@ -31,18 +31,20 @@ export const layer = Layer.provide(
 
 export const layerInMemory = Layer.provide(layerKeyValueStore, Layer.fresh(KeyValueStore.layerMemory))
 
-export const get = Effect.fn('LanguagesStore.get')(function* (orcid: OrcidId.OrcidId) {
-  const store = yield* Store
+export const get = flow(
+  Effect.fn('LanguagesStore.get')(function* (orcid: OrcidId.OrcidId) {
+    const store = yield* Store
 
-  return yield* pipe(
-    store.get(orcid),
-    Effect.flatMap(Option.match({ onNone: () => Effect.fail(new LanguagesNotFound()), onSome: Effect.succeed })),
-    Effect.catchTags({
-      SchemaError: () => new LanguagesNotFound(),
-      KeyValueStoreError: unavailable,
-    }),
-  )
-})
+    return yield* pipe(
+      store.get(orcid),
+      Effect.catchTags({
+        SchemaError: () => new LanguagesNotFound(),
+        KeyValueStoreError: unavailable,
+      }),
+    )
+  }),
+  Effect.flatMap(Option.match({ onNone: () => Effect.fail(new LanguagesNotFound()), onSome: Effect.succeed })),
+)
 
 export const save = Effect.fn('LanguagesStore.save')(function* (orcid: OrcidId.OrcidId, languages: Languages) {
   const store = yield* Store

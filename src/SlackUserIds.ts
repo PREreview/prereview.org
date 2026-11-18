@@ -1,4 +1,4 @@
-import { Context, Effect, Layer, Option, pipe, Schema } from 'effect'
+import { Context, Effect, flow, Layer, Option, pipe, Schema } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
 import { Slack } from './ExternalApis/index.ts'
 import * as RedisKeyValueStore from './RedisKeyValueStore.ts'
@@ -29,18 +29,20 @@ export const layer = Layer.provide(
 
 export const layerInMemory = Layer.provide(layerKeyValueStore, Layer.fresh(KeyValueStore.layerMemory))
 
-export const get = Effect.fn('SlackUserIds.get')(function* (orcid: OrcidId.OrcidId) {
-  const store = yield* Store
+export const get = flow(
+  Effect.fn('SlackUserIds.get')(function* (orcid: OrcidId.OrcidId) {
+    const store = yield* Store
 
-  return yield* pipe(
-    store.get(orcid),
-    Effect.flatMap(Option.match({ onNone: () => Effect.fail('not-found' as const), onSome: Effect.succeed })),
-    Effect.catchTags({
-      SchemaError: () => Effect.fail('not-found' as const),
-      KeyValueStoreError: unavailable,
-    }),
-  )
-})
+    return yield* pipe(
+      store.get(orcid),
+      Effect.catchTags({
+        SchemaError: () => Effect.fail('not-found' as const),
+        KeyValueStoreError: unavailable,
+      }),
+    )
+  }),
+  Effect.flatMap(Option.match({ onNone: () => Effect.fail('not-found' as const), onSome: Effect.succeed })),
+)
 
 export const save = Effect.fn('SlackUserIds.save')(function* (orcid: OrcidId.OrcidId, slackUserId: SlackUserId) {
   const store = yield* Store

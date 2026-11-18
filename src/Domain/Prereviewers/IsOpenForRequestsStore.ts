@@ -1,4 +1,4 @@
-import { Context, Data, Effect, Layer, Option, pipe, Schema } from 'effect'
+import { Context, Data, Effect, flow, Layer, Option, pipe, Schema } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
 import * as RedisKeyValueStore from '../../RedisKeyValueStore.ts'
 import type { OrcidId } from '../../types/index.ts'
@@ -33,20 +33,20 @@ export const layer = Layer.provide(
 
 export const layerInMemory = Layer.provide(layerKeyValueStore, Layer.fresh(KeyValueStore.layerMemory))
 
-export const get = Effect.fn('IsOpenForRequestsStore.get')(function* (orcid: OrcidId.OrcidId) {
-  const store = yield* Store
+export const get = flow(
+  Effect.fn('IsOpenForRequestsStore.get')(function* (orcid: OrcidId.OrcidId) {
+    const store = yield* Store
 
-  return yield* pipe(
-    store.get(orcid),
-    Effect.flatMap(
-      Option.match({ onNone: () => Effect.fail(new IsOpenForRequestsNotFound()), onSome: Effect.succeed }),
-    ),
-    Effect.catchTags({
-      SchemaError: () => new IsOpenForRequestsNotFound(),
-      KeyValueStoreError: unavailable,
-    }),
-  )
-})
+    return yield* pipe(
+      store.get(orcid),
+      Effect.catchTags({
+        SchemaError: () => new IsOpenForRequestsNotFound(),
+        KeyValueStoreError: unavailable,
+      }),
+    )
+  }),
+  Effect.flatMap(Option.match({ onNone: () => Effect.fail(new IsOpenForRequestsNotFound()), onSome: Effect.succeed })),
+)
 
 export const save = Effect.fn('IsOpenForRequestsStore.save')(function* (
   orcid: OrcidId.OrcidId,

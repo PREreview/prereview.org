@@ -1,4 +1,4 @@
-import { Array, Context, Data, Effect, Layer, Option, pipe, Record, Schema } from 'effect'
+import { Array, Context, Data, Effect, flow, Layer, Option, pipe, Record, Schema } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
 import * as RedisKeyValueStore from '../../RedisKeyValueStore.ts'
 import { NonEmptyString, OrcidId } from '../../types/index.ts'
@@ -31,18 +31,20 @@ export const layer = Layer.provide(
 
 export const layerInMemory = Layer.provide(layerKeyValueStore, Layer.fresh(KeyValueStore.layerMemory))
 
-export const get = Effect.fn('Locations.get')(function* (orcid: OrcidId.OrcidId) {
-  const store = yield* Store
+export const get = flow(
+  Effect.fn('Locations.get')(function* (orcid: OrcidId.OrcidId) {
+    const store = yield* Store
 
-  return yield* pipe(
-    store.get(orcid),
-    Effect.flatMap(Option.match({ onNone: () => Effect.fail(new LocationNotFound()), onSome: Effect.succeed })),
-    Effect.catchTags({
-      SchemaError: () => new LocationNotFound(),
-      KeyValueStoreError: unavailable,
-    }),
-  )
-})
+    return yield* pipe(
+      store.get(orcid),
+      Effect.catchTags({
+        SchemaError: () => new LocationNotFound(),
+        KeyValueStoreError: unavailable,
+      }),
+    )
+  }),
+  Effect.flatMap(Option.match({ onNone: () => Effect.fail(new LocationNotFound()), onSome: Effect.succeed })),
+)
 
 export const getAll = Effect.fn('Locations.getAll')(function* () {
   const store = yield* Store

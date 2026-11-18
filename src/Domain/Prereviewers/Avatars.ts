@@ -1,4 +1,4 @@
-import { Context, Data, Effect, Layer, Option, pipe } from 'effect'
+import { Context, Data, Effect, flow, Layer, Option, pipe } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
 import { CloudinaryAvatars } from '../../ExternalInteractions/index.ts'
 import * as RedisKeyValueStore from '../../RedisKeyValueStore.ts'
@@ -28,11 +28,18 @@ export const layer = Layer.provide(
 
 export const layerInMemory = Layer.provide(layerKeyValueStore, Layer.fresh(KeyValueStore.layerMemory))
 
-export const get = Effect.fn('Avatars.get')(function* (orcid: OrcidId.OrcidId) {
-  const avatarId = yield* getAvatarId(orcid)
+export const get = flow(
+  Effect.fn('Avatars.get')(function* (orcid: OrcidId.OrcidId) {
+    const avatarId = yield* findAvatarId(orcid)
 
-  return yield* CloudinaryAvatars.avatarUrl(avatarId)
-})
+    if (Option.isNone(avatarId)) {
+      return Option.none()
+    }
+
+    return Option.some(yield* CloudinaryAvatars.avatarUrl(avatarId.value))
+  }),
+  Effect.flatMap(Option.match({ onNone: () => Effect.fail(new AvatarNotFound()), onSome: Effect.succeed })),
+)
 
 export const save = Effect.fn('Avatars.save')(
   function* (orcid: OrcidId.OrcidId, avatar: CloudinaryAvatars.AvatarFile) {
@@ -71,18 +78,22 @@ const maybeGetExistingAvatar = (orcid: OrcidId.OrcidId) =>
     Effect.catchTag('AvatarNotFound', () => Effect.succeedNone),
   )
 
-const getAvatarId = Effect.fnUntraced(function* (orcid: OrcidId.OrcidId) {
+const findAvatarId = Effect.fnUntraced(function* (orcid: OrcidId.OrcidId) {
   const store = yield* Store
 
   return yield* pipe(
     store.get(orcid),
-    Effect.flatMap(Option.match({ onNone: () => Effect.fail(new AvatarNotFound()), onSome: Effect.succeed })),
     Effect.catchTags({
       SchemaError: () => new AvatarNotFound(),
       KeyValueStoreError: unavailable,
     }),
   )
 })
+
+const getAvatarId = flow(
+  findAvatarId,
+  Effect.flatMap(Option.match({ onNone: () => Effect.fail(new AvatarNotFound()), onSome: Effect.succeed })),
+)
 
 const saveAvatarId = Effect.fnUntraced(function* (orcid: OrcidId.OrcidId, avatarId: NonEmptyString.NonEmptyString) {
   const store = yield* Store

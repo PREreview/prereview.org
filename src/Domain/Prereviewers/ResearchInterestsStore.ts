@@ -1,4 +1,4 @@
-import { Context, Data, Effect, Layer, Option, pipe, Schema, SchemaTransformation, Struct } from 'effect'
+import { Context, Data, Effect, flow, Layer, Option, pipe, Schema, SchemaTransformation, Struct } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
 import * as RedisKeyValueStore from '../../RedisKeyValueStore.ts'
 import { NonEmptyString, type OrcidId } from '../../types/index.ts'
@@ -55,20 +55,20 @@ export const layer = Layer.provide(
 
 export const layerInMemory = Layer.provide(layerKeyValueStore, Layer.fresh(KeyValueStore.layerMemory))
 
-export const get = Effect.fn('ResearchInterestsStore.get')(function* (orcid: OrcidId.OrcidId) {
-  const store = yield* Store
+export const get = flow(
+  Effect.fn('ResearchInterestsStore.get')(function* (orcid: OrcidId.OrcidId) {
+    const store = yield* Store
 
-  return yield* pipe(
-    store.get(orcid),
-    Effect.flatMap(
-      Option.match({ onNone: () => Effect.fail(new ResearchInterestsNotFound()), onSome: Effect.succeed }),
-    ),
-    Effect.catchTags({
-      SchemaError: () => new ResearchInterestsNotFound(),
-      KeyValueStoreError: unavailable,
-    }),
-  )
-})
+    return yield* pipe(
+      store.get(orcid),
+      Effect.catchTags({
+        SchemaError: () => new ResearchInterestsNotFound(),
+        KeyValueStoreError: unavailable,
+      }),
+    )
+  }),
+  Effect.flatMap(Option.match({ onNone: () => Effect.fail(new ResearchInterestsNotFound()), onSome: Effect.succeed })),
+)
 
 export const save = Effect.fn('ResearchInterestsStore.save')(function* (
   orcid: OrcidId.OrcidId,

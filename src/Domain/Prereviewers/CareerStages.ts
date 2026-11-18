@@ -1,4 +1,17 @@
-import { Array, Context, Data, Effect, Layer, Option, pipe, Record, Schema, SchemaTransformation, Struct } from 'effect'
+import {
+  Array,
+  Context,
+  Data,
+  Effect,
+  flow,
+  Layer,
+  Option,
+  pipe,
+  Record,
+  Schema,
+  SchemaTransformation,
+  Struct,
+} from 'effect'
 import { KeyValueStore } from 'effect/persistence'
 import * as RedisKeyValueStore from '../../RedisKeyValueStore.ts'
 import { OrcidId } from '../../types/index.ts'
@@ -46,18 +59,20 @@ export const layer = Layer.provide(
 
 export const layerInMemory = Layer.provide(layerKeyValueStore, Layer.fresh(KeyValueStore.layerMemory))
 
-export const get = Effect.fn('CareerStages.get')(function* (orcid: OrcidId.OrcidId) {
-  const store = yield* Store
+export const get = flow(
+  Effect.fn('CareerStages.get')(function* (orcid: OrcidId.OrcidId) {
+    const store = yield* Store
 
-  return yield* pipe(
-    store.get(orcid),
-    Effect.flatMap(Option.match({ onNone: () => Effect.fail(new CareerStageNotFound()), onSome: Effect.succeed })),
-    Effect.catchTags({
-      SchemaError: () => new CareerStageNotFound(),
-      KeyValueStoreError: unavailable,
-    }),
-  )
-})
+    return yield* pipe(
+      store.get(orcid),
+      Effect.catchTags({
+        SchemaError: () => new CareerStageNotFound(),
+        KeyValueStoreError: unavailable,
+      }),
+    )
+  }),
+  Effect.flatMap(Option.match({ onNone: () => Effect.fail(new CareerStageNotFound()), onSome: Effect.succeed })),
+)
 
 export const getAll = Effect.fn('CareerStages.getAll')(function* () {
   const store = yield* Store
