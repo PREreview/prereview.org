@@ -14,7 +14,7 @@ import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { getTopicDomain, getTopicField, getTopicSubfield } from '../../../types/Topic.ts'
 import { reviewsData, type GetPrereviewsEnv, type Prereview as ReviewsDataPrereview } from '../../reviews-data/index.ts'
-import { scietyList, type ScietyListEnv } from '../../sciety-list/index.ts'
+import { scietyList, type GetPrereviewsForScietyEnv, type ScietyListEnv } from '../../sciety-list/index.ts'
 import { usersData, type GetUsersEnv } from '../../users-data/index.ts'
 import type { Env } from './index.ts'
 
@@ -37,7 +37,11 @@ export const DataRouter = pipe(
     P.getParserMonoid<
       (
         authorizationHeader: string,
-      ) => RTE.ReaderTaskEither<ScietyListEnv & GetPrereviewsEnv & GetUsersEnv, 'forbidden' | 'unavailable', string>
+      ) => RTE.ReaderTaskEither<
+        ScietyListEnv & GetPrereviewsEnv & GetPrereviewsForScietyEnv & GetUsersEnv,
+        'forbidden' | 'unavailable',
+        string
+      >
     >(),
   ),
   P.map(handler =>
@@ -46,6 +50,31 @@ export const DataRouter = pipe(
         const json = yield* FptsToEffect.readerTaskEither(handler(env.authorizationHeader ?? ''), {
           scietyListToken: Redacted.value(env.scietyListToken),
           getPrereviews: env.featureFlags.useEventsForPreprintReviews
+            ? () =>
+                EffectToFpts.toTaskEither(
+                  pipe(
+                    PreprintReviews.getAllPublishedPreprintReviews,
+                    Effect.map(Array.map(toReviewsDataPrereview)),
+                    Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
+                  ),
+                  env.runtime,
+                )
+            : withEnv(() => ZenodoRecords.getPrereviewsForSciety, {
+                fetch: env.fetch,
+                getClubByName: EffectToFpts.toTaskK(
+                  flow(
+                    getClubByName,
+                    Effect.map(Option.some),
+                    Effect.catchTag('ClubNotFound', () => Effect.succeedNone),
+                  ),
+                  env.runtime,
+                ),
+                runtime: env.runtime,
+                zenodoApiKey: Redacted.value(env.zenodoApiConfig.key),
+                zenodoUrl: env.zenodoApiConfig.origin,
+                ...env.logger,
+              }),
+          getPrereviewsForSciety: env.featureFlags.useEventsForPreprintReviews
             ? () =>
                 EffectToFpts.toTaskEither(
                   pipe(

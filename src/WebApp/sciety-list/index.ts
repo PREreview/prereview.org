@@ -17,12 +17,15 @@ export interface Prereview {
   authors: ReadonlyArray<{ name: Name.Name }>
 }
 
-export interface GetPrereviewsEnv {
-  getPrereviews: () => TE.TaskEither<'unavailable', ReadonlyArray<Prereview>>
+export interface GetPrereviewsForScietyEnv {
+  getPrereviewsForSciety: () => TE.TaskEither<'unavailable', ReadonlyArray<Prereview>>
 }
 
-const getPrereviews = (): RTE.ReaderTaskEither<GetPrereviewsEnv, 'unavailable', ReadonlyArray<Prereview>> =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPrereviews }) => getPrereviews()))
+const getPrereviewsForSciety = (): RTE.ReaderTaskEither<
+  GetPrereviewsForScietyEnv,
+  'unavailable',
+  ReadonlyArray<Prereview>
+> => RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPrereviewsForSciety }) => getPrereviewsForSciety()))
 
 const PreprintIdWithDoiSchema = Schema.TemplateLiteralParser([
   'doi:',
@@ -80,11 +83,11 @@ const isAllowed = (authorizationHeader: string) =>
 
 export const scietyList = (
   authorizationHeader: string,
-): RTE.ReaderTaskEither<ScietyListEnv & GetPrereviewsEnv, 'forbidden' | 'unavailable', string> =>
+): RTE.ReaderTaskEither<ScietyListEnv & GetPrereviewsForScietyEnv, 'forbidden' | 'unavailable', string> =>
   pipe(
     authorizationHeader,
     isAllowed,
-    RTE.chainW(getPrereviews),
+    RTE.chainW(getPrereviewsForSciety),
     RTE.chainEitherKW(
       flow(
         Schema.encodeResult(Schema.fromJsonString(Schema.Array(PrereviewSchema))),
