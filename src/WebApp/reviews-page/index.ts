@@ -1,8 +1,7 @@
-import { pipe } from 'effect'
+import { Match, pipe } from 'effect'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
-import { match } from 'ts-pattern'
 import type { SupportedLocale } from '../../locales/index.ts'
 import type { FieldId } from '../../types/field.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
@@ -37,12 +36,13 @@ export const reviewsPage = ({
       : getRecentPrereviews({ field, language, page, query }),
     RTE.matchW(
       error =>
-        match(error)
-          .with('not-found', () =>
-            page === 1 ? emptyPage({ field, language, query }, locale, { canSearchByText }) : pageNotFound(locale),
-          )
-          .with('unavailable', () => failureMessage(locale))
-          .exhaustive(),
+        Match.value(error).pipe(
+          Match.literalsExhaustive({
+            'not-found': () =>
+              page === 1 ? emptyPage({ field, language, query }, locale, { canSearchByText }) : pageNotFound(locale),
+            unavailable: () => failureMessage(locale),
+          }),
+        ),
       prereviews => createPage(prereviews, locale, { canSearchByText }),
     ),
   )

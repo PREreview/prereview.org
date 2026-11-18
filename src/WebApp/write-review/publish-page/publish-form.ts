@@ -1,6 +1,5 @@
-import { Array, flow, pipe } from 'effect'
+import { Array, flow, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
-import { match } from 'ts-pattern'
 import type { ClubName } from '../../../Domain/Clubs/index.ts'
 import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
@@ -80,10 +79,13 @@ export function publishForm(
           <div class="summary-card">
             <div>
               <h2>
-                ${match(review.moreAuthors)
-                  .with('yes', t('authorDetails'))
-                  .with('no', 'yes-private', t('yourDetails'))
-                  .exhaustive()}
+                ${Match.value(review.moreAuthors).pipe(
+                  Match.literalsExhaustive({
+                    yes: t('authorDetails'),
+                    no: t('yourDetails'),
+                    'yes-private': t('yourDetails'),
+                  }),
+                )}
               </h2>
             </div>
 
@@ -91,10 +93,13 @@ export function publishForm(
               <div>
                 <dt>
                   <span
-                    >${match(review.moreAuthors)
-                      .with('yes', t('yourPublishedName'))
-                      .with('no', 'yes-private', t('publishedName'))
-                      .exhaustive()}</span
+                    >${Match.value(review.moreAuthors).pipe(
+                      Match.literalsExhaustive({
+                        yes: t('yourPublishedName'),
+                        no: t('publishedName'),
+                        'yes-private': t('publishedName'),
+                      }),
+                    )}</span
                   >
                 </dt>
                 <dd>${displayAuthor(persona)}</dd>
@@ -201,12 +206,14 @@ export function publishForm(
                         <div>
                           <dt>${t('doesIntroductionExplain')()}</dt>
                           <dd>
-                            ${match(review.introductionMatches)
-                              .with('yes', () => t('yes')())
-                              .with('partly', () => t('partly')())
-                              .with('no', () => t('no')())
-                              .with('skip', () => t('iDoNotKnow')())
-                              .exhaustive()}
+                            ${Match.value(review.introductionMatches).pipe(
+                              Match.literalsExhaustive({
+                                yes: t('yes'),
+                                partly: t('partly'),
+                                no: t('no'),
+                                skip: t('iDoNotKnow'),
+                              }),
+                            )}
                           </dd>
                           ${
                             review.introductionMatches !== 'skip' && review.introductionMatchesDetails
@@ -222,14 +229,16 @@ export function publishForm(
                         <div>
                           <dt>${t('methodsWellSuited')()}</dt>
                           <dd>
-                            ${match(review.methodsAppropriate)
-                              .with('inappropriate', () => t('methodsHighlyInappropriate')())
-                              .with('somewhat-inappropriate', () => t('methodsSomewhatInappropriate')())
-                              .with('adequate', () => t('methodsNeitherAppropriateNorInappropriate')())
-                              .with('mostly-appropriate', () => t('methodsSomewhatAppropriate')())
-                              .with('highly-appropriate', () => t('methodsHighlyAppropriate')())
-                              .with('skip', () => t('iDoNotKnow')())
-                              .exhaustive()}
+                            ${Match.value(review.methodsAppropriate).pipe(
+                              Match.literalsExhaustive({
+                                inappropriate: t('methodsHighlyInappropriate'),
+                                'somewhat-inappropriate': t('methodsSomewhatInappropriate'),
+                                adequate: t('methodsNeitherAppropriateNorInappropriate'),
+                                'mostly-appropriate': t('methodsSomewhatAppropriate'),
+                                'highly-appropriate': t('methodsHighlyAppropriate'),
+                                skip: t('iDoNotKnow'),
+                              }),
+                            )}
                           </dd>
                           ${
                             review.methodsAppropriate !== 'skip' && review.methodsAppropriateDetails
@@ -245,14 +254,16 @@ export function publishForm(
                         <div>
                           <dt>${t('conclusionsSupported')()}</dt>
                           <dd>
-                            ${match(review.resultsSupported)
-                              .with('not-supported', () => t('conclusionsHighlyUnsupported')())
-                              .with('partially-supported', () => t('conclusionsSomewhatUnsupported')())
-                              .with('neutral', () => t('conclusionsNeitherSupportedNorUnsupported')())
-                              .with('well-supported', () => t('conclusionsSomewhatSupported')())
-                              .with('strongly-supported', () => t('conclusionsHighlySupported')())
-                              .with('skip', () => t('iDoNotKnow')())
-                              .exhaustive()}
+                            ${Match.value(review.resultsSupported).pipe(
+                              Match.literalsExhaustive({
+                                'not-supported': t('conclusionsHighlyUnsupported'),
+                                'partially-supported': t('conclusionsSomewhatUnsupported'),
+                                neutral: t('conclusionsNeitherSupportedNorUnsupported'),
+                                'well-supported': t('conclusionsSomewhatSupported'),
+                                'strongly-supported': t('conclusionsHighlySupported'),
+                                skip: t('iDoNotKnow'),
+                              }),
+                            )}
                           </dd>
                           ${
                             review.resultsSupported !== 'skip' && review.resultsSupportedDetails
@@ -268,14 +279,16 @@ export function publishForm(
                         <div>
                           <dt>${t('dataPresentationWellSuited')()}</dt>
                           <dd>
-                            ${match(review.dataPresentation)
-                              .with('inappropriate-unclear', () => t('highlyInappropriate')())
-                              .with('somewhat-inappropriate-unclear', () => t('somewhatInappropriate')())
-                              .with('neutral', () => t('neitherAppropriateOrClear')())
-                              .with('mostly-appropriate-clear', () => t('somewhatAppropriate')())
-                              .with('highly-appropriate-clear', () => t('highlyAppropriateAndClear')())
-                              .with('skip', () => t('iDoNotKnow')())
-                              .exhaustive()}
+                            ${Match.value(review.dataPresentation).pipe(
+                              Match.literalsExhaustive({
+                                'inappropriate-unclear': t('highlyInappropriate'),
+                                'somewhat-inappropriate-unclear': t('somewhatInappropriate'),
+                                neutral: t('neitherAppropriateOrClear'),
+                                'mostly-appropriate-clear': t('somewhatAppropriate'),
+                                'highly-appropriate-clear': t('highlyAppropriateAndClear'),
+                                skip: t('iDoNotKnow'),
+                              }),
+                            )}
                           </dd>
                           ${
                             review.dataPresentation !== 'skip' && review.dataPresentationDetails
@@ -291,14 +304,16 @@ export function publishForm(
                         <div>
                           <dt>${t('clearDiscussion')()}</dt>
                           <dd>
-                            ${match(review.findingsNextSteps)
-                              .with('inadequately', () => t('veryUnclearly')())
-                              .with('insufficiently', () => t('somewhatUnclearly')())
-                              .with('adequately', () => t('neitherClearlyNorUnclearly')())
-                              .with('clearly-insightfully', () => t('somewhatClearly')())
-                              .with('exceptionally', () => t('veryClearly')())
-                              .with('skip', () => t('iDoNotKnow')())
-                              .exhaustive()}
+                            ${Match.value(review.findingsNextSteps).pipe(
+                              Match.literalsExhaustive({
+                                inadequately: t('veryUnclearly'),
+                                insufficiently: t('somewhatUnclearly'),
+                                adequately: t('neitherClearlyNorUnclearly'),
+                                'clearly-insightfully': t('somewhatClearly'),
+                                exceptionally: t('veryClearly'),
+                                skip: t('iDoNotKnow'),
+                              }),
+                            )}
                           </dd>
                           ${
                             review.findingsNextSteps !== 'skip' && review.findingsNextStepsDetails
@@ -314,14 +329,16 @@ export function publishForm(
                         <div>
                           <dt>${t('advanceKnowledge')()}</dt>
                           <dd>
-                            ${match(review.novel)
-                              .with('no', () => t('advanceKnowledgeNotAtAllLikely')())
-                              .with('limited', () => t('advanceKnowledgeNotLikely')())
-                              .with('some', () => t('advanceKnowledgeModeratelyLikely')())
-                              .with('substantial', () => t('advanceKnowledgeSomewhatLikely')())
-                              .with('highly', () => t('advanceKnowledgeHighlyLikely')())
-                              .with('skip', () => t('iDoNotKnow')())
-                              .exhaustive()}
+                            ${Match.value(review.novel).pipe(
+                              Match.literalsExhaustive({
+                                no: t('advanceKnowledgeNotAtAllLikely'),
+                                limited: t('advanceKnowledgeNotLikely'),
+                                some: t('advanceKnowledgeModeratelyLikely'),
+                                substantial: t('advanceKnowledgeSomewhatLikely'),
+                                highly: t('advanceKnowledgeHighlyLikely'),
+                                skip: t('iDoNotKnow'),
+                              }),
+                            )}
                           </dd>
                           ${review.novel !== 'skip' && review.novelDetails ? html` <dd>${review.novelDetails}</dd>` : ''}
                           <dd>
@@ -333,10 +350,12 @@ export function publishForm(
                         <div>
                           <dt>${t('benefitFromEditing')()}</dt>
                           <dd>
-                            ${match(review.languageEditing)
-                              .with('no', () => t('no')())
-                              .with('yes', () => t('yes')())
-                              .exhaustive()}
+                            ${Match.value(review.languageEditing).pipe(
+                              Match.literalsExhaustive({
+                                no: t('no'),
+                                yes: t('yes'),
+                              }),
+                            )}
                           </dd>
                           ${review.languageEditingDetails ? html` <dd>${review.languageEditingDetails}</dd>` : ''}
                           <dd>
@@ -348,11 +367,13 @@ export function publishForm(
                         <div>
                           <dt>${t('wouldRecommend')()}</dt>
                           <dd>
-                            ${match(review.shouldRead)
-                              .with('no', () => t('wouldRecommendNo')())
-                              .with('yes-but', () => t('wouldRecommendYesImproved')())
-                              .with('yes', () => t('wouldRecommendYes')())
-                              .exhaustive()}
+                            ${Match.value(review.shouldRead).pipe(
+                              Match.literalsExhaustive({
+                                no: t('wouldRecommendNo'),
+                                'yes-but': t('wouldRecommendYesImproved'),
+                                yes: t('wouldRecommendYes'),
+                              }),
+                            )}
                           </dd>
                           ${review.shouldReadDetails ? html` <dd>${review.shouldReadDetails}</dd>` : ''}
                           <dd>
@@ -364,11 +385,13 @@ export function publishForm(
                         <div>
                           <dt>${t('readyForAttention')()}</dt>
                           <dd>
-                            ${match(review.readyFullReview)
-                              .with('no', () => t('readyForAttentionNo')())
-                              .with('yes-changes', () => t('readyForAttentionMinorChanges')())
-                              .with('yes', () => t('readyForAttentionYes')())
-                              .exhaustive()}
+                            ${Match.value(review.readyFullReview).pipe(
+                              Match.literalsExhaustive({
+                                no: t('readyForAttentionNo'),
+                                'yes-changes': t('readyForAttentionMinorChanges'),
+                                yes: t('readyForAttentionYes'),
+                              }),
+                            )}
                           </dd>
                           ${review.readyFullReviewDetails ? html` <dd>${review.readyFullReviewDetails}</dd>` : ''}
                           <dd>
@@ -387,22 +410,18 @@ export function publishForm(
 
           <p>
             ${t('weWillAssignLicense')({
-              licenseLink: match(getLicense(review))
-                .with(
-                  'CC0-1.0',
-                  () =>
+              licenseLink: Match.value(getLicense(review)).pipe(
+                Match.literalsExhaustive({
+                  'CC0-1.0': () =>
                     html`<a href="https://creativecommons.org/publicdomain/zero/1.0/"
                       ><bdi translate="no">CC0&nbsp;1.0</bdi></a
                     >`,
-                )
-                .with(
-                  'CC-BY-4.0',
-                  () =>
+                  'CC-BY-4.0': () =>
                     html`<a href="https://creativecommons.org/licenses/by/4.0/"
                       ><bdi translate="no">CC&nbsp;BY&nbsp;4.0</bdi></a
                     >`,
-                )
-                .exhaustive(),
+                }),
+              ),
             })}
           </p>
 

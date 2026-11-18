@@ -139,12 +139,16 @@ export const writeReviewPublish = ({
           RTE.matchEW(
             error =>
               RT.of(
-                match(error)
-                  .with('no-form', 'no-session', () =>
-                    RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
-                  )
-                  .with('form-unavailable', P.instanceOf(Error), 'unavailable', () => havingProblemsPage(locale))
-                  .exhaustive(),
+                Match.value(error).pipe(
+                  Match.tag('ClubNotFound', 'UnableToQuery', () => havingProblemsPage(locale)),
+                  Match.literalsExhaustive({
+                    'no-form': () =>
+                      RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                    'no-session': () =>
+                      RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                    'form-unavailable': () => havingProblemsPage(locale),
+                  }),
+                ),
               ),
             decideNextStep,
           ),
@@ -218,9 +222,11 @@ const handlePublishForm = ({
       flow(
         publishPrereview,
         RTE.orElseFirstW(error =>
-          match(error)
-            .with('unavailable', () => saveForm(user.orcid, preprint.id)(originalForm))
-            .exhaustive(),
+          Match.value(error).pipe(
+            Match.literalsExhaustive({
+              unavailable: () => saveForm(user.orcid, preprint.id)(originalForm),
+            }),
+          ),
         ),
       ),
     ),

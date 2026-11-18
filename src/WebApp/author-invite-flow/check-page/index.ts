@@ -1,4 +1,4 @@
-import { Effect, pipe } from 'effect'
+import { Effect, pipe, Match } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -136,25 +136,22 @@ export const authorInviteCheck = ({
     RTE.matchEW(
       error =>
         RT.of(
-          match(error)
-            .with('already-completed', () =>
-              RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }),
-            )
-            .with('declined', () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }))
-            .with('no-persona', () =>
-              RedirectResponse({ location: format(authorInvitePersonaMatch.formatter, { id }) }),
-            )
-            .with('no-session', () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }))
-            .with('no-verified-email', () =>
-              RedirectResponse({ location: format(authorInviteEnterEmailAddressMatch.formatter, { id }) }),
-            )
-            .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
-            .with('not-found', () => pageNotFound(locale))
-            .with(P.union('unavailable', { _tag: P.union('UnableToQuery', 'UnableToGetPersona') }), () =>
-              havingProblemsPage(locale),
-            )
-            .with('wrong-user', () => noPermissionPage(locale))
-            .exhaustive(),
+          Match.value(error).pipe(
+            Match.tag('UnableToQuery', 'UnableToGetPersona', () => havingProblemsPage(locale)),
+            Match.literalsExhaustive({
+              'already-completed': () =>
+                RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }),
+              declined: () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }),
+              'no-persona': () => RedirectResponse({ location: format(authorInvitePersonaMatch.formatter, { id }) }),
+              'no-session': () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }),
+              'no-verified-email': () =>
+                RedirectResponse({ location: format(authorInviteEnterEmailAddressMatch.formatter, { id }) }),
+              'not-assigned': () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }),
+              'not-found': () => pageNotFound(locale),
+              unavailable: () => havingProblemsPage(locale),
+              'wrong-user': () => noPermissionPage(locale),
+            }),
+          ),
         ),
       state =>
         match(state)

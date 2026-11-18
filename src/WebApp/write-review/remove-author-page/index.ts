@@ -78,16 +78,18 @@ export const writeReviewRemoveAuthor = ({
           RTE.matchEW(
             error =>
               RT.of(
-                match(error)
-                  .with('no-author', () =>
-                    RedirectResponse({ location: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }) }),
-                  )
-                  .with('no-form', 'no-session', () =>
-                    RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
-                  )
-                  .with('not-found', () => pageNotFound(locale))
-                  .with('form-unavailable', () => havingProblemsPage(locale))
-                  .exhaustive(),
+                Match.value(error).pipe(
+                  Match.literalsExhaustive({
+                    'no-author': () =>
+                      RedirectResponse({ location: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }) }),
+                    'no-form': () =>
+                      RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                    'no-session': () =>
+                      RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                    'not-found': () => pageNotFound(locale),
+                    'form-unavailable': () => havingProblemsPage(locale),
+                  }),
+                ),
               ),
             state =>
               match(state)
@@ -126,24 +128,25 @@ const handleRemoveAuthorForm = ({
       ),
     ),
     RTE.chainW(({ removeAuthor }) =>
-      match(removeAuthor)
-        .with('yes', () =>
-          pipe(
-            RTE.Do,
-            RTE.apS(
-              'otherAuthors',
-              RTE.fromOption(() => 'form-unavailable' as const)(
-                Option.map(Array.get(form.otherAuthors ?? [], number - 1), () =>
-                  Array.remove(form.otherAuthors ?? [], number - 1),
+      Match.value(removeAuthor).pipe(
+        Match.literalsExhaustive({
+          yes: () =>
+            pipe(
+              RTE.Do,
+              RTE.apS(
+                'otherAuthors',
+                RTE.fromOption(() => 'form-unavailable' as const)(
+                  Option.map(Array.get(form.otherAuthors ?? [], number - 1), () =>
+                    Array.remove(form.otherAuthors ?? [], number - 1),
+                  ),
                 ),
               ),
+              RTE.map(updateForm(form)),
+              RTE.chainFirst(saveForm(user.orcid, preprint.id)),
             ),
-            RTE.map(updateForm(form)),
-            RTE.chainFirst(saveForm(user.orcid, preprint.id)),
-          ),
-        )
-        .with('no', () => RTE.of(form))
-        .exhaustive(),
+          no: () => RTE.of(form),
+        }),
+      ),
     ),
     RTE.matchW(
       error =>

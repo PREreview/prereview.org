@@ -2,7 +2,6 @@ import { flow, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { match, P } from 'ts-pattern'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import { type FormStore, getForm } from '../../../Domain/PreprintReviews/index.ts'
 import { getPreprint, type IndeterminatePreprintId, type Preprints } from '../../../Domain/Preprints/index.ts'
@@ -48,16 +47,16 @@ export const writeReviewStart = ({
           RTE.apS('locale', RTE.of(locale)),
           RTE.matchW(
             error =>
-              match(error)
-                .with({ _tag: 'IsAuthor' }, () => ownPreprintPage(preprint.id, writeReviewStartMatch.formatter, locale))
-                .with('no-form', () =>
-                  RedirectResponse({ location: format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }) }),
-                )
-                .with('no-session', () =>
-                  LogInResponse({ location: format(writeReviewStartMatch.formatter, { id: preprint.id }) }),
-                )
-                .with('form-unavailable', P.instanceOf(Error), () => havingProblemsPage(locale))
-                .exhaustive(),
+              Match.value(error).pipe(
+                Match.tag('IsAuthor', () => ownPreprintPage(preprint.id, writeReviewStartMatch.formatter, locale)),
+                Match.literalsExhaustive({
+                  'no-form': () =>
+                    RedirectResponse({ location: format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }) }),
+                  'no-session': () =>
+                    LogInResponse({ location: format(writeReviewStartMatch.formatter, { id: preprint.id }) }),
+                  'form-unavailable': () => havingProblemsPage(locale),
+                }),
+              ),
             ({ form, locale }) =>
               carryOnPage(
                 { id: preprint.id, language: preprint.title.language, title: preprint.title.text },

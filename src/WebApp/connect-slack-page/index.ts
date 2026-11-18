@@ -1,5 +1,5 @@
 import { UrlParams } from 'effect/http'
-import { HashSet, Redacted, String, Struct, flow, identity, pipe } from 'effect'
+import { HashSet, Match, Redacted, String, Struct, flow, identity, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
@@ -97,10 +97,12 @@ export const connectSlack = ({
     RTE.bindW('isSlackUser', ({ user }) => isSlackUser(user.orcid)),
     RTE.matchW(
       error =>
-        match(error)
-          .with('no-session', () => LogInResponse({ location: format(connectSlackMatch.formatter, {}) }))
-          .with('unavailable', () => havingProblemsPage(locale))
-          .exhaustive(),
+        Match.value(error).pipe(
+          Match.literalsExhaustive({
+            'no-session': () => LogInResponse({ location: format(connectSlackMatch.formatter, {}) }),
+            unavailable: () => havingProblemsPage(locale),
+          }),
+        ),
       state =>
         match(state)
           .with({ isSlackUser: true }, () =>
@@ -129,10 +131,12 @@ export const connectSlackStart = ({
     RTE.chainFirstW(({ state }) => addToSession('slack-state', state)),
     RTE.matchW(
       error =>
-        match(error)
-          .with('no-session', () => LogInResponse({ location: format(connectSlackMatch.formatter, {}) }))
-          .with('unavailable', P.instanceOf(Error), () => havingProblemsPage(locale))
-          .exhaustive(),
+        Match.value(error).pipe(
+          Match.literalsExhaustive({
+            'no-session': () => LogInResponse({ location: format(connectSlackMatch.formatter, {}) }),
+            unavailable: () => havingProblemsPage(locale),
+          }),
+        ),
       ({ authorizationRequestUrl }) => RedirectResponse({ location: authorizationRequestUrl }),
     ),
   )
@@ -210,6 +214,7 @@ export const connectSlackCode = ({
   )
 
 export const connectSlackError = ({ error, locale }: { error: string; locale: SupportedLocale }): Response =>
-  match(error)
-    .with('access_denied', () => accessDeniedMessage(locale))
-    .otherwise(() => failureMessage(locale))
+  Match.value(error).pipe(
+    Match.when('access_denied', () => accessDeniedMessage(locale)),
+    Match.orElse(() => failureMessage(locale)),
+  )

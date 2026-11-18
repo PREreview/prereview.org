@@ -1,10 +1,9 @@
 import { UrlParams } from 'effect/http'
-import { pipe } from 'effect'
+import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { match } from 'ts-pattern'
 import type { SupportedLocale } from '../../locales/index.ts'
 import { toUrl } from '../../public-url.ts'
 import { connectOrcidMatch } from '../../routes.ts'
@@ -20,9 +19,11 @@ export const connectOrcidStart = ({ locale, user }: { locale: SupportedLocale; u
     RTE.apSW('authorizationRequestUrl', RTE.fromReader(authorizationRequestUrl(locale))),
     RTE.matchW(
       error =>
-        match(error)
-          .with('no-session', () => LogInResponse({ location: format(connectOrcidMatch.formatter, {}) }))
-          .exhaustive(),
+        Match.value(error).pipe(
+          Match.literalsExhaustive({
+            'no-session': () => LogInResponse({ location: format(connectOrcidMatch.formatter, {}) }),
+          }),
+        ),
       ({ authorizationRequestUrl }) => RedirectResponse({ location: authorizationRequestUrl }),
     ),
   )

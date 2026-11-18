@@ -65,12 +65,15 @@ export const writeReviewFindingsNextSteps = ({
           RTE.matchE(
             error =>
               RT.of(
-                match(error)
-                  .with('no-form', 'no-session', () =>
-                    RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
-                  )
-                  .with('form-unavailable', () => havingProblemsPage(locale))
-                  .exhaustive(),
+                Match.value(error).pipe(
+                  Match.literalsExhaustive({
+                    'no-form': () =>
+                      RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                    'no-session': () =>
+                      RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                    'form-unavailable': () => havingProblemsPage(locale),
+                  }),
+                ),
               ),
             state =>
               match(state)

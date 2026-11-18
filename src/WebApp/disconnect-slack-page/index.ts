@@ -1,4 +1,4 @@
-import { pipe } from 'effect'
+import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -35,10 +35,12 @@ export const disconnectSlack = ({
     RTE.matchEW(
       error =>
         RT.of(
-          match(error)
-            .with('no-session', () => LogInResponse({ location: format(disconnectSlackMatch.formatter, {}) }))
-            .with(P.union('unavailable', P.instanceOf(Error)), () => havingProblemsPage(locale))
-            .exhaustive(),
+          Match.value(error).pipe(
+            Match.literalsExhaustive({
+              'no-session': () => LogInResponse({ location: format(disconnectSlackMatch.formatter, {}) }),
+              unavailable: () => havingProblemsPage(locale),
+            }),
+          ),
         ),
       state =>
         match(state)

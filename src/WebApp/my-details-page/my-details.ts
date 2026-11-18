@@ -2,7 +2,6 @@ import { Effect, Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as L from 'logger-fp-ts'
-import { match, P } from 'ts-pattern'
 import { ContactEmailAddresses } from '../../Domain/ContactEmailAddresses/index.ts'
 import type { EnvFor } from '../../Fpts.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
@@ -97,13 +96,13 @@ export const myDetails = ({ locale, user }: { locale: SupportedLocale; user?: Us
     ),
     RTE.match(
       error =>
-        match(error)
-          .with('no-session', () => LogInResponse({ location: format(myDetailsMatch.formatter, {}) }))
-          .with(
-            P.union('unavailable', { _tag: P.union('UnableToGetPersona', 'UnableToQuery', 'UnknownPrereviewer') }),
-            () => havingProblemsPage(locale),
-          )
-          .exhaustive(),
+        Match.value(error).pipe(
+          Match.tag('UnableToGetPersona', 'UnableToQuery', 'UnknownPrereviewer', () => havingProblemsPage(locale)),
+          Match.literalsExhaustive({
+            'no-session': () => LogInResponse({ location: format(myDetailsMatch.formatter, {}) }),
+            unavailable: () => havingProblemsPage(locale),
+          }),
+        ),
       createPage,
     ),
   )

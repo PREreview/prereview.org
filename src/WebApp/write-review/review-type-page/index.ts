@@ -91,15 +91,15 @@ export const writeReviewReviewType = ({
           RTE.matchEW(
             error =>
               RT.of(
-                match(error)
-                  .with({ _tag: 'IsAuthor' }, () =>
+                Match.value(error).pipe(
+                  Match.tag('IsAuthor', () =>
                     ownPreprintPage(preprint.id, writeReviewReviewTypeMatch.formatter, locale),
-                  )
-                  .with('no-session', () =>
-                    LogInResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
-                  )
-                  .with(P.instanceOf(Error), () => havingProblemsPage(locale))
-                  .exhaustive(),
+                  ),
+                  Match.literalsExhaustive({
+                    'no-session': () =>
+                      LogInResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                  }),
+                ),
               ),
             state =>
               match(state)
@@ -156,12 +156,14 @@ const handleReviewTypeForm = ({
     RTE.map(
       flow(
         fields =>
-          match(fields.reviewType)
-            .returnType<Form>()
-            .with('questions', reviewType => ({ alreadyWritten: 'no', reviewType }))
-            .with('freeform', reviewType => ({ alreadyWritten: 'no', reviewType }))
-            .with('already-written', () => ({ alreadyWritten: 'yes', reviewType: undefined }))
-            .exhaustive(),
+          Match.value(fields.reviewType).pipe(
+            Match.withReturnType<Form>(),
+            Match.literalsExhaustive({
+              questions: reviewType => ({ alreadyWritten: 'no', reviewType }),
+              freeform: reviewType => ({ alreadyWritten: 'no', reviewType }),
+              'already-written': () => ({ alreadyWritten: 'yes', reviewType: undefined }),
+            }),
+          ),
         updateForm(form),
       ),
     ),

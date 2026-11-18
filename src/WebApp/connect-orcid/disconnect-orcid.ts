@@ -1,5 +1,5 @@
 import { UrlParams } from 'effect/http'
-import { identity, pipe } from 'effect'
+import { identity, Match, pipe } from 'effect'
 import * as F from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -34,10 +34,12 @@ export const disconnectOrcid = ({ method, locale, user }: { method: string; loca
     RTE.matchEW(
       error =>
         RT.of(
-          match(error)
-            .with('no-session', () => LogInResponse({ location: format(disconnectOrcidMatch.formatter, {}) }))
-            .with('unavailable', () => havingProblemsPage(locale))
-            .exhaustive(),
+          Match.value(error).pipe(
+            Match.literalsExhaustive({
+              'no-session': () => LogInResponse({ location: format(disconnectOrcidMatch.formatter, {}) }),
+              unavailable: () => havingProblemsPage(locale),
+            }),
+          ),
         ),
       state =>
         match(state)

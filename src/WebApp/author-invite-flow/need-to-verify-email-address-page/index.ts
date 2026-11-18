@@ -1,4 +1,4 @@
-import { Effect, pipe } from 'effect'
+import { Effect, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -88,17 +88,19 @@ export const authorInviteNeedToVerifyEmailAddress = ({
     ),
     RTE.matchW(
       error =>
-        match(error)
-          .with('already-completed', () =>
-            RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }),
-          )
-          .with('declined', () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }))
-          .with('no-session', () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }))
-          .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
-          .with('not-found', () => pageNotFound(locale))
-          .with('unavailable', { _tag: 'UnableToQuery' }, () => havingProblemsPage(locale))
-          .with('wrong-user', () => noPermissionPage(locale))
-          .exhaustive(),
+        Match.value(error).pipe(
+          Match.tag('UnableToQuery', () => havingProblemsPage(locale)),
+          Match.literalsExhaustive({
+            'already-completed': () =>
+              RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }),
+            declined: () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }),
+            'no-session': () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }),
+            'not-assigned': () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }),
+            'not-found': () => pageNotFound(locale),
+            unavailable: () => havingProblemsPage(locale),
+            'wrong-user': () => noPermissionPage(locale),
+          }),
+        ),
       state =>
         match(state)
           .with({ contactEmailAddress: { _tag: 'VerifiedContactEmailAddress' } }, () =>

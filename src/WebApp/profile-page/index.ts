@@ -2,7 +2,6 @@ import { Boolean, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { match } from 'ts-pattern'
 import type { EnvFor } from '../../Fpts.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
 import * as Prereviewers from '../../Domain/Prereviewers/index.ts'
@@ -36,10 +35,12 @@ const profileForOrcid = (locale: SupportedLocale) => (profile: ProfileId.OrcidPr
             getOrcidProfile(profile),
             RTE.match(
               error =>
-                match(error)
-                  .with('not-found', () => pageNotFound(locale))
-                  .with('unavailable', () => havingProblemsPage(locale))
-                  .exhaustive(),
+                Match.value(error).pipe(
+                  Match.literalsExhaustive({
+                    'not-found': () => pageNotFound(locale),
+                    unavailable: () => havingProblemsPage(locale),
+                  }),
+                ),
               profile => createPage(profile, locale),
             ),
           ),
@@ -58,9 +59,11 @@ const profileForPseudonym = (locale: SupportedLocale) => (profile: ProfileId.Pse
             getPseudonymProfile(profile),
             RTE.match(
               error =>
-                match(error)
-                  .with('unavailable', () => havingProblemsPage(locale))
-                  .exhaustive(),
+                Match.value(error).pipe(
+                  Match.literalsExhaustive({
+                    unavailable: () => havingProblemsPage(locale),
+                  }),
+                ),
               (profile): Response => createPage(profile, locale),
             ),
           ),

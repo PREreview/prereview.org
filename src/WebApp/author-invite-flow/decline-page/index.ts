@@ -1,4 +1,4 @@
-import { pipe } from 'effect'
+import { pipe, Match } from 'effect'
 import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -45,9 +45,10 @@ export const authorInviteDecline = ({
   GetAuthorInviteEnv & GetPrereviewEnv & SaveAuthorInviteEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
-  match(method)
-    .with('POST', () => handleDecline(id, locale))
-    .otherwise(() => showDeclinePage(id, locale))
+  Match.value(method).pipe(
+    Match.when('POST', () => handleDecline(id, locale)),
+    Match.orElse(() => showDeclinePage(id, locale)),
+  )
 
 const showDeclinePage = (id: Uuid, locale: SupportedLocale) =>
   pipe(
@@ -70,11 +71,13 @@ const showDeclinePage = (id: Uuid, locale: SupportedLocale) =>
     RTE.bindW('review', ({ invite }) => getPrereview(invite.review)),
     RTE.matchW(
       error =>
-        match(error)
-          .with('declined', () => inviteDeclinedPage(locale, id))
-          .with('not-found', () => pageNotFound(locale))
-          .with('unavailable', () => havingProblemsPage(locale))
-          .exhaustive(),
+        Match.value(error).pipe(
+          Match.literalsExhaustive({
+            declined: () => inviteDeclinedPage(locale, id),
+            'not-found': () => pageNotFound(locale),
+            unavailable: () => havingProblemsPage(locale),
+          }),
+        ),
       declinePage,
     ),
   )
@@ -91,10 +94,12 @@ const handleDecline = (id: Uuid, locale: SupportedLocale) =>
     ),
     RTE.matchW(
       error =>
-        match(error)
-          .with('not-found', () => pageNotFound(locale))
-          .with('unavailable', () => havingProblemsPage(locale))
-          .exhaustive(),
+        Match.value(error).pipe(
+          Match.literalsExhaustive({
+            'not-found': () => pageNotFound(locale),
+            unavailable: () => havingProblemsPage(locale),
+          }),
+        ),
       () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }),
     ),
   )

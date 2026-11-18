@@ -1,4 +1,4 @@
-import { match } from 'ts-pattern'
+import { Match } from 'effect'
 import { html } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
 import type { SpotlightBanner } from '../../SpotlightBanners/index.ts'
@@ -94,97 +94,86 @@ export const toPage = ({
       }
 
 function showFlashMessage(message: (typeof FlashMessageSchema.literals)[number], locale: SupportedLocale) {
-  return match(message)
-    .with('logged-out', () =>
-      showNotificationBanner({
-        type: 'success',
-        title: translate(locale, 'flash-messages', 'titleSuccess')(),
-        content: html`<p>${translate(locale, 'flash-messages', 'messageLoggedOut')()}</p>`,
-      }),
-    )
-    .with('logged-in', () =>
-      showNotificationBanner({
-        type: 'success',
-        title: translate(locale, 'flash-messages', 'titleSuccess')(),
-        content: html`<p>${translate(locale, 'flash-messages', 'messageLoggedIn')()}</p>`,
-      }),
-    )
-    .with('logged-in-demo', () =>
-      showNotificationBanner({
-        type: 'success',
-        title: translate(locale, 'flash-messages', 'titleSuccess')(),
-        content: html`<p>${translate(locale, 'flash-messages', 'messageLoggedInDemoUser')()}</p>`,
-      }),
-    )
-    .with('blocked', () =>
-      showNotificationBanner({
-        type: 'failure',
-        title: translate(locale, 'flash-messages', 'titleAccessDenied')(),
-        content: html`<p>${translate(locale, 'flash-messages', 'messageLogInBlocked')()}</p>`,
-      }),
-    )
-    .with('verify-contact-email', () =>
-      showNotificationBanner({
-        type: 'notice',
-        title: translate(locale, 'flash-messages', 'titleImportant')(),
-        content: html`<p>${translate(locale, 'flash-messages', 'messageVerifyEmail')()}</p>`,
-      }),
-    )
-    .with('verify-contact-email-resend', () =>
-      showNotificationBanner({
-        type: 'notice',
-        title: translate(locale, 'flash-messages', 'titleImportant')(),
-        content: html`<p>${translate(locale, 'flash-messages', 'messageVerifyEmailResend')()}</p>`,
-      }),
-    )
-    .with('contact-email-verified', () =>
-      showNotificationBanner({
-        type: 'success',
-        title: translate(locale, 'flash-messages', 'titleSuccess')(),
-        content: html`<p>${translate(locale, 'flash-messages', 'messageEmailVerified')()}</p>`,
-      }),
-    )
-    .with('orcid-connected', () =>
-      showNotificationBanner({
-        type: 'success',
-        title: translate(locale, 'flash-messages', 'titleSuccess')(),
-        content: html`<p>${translate(locale, 'flash-messages', 'messageOrcidConnected')()}</p>`,
-      }),
-    )
-    .with('orcid-disconnected', () =>
-      showNotificationBanner({
-        type: 'success',
-        title: translate(locale, 'flash-messages', 'titleSuccess')(),
-        content: html`<p>${translate(locale, 'flash-messages', 'messageOrcidDisconnected')()}</p>`,
-      }),
-    )
-    .with('slack-connected', () =>
-      showNotificationBanner({
-        type: 'success',
-        title: translate(locale, 'flash-messages', 'titleSuccess')(),
-        content: html`<p>${translate(locale, 'flash-messages', 'messageSlackConnected')()}</p>`,
-      }),
-    )
-    .with('slack-disconnected', () =>
-      showNotificationBanner({
-        type: 'success',
-        title: translate(locale, 'flash-messages', 'titleSuccess')(),
-        content: html`<p>${translate(locale, 'flash-messages', 'messageSlackDisconnected')()}</p>`,
-      }),
-    )
-    .with('avatar-changed', () =>
-      showNotificationBanner({
-        type: 'success',
-        title: translate(locale, 'flash-messages', 'titleSuccess')(),
-        content: html`<p>${translate(locale, 'flash-messages', 'messageAvatarChanged')()}</p>`,
-      }),
-    )
-    .with('avatar-removed', () =>
-      showNotificationBanner({
-        type: 'success',
-        title: translate(locale, 'flash-messages', 'titleSuccess')(),
-        content: html`<p>${translate(locale, 'flash-messages', 'messageAvatarRemoved')()}</p>`,
-      }),
-    )
-    .exhaustive()
+  return Match.value(message).pipe(
+    Match.literalsExhaustive({
+      'logged-out': () =>
+        showNotificationBanner({
+          type: 'success',
+          title: translate(locale, 'flash-messages', 'titleSuccess')(),
+          content: html`<p>${translate(locale, 'flash-messages', 'messageLoggedOut')()}</p>`,
+        }),
+      'logged-in': () =>
+        showNotificationBanner({
+          type: 'success',
+          title: translate(locale, 'flash-messages', 'titleSuccess')(),
+          content: html`<p>${translate(locale, 'flash-messages', 'messageLoggedIn')()}</p>`,
+        }),
+      'logged-in-demo': () =>
+        showNotificationBanner({
+          type: 'success',
+          title: translate(locale, 'flash-messages', 'titleSuccess')(),
+          content: html`<p>${translate(locale, 'flash-messages', 'messageLoggedInDemoUser')()}</p>`,
+        }),
+      blocked: () =>
+        showNotificationBanner({
+          type: 'failure',
+          title: translate(locale, 'flash-messages', 'titleAccessDenied')(),
+          content: html`<p>${translate(locale, 'flash-messages', 'messageLogInBlocked')()}</p>`,
+        }),
+      'verify-contact-email': () =>
+        showNotificationBanner({
+          type: 'notice',
+          title: translate(locale, 'flash-messages', 'titleImportant')(),
+          content: html`<p>${translate(locale, 'flash-messages', 'messageVerifyEmail')()}</p>`,
+        }),
+      'verify-contact-email-resend': () =>
+        showNotificationBanner({
+          type: 'notice',
+          title: translate(locale, 'flash-messages', 'titleImportant')(),
+          content: html`<p>${translate(locale, 'flash-messages', 'messageVerifyEmailResend')()}</p>`,
+        }),
+      'contact-email-verified': () =>
+        showNotificationBanner({
+          type: 'success',
+          title: translate(locale, 'flash-messages', 'titleSuccess')(),
+          content: html`<p>${translate(locale, 'flash-messages', 'messageEmailVerified')()}</p>`,
+        }),
+      'orcid-connected': () =>
+        showNotificationBanner({
+          type: 'success',
+          title: translate(locale, 'flash-messages', 'titleSuccess')(),
+          content: html`<p>${translate(locale, 'flash-messages', 'messageOrcidConnected')()}</p>`,
+        }),
+      'orcid-disconnected': () =>
+        showNotificationBanner({
+          type: 'success',
+          title: translate(locale, 'flash-messages', 'titleSuccess')(),
+          content: html`<p>${translate(locale, 'flash-messages', 'messageOrcidDisconnected')()}</p>`,
+        }),
+      'slack-connected': () =>
+        showNotificationBanner({
+          type: 'success',
+          title: translate(locale, 'flash-messages', 'titleSuccess')(),
+          content: html`<p>${translate(locale, 'flash-messages', 'messageSlackConnected')()}</p>`,
+        }),
+      'slack-disconnected': () =>
+        showNotificationBanner({
+          type: 'success',
+          title: translate(locale, 'flash-messages', 'titleSuccess')(),
+          content: html`<p>${translate(locale, 'flash-messages', 'messageSlackDisconnected')()}</p>`,
+        }),
+      'avatar-changed': () =>
+        showNotificationBanner({
+          type: 'success',
+          title: translate(locale, 'flash-messages', 'titleSuccess')(),
+          content: html`<p>${translate(locale, 'flash-messages', 'messageAvatarChanged')()}</p>`,
+        }),
+      'avatar-removed': () =>
+        showNotificationBanner({
+          type: 'success',
+          title: translate(locale, 'flash-messages', 'titleSuccess')(),
+          content: html`<p>${translate(locale, 'flash-messages', 'messageAvatarRemoved')()}</p>`,
+        }),
+    }),
+  )
 }

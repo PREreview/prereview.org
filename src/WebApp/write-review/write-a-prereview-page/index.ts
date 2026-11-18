@@ -1,7 +1,6 @@
 import { flow, Match, pipe } from 'effect'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { match } from 'ts-pattern'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import { type IndeterminatePreprintId, type Preprints, getPreprint } from '../../../Domain/Preprints/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
@@ -41,10 +40,12 @@ export const writeReview = ({
           ),
           RTE.matchW(
             error =>
-              match(error)
-                .with({ _tag: 'IsAuthor' }, () => ownPreprintPage(preprint.id, writeReviewMatch.formatter, locale))
-                .with('no-session', () => startPage(preprint, locale, false))
-                .exhaustive(),
+              Match.value(error).pipe(
+                Match.tag('IsAuthor', () => ownPreprintPage(preprint.id, writeReviewMatch.formatter, locale)),
+                Match.literalsExhaustive({
+                  'no-session': () => startPage(preprint, locale, false),
+                }),
+              ),
             () => startPage(preprint, locale, true),
           ),
         ),

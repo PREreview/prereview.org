@@ -24,7 +24,7 @@ import {
   getPreprintTitle,
 } from '../../../Domain/Preprints/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
-import { writeReviewMatch, writeReviewReviewTypeMatch } from '../../../routes.ts'
+import { writeReviewMatch, writeReviewReviewTypeMatch, writeReviewStartMatch } from '../../../routes.ts'
 import { NonEmptyStringC } from '../../../types/NonEmptyString.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
@@ -69,12 +69,15 @@ export const writeReviewReview = ({
           RTE.matchEW(
             error =>
               RT.of(
-                match(error)
-                  .with('no-form', 'no-session', () =>
-                    RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
-                  )
-                  .with('form-unavailable', P.instanceOf(Error), () => havingProblemsPage(locale))
-                  .exhaustive(),
+                Match.value(error).pipe(
+                  Match.literalsExhaustive({
+                    'no-form': () =>
+                      RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                    'no-session': () =>
+                      RedirectResponse({ location: format(writeReviewStartMatch.formatter, { id: preprint.id }) }),
+                    'form-unavailable': () => havingProblemsPage(locale),
+                  }),
+                ),
               ),
             state =>
               match(state)

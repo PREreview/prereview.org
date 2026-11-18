@@ -79,21 +79,23 @@ export const writeReviewChangeAuthor = ({
           RTE.matchEW(
             error =>
               RT.of(
-                match(error)
-                  .with('no-author', () =>
-                    RedirectResponse({ location: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }) }),
-                  )
-                  .with('no-form', 'no-session', () =>
-                    RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
-                  )
-                  .with('not-found', () => pageNotFound(locale))
-                  .with('form-unavailable', () => havingProblemsPage(locale))
-                  .exhaustive(),
+                Match.value(error).pipe(
+                  Match.literalsExhaustive({
+                    'no-author': () =>
+                      RedirectResponse({ location: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }) }),
+                    'no-form': () =>
+                      RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                    'no-session': () =>
+                      RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                    'not-found': () => pageNotFound(locale),
+                    'form-unavailable': () => havingProblemsPage(locale),
+                  }),
+                ),
               ),
             state =>
-              match(state)
-                .with({ method: 'POST' }, handleChangeAuthorForm)
-                .otherwise(state =>
+              Match.value(state).pipe(
+                Match.when({ method: 'POST' }, handleChangeAuthorForm),
+                Match.orElse(state =>
                   RT.of(
                     changeAuthorForm({
                       ...state,
@@ -104,6 +106,7 @@ export const writeReviewChangeAuthor = ({
                     }),
                   ),
                 ),
+              ),
           ),
         ),
     ),

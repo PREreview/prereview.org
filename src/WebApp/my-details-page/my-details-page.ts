@@ -287,10 +287,12 @@ export function createPage({
                             openForRequests =>
                               html`${t('yes')()}
                                 <small
-                                  >${match(openForRequests.visibility)
-                                    .with('public', () => t('shownPublic')())
-                                    .with('restricted', () => t('restricted')())
-                                    .exhaustive()}</small
+                                  >${Match.value(openForRequests.visibility).pipe(
+                                    Match.literalsExhaustive({
+                                      public: () => t('shownPublic')(),
+                                      restricted: () => t('restricted')(),
+                                    }),
+                                  )}</small
                                 > `,
                           )
                           .with({ value: false }, () => t('no')())
@@ -350,10 +352,12 @@ export function createPage({
                 <dd>
                   ${t(careerStage.value)()}
                   <small
-                    >${match(careerStage.visibility)
-                      .with('public', () => t('shownPublic')())
-                      .with('restricted', () => t('restricted')())
-                      .exhaustive()}</small
+                    >${Match.value(careerStage.visibility).pipe(
+                      Match.literalsExhaustive({
+                        public: () => t('shownPublic')(),
+                        restricted: () => t('restricted')(),
+                      }),
+                    )}</small
                   >
                 </dd>
                 <dd>
@@ -390,10 +394,12 @@ export function createPage({
                 <dd>
                   ${researchInterests.value}
                   <small
-                    >${match(researchInterests.visibility)
-                      .with('public', () => t('shownPublic')())
-                      .with('restricted', () => t('restricted')())
-                      .exhaustive()}</small
+                    >${Match.value(researchInterests.visibility).pipe(
+                      Match.literalsExhaustive({
+                        public: () => t('shownPublic')(),
+                        restricted: () => t('restricted')(),
+                      }),
+                    )}</small
                   >
                 </dd>
                 <dd>
@@ -430,10 +436,12 @@ export function createPage({
                 <dd>
                   ${location.value}
                   <small
-                    >${match(location.visibility)
-                      .with('public', () => t('shownPublic')())
-                      .with('restricted', () => t('restricted')())
-                      .exhaustive()}</small
+                    >${Match.value(location.visibility).pipe(
+                      Match.literalsExhaustive({
+                        public: () => t('shownPublic')(),
+                        restricted: () => t('restricted')(),
+                      }),
+                    )}</small
                   >
                 </dd>
                 <dd>
@@ -468,10 +476,12 @@ export function createPage({
                 <dd>
                   ${languages.value}
                   <small
-                    >${match(languages.visibility)
-                      .with('public', () => t('shownPublic')())
-                      .with('restricted', () => t('restricted')())
-                      .exhaustive()}</small
+                    >${Match.value(languages.visibility).pipe(
+                      Match.literalsExhaustive({
+                        public: () => t('shownPublic')(),
+                        restricted: () => t('restricted')(),
+                      }),
+                    )}</small
                   >
                 </dd>
                 <dd>

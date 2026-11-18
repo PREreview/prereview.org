@@ -1,4 +1,4 @@
-import { Effect, Option, String, Struct, flow, pipe } from 'effect'
+import { Effect, Match, Option, String, Struct, flow, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -38,9 +38,11 @@ export const changeContactEmailAddress = ({
     RTE.let('locale', () => locale),
     RTE.matchEW(
       error =>
-        match(error)
-          .with('no-session', () => RT.of(LogInResponse({ location: format(myDetailsMatch.formatter, {}) })))
-          .exhaustive(),
+        Match.value(error).pipe(
+          Match.literalsExhaustive({
+            'no-session': () => RT.of(LogInResponse({ location: format(myDetailsMatch.formatter, {}) })),
+          }),
+        ),
       state =>
         match(state)
           .with({ method: 'POST' }, handleChangeContactEmailAddressForm)

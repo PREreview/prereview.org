@@ -3,7 +3,6 @@ import { format } from 'fp-ts-routing'
 import * as R from 'fp-ts/lib/Reader.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import { match } from 'ts-pattern'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import {
   getPreprintTitle,
@@ -48,11 +47,14 @@ export const writeReviewPublished = ({
           RTE.matchEW(
             error =>
               RT.of(
-                match(error)
-                  .with('no-published-review', 'no-session', () =>
-                    RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
-                  )
-                  .exhaustive(),
+                Match.value(error).pipe(
+                  Match.literalsExhaustive({
+                    'no-published-review': () =>
+                      RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                    'no-session': () =>
+                      RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                  }),
+                ),
               ),
             RT.fromReaderK(showSuccessMessage),
           ),

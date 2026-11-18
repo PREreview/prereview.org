@@ -1,4 +1,4 @@
-import { Struct, pipe } from 'effect'
+import { Match, Struct, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
@@ -92,17 +92,18 @@ export const authorInvitePersona = ({
     RTE.matchEW(
       error =>
         RT.of(
-          match(error)
-            .with('already-completed', () =>
-              RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }),
-            )
-            .with('declined', () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }))
-            .with('no-session', () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }))
-            .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
-            .with('not-found', () => pageNotFound(locale))
-            .with('unavailable', () => havingProblemsPage(locale))
-            .with('wrong-user', () => noPermissionPage(locale))
-            .exhaustive(),
+          Match.value(error).pipe(
+            Match.literalsExhaustive({
+              'already-completed': () =>
+                RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }),
+              declined: () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }),
+              'no-session': () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }),
+              'not-assigned': () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }),
+              'not-found': () => pageNotFound(locale),
+              unavailable: () => havingProblemsPage(locale),
+              'wrong-user': () => noPermissionPage(locale),
+            }),
+          ),
         ),
       state =>
         match(state)

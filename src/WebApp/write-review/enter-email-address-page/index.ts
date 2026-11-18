@@ -75,12 +75,16 @@ export const writeReviewEnterEmailAddress = ({
           RTE.matchEW(
             error =>
               RT.of(
-                match(error)
-                  .with('no-form', 'no-session', () =>
-                    RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
-                  )
-                  .with({ _tag: 'UnableToQuery' }, 'form-unavailable', () => havingProblemsPage(locale))
-                  .exhaustive(),
+                Match.value(error).pipe(
+                  Match.tag('UnableToQuery', () => havingProblemsPage(locale)),
+                  Match.literalsExhaustive({
+                    'no-form': () =>
+                      RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                    'no-session': () =>
+                      RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                    'form-unavailable': () => havingProblemsPage(locale),
+                  }),
+                ),
               ),
             state =>
               match(state)

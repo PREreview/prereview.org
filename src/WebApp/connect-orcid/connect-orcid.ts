@@ -1,4 +1,4 @@
-import { pipe } from 'effect'
+import { Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { P, match } from 'ts-pattern'
@@ -17,10 +17,12 @@ export const connectOrcid = ({ locale, user }: { locale: SupportedLocale; user?:
     RTE.bindW('orcidToken', ({ user }) => maybeGetOrcidToken(user.orcid)),
     RTE.matchW(
       error =>
-        match(error)
-          .with('no-session', () => LogInResponse({ location: format(connectOrcidMatch.formatter, {}) }))
-          .with('unavailable', () => havingProblemsPage(locale))
-          .exhaustive(),
+        Match.value(error).pipe(
+          Match.literalsExhaustive({
+            'no-session': () => LogInResponse({ location: format(connectOrcidMatch.formatter, {}) }),
+            unavailable: () => havingProblemsPage(locale),
+          }),
+        ),
       ({ orcidToken }) =>
         match(orcidToken)
           .with(P.not(undefined), () => RedirectResponse({ location: format(connectOrcidStartMatch.formatter, {}) }))

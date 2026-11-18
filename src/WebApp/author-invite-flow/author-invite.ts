@@ -1,4 +1,4 @@
-import { Array, flow, pipe } from 'effect'
+import { Array, flow, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -66,12 +66,14 @@ export const authorInvite = ({
     RTE.bindW('review', ({ invite }) => getPrereview(invite.review)),
     RTE.matchW(
       error =>
-        match(error)
-          .with('declined', () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }))
-          .with('not-found', () => pageNotFound(locale))
-          .with('unavailable', () => havingProblemsPage(locale))
-          .with('wrong-user', () => noPermissionPage(locale))
-          .exhaustive(),
+        Match.value(error).pipe(
+          Match.literalsExhaustive({
+            declined: () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }),
+            'not-found': () => pageNotFound(locale),
+            unavailable: () => havingProblemsPage(locale),
+            'wrong-user': () => noPermissionPage(locale),
+          }),
+        ),
       state =>
         match(state)
           .with({ user: P.not(undefined), invite: { status: 'completed' } }, () =>
