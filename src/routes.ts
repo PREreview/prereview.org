@@ -260,10 +260,17 @@ export const DatasetReviews = Route({
   schema: Schema.Struct({ datasetId: DatasetIdSchema }),
 })
 
+/** @deprecated */
 export const DatasetReview = Route({
   path: '/reviews/:datasetReviewId',
   href: params => `/reviews/${params.datasetReviewId}`,
   schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
+})
+
+export const Review = Route({
+  path: '/reviews/:id',
+  href: params => `/reviews/${params.id}`,
+  schema: Schema.Struct({ id: Schema.Union([Uuid.UuidSchema, NumberFromStringSchema.check(Schema.isInt())]) }),
 })
 
 export const ReviewRequests = QueryRoute({

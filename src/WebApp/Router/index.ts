@@ -11,6 +11,7 @@ import { ClubsData } from '../clubs-data/index.ts'
 import { CmsBlogPostPage } from '../CmsBlogPost.ts'
 import { CmsPage } from '../CmsPage.ts'
 import { DatasetReviewPage } from '../DatasetReviewPage/index.ts'
+import { PreprintReviewPage } from '../PreprintReviewPage/index.ts'
 import { DatasetReviewsPage } from '../DatasetReviewsPage/index.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
 import { HealthCheck } from '../HealthCheck.ts'
@@ -494,9 +495,19 @@ const AuthorInviteFlowRouter = [
   MakeRoute('GET', Routes.AuthorInviteStartNow, AuthorInviteFlow.StartNowPage),
 ]
 
-const DatasetReviewPages = [
+const ReviewPages = [
   MakeRoute('GET', Routes.DatasetReviews, DatasetReviewsPage),
-  MakeRoute('GET', Routes.DatasetReview, DatasetReviewPage),
+  MakeRoute(
+    'GET',
+    Routes.Review,
+    Effect.fnUntraced(function* ({ id }) {
+      if (typeof id === 'number') {
+        return yield* PreprintReviewPage({ id })
+      }
+
+      return yield* DatasetReviewPage({ datasetReviewId: id })
+    }),
+  ),
 ]
 
 const WriteCommentFlowRouter = [
@@ -852,7 +863,7 @@ const routes = [
       ),
       ...MatchmakingRouter,
       ...AuthRouter,
-      ...DatasetReviewPages,
+      ...ReviewPages,
       ...MyDetailsRouter,
       ...RequestAReviewFlowRouter,
       ...ReviewAPreprintFlowRouter,
