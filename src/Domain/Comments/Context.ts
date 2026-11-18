@@ -1,14 +1,11 @@
 import { Context, Data, type Effect, type Option } from 'effect'
 import type { Html } from '../../html.ts'
-import type * as Commands from '../../Commands.ts'
-import type { FromOnDemandQuery, UnableToQuery } from '../../Queries.ts'
+import type { UnableToQuery } from '../../Queries.ts'
 import type { Doi } from '../../types/Doi.ts'
 import type { NonEmptyString, Uuid } from '../../types/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { CommentCommand } from './Commands.ts'
 import type { CommentError } from './Errors.ts'
-import type { GetCommentIdForDoi as GetCommentIdForDoiQuery } from './GetCommentIdForDoi.ts'
-import type { ImportPublicationDateForComment as ImportPublicationDateForCommentCommand } from './ImportPublicationDateForComment.ts'
 import type * as Queries from './Queries.ts'
 import type { CommentState } from './State.ts'
 
@@ -30,16 +27,6 @@ export class GetComment extends Context.Service<
   GetComment,
   (commentId: Uuid.Uuid) => Effect.Effect<CommentState, UnableToQuery>
 >()('GetComment') {}
-
-export class GetCommentIdForDoi extends Context.Service<
-  GetCommentIdForDoi,
-  FromOnDemandQuery<typeof GetCommentIdForDoiQuery>
->()('GetCommentIdForDoi') {}
-
-export class ImportPublicationDateForComment extends Context.Service<
-  ImportPublicationDateForComment,
-  Commands.FromCommand<typeof ImportPublicationDateForCommentCommand>
->()('ImportPublicationDateForComment') {}
 
 export class HandleCommentCommand extends Context.Service<
   HandleCommentCommand,
