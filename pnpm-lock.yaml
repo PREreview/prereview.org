@@ -4,6 +4,8 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+pnpmfileChecksum: sha256-JujxP+d/nyjacexqtq63dpOCLq7YGwU51JYRzrfQvBo=
+
 patchedDependencies:
   '@huggingface/tokenizers@0.2.0': 74b97a1ea6747b1ff2a4ca48c01fac051409def3dd6b918c1ebe5eb262d51d84
   fp-ts-routing@0.7.0: e1f4ee2afb1efe0e0b8515c8aebb91540305f95bd04017acae33caac5401b197
@@ -249,7 +251,7 @@ importers:
         version: 0.8.2
       prettier-plugin-organize-imports:
         specifier: ^4.3.0
-        version: 4.3.0(prettier@3.9.6)(typescript@7.0.2)
+        version: 4.3.0(prettier@3.9.6)
       prettier-plugin-sh:
         specifier: ^0.20.2
         version: 0.20.2(prettier@3.9.6)
@@ -3599,7 +3601,6 @@ packages:
     resolution: {integrity: sha512-FxFz0qFhyBsGdIsb697f/EkvHzi5SZOhWAjxcx2dLt+Q532bAlhswcXGYB1yzjZ69kW8UoadFBw7TyNwlq96Iw==}
     peerDependencies:
       prettier: '>=2.0'
-      typescript: '>=2.9'
       vue-tsc: ^2.1.0 || 3
     peerDependenciesMeta:
       vue-tsc:
@@ -3973,6 +3974,11 @@ packages:
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
+
+  typescript@6.0.3:
+    resolution: {integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
 
   typescript@7.0.2:
     resolution: {integrity: sha512-8FYau96o3NKOhbjKi/qNvG/W5jhzxkbdm5sj9AbZ/5T5sWqn3hJgLfGx27sRKZWTvyzCP8dLRBTf5tBTSRVUNA==}
@@ -7583,10 +7589,10 @@ snapshots:
       '@types/estree': 1.0.9
       tiny-jsonc: 1.0.2
 
-  prettier-plugin-organize-imports@4.3.0(prettier@3.9.6)(typescript@7.0.2):
+  prettier-plugin-organize-imports@4.3.0(prettier@3.9.6):
     dependencies:
       prettier: 3.9.6
-      typescript: 7.0.2
+      typescript: 6.0.3
 
   prettier-plugin-sh@0.20.2(prettier@3.9.6):
     dependencies:
@@ -8016,6 +8022,8 @@ snapshots:
   type-check@0.4.0:
     dependencies:
       prelude-ls: 1.2.1
+
+  typescript@6.0.3: {}
 
   typescript@7.0.2:
     optionalDependencies:
