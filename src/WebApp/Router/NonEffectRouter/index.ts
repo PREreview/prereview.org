@@ -51,7 +51,7 @@ import { preprintReviews } from '../../preprint-reviews-page/index.ts'
 import { profile } from '../../profile-page/index.ts'
 import * as Response from '../../Response/index.ts'
 import { reviewAPreprint } from '../../review-a-preprint-page/index.ts'
-import { type Comment, CommentsForReview, reviewPage } from '../../review-page/index.ts'
+import { type Comment, reviewPage } from '../../review-page/index.ts'
 import { reviewsPage } from '../../reviews-page/index.ts'
 import type { TemplatePage } from '../../TemplatePage.ts'
 import { AuthorInviteFlowRouter } from './AuthorInviteFlowRouter.ts'
@@ -66,7 +66,6 @@ export const nonEffectRouter: Effect.Effect<
   HttpServerError.RouteNotFound | HttpServerError.HttpServerError,
   | Locale
   | FeatureFlags.FeatureFlags
-  | CommentsForReview
   | SlackOauth
   | PreprintReviews.FormStore.Store
   | ScietyListToken
@@ -106,7 +105,6 @@ export const nonEffectRouter: Effect.Effect<
   const zenodoApi = yield* Zenodo.ZenodoApi
   const featureFlags = yield* FeatureFlags.FeatureFlags
 
-  const commentsForReview = yield* CommentsForReview
   const body = yield* Effect.suspend(() =>
     HttpMethod.hasBody(request.method)
       ? pipe(
@@ -124,7 +122,6 @@ export const nonEffectRouter: Effect.Effect<
   const env = {
     authorizationHeader: Option.getOrUndefined(Headers.get(request.headers, 'Authorization')),
     body,
-    commentsForReview,
     locale,
     loggedInUser: Option.getOrUndefined(loggedInUser),
     sessionId: Option.getOrUndefined(sessionId),
@@ -149,7 +146,6 @@ export const nonEffectRouter: Effect.Effect<
 export interface Env {
   authorizationHeader?: string
   body: unknown
-  commentsForReview: typeof CommentsForReview.Service
   locale: SupportedLocale
   loggedInUser: User | undefined
   sessionId?: string

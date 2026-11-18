@@ -71,7 +71,6 @@ const ExternalInteractions = pipe(
     PreprintData.layer,
     OpenAlexWorks.layer,
     OrcidRecords.layer,
-    ZenodoRecords.layerCommentsForReview,
     GhostPage.layer,
     CloudinaryAvatars.layer,
     CommunitySlack.layer,

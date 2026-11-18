@@ -12,7 +12,7 @@ import { removedMessage } from './removed-message.ts'
 import { createPage } from './review-page.ts'
 
 export type { Prereview } from '../../Domain/PreprintReviews/index.ts'
-export { CommentsForReview, UnableToInvalidateComments, type Comment, type GetCommentsEnv } from './comments.ts'
+export { type Comment, type GetCommentsEnv } from './comments.ts'
 export type { GetPrereviewEnv } from './prereview.ts'
 
 export const reviewPage = ({

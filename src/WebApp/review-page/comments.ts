@@ -1,5 +1,5 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { type Array, Context, Data, type Effect } from 'effect'
+import type { Array } from 'effect'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
@@ -19,16 +19,6 @@ export interface Comment {
   published: Temporal.PlainDate
   text: Html
 }
-
-export class UnableToInvalidateComments extends Data.TaggedError('UnableToInvalidateComments')<{ cause: unknown }> {}
-
-export class CommentsForReview extends Context.Service<
-  CommentsForReview,
-  {
-    get: (review: { id: number; doi: Doi }) => Effect.Effect<ReadonlyArray<Comment>, 'unavailable'>
-    invalidate: (prereviewId: number) => Effect.Effect<void, UnableToInvalidateComments>
-  }
->()('CommentsForReview') {}
 
 export interface GetCommentsEnv {
   getComments: (review: { id: number; doi: Doi }) => TE.TaskEither<'unavailable', ReadonlyArray<Comment>>

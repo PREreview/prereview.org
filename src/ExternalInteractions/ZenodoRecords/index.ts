@@ -1,20 +1,13 @@
-import type { HttpClient } from 'effect/http'
 import { Array, Context, Effect, flow, Layer, pipe, Scope } from 'effect'
 import * as CachingHttpClient from '../../CachingHttpClient/index.ts'
 import type { Zenodo as ZenodoApi } from '../../ExternalApis/index.ts'
 import type { PreprintId } from '../../Domain/Preprints/index.ts'
 import type { PublicUrl } from '../../public-url.ts'
-import type { Doi, OrcidId, Pseudonym } from '../../types/index.ts'
-import * as ReviewPage from '../../WebApp/review-page/comments.ts' // oxlint-disable-line module-boundaries/use-index
-import { addCommentText } from './AddCommentText.ts'
-import { getCommunityRecords } from './CommunityRecords.ts'
-import { constructCommentListUrl } from './ConstructCommentListUrl.ts'
+import type { OrcidId, Pseudonym } from '../../types/index.ts'
 import { constructUrlsToInvalidatePrereview } from './ConstructUrlsToInvalidatePrereview.ts'
 import { CreateRecordForDatasetReview } from './CreateRecordForDatasetReview/index.ts'
 import { GetDoiForDatasetReviewRecord } from './GetDoiForDatasetReviewRecord/index.ts'
-import { getDoiForPrereview } from './GetDoiForPrereview.ts'
 import { PublishRecord } from './PublishRecord/index.ts'
-import { transformRecordToCommentWithoutText } from './TransformRecordToCommentWithoutText.ts'
 
 export * from './legacy-zenodo.ts'
 
@@ -68,35 +61,6 @@ export const make: Effect.Effect<typeof ZenodoRecords.Service, never, ZenodoApi.
 
 export const layer = Layer.effect(ZenodoRecords, make)
 
-export const getCommentsForPrereviewFromZenodo = (
-  id: Doi.Doi,
-): Effect.Effect<ReadonlyArray<ReviewPage.Comment>, 'unavailable', HttpClient.HttpClient | ZenodoApi.ZenodoApi> =>
-  pipe(
-    constructCommentListUrl(id),
-    Effect.andThen(getCommunityRecords),
-    Effect.andThen(record =>
-      Effect.forEach(record.hits.hits, record => Effect.fromResult(transformRecordToCommentWithoutText(record))),
-    ),
-    Effect.andThen(Effect.forEach(addCommentText, { concurrency: 'unbounded' })),
-    Effect.catchTags({
-      NoTextUrlAvailable: error =>
-        Effect.logError('Zenodo record of a comment does not have a text url').pipe(
-          Effect.annotateLogs({ error }),
-          Effect.andThen(Effect.fail('unavailable' as const)),
-        ),
-      SchemaError: error =>
-        Effect.logError('Failed to decode Zenodo response while retrieving a comment').pipe(
-          Effect.annotateLogs({ error }),
-          Effect.andThen(Effect.fail('unavailable' as const)),
-        ),
-      HttpClientError: error =>
-        Effect.logError('Unable to retrieve comment text from Zenodo').pipe(
-          Effect.annotateLogs({ error }),
-          Effect.andThen(Effect.fail('unavailable' as const)),
-        ),
-    }),
-  )
-
 export const invalidatePrereviewInCache = ({
   prereviewId,
   preprintId,
@@ -120,55 +84,6 @@ export const invalidatePrereviewInCache = ({
       Effect.logError('Unable to invalidate PREreview in cache').pipe(Effect.annotateLogs({ error, prereviewId })),
     ),
   )
-
-export const invalidateCommentsForPrereview = (
-  prereviewId: number,
-): Effect.Effect<
-  void,
-  ReviewPage.UnableToInvalidateComments,
-  CachingHttpClient.HttpCache | HttpClient.HttpClient | ZenodoApi.ZenodoApi
-> =>
-  pipe(
-    getDoiForPrereview(prereviewId),
-    Effect.andThen(constructCommentListUrl),
-    Effect.andThen(invalidateCacheEntry),
-    Effect.catchTags({
-      InternalHttpCacheFailure: error =>
-        Effect.logError('Unable to invalidate comments for PREreview').pipe(
-          Effect.annotateLogs({ error }),
-          Effect.andThen(new ReviewPage.UnableToInvalidateComments({ cause: error })),
-        ),
-      SchemaError: error =>
-        Effect.logError('Failed to decode Zenodo record of a PREreview').pipe(
-          Effect.annotateLogs({ error }),
-          Effect.andThen(new ReviewPage.UnableToInvalidateComments({ cause: error })),
-        ),
-      HttpClientError: error =>
-        Effect.logError(
-          error.response === undefined
-            ? 'Unable to request a Zenodo record for a PREreview'
-            : 'Unable to get Zenodo record for a PREreview',
-        ).pipe(
-          Effect.annotateLogs({ error }),
-          Effect.andThen(new ReviewPage.UnableToInvalidateComments({ cause: error })),
-        ),
-    }),
-  )
-
-export const layerCommentsForReview = Layer.effect(
-  ReviewPage.CommentsForReview,
-  Effect.gen(function* () {
-    const context = yield* Effect.map(
-      Effect.context<CachingHttpClient.HttpCache | HttpClient.HttpClient | ZenodoApi.ZenodoApi>(),
-      Context.omit(Scope.Scope),
-    )
-
-    return {
-      get: ({ doi }) => pipe(getCommentsForPrereviewFromZenodo(doi), Effect.provide(context)),
-      invalidate: prereviewId => pipe(invalidateCommentsForPrereview(prereviewId), Effect.provide(context)),
-    }
-  }),
-).pipe(Layer.provide(CachingHttpClient.layer('10 minutes')))
 
 const invalidateCacheEntry = Effect.fnUntraced(function* (url: URL) {
   const httpCache = yield* CachingHttpClient.HttpCache
