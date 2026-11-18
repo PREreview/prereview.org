@@ -1,5 +1,5 @@
 import { HttpServerResponse } from 'effect/http'
-import { Array, Effect, Filter, flow, Option, pipe, Record, Redacted } from 'effect'
+import { Array, Effect, Filter, flow, Match, Option, pipe, Record, Redacted } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import type * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
@@ -10,7 +10,7 @@ import { withEnv } from '../../../Fpts.ts'
 import * as OrcidTokens from '../../../OrcidTokens.ts'
 import {
   PreprintReviews,
-  type Prereview,
+  type PublishedPreprintReviewForReviewsData,
   type PublishedPreprintReviewForSciety,
 } from '../../../Domain/PreprintReviews/index.ts'
 import * as Prereviewers from '../../../Domain/Prereviewers/index.ts'
@@ -67,7 +67,7 @@ export const DataRouter = pipe(
             ? () =>
                 EffectToFpts.toTaskEither(
                   pipe(
-                    PreprintReviews.getAllPublishedPreprintReviews,
+                    PreprintReviews.getAllPublishedPreprintReviewsForReviewsData,
                     Effect.map(Array.map(toReviewsDataPrereview)),
                     Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
                   ),
@@ -166,19 +166,28 @@ export const DataRouter = pipe(
 const getClubByName = (...args: Parameters<(typeof Clubs.Service)['getClubByName']>) =>
   Clubs.use(service => service.getClubByName(...args))
 
-const toReviewsDataPrereview = (prereview: Prereview): ReviewsDataPrereview => ({
-  preprint: prereview.preprint.id,
-  createdAt: prereview.published,
+const toReviewsDataPrereview = (prereview: PublishedPreprintReviewForReviewsData): ReviewsDataPrereview => ({
+  preprint: prereview.preprint,
+  createdAt:
+    prereview.published instanceof Temporal.Instant
+      ? prereview.published.toZonedDateTimeISO('UTC').toPlainDate()
+      : prereview.published,
   doi: prereview.doi,
-  authors: toReviewsDataAuthors(prereview.authors.named),
+  authors: Array.map(
+    prereview.authors,
+    Match.valueTags({
+      Public: author => ({ orcid: author.orcidId }),
+      Pseudonym: author => ({ pseudonym: author.pseudonym }),
+    }),
+  ),
   language: prereview.language,
   type: prereview.structured ? 'structured' : 'full',
-  club: prereview.club?.id,
+  club: prereview.club,
   live: prereview.live,
   requested: prereview.requested,
-  domains: Array.dedupe(Array.map(prereview.topics ?? [], getTopicDomain)),
-  fields: Array.dedupe(Array.map(prereview.topics ?? [], getTopicField)),
-  subfields: Array.dedupe(Array.map(prereview.topics ?? [], getTopicSubfield)),
+  domains: Array.dedupe(Array.map(prereview.topics, getTopicDomain)),
+  fields: Array.dedupe(Array.map(prereview.topics, getTopicField)),
+  subfields: Array.dedupe(Array.map(prereview.topics, getTopicSubfield)),
 })
 
 const toScietyListPrereview = (prereview: PublishedPreprintReviewForSciety): ScietyListPrereview => ({
