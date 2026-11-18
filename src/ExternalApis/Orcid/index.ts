@@ -51,6 +51,7 @@ export const layerRateLimitedHttpClient = Layer.effect(
         algorithm: 'token-bucket',
         limit: requestsPerSecond(api),
         window: '1 second',
+        times: 3,
       }),
       HttpClient.catchTag('RateLimiterError', Effect.die),
     )
