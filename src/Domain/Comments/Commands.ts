@@ -1,7 +1,7 @@
 import { Data, type Option } from 'effect'
 import type { Html } from '../../html.ts'
 import type { Doi } from '../../types/Doi.ts'
-import type { NonEmptyString, Uuid } from '../../types/index.ts'
+import type { NonEmptyString, Temporal, Uuid } from '../../types/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 
 export class StartComment extends Data.TaggedClass('StartComment')<{
@@ -39,7 +39,10 @@ export class MarkDoiAsAssigned extends Data.TaggedClass('MarkDoiAsAssigned')<{
   commentId: Uuid.Uuid
 }> {}
 
-export class MarkCommentAsPublished extends Data.TaggedClass('MarkCommentAsPublished')<{ commentId: Uuid.Uuid }> {}
+export class MarkCommentAsPublished extends Data.TaggedClass('MarkCommentAsPublished')<{
+  commentId: Uuid.Uuid
+  publishedAt: Temporal.Instant
+}> {}
 
 export type CommentCommand =
   | StartComment

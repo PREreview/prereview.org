@@ -2123,7 +2123,9 @@ export const commentWasPublished = ({
 }: {
   commentId?: fc.Arbitrary<Events.CommentWasPublished['commentId']>
 } = {}): fc.Arbitrary<Events.CommentWasPublished> =>
-  fc.record({ commentId: commentId ?? uuid() }).map(data => new Events.CommentWasPublished(data))
+  fc
+    .record({ commentId: commentId ?? uuid(), publishedAt: instant() }, { requiredKeys: ['commentId'] })
+    .map(data => new Events.CommentWasPublished(data))
 
 export const commentEvent = (
   args: {

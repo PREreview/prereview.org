@@ -175,7 +175,11 @@ const onMarkCommentAsPublished = (command: Commands.MarkCommentAsPublished) =>
     Match.tag('CommentBeingPublished', state =>
       state.doi === undefined || state.id === undefined
         ? Result.fail(new Errors.DoiIsNotAssigned())
-        : Result.succeed(Option.some(new Events.CommentWasPublished({ commentId: command.commentId }))),
+        : Result.succeed(
+            Option.some(
+              new Events.CommentWasPublished({ commentId: command.commentId, publishedAt: command.publishedAt }),
+            ),
+          ),
     ),
     Match.tag('CommentPublished', () => Result.fail(new Errors.CommentWasAlreadyPublished())),
     Match.exhaustive,

@@ -1,3 +1,4 @@
+import { Temporal } from '@js-temporal/polyfill'
 import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect, Result, Layer, pipe } from 'effect'
 import * as Comments from '../../../src/Domain/Comments/index.ts'
@@ -194,7 +195,9 @@ describe('PublishCommentWhenCommentWasAssignedADoi', () => {
           handleCommentCommand,
         )
 
-        expect(handleCommentCommand).toHaveBeenCalledWith(new Comments.MarkCommentAsPublished({ commentId }))
+        expect(handleCommentCommand).toHaveBeenCalledWith(
+          new Comments.MarkCommentAsPublished({ commentId, publishedAt: Temporal.Instant.fromEpochMilliseconds(0) }),
+        )
       }).pipe(Effect.provideService(Comments.PublishCommentOnZenodo, () => Effect.void)),
   )
 

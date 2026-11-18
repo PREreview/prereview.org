@@ -1,6 +1,6 @@
 import { Effect, pipe } from 'effect'
 import { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
-import type { Uuid } from '../../types/index.ts'
+import { Temporal, type Uuid } from '../../types/index.ts'
 import { ConfirmExistenceOfVerifiedEmailAddress, MarkCommentAsPublished, MarkDoiAsAssigned } from './Commands.ts'
 import {
   CreateRecordOnZenodoForComment,
@@ -77,7 +77,10 @@ export const PublishCommentWhenCommentWasAssignedADoi: (
 
   yield* publishCommentOnZenodo(event.id)
 
-  yield* Effect.mapError(handleCommand(new MarkCommentAsPublished({ commentId: event.commentId })), error =>
-    error._tag !== 'UnableToHandleCommand' ? new UnableToHandleCommand({ cause: error }) : error,
+  const publishedAt = yield* Temporal.currentInstant
+
+  yield* Effect.mapError(
+    handleCommand(new MarkCommentAsPublished({ commentId: event.commentId, publishedAt })),
+    error => (error._tag !== 'UnableToHandleCommand' ? new UnableToHandleCommand({ cause: error }) : error),
   )
 })

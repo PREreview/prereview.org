@@ -1,6 +1,6 @@
 import { Array, Schema } from 'effect'
 import { HtmlSchema } from '../../html.ts'
-import { Doi, NonEmptyString, OrcidId, Uuid } from '../../types/index.ts'
+import { Doi, NonEmptyString, OrcidId, Temporal, Uuid } from '../../types/index.ts'
 
 export class CommentWasStarted extends Schema.TaggedClass<CommentWasStarted>()('CommentWasStarted', {
   prereviewId: Schema.Number,
@@ -49,6 +49,7 @@ export class CommentWasAssignedADoi extends Schema.TaggedClass<CommentWasAssigne
 
 export class CommentWasPublished extends Schema.TaggedClass<CommentWasPublished>()('CommentWasPublished', {
   commentId: Uuid.UuidSchema,
+  publishedAt: Schema.optionalKey(Temporal.InstantSchema),
 }) {}
 
 export type CommentEvent = typeof CommentEvent.Type

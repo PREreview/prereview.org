@@ -1,4 +1,5 @@
 import { describe, test } from '../../vitest.ts'
+import { Temporal } from '@js-temporal/polyfill'
 import { Option } from 'effect'
 import * as _ from '../../../src/Domain/Comments/index.ts'
 import { html } from '../../../src/html.ts'
@@ -14,6 +15,7 @@ const given = CommandHandlerSpecification.for({
 })
 
 const commentId = Uuid.Uuid('e51a69b7-df03-4b89-b803-2f452767ecf8')
+const publishedAt = Temporal.Instant.from('2026-11-18T12:00:00Z')
 
 describe('when not started', () => {
   test('can be started', () =>
@@ -56,7 +58,7 @@ describe('when not started', () => {
       .thenError(new _.CommentHasNotBeenStarted()))
 
   test('cannot be marked as published', () =>
-    given().when(new _.MarkCommentAsPublished({ commentId })).thenError(new _.CommentHasNotBeenStarted()))
+    given().when(new _.MarkCommentAsPublished({ commentId, publishedAt })).thenError(new _.CommentHasNotBeenStarted()))
 })
 
 describe('when in progress', () => {
@@ -121,7 +123,9 @@ describe('when in progress', () => {
       .thenError(new _.CommentIsIncomplete()))
 
   test('cannot be marked as published', () =>
-    given(started).when(new _.MarkCommentAsPublished({ commentId })).thenError(new _.CommentIsIncomplete()))
+    given(started)
+      .when(new _.MarkCommentAsPublished({ commentId, publishedAt }))
+      .thenError(new _.CommentIsIncomplete()))
 })
 
 describe('when ready for publication', () => {
@@ -186,7 +190,7 @@ describe('when ready for publication', () => {
 
   test('cannot be marked as published', () =>
     given(...minimumEventsToBeReady)
-      .when(new _.MarkCommentAsPublished({ commentId }))
+      .when(new _.MarkCommentAsPublished({ commentId, publishedAt }))
       .thenError(new _.DoiIsNotAssigned()))
 })
 
@@ -306,7 +310,7 @@ describe('when being published', () => {
         new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId }),
         new _.PublicationOfCommentWasRequested({ commentId }),
       )
-        .when(new _.MarkCommentAsPublished({ commentId }))
+        .when(new _.MarkCommentAsPublished({ commentId, publishedAt }))
         .thenError(new _.DoiIsNotAssigned()))
   })
 
@@ -336,8 +340,8 @@ describe('when being published', () => {
         new _.PublicationOfCommentWasRequested({ commentId }),
         new _.CommentWasAssignedADoi({ commentId, id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       )
-        .when(new _.MarkCommentAsPublished({ commentId }))
-        .then(new _.CommentWasPublished({ commentId })))
+        .when(new _.MarkCommentAsPublished({ commentId, publishedAt }))
+        .then(new _.CommentWasPublished({ commentId, publishedAt })))
   })
 })
 
@@ -465,6 +469,6 @@ describe('when published', () => {
       new _.CommentWasAssignedADoi({ commentId, id: 107286, doi: Doi('10.5072/zenodo.107286') }),
       new _.CommentWasPublished({ commentId }),
     )
-      .when(new _.MarkCommentAsPublished({ commentId }))
+      .when(new _.MarkCommentAsPublished({ commentId, publishedAt }))
       .thenError(new _.CommentWasAlreadyPublished()))
 })
