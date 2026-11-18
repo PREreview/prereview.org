@@ -1,4 +1,5 @@
-import type { HttpClient } from 'effect/http'
+import { HttpClient } from 'effect/http'
+import { RateLimiter } from 'effect/persistence'
 import { Context, Effect, flow, Layer, Scope, Semaphore } from 'effect'
 import { GetWork } from './GetWork/index.ts'
 
@@ -19,11 +20,32 @@ export const getWork = (...args: Parameters<(typeof Crossref.Service)['getWork']
 const make: Effect.Effect<typeof Crossref.Service, never, HttpClient.HttpClient> = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<HttpClient.HttpClient>(), Context.omit(Scope.Scope))
 
-  const concurrencyLimit = yield* Semaphore.make(3)
-
   return {
-    getWork: flow(GetWork, concurrencyLimit.withPermits(1), Effect.provide(context)),
+    getWork: flow(GetWork, Effect.provide(context)),
   }
 })
 
 export const layer = Layer.effect(Crossref, make)
+
+export const layerRateLimitedHttpClient = Layer.effect(
+  HttpClient.HttpClient,
+  Effect.gen(function* () {
+    const httpClient = yield* HttpClient.HttpClient
+    const limiter = yield* RateLimiter.RateLimiter
+    const concurrencyLimit = yield* Semaphore.make(3)
+
+    return httpClient.pipe(
+      HttpClient.timeout('2 seconds'),
+      HttpClient.transform(concurrencyLimit.withPermits(1)),
+      HttpClient.withRateLimiter({
+        limiter,
+        key: 'crossref',
+        algorithm: 'token-bucket',
+        limit: 10,
+        window: '1 second',
+        times: 3,
+      }),
+      HttpClient.catchTag('RateLimiterError', Effect.die),
+    )
+  }),
+)

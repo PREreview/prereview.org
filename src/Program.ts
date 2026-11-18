@@ -84,7 +84,12 @@ const ExternalApis = Layer.mergeAll(
   Cloudinary.layer,
   CoarNotify.layer,
   Layer.provide(Contentful.layer, CachingHttpClient.layer('10 seconds')),
-  Layer.provide(Crossref.layer, CachingHttpClient.layer('1 day')),
+  pipe(
+    Crossref.layer,
+    Layer.provide(CachingHttpClient.layer('1 day', '10 seconds')),
+    Layer.provide(Layer.fresh(RequestCollapsingHttpClient.layer)),
+    Layer.provide(Crossref.layerRateLimitedHttpClient),
+  ),
   Layer.provide(Datacite.layer, CachingHttpClient.layer('1 day')),
   Layer.provide(Ghost.layer, CachingHttpClient.layer('10 seconds')),
   Layer.provide(JapanLinkCenter.layer, CachingHttpClient.layer('1 day')),
