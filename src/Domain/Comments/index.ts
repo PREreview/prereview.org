@@ -17,7 +17,7 @@ import {
   type CreateRecordOnZenodoForComment,
   type PublishCommentOnZenodo,
 } from './Context.ts'
-import * as Comments from './Comments.ts'
+import { layer as commentsServiceLayer } from './Comments.ts'
 import { DecideComment } from './Decide.ts'
 import { CommentEventTypes, type CommentEvent } from './Events.ts'
 import { EvolveComment } from './Evolve.ts'
@@ -149,7 +149,7 @@ export const makeGetNextExpectedCommandForUserOnAComment: Effect.Effect<
 })
 
 export const layer = Layer.mergeAll(
-  Comments.layer,
+  commentsServiceLayer,
   Layer.effect(HandleCommentCommand, makeHandleCommentCommand),
   Layer.effect(GetNextExpectedCommandForUser, makeGetNextExpectedCommandForUser),
   Layer.effect(GetNextExpectedCommandForUserOnAComment, makeGetNextExpectedCommandForUserOnAComment),
