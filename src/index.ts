@@ -15,7 +15,6 @@ import * as Clubs from './Domain/Clubs/index.ts'
 import { Nodemailer } from './ExternalApis/index.ts'
 import { html } from './html.ts'
 import * as OrcidTokens from './OrcidTokens.ts'
-import * as PostgresConnectionTiming from './PostgresConnectionTiming.ts'
 import * as PreprintReviews from './Domain/PreprintReviews/index.ts'
 import * as Prereviewers from './Domain/Prereviewers/index.ts'
 import { Program } from './Program.ts'
@@ -37,7 +36,6 @@ const PostgresClientLayer = Layer.mergeAll(
     minConnections: Config.succeed(5),
   }),
   Layer.effectDiscard(Effect.logDebug('Postgres Database connected')),
-  PostgresConnectionTiming.layer,
   Layer.effectDiscard(Effect.addFinalizer(() => Effect.logDebug('Postgres Database disconnected'))),
 )
 
