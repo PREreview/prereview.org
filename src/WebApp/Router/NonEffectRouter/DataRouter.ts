@@ -7,11 +7,13 @@ import { Clubs } from '../../../Domain/Clubs/index.ts'
 import { ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as OrcidTokens from '../../../OrcidTokens.ts'
+import { PreprintReviews, type Prereview } from '../../../Domain/PreprintReviews/index.ts'
 import * as Prereviewers from '../../../Domain/Prereviewers/index.ts'
 import { EffectToFpts, FptsToEffect } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
-import { reviewsData, type GetPrereviewsEnv } from '../../reviews-data/index.ts'
+import { getTopicDomain, getTopicField, getTopicSubfield } from '../../../types/Topic.ts'
+import { reviewsData, type GetPrereviewsEnv, type Prereview as ReviewsDataPrereview } from '../../reviews-data/index.ts'
 import { scietyList, type ScietyListEnv } from '../../sciety-list/index.ts'
 import { usersData, type GetUsersEnv } from '../../users-data/index.ts'
 import type { Env } from './index.ts'
@@ -43,21 +45,31 @@ export const DataRouter = pipe(
       function* (env: Env) {
         const json = yield* FptsToEffect.readerTaskEither(handler(env.authorizationHeader ?? ''), {
           scietyListToken: Redacted.value(env.scietyListToken),
-          getPrereviews: withEnv(() => ZenodoRecords.getPrereviewsForSciety, {
-            fetch: env.fetch,
-            getClubByName: EffectToFpts.toTaskK(
-              flow(
-                getClubByName,
-                Effect.map(Option.some),
-                Effect.catchTag('ClubNotFound', () => Effect.succeedNone),
-              ),
-              env.runtime,
-            ),
-            runtime: env.runtime,
-            zenodoApiKey: Redacted.value(env.zenodoApiConfig.key),
-            zenodoUrl: env.zenodoApiConfig.origin,
-            ...env.logger,
-          }),
+          getPrereviews: env.featureFlags.useEventsForPreprintReviews
+            ? () =>
+                EffectToFpts.toTaskEither(
+                  pipe(
+                    PreprintReviews.getAllPublishedPreprintReviews,
+                    Effect.map(Array.map(toReviewsDataPrereview)),
+                    Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
+                  ),
+                  env.runtime,
+                )
+            : withEnv(() => ZenodoRecords.getPrereviewsForSciety, {
+                fetch: env.fetch,
+                getClubByName: EffectToFpts.toTaskK(
+                  flow(
+                    getClubByName,
+                    Effect.map(Option.some),
+                    Effect.catchTag('ClubNotFound', () => Effect.succeedNone),
+                  ),
+                  env.runtime,
+                ),
+                runtime: env.runtime,
+                zenodoApiKey: Redacted.value(env.zenodoApiConfig.key),
+                zenodoUrl: env.zenodoApiConfig.origin,
+                ...env.logger,
+              }),
           getUsers: () =>
             EffectToFpts.toTaskEither(
               pipe(
@@ -107,3 +119,18 @@ export const DataRouter = pipe(
 
 const getClubByName = (...args: Parameters<(typeof Clubs.Service)['getClubByName']>) =>
   Clubs.use(service => service.getClubByName(...args))
+
+const toReviewsDataPrereview = (prereview: Prereview): ReviewsDataPrereview => ({
+  preprint: prereview.preprint.id,
+  createdAt: prereview.published,
+  doi: prereview.doi,
+  authors: prereview.authors.named,
+  language: prereview.language,
+  type: prereview.structured ? 'structured' : 'full',
+  club: prereview.club?.id,
+  live: prereview.live,
+  requested: prereview.requested,
+  domains: Array.dedupe(Array.map(prereview.topics ?? [], getTopicDomain)),
+  fields: Array.dedupe(Array.map(prereview.topics ?? [], getTopicField)),
+  subfields: Array.dedupe(Array.map(prereview.topics ?? [], getTopicSubfield)),
+})
