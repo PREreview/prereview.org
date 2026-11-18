@@ -645,7 +645,11 @@ const getPublished = (record: ZenodoRecord) => {
   const published = Temporal.PlainDate.from(record.metadata.publication_date)
   const created = Temporal.Instant.from(record.created)
 
-  if (!created.toZonedDateTimeISO('UTC').toPlainDate().equals(published)) {
+  if (
+    !Array.some(['UTC', 'Europe/Zurich'], timeZone =>
+      created.toZonedDateTimeISO(timeZone).toPlainDate().equals(published),
+    )
+  ) {
     return published
   }
 
