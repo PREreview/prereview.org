@@ -13,6 +13,7 @@ export interface PublishedComment {
   readonly competingInterests: Option.Option<NonEmptyString.NonEmptyString>
   readonly doi: Doi
   readonly id: number
+  readonly license: 'CC-BY-4.0'
   readonly persona: 'public' | 'pseudonym'
   readonly publishedAt: Temporal.Instant
 }
@@ -95,7 +96,17 @@ const toPublishedComment = (
     return Result.fail(new Queries.UnexpectedSequenceOfEvents({ cause: 'no publication date' }))
   }
 
-  return Result.succeed({ authorId, comment, commentId, competingInterests, doi, id, persona, publishedAt })
+  return Result.succeed({
+    authorId,
+    comment,
+    commentId,
+    competingInterests,
+    doi,
+    id,
+    license: 'CC-BY-4.0',
+    persona,
+    publishedAt,
+  })
 }
 
 const byPublishedAt: Order.Order<PublishedComment> = Order.mapInput(

@@ -49,6 +49,7 @@ const expected = ({
   competingInterests: Option.some(NonEmptyString.NonEmptyString('Some competing interests')),
   doi: Doi.Doi(`10.5281/zenodo.${id}`),
   id,
+  license: 'CC-BY-4.0',
   persona: 'pseudonym',
   publishedAt,
 })
