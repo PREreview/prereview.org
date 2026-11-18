@@ -15,7 +15,6 @@ import type { LoggerEnv } from 'logger-fp-ts'
 import type * as AuthorInviteStore from '../../../AuthorInviteStore.ts'
 import type * as CachingHttpClient from '../../../CachingHttpClient/index.ts'
 import type { Clubs } from '../../../Domain/Clubs/index.ts'
-import { Comments } from '../../../Domain/Comments/index.ts'
 import type { ContactEmailAddresses } from '../../../Domain/ContactEmailAddresses/index.ts'
 import { type EnabledLocales, Locale, ScietyListToken, type SessionStore } from '../../../Context.ts'
 import { MakeDeprecatedLoggerEnv } from '../../../DeprecatedServices.ts'
@@ -50,7 +49,6 @@ import { preprintReviews } from '../../preprint-reviews-page/index.ts'
 import { profile } from '../../profile-page/index.ts'
 import * as Response from '../../Response/index.ts'
 import { reviewAPreprint } from '../../review-a-preprint-page/index.ts'
-import { reviewPage } from '../../review-page/index.ts'
 import { reviewsPage } from '../../reviews-page/index.ts'
 import type { TemplatePage } from '../../TemplatePage.ts'
 import { AuthorInviteFlowRouter } from './AuthorInviteFlowRouter.ts'
@@ -154,7 +152,6 @@ export interface Env {
   runtime: Context.Context<
     | AuthorInvites
     | Clubs
-    | Comments
     | CachingHttpClient.HttpCache
     | CloudinaryAvatars.CloudinaryAvatars
     | CommunitySlack.CommunitySlack
@@ -311,33 +308,6 @@ const routerWithoutHyperTs = pipe(
       P.map(
         () => (env: Env) =>
           reviewAPreprint({ body: env.body, method: env.method, locale: env.locale })({ runtime: env.runtime }),
-      ),
-    ),
-    pipe(
-      Routes.reviewMatch.parser,
-      P.map(
-        ({ id }) =>
-          (env: Env) =>
-            reviewPage({ id, locale: env.locale })({
-              getComments: EffectToFpts.toTaskEitherK(
-                flow(
-                  Comments.getPublishedCommentsForAPrereview,
-                  Effect.catchTag('CommentsAreUnavailable', () => Effect.fail('unavailable' as const)),
-                ),
-                env.runtime,
-              ),
-              getPrereview: EffectToFpts.toTaskEitherK(
-                flow(
-                  PreprintReviews.getPreprintReview,
-                  Effect.catchTags({
-                    PrereviewIsNotFound: () => Effect.fail('not-found' as const),
-                    PrereviewIsUnavailable: () => Effect.fail('unavailable' as const),
-                    PrereviewWasRemoved: () => Effect.fail('removed' as const),
-                  }),
-                ),
-                env.runtime,
-              ),
-            }),
       ),
     ),
     pipe(
