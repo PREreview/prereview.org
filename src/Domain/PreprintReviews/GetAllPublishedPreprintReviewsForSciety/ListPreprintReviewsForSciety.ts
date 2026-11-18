@@ -50,6 +50,7 @@ const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray
           preprint: imported.preprint,
           published: imported.published,
         }),
+        authorChoices: HashMap.remove(currentState.authorChoices, imported.id),
       }),
       AuthorChoicesForAReviewImported: authorChoice => ({
         ...currentState,

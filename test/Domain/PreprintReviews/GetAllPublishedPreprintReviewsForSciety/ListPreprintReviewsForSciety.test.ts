@@ -110,6 +110,19 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
     ],
   ],
   [
+    'ignores authors who accepted an invite before the import, as the import already includes them',
+    [
+      new Events.AuthorChoicesForAReviewImported({
+        reviewId: 1,
+        orcidId: OrcidId.OrcidId('0000-0002-1825-0097'),
+        persona: 'public',
+        confirmedAt: Temporal.Instant.from('2026-10-31T09:00:00Z'),
+      }),
+      preprintReviewImported({ id: 1, published: Temporal.PlainDate.from('2026-11-01') }),
+    ],
+    [expected({ id: 1, published: Temporal.PlainDate.from('2026-11-01') })],
+  ],
+  [
     'ignores dataset reviews',
     [
       new Events.DatasetReviewWasPublished({
