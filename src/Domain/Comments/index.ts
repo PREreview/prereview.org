@@ -5,7 +5,6 @@ import type { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
 import * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import { makeOnDemandQuery, UnableToQuery } from '../../Queries.ts'
-import * as ReviewPage from '../../WebApp/review-page/index.ts'
 import {
   GetComment,
   GetCommentIdForDoi,
@@ -189,7 +188,6 @@ const ReactToCommentEventsNoDeps: Layer.Layer<
   | ContactEmailAddresses
   | CreateRecordOnZenodoForComment
   | PublishCommentOnZenodo
-  | ReviewPage.CommentsForReview
   | Sharding.Sharding
 > = Layer.effectDiscard(
   Effect.gen(function* () {
@@ -215,20 +213,6 @@ const ReactToCommentEventsNoDeps: Layer.Layer<
             ),
           ),
           Match.tag('CommentWasAssignedADoi', React.PublishCommentWhenCommentWasAssignedADoi),
-          Match.tag('CommentWasPublished', ({ commentId }) =>
-            pipe(
-              EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
-              Effect.flatMap(Effect.fromOption),
-              Effect.andThen(eventsForComment => Effect.fromOption(Queries.GetPrereviewId(eventsForComment.events))),
-              Effect.andThen(
-                Effect.fnUntraced(function* (prereviewId) {
-                  const commentsForReview = yield* ReviewPage.CommentsForReview
-
-                  yield* commentsForReview.invalidate(prereviewId)
-                }),
-              ),
-            ),
-          ),
           Match.orElse(() => Effect.void),
         ),
       ),
