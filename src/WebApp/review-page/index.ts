@@ -26,7 +26,7 @@ export const reviewPage = ({
     RTE.Do,
     RTE.let('id', () => id),
     RTE.apS('review', getPrereview(id)),
-    RTE.bindW('comments', ({ review }) => getComments(review.doi)),
+    RTE.bindW('comments', ({ review }) => getComments({ id: review.id, doi: review.doi })),
     RTE.let('locale', () => locale),
     RTE.match(
       error =>

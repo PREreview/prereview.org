@@ -164,7 +164,7 @@ export const layerCommentsForReview = Layer.effect(
     )
 
     return {
-      get: reviewDoi => pipe(getCommentsForPrereviewFromZenodo(reviewDoi), Effect.provide(context)),
+      get: ({ doi }) => pipe(getCommentsForPrereviewFromZenodo(doi), Effect.provide(context)),
       invalidate: prereviewId => pipe(invalidateCommentsForPrereview(prereviewId), Effect.provide(context)),
     }
   }),

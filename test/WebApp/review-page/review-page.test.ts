@@ -53,7 +53,7 @@ describe('reviewPage', () => {
           js: [],
         })
         expect(getPrereview).toHaveBeenCalledWith(id)
-        expect(getComments).toHaveBeenCalledWith(prereview.doi)
+        expect(getComments).toHaveBeenCalledWith({ id: prereview.id, doi: prereview.doi })
       }),
   )
 

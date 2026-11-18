@@ -25,14 +25,17 @@ export class UnableToInvalidateComments extends Data.TaggedError('UnableToInvali
 export class CommentsForReview extends Context.Service<
   CommentsForReview,
   {
-    get: (id: Doi) => Effect.Effect<ReadonlyArray<Comment>, 'unavailable'>
+    get: (review: { id: number; doi: Doi }) => Effect.Effect<ReadonlyArray<Comment>, 'unavailable'>
     invalidate: (prereviewId: number) => Effect.Effect<void, UnableToInvalidateComments>
   }
 >()('CommentsForReview') {}
 
 export interface GetCommentsEnv {
-  getComments: (id: Doi) => TE.TaskEither<'unavailable', ReadonlyArray<Comment>>
+  getComments: (review: { id: number; doi: Doi }) => TE.TaskEither<'unavailable', ReadonlyArray<Comment>>
 }
 
-export const getComments = (id: Doi): RTE.ReaderTaskEither<GetCommentsEnv, 'unavailable', ReadonlyArray<Comment>> =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getComments }) => getComments(id)))
+export const getComments = (review: {
+  id: number
+  doi: Doi
+}): RTE.ReaderTaskEither<GetCommentsEnv, 'unavailable', ReadonlyArray<Comment>> =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getComments }) => getComments(review)))
