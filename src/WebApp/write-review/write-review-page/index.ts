@@ -24,7 +24,7 @@ import {
   getPreprintTitle,
 } from '../../../Domain/Preprints/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
-import { writeReviewMatch, writeReviewReviewTypeMatch, writeReviewStartMatch } from '../../../routes.ts'
+import { writeReviewMatch, writeReviewReviewTypeMatch } from '../../../routes.ts'
 import { NonEmptyStringC } from '../../../types/NonEmptyString.ts'
 import type { User } from '../../../user.ts'
 import { havingProblemsPage, pageNotFound } from '../../http-error.ts'
@@ -74,7 +74,7 @@ export const writeReviewReview = ({
                     'no-form': () =>
                       RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                     'no-session': () =>
-                      RedirectResponse({ location: format(writeReviewStartMatch.formatter, { id: preprint.id }) }),
+                      RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                     'form-unavailable': () => havingProblemsPage(locale),
                   }),
                 ),
