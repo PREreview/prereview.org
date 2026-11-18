@@ -7,14 +7,24 @@ import { Clubs } from '../../../Domain/Clubs/index.ts'
 import { ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
 import * as OrcidTokens from '../../../OrcidTokens.ts'
-import { PreprintReviews, type Prereview } from '../../../Domain/PreprintReviews/index.ts'
+import {
+  PreprintReviews,
+  type Prereview,
+  type PublishedPreprintReviewForSciety,
+} from '../../../Domain/PreprintReviews/index.ts'
 import * as Prereviewers from '../../../Domain/Prereviewers/index.ts'
+import { Temporal } from '../../../types/index.ts'
 import { EffectToFpts, FptsToEffect } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { getTopicDomain, getTopicField, getTopicSubfield } from '../../../types/Topic.ts'
 import { reviewsData, type GetPrereviewsEnv, type Prereview as ReviewsDataPrereview } from '../../reviews-data/index.ts'
-import { scietyList, type GetPrereviewsForScietyEnv, type ScietyListEnv } from '../../sciety-list/index.ts'
+import {
+  scietyList,
+  type GetPrereviewsForScietyEnv,
+  type Prereview as ScietyListPrereview,
+  type ScietyListEnv,
+} from '../../sciety-list/index.ts'
 import { usersData, type GetUsersEnv } from '../../users-data/index.ts'
 import type { Env } from './index.ts'
 
@@ -78,8 +88,8 @@ export const DataRouter = pipe(
             ? () =>
                 EffectToFpts.toTaskEither(
                   pipe(
-                    PreprintReviews.getAllPublishedPreprintReviews,
-                    Effect.map(Array.map(toReviewsDataPrereview)),
+                    PreprintReviews.getAllPublishedPreprintReviewsForSciety,
+                    Effect.map(Array.map(toScietyListPrereview)),
                     Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
                   ),
                   env.runtime,
@@ -162,4 +172,20 @@ const toReviewsDataPrereview = (prereview: Prereview): ReviewsDataPrereview => (
   domains: Array.dedupe(Array.map(prereview.topics ?? [], getTopicDomain)),
   fields: Array.dedupe(Array.map(prereview.topics ?? [], getTopicField)),
   subfields: Array.dedupe(Array.map(prereview.topics ?? [], getTopicSubfield)),
+})
+
+const toScietyListPrereview = (prereview: PublishedPreprintReviewForSciety): ScietyListPrereview => ({
+  preprint: prereview.preprint,
+  createdAt:
+    prereview.published instanceof Temporal.Instant
+      ? prereview.published.toZonedDateTimeISO('UTC').toPlainDate()
+      : prereview.published,
+  doi: prereview.doi,
+  authors: Array.map(
+    prereview.authors,
+    Prereviewers.matchPersona({
+      onPublic: persona => ({ name: persona.displayName }),
+      onPseudonym: persona => ({ name: persona.pseudonym }),
+    }),
+  ),
 })
