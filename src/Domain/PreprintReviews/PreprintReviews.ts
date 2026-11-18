@@ -18,7 +18,6 @@ import {
   type PrereviewIsUnavailable,
   type PrereviewWasRemoved,
 } from './GetPublishedPreprintReview/index.ts'
-import { GetAllPublishedPreprintReviews } from './GetAllPublishedPreprintReviews/index.ts'
 import {
   GetAllPublishedPreprintReviewsForSciety,
   type PublishedPreprintReviewForSciety,
@@ -53,7 +52,6 @@ export interface RapidPrereview {
 export class PreprintReviews extends Context.Service<
   PreprintReviews,
   {
-    getAllPublishedPreprintReviews: Effect.Effect<ReadonlyArray<Prereview>, Errors.PrereviewsAreUnavailable>
     getAllPublishedPreprintReviewsForReviewsData: Effect.Effect<
       ReadonlyArray<PublishedPreprintReviewForReviewsData>,
       Errors.PrereviewsAreUnavailable
@@ -97,10 +95,6 @@ export class PreprintReviews extends Context.Service<
     importPreprintReview: Commands.FromCommand<typeof ImportPreprintReview>
   }
 >()('PreprintReviews') {
-  static readonly getAllPublishedPreprintReviews = Effect.suspend(() =>
-    PreprintReviews.use(service => service.getAllPublishedPreprintReviews),
-  )
-
   static readonly getAllPublishedPreprintReviewsForReviewsData = Effect.suspend(() =>
     PreprintReviews.use(service => service.getAllPublishedPreprintReviewsForReviewsData),
   )
@@ -177,11 +171,6 @@ export const layer = Layer.effect(
       Effect.map(Array.map(toPreprintPrereview)),
     )
 
-    const getAllPublishedPreprintReviews = Effect.map(
-      yield* GetAllPublishedPreprintReviews(getPublishedPreprintReview),
-      Array.map(fromPublishedPreprintReview),
-    )
-
     const getAllPublishedPreprintReviewsForReviewsData = yield* GetAllPublishedPreprintReviewsForReviewsData
 
     const getAllPublishedPreprintReviewsForSciety = yield* GetAllPublishedPreprintReviewsForSciety
@@ -224,9 +213,6 @@ export const layer = Layer.effect(
     )
 
     return {
-      getAllPublishedPreprintReviews: featureFlags.useEventsForPreprintReviews
-        ? getAllPublishedPreprintReviews
-        : Effect.die('Not implemented with Zenodo'),
       getAllPublishedPreprintReviewsForReviewsData: featureFlags.useEventsForPreprintReviews
         ? getAllPublishedPreprintReviewsForReviewsData
         : Effect.die('Not implemented with Zenodo'),
