@@ -284,15 +284,18 @@ export const createPage = ({
                         <div>
                           ${fixHeadingLevels(
                             3,
-                            html`${item.comment}
+                            html`
+                              <div ${languageAttributesFor(item.language)}>${item.comment}</div>
 
                               <h2>${translate(locale, 'write-comment-flow', 'competingInterestsHeading')()}</h2>
 
-                              <p>
-                                ${Option.getOrElse(item.competingInterests, () =>
-                                  translate(locale, 'write-comment-flow', 'noCompetingInterests')(),
-                                )}
-                              </p>`,
+                              ${Option.match(item.competingInterests, {
+                                onNone: () =>
+                                  html`<p>${translate(locale, 'write-comment-flow', 'noCompetingInterests')()}</p>`,
+                                onSome: competingInterests =>
+                                  html`<p ${languageAttributesFor(item.language)}>${competingInterests}</p>`,
+                              })}
+                            `,
                           )}
                         </div>
                       </article>

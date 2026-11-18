@@ -3,7 +3,8 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Effect, Layer, Option } from 'effect'
 import * as _ from '../../../../src/Domain/Comments/GetPublishedCommentsForAPrereview/Enrich.ts'
 import type { PublishedComment } from '../../../../src/Domain/Comments/GetPublishedCommentsForAPrereview/ListPublishedComments.ts'
-import { Prereviewers, UnableToGetPersona } from '../../../../src/Domain/Prereviewers/index.ts'
+import { Prereviewers, PublicPersona, UnableToGetPersona } from '../../../../src/Domain/Prereviewers/index.ts'
+import { LanguageDetection } from '../../../../src/ExternalInteractions/index.ts'
 import { html } from '../../../../src/html.ts'
 import { Doi, OrcidId, Uuid } from '../../../../src/types/index.ts'
 import * as fc from '../../../fc.ts'
@@ -20,7 +21,7 @@ const comment = {
   publishedAt: Temporal.Instant.from('2026-11-01T09:00:00Z'),
 } satisfies PublishedComment
 
-it.effect.prop('with a public author', [fc.publicPersona()], ([persona]) =>
+it.effect.prop('with a public author', [fc.publicPersona(), fc.languageCode()], ([persona, language]) =>
   Effect.gen(function* () {
     const actual = yield* _.Enrich(comment)
 
@@ -31,10 +32,16 @@ it.effect.prop('with a public author', [fc.publicPersona()], ([persona]) =>
       competingInterests: comment.competingInterests,
       doi: comment.doi,
       id: comment.id,
+      language,
       license: comment.license,
       publishedAt: comment.publishedAt,
     })
-  }).pipe(Effect.provide(Layer.mock(Prereviewers, { getPublicPersona: () => Effect.succeed(persona) }))),
+  }).pipe(
+    Effect.provide([
+      Layer.mock(Prereviewers, { getPublicPersona: () => Effect.succeed(persona) }),
+      Layer.mock(LanguageDetection.LanguageDetection, { detectLanguage: () => Effect.succeed(language) }),
+    ]),
+  ),
 )
 
 it.effect.prop('with a pseudonym author', [fc.pseudonymPersona()], ([persona]) =>
@@ -42,7 +49,12 @@ it.effect.prop('with a pseudonym author', [fc.pseudonymPersona()], ([persona]) =
     const actual = yield* _.Enrich({ ...comment, persona: 'pseudonym' })
 
     expect(actual).toMatchObject({ author: persona })
-  }).pipe(Effect.provide(Layer.mock(Prereviewers, { getPseudonymPersona: () => Effect.succeed(persona) }))),
+  }).pipe(
+    Effect.provide([
+      Layer.mock(Prereviewers, { getPseudonymPersona: () => Effect.succeed(persona) }),
+      Layer.mock(LanguageDetection.LanguageDetection, { detectLanguage: () => Effect.succeed('en') }),
+    ]),
+  ),
 )
 
 it.effect('when the author is unavailable', () =>
@@ -51,6 +63,26 @@ it.effect('when the author is unavailable', () =>
 
     expect(actual).toStrictEqual(new UnableToGetPersona({}))
   }).pipe(
-    Effect.provide(Layer.mock(Prereviewers, { getPublicPersona: () => Effect.fail(new UnableToGetPersona({})) })),
+    Effect.provide([
+      Layer.mock(Prereviewers, { getPublicPersona: () => Effect.fail(new UnableToGetPersona({})) }),
+      Layer.mock(LanguageDetection.LanguageDetection, { detectLanguage: () => Effect.succeed('en') }),
+    ]),
+  ),
+)
+
+it.effect('when the language cannot be detected', () =>
+  Effect.gen(function* () {
+    const actual = yield* Effect.flip(_.Enrich(comment))
+
+    expect(actual).toStrictEqual(new LanguageDetection.UnableToDetectLanguage({}))
+  }).pipe(
+    Effect.provide([
+      Layer.mock(Prereviewers, {
+        getPublicPersona: () => Effect.succeed(new PublicPersona({ name: Option.none(), orcidId: comment.authorId })),
+      }),
+      Layer.mock(LanguageDetection.LanguageDetection, {
+        detectLanguage: () => Effect.fail(new LanguageDetection.UnableToDetectLanguage({})),
+      }),
+    ]),
   ),
 )

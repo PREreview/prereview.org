@@ -23,6 +23,7 @@ describe('reviewPage', () => {
           competingInterests: fc.maybe(fc.nonEmptyString()),
           doi: fc.doi(),
           id: fc.integer(),
+          language: fc.languageCode(),
           license: fc.constant('CC-BY-4.0'),
           publishedAt: fc.instant(),
         }),

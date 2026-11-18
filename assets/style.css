@@ -2578,7 +2578,8 @@ skip-link {
     > div {
       margin-block-start: var(--space-xs);
 
-      > :first-child {
+      > :first-child,
+      > div:first-child > :first-child {
         margin-block-start: 0;
       }
     }

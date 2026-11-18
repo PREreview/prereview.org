@@ -324,6 +324,7 @@ const comment1 = {
   competingInterests: Option.none(),
   doi: Doi('10.5281/zenodo.10779311'),
   id: 10779310,
+  language: 'en',
   license: 'CC-BY-4.0',
   publishedAt: Temporal.Instant.from('2024-03-09T12:00:00Z'),
 } satisfies PublishedCommentWithAuthor
@@ -332,9 +333,10 @@ const comment2 = {
   author: new PseudonymPersona({ pseudonym: Pseudonym('Orange Panda') }),
   comment: html`<p>Þetta er athugasemd.</p>`,
   commentId: Uuid('7d1b8d3b-6f0a-4f4e-9a3c-2a8c6d4b1e02'),
-  competingInterests: Option.some(NonEmptyString('I know the authors.')),
+  competingInterests: Option.some(NonEmptyString('Ég þekki höfundana.')),
   doi: Doi('10.5281/zenodo.10779312'),
   id: 10779311,
+  language: 'is',
   license: 'CC-BY-4.0',
   publishedAt: Temporal.Instant.from('2024-04-15T12:00:00Z'),
 } satisfies PublishedCommentWithAuthor

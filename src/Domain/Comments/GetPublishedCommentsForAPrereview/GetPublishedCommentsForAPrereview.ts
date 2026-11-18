@@ -1,5 +1,6 @@
 import { Context, Effect, pipe, Scope } from 'effect'
 import type * as EventDispatcher from '../../../EventDispatcher.ts'
+import type { LanguageDetection } from '../../../ExternalInteractions/index.ts'
 import * as Queries from '../../../Queries.ts'
 import type { Prereviewers } from '../../Prereviewers/index.ts'
 import { Enrich } from './Enrich.ts'
@@ -13,9 +14,12 @@ export type GetPublishedCommentsForAPrereview = (
 export const GetPublishedCommentsForAPrereview: Effect.Effect<
   GetPublishedCommentsForAPrereview,
   never,
-  EventDispatcher.EventDispatcher | Prereviewers
+  EventDispatcher.EventDispatcher | LanguageDetection.LanguageDetection | Prereviewers
 > = Effect.gen(function* () {
-  const context = yield* Effect.map(Effect.context<Prereviewers>(), Context.omit(Scope.Scope))
+  const context = yield* Effect.map(
+    Effect.context<LanguageDetection.LanguageDetection | Prereviewers>(),
+    Context.omit(Scope.Scope),
+  )
 
   const listPublishedComments = yield* Queries.makeStatefulQuery(ListPublishedComments)
 
@@ -24,7 +28,7 @@ export const GetPublishedCommentsForAPrereview: Effect.Effect<
       listPublishedComments(prereviewId),
       Effect.andThen(Effect.forEach(Enrich, { concurrency: 'unbounded' })),
       Effect.catchTag(
-        ['UnexpectedSequenceOfEvents', 'UnableToGetPersona'],
+        ['UnexpectedSequenceOfEvents', 'UnableToGetPersona', 'UnableToDetectLanguage'],
         error => new CommentsAreUnavailable({ cause: error }),
       ),
       Effect.provideContext(context),
