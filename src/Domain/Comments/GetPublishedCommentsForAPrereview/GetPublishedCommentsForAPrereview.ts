@@ -1,8 +1,9 @@
-import { Context, Effect, pipe, Scope, Struct } from 'effect'
+import { Context, Effect, pipe, Scope } from 'effect'
 import type * as EventDispatcher from '../../../EventDispatcher.ts'
 import * as Queries from '../../../Queries.ts'
-import { Prereviewers } from '../../Prereviewers/index.ts'
-import { ListPublishedComments, type PublishedComment } from './ListPublishedComments.ts'
+import type { Prereviewers } from '../../Prereviewers/index.ts'
+import { Enrich } from './Enrich.ts'
+import { ListPublishedComments } from './ListPublishedComments.ts'
 import { CommentsAreUnavailable, type PublishedCommentWithAuthor } from './Types.ts'
 
 export type GetPublishedCommentsForAPrereview = (
@@ -21,7 +22,7 @@ export const GetPublishedCommentsForAPrereview: Effect.Effect<
   return (prereviewId: number) =>
     pipe(
       listPublishedComments(prereviewId),
-      Effect.andThen(Effect.forEach(addAuthor, { concurrency: 'unbounded' })),
+      Effect.andThen(Effect.forEach(Enrich, { concurrency: 'unbounded' })),
       Effect.catchTag(
         ['UnexpectedSequenceOfEvents', 'UnableToGetPersona'],
         error => new CommentsAreUnavailable({ cause: error }),
@@ -30,9 +31,3 @@ export const GetPublishedCommentsForAPrereview: Effect.Effect<
       Effect.withSpan('Comments.getPublishedCommentsForAPrereview', { attributes: { prereviewId } }),
     )
 })
-
-const addAuthor = (comment: PublishedComment) =>
-  Effect.map(
-    Prereviewers.getPersona({ orcidId: comment.authorId, persona: comment.persona }),
-    author => ({ ...Struct.omit(comment, ['authorId', 'persona']), author }) satisfies PublishedCommentWithAuthor,
-  )
