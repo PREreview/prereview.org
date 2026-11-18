@@ -1,14 +1,18 @@
 import { Temporal } from '@js-temporal/polyfill'
+import { Option } from 'effect'
+import type { PublishedCommentWithAuthor } from '../../src/Domain/Comments/index.ts'
+import { PseudonymPersona, PublicPersona } from '../../src/Domain/Prereviewers/index.ts'
 import { html } from '../../src/html.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { BiorxivPreprintId, EdarxivPreprintId } from '../../src/Domain/Preprints/index.ts'
 import { Prereview } from '../../src/Domain/PreprintReviews/index.ts'
 import { Doi } from '../../src/types/Doi.ts'
 import { Name } from '../../src/types/Name.ts'
+import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../src/types/OrcidId.ts'
+import { Pseudonym } from '../../src/types/Pseudonym.ts'
 import { Slug } from '../../src/types/Slug.ts'
 import { Uuid } from '../../src/types/Uuid.ts'
-import type { Comment } from '../../src/WebApp/review-page/index.ts'
 import { createPage } from '../../src/WebApp/review-page/review-page.ts'
 import { expect, test } from '../base.ts'
 
@@ -314,25 +318,23 @@ const structuredReview = new Prereview({
 })
 
 const comment1 = {
-  authors: {
-    named: [{ name: Name('Josiah Carberry'), orcid: OrcidId('0000-0002-1825-0097') }, { name: Name('Orange Panda') }],
-  },
+  author: new PublicPersona({ name: Option.some(Name('Josiah Carberry')), orcidId: OrcidId('0000-0002-1825-0097') }),
+  comment: html`<p>This is a comment.</p>`,
+  commentId: Uuid('7d1b8d3b-6f0a-4f4e-9a3c-2a8c6d4b1e01'),
+  competingInterests: Option.none(),
   doi: Doi('10.5281/zenodo.10779311'),
-  language: 'en',
-  license: 'CC-BY-4.0',
   id: 10779310,
-  published: Temporal.PlainDate.from('2024-03-09'),
-  text: html`<p>This is a comment.</p>`,
-} satisfies Comment
+  license: 'CC-BY-4.0',
+  publishedAt: Temporal.Instant.from('2024-03-09T12:00:00Z'),
+} satisfies PublishedCommentWithAuthor
 
 const comment2 = {
-  authors: {
-    named: [{ name: Name('Arne Saknussemm') }],
-  },
+  author: new PseudonymPersona({ pseudonym: Pseudonym('Orange Panda') }),
+  comment: html`<p>Þetta er athugasemd.</p>`,
+  commentId: Uuid('7d1b8d3b-6f0a-4f4e-9a3c-2a8c6d4b1e02'),
+  competingInterests: Option.some(NonEmptyString('I know the authors.')),
   doi: Doi('10.5281/zenodo.10779312'),
-  language: 'is',
-  license: 'CC-BY-4.0',
   id: 10779311,
-  published: Temporal.PlainDate.from('2024-04-15'),
-  text: html`<p>Þetta er athugasemd.</p>`,
-} satisfies Comment
+  license: 'CC-BY-4.0',
+  publishedAt: Temporal.Instant.from('2024-04-15T12:00:00Z'),
+} satisfies PublishedCommentWithAuthor

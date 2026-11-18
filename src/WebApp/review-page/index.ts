@@ -12,7 +12,7 @@ import { removedMessage } from './removed-message.ts'
 import { createPage } from './review-page.ts'
 
 export type { Prereview } from '../../Domain/PreprintReviews/index.ts'
-export { type Comment, type GetCommentsEnv } from './comments.ts'
+export type { GetCommentsEnv } from './comments.ts'
 export type { GetPrereviewEnv } from './prereview.ts'
 
 export const reviewPage = ({
@@ -26,7 +26,7 @@ export const reviewPage = ({
     RTE.Do,
     RTE.let('id', () => id),
     RTE.apS('review', getPrereview(id)),
-    RTE.bindW('comments', ({ review }) => getComments({ id: review.id, doi: review.doi })),
+    RTE.bindW('comments', ({ review }) => getComments(review.id)),
     RTE.let('locale', () => locale),
     RTE.match(
       error =>

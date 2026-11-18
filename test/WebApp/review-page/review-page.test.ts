@@ -17,15 +17,14 @@ describe('reviewPage', () => {
       fc.prereview(),
       fc.array(
         fc.record({
-          authors: fc.record({
-            named: fc.nonEmptyArray(fc.record({ name: fc.name(), orcid: fc.orcidId() }, { requiredKeys: ['name'] })),
-          }),
+          author: fc.persona(),
+          comment: fc.html(),
+          commentId: fc.uuid(),
+          competingInterests: fc.maybe(fc.nonEmptyString()),
           doi: fc.doi(),
           id: fc.integer(),
-          language: fc.option(fc.languageCode(), { nil: undefined }),
           license: fc.constant('CC-BY-4.0'),
-          published: fc.plainDate(),
-          text: fc.html(),
+          publishedAt: fc.instant(),
         }),
       ),
     ],
@@ -53,7 +52,7 @@ describe('reviewPage', () => {
           js: [],
         })
         expect(getPrereview).toHaveBeenCalledWith(id)
-        expect(getComments).toHaveBeenCalledWith({ id: prereview.id, doi: prereview.doi })
+        expect(getComments).toHaveBeenCalledWith(prereview.id)
       }),
   )
 

@@ -1,6 +1,8 @@
-import { Array, flow, identity, pipe, Struct } from 'effect'
+import { Array, flow, identity, Match, Option, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import { match } from 'ts-pattern'
+import type { PublishedCommentWithAuthor } from '../../Domain/Comments/index.ts'
+import { matchPersona } from '../../Domain/Prereviewers/index.ts'
 import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
@@ -13,7 +15,6 @@ import type { Name } from '../../types/Name.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import { isPseudonym } from '../../types/Pseudonym.ts'
 import { PageResponse } from '../Response/index.ts'
-import type { Comment } from './comments.ts'
 import type { Prereview } from './prereview.ts'
 
 export const createPage = ({
@@ -25,7 +26,7 @@ export const createPage = ({
   id: number
   locale: SupportedLocale
   review: Prereview
-  comments: ReadonlyArray<Comment>
+  comments: ReadonlyArray<PublishedCommentWithAuthor>
 }) =>
   PageResponse({
     title: plainText(
@@ -229,8 +230,11 @@ export const createPage = ({
                               'review-page',
                               'commentItemTitle',
                             )({
-                              author: pipe(Array.headNonEmpty(item.authors.named), Struct.get('name')),
-                              authors: item.authors.named.length,
+                              author: matchPersona(item.author, {
+                                onPublic: Struct.get('displayName'),
+                                onPseudonym: Struct.get('pseudonym'),
+                              }),
+                              authors: 1,
                             })}
                           </h3>
 
@@ -240,7 +244,7 @@ export const createPage = ({
                               'review-page',
                               'commentItemAuthors',
                             )({
-                              authors: pipe(item.authors.named, Array.map(displayAuthor), formatList(locale)),
+                              authors: pipe(Array.of(item.author), Array.map(displayPersona), formatList(locale)),
                               hide: text => html`<span class="visually-hidden">${text}</span>`,
                             })}
                           </div>
@@ -248,7 +252,7 @@ export const createPage = ({
                           <dl>
                             <div>
                               <dt>${translate(locale, 'review-page', 'published')()}</dt>
-                              <dd>${renderDate(locale)(item.published)}</dd>
+                              <dd>${renderDate(locale)(item.publishedAt.toZonedDateTimeISO('UTC').toPlainDate())}</dd>
                             </div>
                             <div>
                               <dt translate="no">DOI</dt>
@@ -259,10 +263,9 @@ export const createPage = ({
                             <div>
                               <dt>${translate(locale, 'review-page', 'license')()}</dt>
                               <dd>
-                                ${match(item.license)
-                                  .with(
-                                    'CC-BY-4.0',
-                                    () => html`
+                                ${Match.value(item.license).pipe(
+                                  Match.literalsExhaustive({
+                                    'CC-BY-4.0': () => html`
                                       <a href="https://creativecommons.org/licenses/by/4.0/">
                                         <dfn>
                                           <abbr title="${translate(locale, 'review-page', 'licenseCcBy40')()}"
@@ -271,15 +274,26 @@ export const createPage = ({
                                         </dfn>
                                       </a>
                                     `,
-                                  )
-                                  .exhaustive()}
+                                  }),
+                                )}
                               </dd>
                             </div>
                           </dl>
                         </header>
 
-                        <div ${item.language ? languageAttributesFor(item.language) : ''}>
-                          ${fixHeadingLevels(3, item.text)}
+                        <div>
+                          ${fixHeadingLevels(
+                            3,
+                            html`${item.comment}
+
+                              <h2>${translate(locale, 'write-comment-flow', 'competingInterestsHeading')()}</h2>
+
+                              <p>
+                                ${Option.getOrElse(item.competingInterests, () =>
+                                  translate(locale, 'write-comment-flow', 'noCompetingInterests')(),
+                                )}
+                              </p>`,
+                          )}
                         </div>
                       </article>
                     </li>
@@ -293,6 +307,20 @@ export const createPage = ({
     skipToLabel: 'prereview',
     canonical: format(reviewMatch.formatter, { id }),
   })
+
+const displayPersona = matchPersona({
+  onPublic: persona =>
+    html`<a
+      href="${format(profileMatch.formatter, { profile: ProfileId.forOrcid(persona.orcidId) })}"
+      class="orcid"
+      dir="auto"
+      >${persona.displayName}</a
+    >`,
+  onPseudonym: persona =>
+    html`<a href="${format(profileMatch.formatter, { profile: ProfileId.forPseudonym(persona.pseudonym) })}" dir="auto"
+      >${persona.pseudonym}</a
+    >`,
+})
 
 function displayAuthor({ name, orcid }: { name: Name; orcid?: OrcidId }) {
   if (orcid) {
