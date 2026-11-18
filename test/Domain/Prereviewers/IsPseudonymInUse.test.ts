@@ -1,9 +1,9 @@
-import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Result } from 'effect'
-import * as Events from '../../../src/Events.ts'
 import * as _ from '../../../src/Domain/Prereviewers/IsPseudonymInUse.ts'
+import * as Events from '../../../src/Events.ts'
 import { OrcidId, Pseudonym } from '../../../src/types/index.ts'
+import { expect, test } from '../../vitest.ts'
 
 const input = Pseudonym.Pseudonym('Orange Panda')
 const inputLegacy = Pseudonym.Pseudonym('Orange Panda 0')

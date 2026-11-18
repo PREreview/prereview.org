@@ -1,4 +1,4 @@
-import { pipe, Record, Schema, SchemaIssue, SchemaGetter, Effect } from 'effect'
+import { Effect, pipe, Record, Schema, SchemaGetter, SchemaIssue } from 'effect'
 import topics from './data/topics.json' with { type: 'json' }
 import type { DomainId } from './domain.ts'
 import type { FieldId } from './field.ts'

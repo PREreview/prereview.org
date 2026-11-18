@@ -1,4 +1,4 @@
-import { Data, Effect, Option, pipe, Schema, SchemaIssue, SchemaGetter } from 'effect'
+import { Data, Effect, Option, pipe, Schema, SchemaGetter, SchemaIssue } from 'effect'
 import * as SensitiveDataStore from './SensitiveDataStore.ts'
 import { Uuid } from './types/index.ts'
 

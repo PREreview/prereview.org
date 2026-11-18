@@ -1,5 +1,5 @@
-import { HttpClientRequest } from 'effect/http'
 import { Effect, pipe } from 'effect'
+import { HttpClientRequest } from 'effect/http'
 import type { UnsubmittedDeposition } from '../Deposition.ts'
 import { ZenodoApi } from '../ZenodoApi.ts'
 

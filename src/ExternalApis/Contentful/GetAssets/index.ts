@@ -1,5 +1,5 @@
-import { HttpClient, type UrlParams } from 'effect/http'
 import { Effect, flow } from 'effect'
+import { HttpClient, type UrlParams } from 'effect/http'
 import type { ContentfulConfig } from '../ContentfulConfig.ts'
 import { ContentfulIsUnavailable } from '../Errors.ts'
 import type { Assets } from '../Types.ts'

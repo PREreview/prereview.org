@@ -1,5 +1,5 @@
-import type { HttpClient } from 'effect/http'
 import { Context, Effect, flow, Layer, Scope } from 'effect'
+import type { HttpClient } from 'effect/http'
 import { GetPage } from './GetPage/index.ts'
 import type { GhostApi } from './GhostApi.ts'
 

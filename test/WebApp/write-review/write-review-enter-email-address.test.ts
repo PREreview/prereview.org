@@ -1,11 +1,10 @@
-import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect, Layer, Tuple } from 'effect'
 import { format } from 'fp-ts-routing'
+import { Locale } from '../../../src/Context.ts'
 import {
   ContactEmailAddresses,
   ContactEmailAddressIsNotFound,
 } from '../../../src/Domain/ContactEmailAddresses/index.ts'
-import { Locale } from '../../../src/Context.ts'
 import { FormC, formKey, FormStore } from '../../../src/Domain/PreprintReviews/index.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Domain/Preprints/index.ts'
 import {
@@ -15,6 +14,7 @@ import {
 } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/write-review/index.ts'
+import { describe, expect, it, vi } from '../../vitest.ts'
 import * as fc from './fc.ts'
 
 describe('writeReviewEnterEmailAddress', () => {

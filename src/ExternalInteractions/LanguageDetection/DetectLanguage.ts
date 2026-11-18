@@ -1,4 +1,4 @@
-import { Array, Effect, Option, pipe, flow } from 'effect'
+import { Array, Effect, flow, Option, pipe } from 'effect'
 import iso6391, { type LanguageCode } from 'iso-639-1'
 import { DetectLanguage } from '../../ExternalApis/index.ts'
 import { type Html, plainText, type PlainText } from '../../html.ts'

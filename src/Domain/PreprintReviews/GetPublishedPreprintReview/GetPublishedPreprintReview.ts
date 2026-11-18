@@ -1,4 +1,5 @@
 import { Context, Effect, pipe, Scope } from 'effect'
+import type { EventDispatcher } from '../../../EventDispatcher.ts'
 import type * as EventStore from '../../../EventStore.ts'
 import * as Queries from '../../../Queries.ts'
 import type { Clubs } from '../../Clubs/index.ts'
@@ -7,14 +8,13 @@ import type { Prereviewers } from '../../Prereviewers/index.ts'
 import { WasPrereviewRemoved } from '../WasPrereviewRemoved.ts'
 import { Enrich } from './Enrich.ts'
 import { Query } from './Query.ts'
-import { WasAReviewRequested } from './WasAReviewRequested.ts'
 import {
   type PrereviewIsNotFound,
   PrereviewIsUnavailable,
   type PrereviewWasRemoved,
   type PublishedPreprintReview,
 } from './Types.ts'
-import type { EventDispatcher } from '../../../EventDispatcher.ts'
+import { WasAReviewRequested } from './WasAReviewRequested.ts'
 
 export type GetPublishedPreprintReview = (
   id: number,

@@ -1,11 +1,11 @@
-import { HttpBody } from 'effect/http'
-import { Base64 } from 'effect/encoding'
-import { TestClock } from 'effect/testing'
-import { describe, expect, it } from '../../../vitest.ts'
 import { Effect, Redacted } from 'effect'
+import { Base64 } from 'effect/encoding'
+import { HttpBody } from 'effect/http'
+import { TestClock } from 'effect/testing'
 import { createHash } from 'node:crypto'
-import { Cloudinary } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalApis/Cloudinary/UploadImage/CreateRequest.ts'
+import { Cloudinary } from '../../../../src/ExternalApis/index.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 import * as fc from '../fc.ts'
 
 describe('CreateRequest', () => {

@@ -1,6 +1,6 @@
-import { describe, expect, it } from '../vitest.ts'
 import * as _ from '../../src/types/Topic.ts'
 import * as fc from '../fc.ts'
+import { describe, expect, it } from '../vitest.ts'
 
 describe('isTopicId', () => {
   it.prop('with a topic ID', [fc.topicId()], ([id]) => {

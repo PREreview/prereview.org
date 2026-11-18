@@ -1,8 +1,8 @@
-import { UrlParams } from 'effect/http'
-import { describe, expect, it } from '../../../vitest.ts'
 import { Result } from 'effect'
+import { UrlParams } from 'effect/http'
 import * as _ from '../../../../src/WebApp/RequestAReviewFlow/EnterEmailAddressPage/EnterEmailAddressForm.ts'
 import { EmailAddress } from '../../../../src/types/EmailAddress.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 
 describe('fromBody', () => {
   it.each<[string, UrlParams.Input, _.EnterEmailAddressForm]>([

@@ -1,15 +1,15 @@
 import { Schema } from 'effect'
-import * as Preprints from '../Preprints/index.ts'
-import { NonEmptyString, OrcidId, Temporal, Uuid } from '../../types/index.ts'
 import { HtmlSchema } from '../../html.ts'
-import { UuidSchema } from '../../types/Uuid.ts'
-import { DoiSchema } from '../../types/Doi.ts'
-import { IndeterminatePreprintId } from '../Preprints/index.ts'
-import { Iso6391Schema } from '../../types/iso639.ts'
-import { InstantSchema, PlainDateSchema } from '../../types/Temporal.ts'
-import { NameSchema } from '../../types/Name.ts'
 import { LazySensitiveData } from '../../SensitiveData.ts'
+import { DoiSchema } from '../../types/Doi.ts'
+import { NonEmptyString, OrcidId, Temporal, Uuid } from '../../types/index.ts'
+import { Iso6391Schema } from '../../types/iso639.ts'
+import { NameSchema } from '../../types/Name.ts'
+import { InstantSchema, PlainDateSchema } from '../../types/Temporal.ts'
 import { TopicIdSchema } from '../../types/Topic.ts'
+import { UuidSchema } from '../../types/Uuid.ts'
+import * as Preprints from '../Preprints/index.ts'
+import { IndeterminatePreprintId } from '../Preprints/index.ts'
 
 export class RapidPrereviewImported extends Schema.TaggedClass<RapidPrereviewImported>()('RapidPrereviewImported', {
   author: Schema.Struct({

@@ -1,4 +1,3 @@
-import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
@@ -8,6 +7,7 @@ import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/connect-orcid/connect-orcid.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
+import { describe, expect, it, vi } from '../../vitest.ts'
 
 describe('connectOrcid', () => {
   describe('when the user is logged in', () => {

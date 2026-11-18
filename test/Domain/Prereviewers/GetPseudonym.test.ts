@@ -1,9 +1,9 @@
-import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Result } from 'effect'
-import * as Events from '../../../src/Events.ts'
 import * as _ from '../../../src/Domain/Prereviewers/GetPseudonym.ts'
+import * as Events from '../../../src/Events.ts'
 import { OrcidId, Pseudonym } from '../../../src/types/index.ts'
+import { expect, test } from '../../vitest.ts'
 
 const input = OrcidId.OrcidId('0000-0002-1825-0097')
 

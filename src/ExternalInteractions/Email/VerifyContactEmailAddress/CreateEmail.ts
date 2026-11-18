@@ -1,6 +1,6 @@
 import { Effect, Option } from 'effect'
-import type { UnverifiedContactEmailAddress } from '../../../Domain/ContactEmailAddresses/index.ts'
 import { Locale } from '../../../Context.ts'
+import type { UnverifiedContactEmailAddress } from '../../../Domain/ContactEmailAddresses/index.ts'
 import type { Nodemailer } from '../../../ExternalApis/index.ts'
 import { html, mjmlToHtml, plainText } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'

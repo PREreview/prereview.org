@@ -1,9 +1,10 @@
-import { Array, Context, Effect, Layer, Match, Option, pipe, PubSub, Schedule, Scope, Struct, flow } from 'effect'
-import { type Sharding, Singleton } from 'effect/cluster'
-import type { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
+import { Array, Context, Effect, flow, Layer, Match, Option, pipe, PubSub, Schedule, Scope, Struct } from 'effect'
+import { Singleton, type Sharding } from 'effect/cluster'
 import * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import { UnableToQuery } from '../../Queries.ts'
+import type { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
+import { layer as commentsServiceLayer } from './Comments.ts'
 import {
   GetComment,
   GetNextExpectedCommandForUser,
@@ -13,7 +14,6 @@ import {
   type CreateRecordOnZenodoForComment,
   type PublishCommentOnZenodo,
 } from './Context.ts'
-import { layer as commentsServiceLayer } from './Comments.ts'
 import { DecideComment } from './Decide.ts'
 import { CommentEventTypes, type CommentEvent } from './Events.ts'
 import { EvolveComment } from './Evolve.ts'
@@ -29,8 +29,8 @@ export * from './Decide.ts'
 export * from './Errors.ts'
 export * from './Events.ts'
 export * from './Evolve.ts'
-export { CommentsAreUnavailable, type PublishedCommentWithAuthor } from './GetPublishedCommentsForAPrereview/index.ts'
 export * from './ExpectedCommand.ts'
+export { CommentsAreUnavailable, type PublishedCommentWithAuthor } from './GetPublishedCommentsForAPrereview/index.ts'
 export * from './State.ts'
 
 export const makeHandleCommentCommand: Effect.Effect<

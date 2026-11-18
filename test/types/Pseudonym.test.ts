@@ -1,8 +1,8 @@
-import { describe, expect, it } from '../vitest.ts'
 import { Effect, Result, Schema, SchemaIssue } from 'effect'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as _ from '../../src/types/Pseudonym.ts'
 import * as fc from '../fc.ts'
+import { describe, expect, it } from '../vitest.ts'
 
 const formatError = (error: Schema.SchemaError) => SchemaIssue.makeFormatterStandardSchemaV1()(error.issue).issues
 

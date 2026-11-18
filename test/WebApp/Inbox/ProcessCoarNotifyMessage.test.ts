@@ -1,9 +1,9 @@
-import { describe, expect, it } from '../../vitest.ts'
-import { Effect, Result, Layer, pipe } from 'effect'
+import { Effect, Layer, pipe, Result } from 'effect'
 import * as ReviewRequests from '../../../src/Domain/ReviewRequests/index.ts'
 import * as Inbox from '../../../src/WebApp/Inbox/index.ts'
 import * as _ from '../../../src/WebApp/Inbox/ProcessCoarNotifyMessage.ts'
 import * as fc from '../../fc.ts'
+import { describe, expect, it } from '../../vitest.ts'
 
 describe('ProcessCoarNotifyMessage', () => {
   it.effect.prop(

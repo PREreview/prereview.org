@@ -1,5 +1,4 @@
-import { expect, test } from '../../../vitest.ts'
-import { Result, Option } from 'effect'
+import { Option, Result } from 'effect'
 import * as _ from '../../../../src/Domain/DatasetReviews/Commands/AddReviewToAClub.ts'
 import * as DatasetReviews from '../../../../src/Domain/DatasetReviews/index.ts'
 import { DryadDatasetId } from '../../../../src/Domain/Datasets/DatasetId.ts'
@@ -7,6 +6,7 @@ import * as Events from '../../../../src/Events.ts'
 import { Doi } from '../../../../src/types/Doi.ts'
 import { OrcidId } from '../../../../src/types/OrcidId.ts'
 import { Uuid } from '../../../../src/types/Uuid.ts'
+import { expect, test } from '../../../vitest.ts'
 
 const input = {
   datasetReviewId: Uuid('e179be5f-947e-4408-b28d-68feec3a0015'),

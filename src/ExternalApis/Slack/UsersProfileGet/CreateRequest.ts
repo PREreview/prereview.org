@@ -1,5 +1,5 @@
-import { HttpClientRequest } from 'effect/http'
 import { Effect, pipe } from 'effect'
+import { HttpClientRequest } from 'effect/http'
 import { SlackApi } from '../SlackApi.ts'
 import type { UserId } from '../Types.ts'
 

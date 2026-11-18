@@ -1,6 +1,6 @@
+import { Context, Effect, flow, Layer, Scope, Semaphore } from 'effect'
 import { HttpClient } from 'effect/http'
 import { RateLimiter } from 'effect/persistence'
-import { Context, Effect, flow, Layer, Scope, Semaphore } from 'effect'
 import { GetWork } from './GetWork/index.ts'
 
 export { Work, WorkResponseSchema } from './Work.ts'

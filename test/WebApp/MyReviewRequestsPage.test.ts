@@ -1,4 +1,3 @@
-import { describe, expect, it, vi } from '../vitest.ts'
 import { Effect, Layer } from 'effect'
 import { Locale } from '../../src/Context.ts'
 import * as ReviewRequests from '../../src/Domain/ReviewRequests/index.ts'
@@ -7,6 +6,7 @@ import * as StatusCodes from '../../src/StatusCodes.ts'
 import { LoggedInUser } from '../../src/user.ts'
 import * as _ from '../../src/WebApp/MyReviewRequestsPage/index.ts'
 import * as fc from '../fc.ts'
+import { describe, expect, it, vi } from '../vitest.ts'
 
 describe('MyReviewRequestsPage', () => {
   it.effect.prop(

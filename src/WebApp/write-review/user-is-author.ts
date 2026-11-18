@@ -1,4 +1,4 @@
-import { Array, Data, Result, Equivalence, Option, Predicate } from 'effect'
+import { Array, Data, Equivalence, Option, Predicate, Result } from 'effect'
 import type { Preprint } from '../../Domain/Preprints/index.ts'
 import { type OrcidId, OrcidIdEquivalence } from '../../types/OrcidId.ts'
 import type { User } from '../../user.ts'

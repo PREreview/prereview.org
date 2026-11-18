@@ -1,4 +1,4 @@
-import { Array, Data, Result, Match, Option, type Types } from 'effect'
+import { Array, Data, Match, Option, Result, type Types } from 'effect'
 import * as Events from '../../Events.ts'
 import * as Queries from '../../Queries.ts'
 import type { OrcidId } from '../../types/index.ts'

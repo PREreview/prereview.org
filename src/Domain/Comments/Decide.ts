@@ -1,4 +1,4 @@
-import { Result, flow, Function, Match, Option, pipe } from 'effect'
+import { flow, Function, Match, Option, pipe, Result } from 'effect'
 import type * as Commands from './Commands.ts'
 import * as Errors from './Errors.ts'
 import * as Events from './Events.ts'

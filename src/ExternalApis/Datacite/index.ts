@@ -1,5 +1,5 @@
-import type { HttpClient } from 'effect/http'
 import { Context, Effect, flow, Layer, Scope } from 'effect'
+import type { HttpClient } from 'effect/http'
 import { GetRecord } from './GetRecord/index.ts'
 
 export { Record, RecordResponseSchema } from './Record.ts'

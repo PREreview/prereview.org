@@ -1,8 +1,8 @@
+import { Option, Result } from 'effect'
 import { UrlParams } from 'effect/http'
-import { describe, expect, it } from '../../../vitest.ts'
-import { Result, Option } from 'effect'
 import { NonEmptyString } from '../../../../src/types/index.ts'
 import * as _ from '../../../../src/WebApp/ReviewADatasetFlow/UseOfAiPage/UseOfAiForm.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 
 const details = NonEmptyString.NonEmptyString('Some details')
 

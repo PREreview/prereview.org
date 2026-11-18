@@ -1,5 +1,5 @@
+import { Data, Effect, Option, pipe, Result, Schema } from 'effect'
 import type { UrlParams } from 'effect/http'
-import { Data, Effect, Result, Option, pipe, Schema } from 'effect'
 import { NonEmptyString } from '../../../types/index.ts'
 
 export type DeclareCompetingInterestsForm = EmptyForm | InvalidForm | CompletedForm

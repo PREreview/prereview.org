@@ -1,4 +1,3 @@
-import { expect, test } from '../../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Option, Result } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
@@ -8,6 +7,7 @@ import * as Events from '../../../../src/Events.ts'
 import { html } from '../../../../src/html.ts'
 import { Doi, OrcidId, Uuid } from '../../../../src/types/index.ts'
 import type { TopicId } from '../../../../src/types/Topic.ts'
+import { expect, test } from '../../../vitest.ts'
 
 const preprintReviewImported = ({
   id,

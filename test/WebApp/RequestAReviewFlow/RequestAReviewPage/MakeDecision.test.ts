@@ -1,6 +1,5 @@
+import { Array, Effect, Layer, Option, Result, Tuple } from 'effect'
 import { UrlParams } from 'effect/http'
-import { describe, expect, it, vi } from '../../../vitest.ts'
-import { Array, Effect, Result, Layer, Option, Tuple } from 'effect'
 import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
 import {
   BiorxivOrMedrxivPreprintId,
@@ -19,6 +18,7 @@ import { Doi } from '../../../../src/types/Doi.ts'
 import * as _ from '../../../../src/WebApp/RequestAReviewFlow/RequestAReviewPage/MakeDecision.ts'
 import * as RequestAReviewForm from '../../../../src/WebApp/RequestAReviewFlow/RequestAReviewPage/RequestAReviewForm.ts'
 import * as fc from '../../../fc.ts'
+import { describe, expect, it, vi } from '../../../vitest.ts'
 
 describe('makeDecision', () => {
   describe('when the form has been submitted', () => {

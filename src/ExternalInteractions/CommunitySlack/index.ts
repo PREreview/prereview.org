@@ -1,5 +1,5 @@
-import type { LanguageModel } from 'effect/ai'
 import { Context, Effect, flow, Layer, Scope } from 'effect'
+import type { LanguageModel } from 'effect/ai'
 import type { Slack } from '../../ExternalApis/index.ts'
 import type * as PublicUrl from '../../public-url.ts'
 import { AddOrcidToSlackProfile } from './AddOrcidToSlackProfile/index.ts'

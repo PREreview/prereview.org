@@ -1,5 +1,5 @@
+import { Data, Option, pipe, Result, Schema, Struct } from 'effect'
 import type { UrlParams } from 'effect/http'
-import { Data, Result, Option, pipe, Schema, Struct } from 'effect'
 import { type Uuid, UuidSchema } from '../../../types/Uuid.ts'
 
 export type AddToAClubForm = EmptyForm | InvalidForm | CompletedForm

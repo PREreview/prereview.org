@@ -1,5 +1,5 @@
-import type { HttpClient } from 'effect/http'
 import { Context, Effect, flow, Layer, Scope } from 'effect'
+import type { HttpClient } from 'effect/http'
 import { ChatDelete } from './ChatDelete/index.ts'
 import { ChatPostMessage } from './ChatPostMessage/index.ts'
 import type { SlackApi } from './SlackApi.ts'

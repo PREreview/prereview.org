@@ -1,9 +1,9 @@
-import { describe, expect, it } from '../../vitest.ts'
 import { Effect, Layer } from 'effect'
 import { Ghost } from '../../../src/ExternalApis/index.ts'
 import * as _ from '../../../src/ExternalInteractions/GhostPage/GetPage.ts'
 import { rawHtml } from '../../../src/html.ts'
 import * as fc from '../../fc.ts'
+import { describe, expect, it } from '../../vitest.ts'
 
 describe('getPage', () => {
   it.effect.prop(

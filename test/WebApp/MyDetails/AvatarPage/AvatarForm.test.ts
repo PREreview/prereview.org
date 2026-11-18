@@ -1,9 +1,9 @@
-import { Multipart } from 'effect/http'
-import { describe, expect, it } from '../../../vitest.ts'
 import { Inspectable, Result } from 'effect'
+import { Multipart } from 'effect/http'
 import * as _ from '../../../../src/WebApp/MyDetails/AvatarPage/AvatarForm.ts'
 import * as fc from '../../../fc.ts'
 import { shouldNotBeCalled } from '../../../should-not-be-called.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 
 const persistedFile = (contentType: fc.Arbitrary<string>): fc.Arbitrary<Multipart.PersistedFile> =>
   fc.record({ key: fc.string(), name: fc.string(), contentType, path: fc.string() }).map(args => ({

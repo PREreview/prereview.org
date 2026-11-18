@@ -1,10 +1,10 @@
-import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse } from 'effect/http'
-import { describe, expect, it, vi } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Effect, pipe, Tuple } from 'effect'
+import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse } from 'effect/http'
 import * as _ from '../../../src/ExternalApis/JapanLinkCenter/Record.ts'
 import { Doi } from '../../../src/types/Doi.ts'
 import * as fc from '../../fc.ts'
+import { describe, expect, it, vi } from '../../vitest.ts'
 
 describe('GetRecord', () => {
   it.effect.prop(

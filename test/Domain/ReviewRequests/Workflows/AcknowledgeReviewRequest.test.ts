@@ -1,12 +1,12 @@
-import { describe, expect, it } from '../../../vitest.ts'
-import { Effect, Result, Layer, pipe } from 'effect'
-import { Nodemailer } from '../../../../src/ExternalApis/index.ts'
-import { Email } from '../../../../src/ExternalInteractions/index.ts'
+import { Effect, Layer, pipe, Result } from 'effect'
 import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
-import * as Queries from '../../../../src/Queries.ts'
 import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
 import * as _ from '../../../../src/Domain/ReviewRequests/Workflows/AcknowledgeReviewRequest.ts'
+import { Nodemailer } from '../../../../src/ExternalApis/index.ts'
+import { Email } from '../../../../src/ExternalInteractions/index.ts'
+import * as Queries from '../../../../src/Queries.ts'
 import * as fc from '../../../fc.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 
 describe('AcknowledgeReviewRequest', () => {
   describe('when the request can be acknowledged', () => {

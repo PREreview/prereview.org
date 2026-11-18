@@ -1,4 +1,3 @@
-import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect, Redacted, Struct } from 'effect'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
@@ -11,6 +10,7 @@ import * as _ from '../../../src/WebApp/connect-slack-page/index.ts'
 import type { AddToSessionEnv, PopFromSessionEnv } from '../../../src/WebApp/session.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
+import { describe, expect, it, vi } from '../../vitest.ts'
 
 describe('connectSlack', () => {
   describe('when the user is logged in', () => {

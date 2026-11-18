@@ -1,9 +1,9 @@
-import { UrlParams } from 'effect/http'
-import { describe, expect, it } from '../../../vitest.ts'
 import { Effect, Layer, Redacted } from 'effect'
+import { UrlParams } from 'effect/http'
 import * as _ from '../../../../src/ExternalApis/Contentful/GetEntries/CreateRequest.ts'
 import { ContentfulConfig, UsePreviewApi } from '../../../../src/ExternalApis/Contentful/index.ts'
 import * as fc from '../../../fc.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 
 describe('CreateRequest', () => {
   it.effect.prop(

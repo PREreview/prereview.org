@@ -1,5 +1,5 @@
 import cookieSignature from 'cookie-signature'
-import { Context, Data, Effect, Result, Layer, Redacted } from 'effect'
+import { Context, Data, Effect, Layer, Redacted, Result } from 'effect'
 import { SessionSecret } from './Context.ts'
 
 export class CookieSignature extends Context.Service<

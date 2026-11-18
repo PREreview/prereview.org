@@ -1,5 +1,5 @@
-import { HttpClientResponse } from 'effect/http'
 import { Effect, flow, Struct } from 'effect'
+import { HttpClientResponse } from 'effect/http'
 import { Response, SlackError } from '../Types.ts'
 import { ChatDeleteResponse } from './ChatDeleteResponse.ts'
 

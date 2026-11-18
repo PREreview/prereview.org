@@ -1,9 +1,9 @@
-import { describe, expect, it } from '../../vitest.ts'
 import { Struct } from 'effect'
-import { html } from '../../../src/html.ts'
 import type { Form } from '../../../src/Domain/PreprintReviews/index.ts'
 import * as _ from '../../../src/Domain/PreprintReviews/NextExpectedCommand.ts'
+import { html } from '../../../src/html.ts'
 import { Uuid } from '../../../src/types/Uuid.ts'
+import { describe, expect, it } from '../../vitest.ts'
 
 const freeformReview = {
   alreadyWritten: 'no',

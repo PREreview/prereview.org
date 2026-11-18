@@ -2,9 +2,6 @@ import { Match, Option, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import { match, P } from 'ts-pattern'
 import type { ContactEmailAddress } from '../../Domain/ContactEmailAddresses/index.ts'
-import { html, plainText, type Html } from '../../html.ts'
-import { translate, type SupportedLocale } from '../../locales/index.ts'
-import type { OrcidToken } from '../../orcid-token.ts'
 import type * as Prereviewers from '../../Domain/Prereviewers/index.ts'
 import type {
   CareerStage,
@@ -13,6 +10,9 @@ import type {
   Location,
   ResearchInterests,
 } from '../../Domain/Prereviewers/index.ts'
+import { html, plainText, type Html } from '../../html.ts'
+import { translate, type SupportedLocale } from '../../locales/index.ts'
+import type { OrcidToken } from '../../orcid-token.ts'
 import * as Routes from '../../routes.ts'
 import {
   changeContactEmailAddressMatch,

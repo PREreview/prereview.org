@@ -1,13 +1,12 @@
-import { Cookies, FetchHttpClient, HttpServerResponse } from 'effect/http'
-import { describe, expect, it, test, vi } from '../../vitest.ts'
 import { Duration, Effect, Layer, pipe, Redacted, Struct, Tuple } from 'effect'
+import { Cookies, FetchHttpClient, HttpServerResponse } from 'effect/http'
 import { KeyValueStore } from 'effect/persistence'
 import fetchMock from 'fetch-mock'
 import { UnableToHandleCommand } from '../../../src/Commands.ts'
 import { Locale, SessionStore } from '../../../src/Context.ts'
 import { CookieSignature } from '../../../src/CookieSignature.ts'
-import { OrcidOauth } from '../../../src/OrcidOauth.ts'
 import { Prereviewers } from '../../../src/Domain/Prereviewers/index.ts'
+import { OrcidOauth } from '../../../src/OrcidOauth.ts'
 import { PublicUrl } from '../../../src/public-url.ts'
 import { UnableToQuery } from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
@@ -18,6 +17,7 @@ import { SessionId, UserC } from '../../../src/user.ts'
 import * as _ from '../../../src/WebApp/log-in/index.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
+import { describe, expect, it, test, vi } from '../../vitest.ts'
 
 test('logIn', () => {
   const actual = _.logIn

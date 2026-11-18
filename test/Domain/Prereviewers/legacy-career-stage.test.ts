@@ -1,8 +1,8 @@
-import { describe, expect, it } from '../../vitest.ts'
 import * as E from 'fp-ts/lib/Either.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as _ from '../../../src/Domain/Prereviewers/legacy-career-stage.ts'
 import * as fc from '../../fc.ts'
+import { describe, expect, it } from '../../vitest.ts'
 
 describe('CareerStageC', () => {
   describe('decode', () => {

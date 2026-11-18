@@ -1,8 +1,8 @@
-import { HttpClient, type HttpClientError, HttpClientResponse } from 'effect/http'
-import { describe, expect, it } from './vitest.ts'
 import { Cause, type Duration, Effect, Exit, Fiber, pipe } from 'effect'
+import { HttpClient, type HttpClientError, HttpClientResponse } from 'effect/http'
 import { TestClock } from 'effect/testing'
 import * as _ from '../src/RequestCollapsingHttpClient.ts'
+import { describe, expect, it } from './vitest.ts'
 
 describe('requestCollapsingHttpClient', () => {
   it.effect('when the requests are sent in parallel', () =>

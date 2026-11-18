@@ -1,10 +1,10 @@
-import { FileSystem, Effect, Layer, Option } from 'effect'
 import { NodeFileSystem } from '@effect/platform-node'
 import { LibsqlClient } from '@effect/sql-libsql'
-import { expect, it } from './vitest.ts'
+import { Effect, FileSystem, Layer, Option } from 'effect'
 import * as _ from '../src/SqlSensitiveDataStore.ts'
 import { Uuid } from '../src/types/index.ts'
 import * as fc from './fc.ts'
+import { expect, it } from './vitest.ts'
 
 it.effect.prop('might not find a value', [fc.uuid()], ([id]) =>
   Effect.gen(function* () {

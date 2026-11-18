@@ -1,6 +1,6 @@
 import { Effect, Layer, Option } from 'effect'
-import { UnverifiedContactEmailAddress } from '../../src/Domain/ContactEmailAddresses/index.ts'
 import { Locale } from '../../src/Context.ts'
+import { UnverifiedContactEmailAddress } from '../../src/Domain/ContactEmailAddresses/index.ts'
 import * as _ from '../../src/ExternalInteractions/Email/VerifyContactEmailAddress/CreateEmail.ts'
 import { DefaultLocale } from '../../src/locales/index.ts'
 import { PublicUrl } from '../../src/public-url.ts'

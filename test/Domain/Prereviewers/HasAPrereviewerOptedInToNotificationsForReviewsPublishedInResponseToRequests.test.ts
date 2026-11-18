@@ -1,10 +1,10 @@
-import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Result } from 'effect'
-import * as Events from '../../../src/Events.ts'
 import * as _ from '../../../src/Domain/Prereviewers/HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests.ts'
+import * as Events from '../../../src/Events.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../../src/types/Pseudonym.ts'
+import { expect, test } from '../../vitest.ts'
 
 const now = Temporal.Now.instant()
 

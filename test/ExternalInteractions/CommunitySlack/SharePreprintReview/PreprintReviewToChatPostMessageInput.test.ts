@@ -1,6 +1,6 @@
-import { expect, test } from '../../../vitest.ts'
 import type { Slack } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/CommunitySlack/SharePreprintReview/PreprintReviewToChatPostMessageInput.ts'
+import { expect, test } from '../../../vitest.ts'
 
 test.each([
   [

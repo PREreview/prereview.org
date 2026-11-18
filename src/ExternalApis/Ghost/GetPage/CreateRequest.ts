@@ -1,5 +1,5 @@
-import { HttpClientRequest } from 'effect/http'
 import { Effect, pipe, Redacted } from 'effect'
+import { HttpClientRequest } from 'effect/http'
 import { GhostApi } from '../GhostApi.ts'
 
 export const CreateRequest = Effect.fnUntraced(function* (id: string) {

@@ -1,9 +1,9 @@
+import { Effect, Fiber, Layer, pipe } from 'effect'
 import { HttpClient, HttpClientResponse } from 'effect/http'
 import { RateLimiter } from 'effect/persistence'
-import { describe, expect, it } from '../../vitest.ts'
-import { Effect, Fiber, Layer, pipe } from 'effect'
 import { TestClock } from 'effect/testing'
 import * as _ from '../../../src/ExternalApis/Crossref/index.ts'
+import { describe, expect, it } from '../../vitest.ts'
 
 describe('layerRateLimitedHttpClient', () => {
   it.effect('when rate limited, it tries again', () =>

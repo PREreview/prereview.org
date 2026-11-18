@@ -1,5 +1,5 @@
-import type { UrlParams } from 'effect/http'
 import { Effect, Schema } from 'effect'
+import type { UrlParams } from 'effect/http'
 
 export interface OpenForRequestsVisibilityForm {
   openForRequestsVisibility: 'public' | 'restricted'

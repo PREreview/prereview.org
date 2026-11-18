@@ -1,14 +1,14 @@
-import { describe, expect, it, vi } from '../vitest.ts'
 import { Effect, Layer, pipe } from 'effect'
 import { encode } from 'html-entities'
-import { Clubs } from '../../src/Domain/Clubs/index.ts'
 import { Locale } from '../../src/Context.ts'
+import { Clubs } from '../../src/Domain/Clubs/index.ts'
 import { Prereviewers } from '../../src/Domain/Prereviewers/index.ts'
 import * as Prereviews from '../../src/Domain/Prereviews/index.ts'
 import * as Routes from '../../src/routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import * as _ from '../../src/WebApp/ClubProfilePage/index.ts'
 import * as fc from '../fc.ts'
+import { describe, expect, it, vi } from '../vitest.ts'
 
 describe('ClubProfilePage', () => {
   it.effect.prop(

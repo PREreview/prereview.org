@@ -1,5 +1,5 @@
-import { HttpClientResponse } from 'effect/http'
 import { Effect, flow, Schema } from 'effect'
+import { HttpClientResponse } from 'effect/http'
 import { Response, SlackError } from '../Types.ts'
 
 export const HandleResponse = flow(

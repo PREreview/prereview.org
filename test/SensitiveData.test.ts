@@ -1,8 +1,8 @@
-import { describe, expect, it } from './vitest.ts'
 import { Effect, Layer, Option, Result, Schema } from 'effect'
 import * as _ from '../src/SensitiveData.ts'
 import { SensitiveDataStore } from '../src/SensitiveDataStore.ts'
 import * as fc from './fc.ts'
+import { describe, expect, it } from './vitest.ts'
 
 const schema = _.LazySensitiveData(Schema.String)
 

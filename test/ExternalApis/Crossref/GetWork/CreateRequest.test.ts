@@ -1,9 +1,9 @@
-import { UrlParams } from 'effect/http'
-import { describe, expect, it } from '../../../vitest.ts'
 import { Tuple } from 'effect'
+import { UrlParams } from 'effect/http'
 import * as _ from '../../../../src/ExternalApis/Crossref/GetWork/CreateRequest.ts'
 import { Doi } from '../../../../src/types/index.ts'
 import * as fc from '../../../fc.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 
 describe('CreateRequest', () => {
   it.prop('creates a GET request', [fc.doi()], ([doi]) => {

@@ -1,13 +1,13 @@
 import type { Temporal } from '@js-temporal/polyfill'
 import { Data, type Array } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import type { ClubName } from '../Clubs/index.ts'
 import type { Html } from '../../html.ts'
-import type { PreprintId } from '../Preprints/index.ts'
 import type { Doi } from '../../types/Doi.ts'
 import type { Name } from '../../types/Name.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { TopicId } from '../../types/Topic.ts'
+import type { ClubName } from '../Clubs/index.ts'
+import type { PreprintId } from '../Preprints/index.ts'
 
 export class Prereview extends Data.TaggedClass('Prereview')<{
   addendum?: Html

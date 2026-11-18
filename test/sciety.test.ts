@@ -1,8 +1,8 @@
-import { describe, expect, it } from './vitest.ts'
 import { BiorxivPreprintId } from '../src/Domain/Preprints/index.ts'
 import * as _ from '../src/sciety.ts'
 import { Doi, toUrl } from '../src/types/Doi.ts'
 import * as fc from './fc.ts'
+import { describe, expect, it } from './vitest.ts'
 
 describe('isScietyPreprint', () => {
   it.prop(

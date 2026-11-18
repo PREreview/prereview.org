@@ -1,7 +1,7 @@
-import { describe, expect, it } from '../../vitest.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/connect-orcid/oauth-error.ts'
 import * as fc from '../../fc.ts'
+import { describe, expect, it } from '../../vitest.ts'
 
 describe('connectOrcidError', () => {
   it.prop('with an access_denied error', [fc.supportedLocale()], ([locale]) => {

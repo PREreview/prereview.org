@@ -1,21 +1,21 @@
-import { UrlParams } from 'effect/http'
 import {
   Array,
+  Effect,
+  Number as EffectNumber,
   Match,
   Option,
   Record,
   Schema,
+  SchemaGetter,
+  SchemaIssue,
+  SchemaTransformation,
   String,
   Tuple,
   flow,
   identity,
   pipe,
-  SchemaTransformation,
-  Effect,
-  SchemaGetter,
-  Number as EffectNumber,
-  SchemaIssue,
 } from 'effect'
+import { UrlParams } from 'effect/http'
 import * as P from 'fp-ts-routing'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'

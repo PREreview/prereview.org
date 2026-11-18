@@ -1,6 +1,5 @@
-import { HttpRouter, HttpServerRequest, HttpServerResponse } from 'effect/http'
-import { describe, expect, it } from '../../vitest.ts'
 import { Effect, HashSet, Layer, Redacted } from 'effect'
+import { HttpRouter, HttpServerRequest, HttpServerResponse } from 'effect/http'
 import { EnabledLocales, Locale } from '../../../src/Context.ts'
 import * as FeatureFlags from '../../../src/FeatureFlags.ts'
 import { rawHtml } from '../../../src/html.ts'
@@ -12,6 +11,7 @@ import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/Router/LegacyRouter.ts'
 import { TemplatePage } from '../../../src/WebApp/TemplatePage.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
+import { describe, expect, it } from '../../vitest.ts'
 
 const handleRequest = (request: HttpServerRequest.HttpServerRequest) =>
   Effect.flatMap(HttpRouter.toHttpEffect(HttpRouter.addAll(_.LegacyRouter)), handler =>

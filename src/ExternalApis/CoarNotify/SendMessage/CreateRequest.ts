@@ -1,5 +1,5 @@
-import { HttpClientRequest } from 'effect/http'
 import { pipe } from 'effect'
+import { HttpClientRequest } from 'effect/http'
 import { MessageSchema, type Message } from '../Types.ts'
 
 export const CreateRequest = (message: Message) =>

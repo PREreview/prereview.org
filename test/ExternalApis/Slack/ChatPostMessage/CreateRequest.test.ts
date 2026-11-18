@@ -1,9 +1,9 @@
-import { HttpBody } from 'effect/http'
-import { describe, expect, it } from '../../../vitest.ts'
 import { Effect, Redacted } from 'effect'
+import { HttpBody } from 'effect/http'
 import { Slack } from '../../../../src/ExternalApis/index.ts'
 import { ChatPostMessageInput } from '../../../../src/ExternalApis/Slack/ChatPostMessage/ChatPostMessageInput.ts'
 import * as _ from '../../../../src/ExternalApis/Slack/ChatPostMessage/CreateRequest.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 import * as fc from '../fc.ts'
 
 describe('CreateRequest', () => {

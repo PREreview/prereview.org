@@ -1,6 +1,6 @@
-import { HttpClientRequest } from 'effect/http'
 import { v2 as cloudinary } from 'cloudinary'
 import { Clock, Effect, pipe, Redacted } from 'effect'
+import { HttpClientRequest } from 'effect/http'
 import type { NonEmptyString } from '../../../types/NonEmptyString.ts'
 import { CloudinaryApi } from '../CloudinaryApi.ts'
 

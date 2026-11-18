@@ -1,6 +1,7 @@
 import { Array, Context, Effect, flow, Option, pipe, Scope, Struct } from 'effect'
 import type * as EventDispatcher from '../../../EventDispatcher.ts'
 import * as Queries from '../../../Queries.ts'
+import { getTopicField, getTopicSubfield } from '../../../types/Topic.ts'
 import { DatasetReviewQueries } from '../../DatasetReviews/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
 import {
@@ -9,7 +10,6 @@ import {
   type Prereview,
   WasPrereviewRemoved,
 } from '../../PreprintReviews/index.ts'
-import { getTopicField, getTopicSubfield } from '../../../types/Topic.ts'
 import { RecentDatasetPrereview, RecentPreprintPrereview, type RecentPrereviews } from '../Prereview.ts'
 import { type Input, ListMatchingPrereviewIds, MatchingPrereviewId } from './ListMatchingPrereviewIds.ts'
 import { PrereviewsAreUnavailable, PrereviewsPageNotFound } from './Types.ts'

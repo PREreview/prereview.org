@@ -1,6 +1,5 @@
-import { UrlParams } from 'effect/http'
-import { describe, expect, it } from '../../vitest.ts'
 import { Effect, Layer, Option } from 'effect'
+import { UrlParams } from 'effect/http'
 import { format } from 'fp-ts-routing'
 import { UnableToHandleCommand } from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
@@ -17,6 +16,7 @@ import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { LoggedInUser } from '../../../src/user.ts'
 import * as _ from '../../../src/WebApp/MyDetails/RequestedReviewNotificationsPage/index.ts'
 import * as fc from '../../fc.ts'
+import { describe, expect, it } from '../../vitest.ts'
 
 describe('RequestedReviewNotificationsPage', () => {
   it.effect.prop(

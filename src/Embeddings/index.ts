@@ -1,11 +1,20 @@
 import { OpenRouterClient } from '@effect/ai-openrouter'
+import { PgClient } from '@effect/sql-pg'
+import { Tokenizer } from '@huggingface/tokenizers'
+import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Context, Effect, Layer, pipe, Struct } from 'effect'
-import { UnableToGetMatches, type UnableToAddWorksWithRequests } from './Shared.ts'
+import type { LanguageCode } from 'iso-639-1'
+import type { IndeterminatePreprintId } from '../Domain/Preprints/index.ts'
+import type { OrcidId } from '../types/OrcidId.ts'
+import { calcFloat32ArrayMean } from './Float32Array.ts'
 import {
   ensureMatchmakingInputWorksTable,
   getEmbeddingGeneratingAsNeeded,
   type MatchmakingInputWork,
 } from './MatchmakingInputWorks.ts'
+import tokenizerJson from './model/tokenizer.json' with { type: 'json' }
+import tokenizerConfig from './model/tokenizer_config.json' with { type: 'json' }
+import { UnableToGetMatches, type UnableToAddWorksWithRequests } from './Shared.ts'
 import {
   createMissingEmbeddings,
   ensureRequestEmbeddingsTable,
@@ -14,15 +23,6 @@ import {
   updateLatestRequestDate,
   type WorkWithRequest,
 } from './WorksWithRequests.ts'
-import { PgClient } from '@effect/sql-pg'
-import type { Temporal } from '@js-temporal/polyfill'
-import { calcFloat32ArrayMean } from './Float32Array.ts'
-import type { LanguageCode } from 'iso-639-1'
-import type { OrcidId } from '../types/OrcidId.ts'
-import type { IndeterminatePreprintId } from '../Domain/Preprints/index.ts'
-import { Tokenizer } from '@huggingface/tokenizers'
-import tokenizerConfig from './model/tokenizer_config.json' with { type: 'json' }
-import tokenizerJson from './model/tokenizer.json' with { type: 'json' }
 
 export type { MatchmakingInputWork } from './MatchmakingInputWorks.ts'
 

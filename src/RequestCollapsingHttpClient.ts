@@ -1,3 +1,4 @@
+import { Deferred, Effect, Layer, pipe } from 'effect'
 import {
   HttpClient,
   type HttpClientError,
@@ -5,7 +6,6 @@ import {
   type HttpClientResponse,
   UrlParams,
 } from 'effect/http'
-import { Deferred, Effect, Layer, pipe } from 'effect'
 import normalizeUrl from 'normalize-url'
 
 export const requestCollapsingHttpClient = Effect.gen(function* () {

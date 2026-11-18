@@ -1,11 +1,11 @@
-import { describe, expect, it, vi } from '../../../vitest.ts'
-import { Effect, Result, HashSet, Layer, pipe } from 'effect'
-import { Email } from '../../../../src/ExternalInteractions/index.ts'
+import { Effect, HashSet, Layer, pipe, Result } from 'effect'
 import * as PreprintReviews from '../../../../src/Domain/PreprintReviews/index.ts'
 import * as _ from '../../../../src/Domain/PreprintReviews/Workflows/NotifyReviewRequestersOfReview.ts'
 import * as Prereviewers from '../../../../src/Domain/Prereviewers/index.ts'
 import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
+import { Email } from '../../../../src/ExternalInteractions/index.ts'
 import * as fc from '../../../fc.ts'
+import { describe, expect, it, vi } from '../../../vitest.ts'
 
 describe('NotifyReviewRequestersOfReview', () => {
   describe('when the review can be loaded', () => {

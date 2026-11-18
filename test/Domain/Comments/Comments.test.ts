@@ -1,4 +1,3 @@
-import { describe, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Option } from 'effect'
 import * as _ from '../../../src/Domain/Comments/index.ts'
@@ -7,6 +6,7 @@ import { Doi } from '../../../src/types/Doi.ts'
 import { NonEmptyString, Uuid } from '../../../src/types/index.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { CommandHandlerSpecification } from '../../CommandHandlerSpecification.ts'
+import { describe, test } from '../../vitest.ts'
 
 const given = CommandHandlerSpecification.for({
   decide: _.DecideComment,

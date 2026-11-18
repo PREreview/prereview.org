@@ -10,8 +10,8 @@ import { GetPersonaChoice } from './GetPersonaChoice.ts'
 import { GetReviewIdForInvitation } from './GetReviewIdForInvitation.ts'
 import { HasAnEmailToInviteAuthorBeenSent } from './HasAnEmailToInviteAuthorBeenSent.ts'
 import { HasAPrereviewerConfirmedTheirAuthorChoices } from './HasAPrereviewerConfirmedTheirAuthorChoices.ts'
-import { RecordEmailSentToInviteAuthor } from './RecordEmailSentToInviteAuthor.ts'
 import { ImportAuthorChoices } from './ImportAuthorChoices.ts'
+import { RecordEmailSentToInviteAuthor } from './RecordEmailSentToInviteAuthor.ts'
 
 export class AuthorInvites extends Context.Service<
   AuthorInvites,

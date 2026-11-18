@@ -1,5 +1,5 @@
-import { HttpClientResponse } from 'effect/http'
 import { Effect, Equal, flow } from 'effect'
+import { HttpClientResponse } from 'effect/http'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { DetectLanguageIsUnavailable } from '../DetectLanguageApi.ts'
 import { LanguageCandidates } from './LanguageCandidates.ts'

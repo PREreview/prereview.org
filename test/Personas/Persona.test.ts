@@ -1,8 +1,8 @@
-import { describe, expect, it } from '../vitest.ts'
 import { Option, Struct } from 'effect'
 import * as _ from '../../src/Domain/Prereviewers/index.ts'
 import * as fc from '../fc.ts'
 import { shouldNotBeCalled } from '../should-not-be-called.ts'
+import { describe, expect, it } from '../vitest.ts'
 
 describe('PublicPersona', () => {
   describe('displayName', () => {

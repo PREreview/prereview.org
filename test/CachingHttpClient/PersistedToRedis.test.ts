@@ -1,10 +1,10 @@
+import { DateTime, Effect, Option, Result, Schema } from 'effect'
 import { Headers, HttpClientRequest, HttpClientResponse } from 'effect/http'
-import { describe, expect, it, vi } from '../vitest.ts'
-import { DateTime, Effect, Result, Option, Schema } from 'effect'
 import type { Redis as IoRedis } from 'ioredis'
 import { CacheValueFromStringSchema, InternalHttpCacheFailure } from '../../src/CachingHttpClient/HttpCache.ts'
 import * as _ from '../../src/CachingHttpClient/PersistedToRedis.ts'
 import * as fc from '../fc.ts'
+import { describe, expect, it, vi } from '../vitest.ts'
 
 describe('getFromRedis', () => {
   const stubbedRedisReturning = (value: string | null) =>

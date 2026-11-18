@@ -1,6 +1,6 @@
-import { describe, expect, test } from '../../../vitest.ts'
 import { Option } from 'effect'
 import * as _ from '../../../../src/WebApp/write-review/add-author-page/parse-authors.ts'
+import { describe, expect, test } from '../../../vitest.ts'
 
 describe('parseAuthors', () => {
   test.each([

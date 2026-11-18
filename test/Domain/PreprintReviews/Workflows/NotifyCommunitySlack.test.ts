@@ -1,10 +1,10 @@
-import { describe, expect, it } from '../../../vitest.ts'
-import { Effect, Result, Layer, pipe } from 'effect'
-import { CommunitySlack } from '../../../../src/ExternalInteractions/index.ts'
+import { Effect, Layer, pipe, Result } from 'effect'
 import * as PreprintReviews from '../../../../src/Domain/PreprintReviews/index.ts'
 import * as _ from '../../../../src/Domain/PreprintReviews/Workflows/NotifyCommunitySlack.ts'
+import { CommunitySlack } from '../../../../src/ExternalInteractions/index.ts'
 import { PublicUrl } from '../../../../src/public-url.ts'
 import * as fc from '../../../fc.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 
 describe('NotifyCommunitySlack', () => {
   it.effect.prop(

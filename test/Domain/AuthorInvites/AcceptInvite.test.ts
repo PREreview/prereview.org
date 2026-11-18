@@ -1,10 +1,10 @@
-import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Result, Option } from 'effect'
+import { Option, Result } from 'effect'
 import * as _ from '../../../src/Domain/AuthorInvites/AcceptInvite.ts'
 import * as Events from '../../../src/Events.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Uuid } from '../../../src/types/Uuid.ts'
+import { expect, test } from '../../vitest.ts'
 
 const input = {
   invitationId: Uuid('4ecba4c3-f0f7-4631-8011-58e7a0a62e6a'),

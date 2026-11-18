@@ -1,4 +1,3 @@
-import { SqlClient, type SqlError, type Statement } from 'effect/sql'
 import { PgClient } from '@effect/sql-pg'
 import {
   Array,
@@ -11,13 +10,14 @@ import {
   PubSub,
   Record,
   Schema,
-  Scope,
-  Struct,
-  SchemaIssue,
   SchemaGetter,
+  SchemaIssue,
+  Scope,
   Stream,
+  Struct,
   Tuple,
 } from 'effect'
+import { SqlClient, type SqlError, type Statement } from 'effect/sql'
 import * as EventStore from './EventStore.ts'
 import * as Events from './Events.ts'
 import type * as SensitiveDataStore from './SensitiveDataStore.ts'

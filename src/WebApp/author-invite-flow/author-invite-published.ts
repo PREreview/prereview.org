@@ -8,13 +8,13 @@ import { P, match } from 'ts-pattern'
 import { type GetAuthorInviteEnv, getAuthorInvite } from '../../author-invite.ts'
 import { type Html, html, plainText } from '../../html.ts'
 import { type SupportedLocale, translate } from '../../locales/index.ts'
+import * as Routes from '../../routes.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
   authorInviteMatch,
   authorInvitePublishedMatch,
 } from '../../routes.ts'
-import * as Routes from '../../routes.ts'
 import type { Doi } from '../../types/Doi.ts'
 import type { Uuid } from '../../types/Uuid.ts'
 import type { User } from '../../user.ts'

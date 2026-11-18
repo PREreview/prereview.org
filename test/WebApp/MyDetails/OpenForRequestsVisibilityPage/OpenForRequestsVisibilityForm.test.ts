@@ -1,8 +1,8 @@
-import { UrlParams } from 'effect/http'
-import { describe, expect, it } from '../../../vitest.ts'
 import { Effect } from 'effect'
+import { UrlParams } from 'effect/http'
 import * as _ from '../../../../src/WebApp/MyDetails/OpenForRequestsVisibilityPage/OpenForRequestsVisibilityForm.ts'
 import * as fc from '../../../fc.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 
 describe('fromBody', () => {
   it.effect.prop(

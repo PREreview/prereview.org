@@ -1,13 +1,13 @@
-import { Array, Struct, Effect, Option, pipe, Filter } from 'effect'
+import { Array, Effect, Filter, Option, pipe, Struct } from 'effect'
+import { UrlParams } from 'effect/http'
+import { Preprints } from '../../Domain/Preprints/index.ts'
 import { type MatchmakingInputWork, Embeddings } from '../../Embeddings/index.ts'
 import { OpenAlexWorks } from '../../ExternalInteractions/OpenAlexWorks/index.ts'
-import { createMatchmakingPage } from './MatchmakingPage.ts'
-import { UrlParams } from 'effect/http'
 import * as Doi from '../../types/Doi.ts'
 import { PlainDate } from '../../types/Temporal.ts'
-import { Preprints } from '../../Domain/Preprints/index.ts'
 import { LoggedInUser } from '../../user.ts'
 import { HavingProblemsPage } from '../HavingProblemsPage/index.ts'
+import { createMatchmakingPage } from './MatchmakingPage.ts'
 
 export const MatchmakingPage = Effect.succeed(createMatchmakingPage(Option.none(), [])).pipe(
   Effect.withSpan('MatchmakingPage'),

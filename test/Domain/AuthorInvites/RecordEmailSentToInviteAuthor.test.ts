@@ -1,8 +1,8 @@
-import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import * as _ from '../../../src/Domain/AuthorInvites/RecordEmailSentToInviteAuthor.ts'
 import * as Events from '../../../src/Events.ts'
 import { Uuid } from '../../../src/types/Uuid.ts'
+import { expect, test } from '../../vitest.ts'
 
 const input = {
   invitationId: Uuid('578467ae-11e2-4ce9-876f-5fa2714282a5'),

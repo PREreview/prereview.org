@@ -1,6 +1,6 @@
 import { Effect, Match, Option, pipe, String, Struct } from 'effect'
-import type { OpenAlex } from '../../../ExternalApis/index.ts'
 import * as Preprints from '../../../Domain/Preprints/index.ts'
+import type { OpenAlex } from '../../../ExternalApis/index.ts'
 
 export const determinePreprintId = (
   id: Preprints.IndeterminatePreprintIdWithDoi,

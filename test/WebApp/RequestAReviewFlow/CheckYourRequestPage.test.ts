@@ -1,11 +1,10 @@
-import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect, Layer, Tuple } from 'effect'
 import * as Commands from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Preprints from '../../../src/Domain/Preprints/index.ts'
 import * as Prereviewers from '../../../src/Domain/Prereviewers/index.ts'
-import * as Queries from '../../../src/Queries.ts'
 import * as ReviewRequests from '../../../src/Domain/ReviewRequests/index.ts'
+import * as Queries from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { Temporal } from '../../../src/types/index.ts'
@@ -13,6 +12,7 @@ import { LoggedInUser } from '../../../src/user.ts'
 import * as _ from '../../../src/WebApp/RequestAReviewFlow/CheckYourRequestPage/index.ts'
 import { RedirectResponse } from '../../../src/WebApp/Response/index.ts'
 import * as fc from '../../fc.ts'
+import { describe, expect, it, vi } from '../../vitest.ts'
 
 describe('CheckYourRequestPage', () => {
   describe('when the user is logged in', () => {

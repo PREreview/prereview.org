@@ -1,10 +1,10 @@
 import { Array, Filter, flow, HashMap, Match, Option, Order, pipe, Result } from 'effect'
 import * as Events from '../../../Events.ts'
-import type { IndeterminatePreprintId } from '../../Preprints/index.ts'
 import * as Queries from '../../../Queries.ts'
 import type { Doi } from '../../../types/Doi.ts'
 import type { OrcidId } from '../../../types/OrcidId.ts'
 import { Temporal } from '../../../types/index.ts'
+import type { IndeterminatePreprintId } from '../../Preprints/index.ts'
 
 export interface PreprintReviewForSciety {
   readonly authors: ReadonlyArray<{ orcidId: OrcidId; persona: 'public' | 'pseudonym' }>

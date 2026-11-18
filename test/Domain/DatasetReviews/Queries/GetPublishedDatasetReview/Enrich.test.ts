@@ -1,4 +1,3 @@
-import { expect, it } from '../../../../vitest.ts'
 import { Effect, Layer, Option, Struct } from 'effect'
 import { ClubNotFound, Clubs } from '../../../../../src/Domain/Clubs/index.ts'
 import * as _ from '../../../../../src/Domain/DatasetReviews/Queries/GetPublishedDatasetReview/Enrich.ts'
@@ -7,6 +6,7 @@ import { DatasetIsNotFound, DatasetIsUnavailable, Datasets } from '../../../../.
 import { Prereviewers, UnableToGetPersona } from '../../../../../src/Domain/Prereviewers/index.ts'
 import { OrcidId, Uuid } from '../../../../../src/types/index.ts'
 import * as fc from '../../../../fc.ts'
+import { expect, it } from '../../../../vitest.ts'
 
 const publicAuthor = fc.constant({ orcidId: OrcidId.OrcidId('0000-0002-1825-0097'), persona: 'public' as const })
 

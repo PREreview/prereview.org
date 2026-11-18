@@ -1,8 +1,8 @@
-import { expect, test } from '../../vitest.ts'
-import { Result, Option } from 'effect'
+import { Option, Result } from 'effect'
 import * as _ from '../../../src/Domain/AuthorInvites/GetReviewIdForInvitation.ts'
 import * as Events from '../../../src/Events.ts'
 import { Uuid } from '../../../src/types/Uuid.ts'
+import { expect, test } from '../../vitest.ts'
 
 const input: _.Input = Uuid('2c4981b5-ec9e-4535-88eb-3623e30b8ab9')
 

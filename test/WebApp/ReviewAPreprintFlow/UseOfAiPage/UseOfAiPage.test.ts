@@ -1,11 +1,8 @@
+import { Effect, Layer, Option, Result } from 'effect'
 import { UrlParams } from 'effect/http'
-import { describe, expect, it } from '../../../vitest.ts'
-import { Effect, Result, Layer, Option } from 'effect'
 import { format } from 'fp-ts-routing'
 import { UnableToHandleCommand } from '../../../../src/Commands.ts'
 import { Locale } from '../../../../src/Context.ts'
-import { html } from '../../../../src/html.ts'
-import { DefaultLocale } from '../../../../src/locales/index.ts'
 import * as PreprintReviews from '../../../../src/Domain/PreprintReviews/index.ts'
 import {
   BiorxivPreprintId,
@@ -14,6 +11,8 @@ import {
   Preprints,
   type PreprintTitle,
 } from '../../../../src/Domain/Preprints/index.ts'
+import { html } from '../../../../src/html.ts'
+import { DefaultLocale } from '../../../../src/locales/index.ts'
 import { UnableToQuery } from '../../../../src/Queries.ts'
 import * as Routes from '../../../../src/routes.ts'
 import { Doi } from '../../../../src/types/Doi.ts'
@@ -27,6 +26,7 @@ import * as _ from '../../../../src/WebApp/ReviewAPreprintFlow/UseOfAiPage/index
 import * as UseOfAiForm from '../../../../src/WebApp/ReviewAPreprintFlow/UseOfAiPage/UseOfAiForm.ts'
 import { renderUseOfAiPage } from '../../../../src/WebApp/ReviewAPreprintFlow/UseOfAiPage/UseOfAiPage.ts'
 import * as fc from '../../../fc.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 
 describe('UseOfAiPage', () => {
   it.effect.prop(

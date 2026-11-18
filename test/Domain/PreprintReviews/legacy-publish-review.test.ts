@@ -1,10 +1,10 @@
-import { describe, expect, it } from '../../vitest.ts'
 import { Effect, Layer } from 'effect'
 import { Locale } from '../../../src/Context.ts'
-import { LanguageDetection } from '../../../src/ExternalInteractions/index.ts'
-import { html } from '../../../src/html.ts'
 import * as _ from '../../../src/Domain/PreprintReviews/legacy-publish-review.ts'
 import * as Prereviewers from '../../../src/Domain/Prereviewers/index.ts'
+import { LanguageDetection } from '../../../src/ExternalInteractions/index.ts'
+import { html } from '../../../src/html.ts'
+import { describe, expect, it } from '../../vitest.ts'
 import * as fc from '../../WebApp/write-review/fc.ts'
 
 describe('completedFormToNewPrereview', () => {

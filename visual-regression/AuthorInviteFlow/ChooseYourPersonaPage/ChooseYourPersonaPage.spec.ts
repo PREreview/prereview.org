@@ -1,4 +1,4 @@
-import { Result, Option } from 'effect'
+import { Option, Result } from 'effect'
 import * as Prereviewers from '../../../src/Domain/Prereviewers/index.ts'
 import * as ChooseYourPersonaForm from '../../../src/WebApp/AuthorInviteFlow/ChooseYourPersonaPage/ChooseYourPersonaForm.ts'
 import * as _ from '../../../src/WebApp/AuthorInviteFlow/ChooseYourPersonaPage/ChooseYourPersonaPage.ts'

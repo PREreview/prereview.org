@@ -1,5 +1,5 @@
-import { HttpClientRequest, type UrlParams } from 'effect/http'
 import { Effect, identity, pipe } from 'effect'
+import { HttpClientRequest, type UrlParams } from 'effect/http'
 import { ContentfulConfig, UsePreviewApi } from '../ContentfulConfig.ts'
 
 export const CreateRequest = Effect.fnUntraced(function* (urlParams: UrlParams.Input = {}) {

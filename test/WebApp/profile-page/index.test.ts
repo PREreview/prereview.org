@@ -1,4 +1,3 @@
-import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
@@ -10,6 +9,7 @@ import {
 } from '../../../src/Domain/Prereviewers/IsPseudonymInUse.ts'
 import { Prereviewers } from '../../../src/Domain/Prereviewers/index.ts'
 import * as Prereviews from '../../../src/Domain/Prereviews/index.ts'
+import { EffectToFpts } from '../../../src/RefactoringUtilities/index.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/profile-page/index.ts'
 import { plainText } from '../../../src/html.ts'
@@ -17,7 +17,7 @@ import { profileMatch } from '../../../src/routes.ts'
 import { ProfileId } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
-import { EffectToFpts } from '../../../src/RefactoringUtilities/index.ts'
+import { describe, expect, it, vi } from '../../vitest.ts'
 
 describe('profile', () => {
   describe('with an ORCID iD', () => {

@@ -1,9 +1,9 @@
-import { HttpBody, UrlParams } from 'effect/http'
-import { describe, expect, it } from '../../../vitest.ts'
 import { Effect } from 'effect'
+import { HttpBody, UrlParams } from 'effect/http'
 import * as _ from '../../../../src/ExternalApis/CoarNotify/SendMessage/CreateRequest.ts'
 import { CoarNotify } from '../../../../src/ExternalApis/index.ts'
 import * as fc from '../../../fc.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 
 describe('CreateRequest', () => {
   it.effect.prop('creates a POST request', [fc.coarNotifyMessage()], ([message]) =>

@@ -1,10 +1,10 @@
-import { describe, expect, it } from './vitest.ts'
 import { Effect, Layer, Result } from 'effect'
 import { Redis } from 'effect/persistence'
 import { TestClock } from 'effect/testing'
 import * as _ from '../src/RedisKeyValueStore.ts'
 import * as fc from './fc.ts'
 import { shouldNotBeCalled } from './should-not-be-called.ts'
+import { describe, expect, it } from './vitest.ts'
 
 const redisBackedBy = (data: Map<string, string>, commands: Array<ReadonlyArray<string>> = []) =>
   Layer.succeed(Redis.Redis, {

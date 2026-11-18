@@ -1,4 +1,4 @@
-import { Context, Data, Effect, Result, flow, Layer, Option, pipe, Scope } from 'effect'
+import { Context, Data, Effect, flow, Layer, Option, pipe, Result, Scope } from 'effect'
 import * as Commands from '../../../Commands.ts'
 import type * as Events from '../../../Events.ts'
 import * as EventStore from '../../../EventStore.ts'

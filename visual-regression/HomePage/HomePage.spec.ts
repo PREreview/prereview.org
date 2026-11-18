@@ -1,8 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Option } from 'effect'
 import * as Datasets from '../../src/Domain/Datasets/index.ts'
-import { rawHtml } from '../../src/html.ts'
-import { DefaultLocale } from '../../src/locales/index.ts'
 import {
   ArxivPreprintId,
   BiorxivPreprintId,
@@ -12,6 +10,8 @@ import {
 import * as Prereviewers from '../../src/Domain/Prereviewers/index.ts'
 import * as Prereviews from '../../src/Domain/Prereviews/index.ts'
 import type * as ReviewRequests from '../../src/Domain/ReviewRequests/index.ts'
+import { rawHtml } from '../../src/html.ts'
+import { DefaultLocale } from '../../src/locales/index.ts'
 import { Doi } from '../../src/types/Doi.ts'
 import { Name, OrcidId, Pseudonym, Slug, Uuid } from '../../src/types/index.ts'
 import { createPage } from '../../src/WebApp/HomePage/HomePage.ts'

@@ -1,17 +1,17 @@
 import {
   Array,
   Data,
-  Function,
-  Schema,
-  String,
-  SchemaTransformation,
   Effect,
+  Function,
+  Number,
   Option,
   Predicate,
+  Schema,
   SchemaGetter,
-  Struct,
-  Number,
   SchemaIssue,
+  SchemaTransformation,
+  String,
+  Struct,
 } from 'effect'
 import { Doi, Temporal } from '../../types/index.ts'
 

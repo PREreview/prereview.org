@@ -1,5 +1,5 @@
-import type { UrlParams } from 'effect/http'
 import { Boolean, Data, Effect, Result, Schema } from 'effect'
+import type { UrlParams } from 'effect/http'
 
 export type DeclareFollowingCodeOfConductForm = EmptyForm | InvalidForm | CompletedForm
 

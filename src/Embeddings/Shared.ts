@@ -1,4 +1,4 @@
-import { Data, Schema, Tuple, SchemaTransformation, Effect, Number, Option, SchemaGetter, SchemaIssue } from 'effect'
+import { Data, Effect, Number, Option, Schema, SchemaGetter, SchemaIssue, SchemaTransformation, Tuple } from 'effect'
 import { Float32ArraySchema } from './Float32Array.ts'
 
 const NumberFromStringSchema = Schema.String.pipe(

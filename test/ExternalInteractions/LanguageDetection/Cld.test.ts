@@ -1,8 +1,8 @@
-import { describe, expect, it } from '../../vitest.ts'
 import { type Array, Effect, Option } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import * as _ from '../../../src/ExternalInteractions/LanguageDetection/Cld.ts'
 import { type Html, html, type PlainText, rawHtml } from '../../../src/html.ts'
+import { describe, expect, it } from '../../vitest.ts'
 
 describe('detectLanguage', () => {
   it.effect.each<[string, Html | PlainText | string, Option.Option<LanguageCode>, LanguageCode?]>([

@@ -1,4 +1,4 @@
-import { Effect, Option, Record, Schema, String, SchemaIssue, SchemaGetter } from 'effect'
+import { Effect, Option, Record, Schema, SchemaGetter, SchemaIssue, String } from 'effect'
 import { Locale } from '../Context.ts'
 import { ContentfulId, Entry } from '../ExternalApis/Contentful/index.ts'
 import { languageAttributesFor } from '../Locales.ts'

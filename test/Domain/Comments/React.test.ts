@@ -1,6 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { describe, expect, it, vi } from '../../vitest.ts'
-import { Effect, Result, Layer, pipe } from 'effect'
+import { Effect, Layer, pipe, Result } from 'effect'
 import * as Comments from '../../../src/Domain/Comments/index.ts'
 import * as _ from '../../../src/Domain/Comments/React.ts'
 import {
@@ -10,6 +9,7 @@ import {
 import * as Queries from '../../../src/Queries.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
+import { describe, expect, it, vi } from '../../vitest.ts'
 
 describe('CheckIfUserHasAVerifiedEmailAddress', () => {
   it.effect.prop(

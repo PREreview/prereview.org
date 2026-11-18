@@ -1,6 +1,5 @@
-import { UrlParams } from 'effect/http'
-import { describe, expect, it } from '../../../vitest.ts'
 import { Effect, Layer, Option, pipe } from 'effect'
+import { UrlParams } from 'effect/http'
 import { format } from 'fp-ts-routing'
 import { Locale } from '../../../../src/Context.ts'
 import { IsOpenForRequestsStore } from '../../../../src/Domain/Prereviewers/index.ts'
@@ -9,6 +8,7 @@ import * as StatusCodes from '../../../../src/StatusCodes.ts'
 import { LoggedInUser } from '../../../../src/user.ts'
 import * as _ from '../../../../src/WebApp/MyDetails/OpenForRequestsVisibilityPage/index.ts'
 import * as fc from '../../../fc.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 import { keyValueStoreWith } from '../KeyValueStores.ts'
 
 const stored = () => fc.isOpenForRequestsVisibility().map(visibility => ({ value: true as const, visibility }))

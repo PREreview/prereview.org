@@ -1,4 +1,4 @@
-import { Array, Result, Match, Option } from 'effect'
+import { Array, Match, Option, Result } from 'effect'
 import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
 import { EmailAddressEquivalence, type EmailAddress } from '../../types/EmailAddress.ts'

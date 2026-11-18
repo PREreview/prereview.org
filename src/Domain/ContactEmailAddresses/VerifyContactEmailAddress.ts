@@ -1,4 +1,4 @@
-import { Array, Data, Result, Option } from 'effect'
+import { Array, Data, Option, Result } from 'effect'
 import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
 import type { Temporal } from '../../types/index.ts'

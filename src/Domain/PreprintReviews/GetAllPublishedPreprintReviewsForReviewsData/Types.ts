@@ -1,7 +1,7 @@
 import { Data } from 'effect'
-import type { PreprintId } from '../../Preprints/index.ts'
 import type { OrcidId } from '../../../types/OrcidId.ts'
 import type { Pseudonym } from '../../../types/Pseudonym.ts'
+import type { PreprintId } from '../../Preprints/index.ts'
 import type { PreprintReviewForReviewsData } from './ListPreprintReviewsForReviewsData.ts'
 
 export type PublishedPreprintReviewForReviewsData = Omit<PreprintReviewForReviewsData, 'authors' | 'preprint'> & {

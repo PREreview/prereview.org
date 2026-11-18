@@ -1,12 +1,12 @@
-import { describe, expect, it } from '../../../vitest.ts'
-import { Effect, Result, Layer, pipe } from 'effect'
+import { Effect, Layer, pipe, Result } from 'effect'
 import * as DatasetReviews from '../../../../src/Domain/DatasetReviews/index.ts'
 import * as _ from '../../../../src/Domain/DatasetReviews/Workflows/NotifyCommunitySlack.ts'
-import { CommunitySlack } from '../../../../src/ExternalInteractions/index.ts'
 import * as Prereviewers from '../../../../src/Domain/Prereviewers/index.ts'
+import { CommunitySlack } from '../../../../src/ExternalInteractions/index.ts'
 import { PublicUrl } from '../../../../src/public-url.ts'
 import * as Queries from '../../../../src/Queries.ts'
 import * as fc from '../../../fc.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 
 describe('NotifyCommunitySlack', () => {
   describe('when the Slack can be notified', () => {

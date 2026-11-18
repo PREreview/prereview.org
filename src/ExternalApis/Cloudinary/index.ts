@@ -1,5 +1,5 @@
-import type { HttpClient } from 'effect/http'
 import { Context, Effect, flow, Layer, Scope } from 'effect'
+import type { HttpClient } from 'effect/http'
 import type { CloudinaryApi } from './CloudinaryApi.ts'
 import { DestroyImage } from './DestroyImage/index.ts'
 import { ImageUrl } from './ImageUrl/index.ts'

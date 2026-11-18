@@ -1,8 +1,8 @@
-import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect, Layer, pipe } from 'effect'
 import { Cloudinary } from '../../../src/ExternalApis/index.ts'
 import * as _ from '../../../src/ExternalInteractions/CloudinaryAvatars/DestroyAvatar.ts'
 import * as fc from '../../fc.ts'
+import { describe, expect, it, vi } from '../../vitest.ts'
 
 describe('DestroyAvatar', () => {
   it.effect.prop('when the image is destroyed', [fc.nonEmptyString()], ([avatarId]) =>

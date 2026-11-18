@@ -1,5 +1,5 @@
-import { UrlParams } from 'effect/http'
 import { HashSet, identity, pipe, String } from 'effect'
+import { UrlParams } from 'effect/http'
 import * as F from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/lib/Either.js'

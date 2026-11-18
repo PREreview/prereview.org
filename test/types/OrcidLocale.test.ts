@@ -1,7 +1,7 @@
-import { describe, expect, it } from '../vitest.ts'
 import { Option, Tuple } from 'effect'
 import * as _ from '../../src/types/OrcidLocale.ts'
 import * as fc from '../fc.ts'
+import { describe, expect, it } from '../vitest.ts'
 
 describe('isOrcidLocale', () => {
   it.prop('with an ORCID locale', [fc.orcidLocale()], ([locale]) => {

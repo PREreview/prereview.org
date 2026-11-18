@@ -1,4 +1,4 @@
-import { absurd, Result, Match, pipe } from 'effect'
+import { absurd, Match, pipe, Result } from 'effect'
 import { type Html, html, plainText } from '../../../html.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'

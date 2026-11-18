@@ -1,5 +1,5 @@
-import { HttpClientResponse } from 'effect/http'
 import { Effect, Equal, flow, Struct } from 'effect'
+import { HttpClientResponse } from 'effect/http'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { UploadImageResponse } from './UploadImageResponse.ts'
 

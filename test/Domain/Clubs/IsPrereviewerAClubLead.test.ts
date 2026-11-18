@@ -1,4 +1,3 @@
-import { expect, it } from '../../vitest.ts'
 import type { Array } from 'effect'
 import * as _ from '../../../src/Domain/Clubs/IsPrereviewerAClubLead.ts'
 import type { ClubDetails } from '../../../src/Domain/Clubs/index.ts'
@@ -8,6 +7,7 @@ import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Slug } from '../../../src/types/Slug.ts'
 import { PlainDate } from '../../../src/types/Temporal.ts'
 import { Uuid } from '../../../src/types/Uuid.ts'
+import { expect, it } from '../../vitest.ts'
 
 const orcidId1Club = OrcidId('0000-0002-1825-0097')
 const orcidId2Clubs = OrcidId('0000-0003-4921-6155')

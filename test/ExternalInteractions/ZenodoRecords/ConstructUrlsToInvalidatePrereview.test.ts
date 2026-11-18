@@ -1,12 +1,12 @@
-import { describe, expect, it } from '../../vitest.ts'
 import { Array, Effect, Redacted } from 'effect'
+import { BiorxivPreprintId } from '../../../src/Domain/Preprints/index.ts'
 import { Zenodo } from '../../../src/ExternalApis/index.ts'
 import * as _ from '../../../src/ExternalInteractions/ZenodoRecords/ConstructUrlsToInvalidatePrereview.ts'
-import { BiorxivPreprintId } from '../../../src/Domain/Preprints/index.ts'
 import { PublicUrl } from '../../../src/public-url.ts'
 import { Doi } from '../../../src/types/index.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../../src/types/Pseudonym.ts'
+import { describe, expect, it } from '../../vitest.ts'
 
 describe('constructUrlsToInvalidatePrereview', () => {
   it.effect('constructs valid urls', () =>

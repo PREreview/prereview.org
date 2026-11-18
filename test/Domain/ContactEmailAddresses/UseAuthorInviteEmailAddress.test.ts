@@ -1,6 +1,5 @@
 import { LibsqlClient } from '@effect/sql-libsql'
-import { expect, it } from '../../vitest.ts'
-import { Array, Effect, Result, Layer, pipe, Struct, PubSub, Stream } from 'effect'
+import { Array, Effect, Layer, pipe, PubSub, Result, Stream, Struct } from 'effect'
 import * as AuthorInviteStore from '../../../src/AuthorInviteStore.ts'
 import * as _ from '../../../src/Domain/ContactEmailAddresses/UseAuthorInviteEmailAddress.ts'
 import { type Event, Events } from '../../../src/Events.ts'
@@ -10,6 +9,7 @@ import { layer as sqlSensitiveDataStoreLayer } from '../../../src/SqlSensitiveDa
 import { EmailAddress } from '../../../src/types/EmailAddress.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Uuid, layer as uuidLayer } from '../../../src/types/Uuid.ts'
+import { expect, it } from '../../vitest.ts'
 
 const openInvitationId = Uuid('72ec8ae8-7f4f-4efa-9693-53e2772437be')
 const acceptedInvitationId = Uuid('47c7ab91-0935-4b5c-9c50-b260047315b0')

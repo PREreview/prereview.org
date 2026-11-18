@@ -1,3 +1,4 @@
+import { Effect, identity, Layer, pipe, Result } from 'effect'
 import {
   FetchHttpClient,
   HttpBody,
@@ -7,7 +8,6 @@ import {
   type HttpClientResponse,
   HttpMethod,
 } from 'effect/http'
-import { Effect, identity, Layer, pipe, Result } from 'effect'
 import * as CachingHttpClient from './CachingHttpClient/index.ts'
 import { MakeDeprecatedLoggerEnv } from './DeprecatedServices.ts'
 import { collapseRequests } from './fetch.ts'

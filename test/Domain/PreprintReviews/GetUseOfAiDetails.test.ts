@@ -1,5 +1,4 @@
-import { expect, it } from '../../vitest.ts'
-import { Effect, Result, Option } from 'effect'
+import { Effect, Option, Result } from 'effect'
 import * as FormStore from '../../../src/Domain/PreprintReviews/FormStore.ts'
 import * as _ from '../../../src/Domain/PreprintReviews/GetUseOfAiDetails.ts'
 import { FormC, formKey, PreprintReviewNotFound } from '../../../src/Domain/PreprintReviews/index.ts'
@@ -7,6 +6,7 @@ import { BiorxivPreprintId } from '../../../src/Domain/Preprints/index.ts'
 import { Doi } from '../../../src/types/Doi.ts'
 import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
+import { expect, it } from '../../vitest.ts'
 
 const orcidId = OrcidId('0000-0002-1825-0097')
 const differentOrcidId = OrcidId('0000-0002-6109-0367')

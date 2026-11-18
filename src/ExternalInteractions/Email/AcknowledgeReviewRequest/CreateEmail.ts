@@ -1,10 +1,10 @@
 import { Effect } from 'effect'
+import type * as Preprints from '../../../Domain/Preprints/index.ts'
+import type * as ReviewRequests from '../../../Domain/ReviewRequests/index.ts'
 import type { Nodemailer } from '../../../ExternalApis/index.ts'
 import { html, mjmlToHtml, plainText } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { DefaultLocale, getLocaleForLanguage, isUserSelectableLanguage, translate } from '../../../locales/index.ts'
-import type * as Preprints from '../../../Domain/Preprints/index.ts'
-import type * as ReviewRequests from '../../../Domain/ReviewRequests/index.ts'
 import { EmailAddress } from '../../../types/index.ts'
 
 export type ReviewRequest = Omit<ReviewRequests.ReviewRequestToAcknowledge, 'preprintId'> & {

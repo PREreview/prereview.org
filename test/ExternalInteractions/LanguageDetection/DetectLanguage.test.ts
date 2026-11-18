@@ -1,9 +1,9 @@
-import { FileSystem, Effect, Layer, Option, pipe, Schema } from 'effect'
 import { NodeFileSystem } from '@effect/platform-node'
-import { expect, it } from '../../vitest.ts'
+import { Effect, FileSystem, Layer, Option, pipe, Schema } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import { DetectLanguage } from '../../../src/ExternalApis/index.ts'
 import * as _ from '../../../src/ExternalInteractions/LanguageDetection/DetectLanguage.ts'
+import { expect, it } from '../../vitest.ts'
 
 it.effect.each<{ response: string; expected: Option.Option<LanguageCode> }>([
   {

@@ -1,11 +1,6 @@
-import { FileSystem, Effect, Option, pipe, Schema } from 'effect'
 import { NodeFileSystem } from '@effect/platform-node'
-import { expect, it } from '../../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { OpenAlex } from '../../../../src/ExternalApis/index.ts'
-import { LanguageDetection } from '../../../../src/ExternalInteractions/index.ts'
-import { workToPreprint } from '../../../../src/ExternalInteractions/PreprintData/OpenAlex/WorkToPreprint.ts'
-import { rawHtml } from '../../../../src/html.ts'
+import { Effect, FileSystem, Option, pipe, Schema } from 'effect'
 import {
   AfricarxivFigsharePreprintId,
   AfricarxivOsfPreprintId,
@@ -20,6 +15,7 @@ import {
   MetaarxivPreprintId,
   OsfPreprintId,
   OsfPreprintsPreprintId,
+  Preprint,
   PreprintsorgPreprintId,
   PsyarxivPreprintId,
   PsychArchivesPreprintId,
@@ -30,11 +26,15 @@ import {
   TechrxivPreprintId,
   VerixivPreprintId,
   ZenodoPreprintId,
-  Preprint,
 } from '../../../../src/Domain/Preprints/index.ts'
+import { OpenAlex } from '../../../../src/ExternalApis/index.ts'
+import { LanguageDetection } from '../../../../src/ExternalInteractions/index.ts'
+import { workToPreprint } from '../../../../src/ExternalInteractions/PreprintData/OpenAlex/WorkToPreprint.ts'
+import { rawHtml } from '../../../../src/html.ts'
 import { Doi } from '../../../../src/types/Doi.ts'
 import { Name } from '../../../../src/types/Name.ts'
 import { OrcidId } from '../../../../src/types/OrcidId.ts'
+import { expect, it } from '../../../vitest.ts'
 
 const readWork = (response: string) =>
   pipe(

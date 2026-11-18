@@ -1,4 +1,4 @@
-import { Array, Boolean, Data, Result, Equal, Function, Match, Option, type Types } from 'effect'
+import { Array, Boolean, Data, Equal, Function, Match, Option, Result, type Types } from 'effect'
 import type { Doi, Uuid } from '../../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import * as Events from '../Events.ts'

@@ -1,6 +1,6 @@
-import { expect, it } from '../../vitest.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-prereviews-page/unable-to-load-prereviews.ts'
+import { expect, it } from '../../vitest.ts'
 import * as fc from './fc.ts'
 
 it.prop('toResponse', [fc.supportedLocale()], ([locale]) => {

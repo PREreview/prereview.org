@@ -1,5 +1,5 @@
-import type { UrlParams } from 'effect/http'
 import { Data, Effect, Schema } from 'effect'
+import type { UrlParams } from 'effect/http'
 import { NonEmptyString } from '../../../types/index.ts'
 
 export type ResearchInterestsForm = EmptyForm | CompletedForm

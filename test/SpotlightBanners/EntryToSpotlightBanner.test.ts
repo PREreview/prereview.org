@@ -1,6 +1,5 @@
-import { FileSystem, Effect, flow, Array, Layer, pipe, Schema, Struct } from 'effect'
 import { NodeFileSystem } from '@effect/platform-node'
-import { expect, it } from '../vitest.ts'
+import { Array, Effect, FileSystem, flow, Layer, pipe, Schema, Struct } from 'effect'
 import { URL } from 'node:url'
 import { Locale } from '../../src/Context.ts'
 import { Entries } from '../../src/ExternalApis/Contentful/index.ts'
@@ -8,6 +7,7 @@ import { rawHtml } from '../../src/html.ts'
 import { DefaultLocale, type SupportedLocale } from '../../src/locales/index.ts'
 import * as _ from '../../src/SpotlightBanners/EntryToSpotlightBanner.ts'
 import { SpotlightBanner } from '../../src/SpotlightBanners/index.ts'
+import { expect, it } from '../vitest.ts'
 
 it.effect.each<{
   response: string

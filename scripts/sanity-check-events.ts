@@ -1,22 +1,22 @@
-import { SqlClient } from 'effect/sql'
 import { LibsqlClient } from '@effect/sql-libsql'
 import {
   Array,
   Console,
   Data,
   Effect,
-  Result,
+  Filter,
   Inspectable,
   Layer,
   Match,
   Option,
-  Schema,
   pipe,
-  SchemaIssue,
+  Result,
+  Schema,
   SchemaGetter,
-  Filter,
+  SchemaIssue,
 } from 'effect'
 import type { NonEmptyReadonlyArray } from 'effect/Array'
+import { SqlClient } from 'effect/sql'
 import path from 'node:path'
 import { ContactAddressImported, Event, type EventTypes } from '../src/Events.ts'
 import * as SensitiveDataStore from '../src/SensitiveDataStore.ts'

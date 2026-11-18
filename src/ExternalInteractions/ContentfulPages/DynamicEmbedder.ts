@@ -1,6 +1,6 @@
 import { Array, Context, Effect, Layer, pipe, Schema, Scope, String, Struct } from 'effect'
-import { Clubs } from '../../Domain/Clubs/index.ts'
 import { Locale } from '../../Context.ts'
+import { Clubs } from '../../Domain/Clubs/index.ts'
 import { html, type Html } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
 import * as Routes from '../../routes.ts'

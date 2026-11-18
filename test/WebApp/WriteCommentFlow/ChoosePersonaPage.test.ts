@@ -1,7 +1,6 @@
-import { describe, expect, it, vi } from '../../vitest.ts'
-import { Effect, Result, Equal, Layer } from 'effect'
-import * as Comments from '../../../src/Domain/Comments/index.ts'
+import { Effect, Equal, Layer, Result } from 'effect'
 import { Locale } from '../../../src/Context.ts'
+import * as Comments from '../../../src/Domain/Comments/index.ts'
 import * as Prereviewers from '../../../src/Domain/Prereviewers/index.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
@@ -11,6 +10,7 @@ import * as _ from '../../../src/WebApp/WriteCommentFlow/ChoosePersonaPage/index
 import { RouteForCommand } from '../../../src/WebApp/WriteCommentFlow/Routes.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
+import { describe, expect, it, vi } from '../../vitest.ts'
 
 describe('ChoosePersonaPage', () => {
   describe('when there is a user', () => {

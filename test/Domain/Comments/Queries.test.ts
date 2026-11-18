@@ -1,5 +1,4 @@
-import { describe, expect, it, test } from '../../vitest.ts'
-import { Array, Result, Option } from 'effect'
+import { Array, Option, Result } from 'effect'
 import * as _ from '../../../src/Domain/Comments/Queries.ts'
 import * as Comments from '../../../src/Domain/Comments/index.ts'
 import * as Queries from '../../../src/Queries.ts'
@@ -8,6 +7,7 @@ import { Doi } from '../../../src/types/Doi.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Uuid } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
+import { describe, expect, it, test } from '../../vitest.ts'
 
 describe('GetNextExpectedCommandForUser', () => {
   const authorId = OrcidId('0000-0002-1825-0097')

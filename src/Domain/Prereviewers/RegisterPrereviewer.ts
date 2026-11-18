@@ -1,4 +1,4 @@
-import { Array, Data, Result, Match, Option } from 'effect'
+import { Array, Data, Match, Option, Result } from 'effect'
 import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
 import type { Pseudonym, Temporal } from '../../types/index.ts'

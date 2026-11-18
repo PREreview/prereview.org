@@ -1,5 +1,5 @@
-import { HttpClientResponse } from 'effect/http'
 import { Effect, Equal, flow, Option } from 'effect'
+import { HttpClientResponse } from 'effect/http'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { ContentfulIsUnavailable } from '../Errors.ts'
 import { Assets, ContentfulErrorResponse } from '../Types.ts'

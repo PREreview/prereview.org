@@ -1,5 +1,5 @@
+import { Data, Effect, Option, Result, Schema } from 'effect'
 import type { UrlParams } from 'effect/http'
-import { Data, Effect, Result, Option, Schema } from 'effect'
 
 export type ChooseYourPersonaForm = EmptyForm | InvalidForm | CompletedForm
 

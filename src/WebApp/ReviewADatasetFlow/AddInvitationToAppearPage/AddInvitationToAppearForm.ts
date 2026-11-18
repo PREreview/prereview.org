@@ -1,5 +1,5 @@
+import { Data, Result, Schema, SchemaTransformation, String, Struct, flow, identity, pipe } from 'effect'
 import type { UrlParams } from 'effect/http'
-import { Data, Result, identity, pipe, Schema, String, Struct, SchemaTransformation, flow } from 'effect'
 import { EmailAddress, Name, NonEmptyString } from '../../../types/index.ts'
 
 export type AddInvitationToAppearForm = EmptyForm | InvalidForm | CompletedForm

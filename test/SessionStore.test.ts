@@ -1,10 +1,10 @@
-import { describe, expect, it } from './vitest.ts'
 import { Duration, Effect, Layer, Option } from 'effect'
 import { Redis } from 'effect/persistence'
 import { SessionStore } from '../src/Context.ts'
 import * as _ from '../src/SessionStore.ts'
 import * as fc from './fc.ts'
 import { shouldNotBeCalled } from './should-not-be-called.ts'
+import { describe, expect, it } from './vitest.ts'
 
 describe('layerInMemory', () => {
   it.effect.prop('stores values', [fc.string(), fc.jsonRecord()], ([key, value]) =>

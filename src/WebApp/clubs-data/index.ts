@@ -1,6 +1,6 @@
-import { HttpServerResponse } from 'effect/http'
 import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Effect, pipe, Schema } from 'effect'
+import { HttpServerResponse } from 'effect/http'
 import { Clubs } from '../../Domain/Clubs/index.ts'
 import * as StatusCodes from '../../StatusCodes.ts'
 import { Name } from '../../types/index.ts'

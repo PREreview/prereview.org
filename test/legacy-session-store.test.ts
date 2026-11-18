@@ -1,10 +1,10 @@
-import { describe, expect, it } from './vitest.ts'
 import { Effect, Option, Record, Result } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
 import { SessionStore } from '../src/Context.ts'
 import * as _ from '../src/legacy-session-store.ts'
 import { layerInMemory } from '../src/SessionStore.ts'
 import * as fc from './fc.ts'
+import { describe, expect, it } from './vitest.ts'
 
 describe('addToSession', () => {
   it.effect.prop(

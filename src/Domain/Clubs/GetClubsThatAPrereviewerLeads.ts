@@ -1,4 +1,4 @@
-import { Array, Option, Filter } from 'effect'
+import { Array, Filter, Option } from 'effect'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { ClubDetails, ClubName } from './Clubs.ts'
 

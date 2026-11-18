@@ -1,11 +1,11 @@
-import { expect, it } from '../../../vitest.ts'
 import { Array, Effect, Option } from 'effect'
+import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
 import type { Slack } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/CommunitySlack/SharePreprintReviewRequest/PreprintReviewRequestToChatPostMessageInputs.ts'
 import { html, rawHtml } from '../../../../src/html.ts'
-import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
 import { PublicUrl } from '../../../../src/public-url.ts'
 import { Doi, Name, NonEmptyString, OrcidId, Temporal } from '../../../../src/types/index.ts'
+import { expect, it } from '../../../vitest.ts'
 
 it.effect.each<
   [string, _.PreprintReviewRequestWithThread, Array.NonEmptyReadonlyArray<Slack.ChatPostMessageInput['blocks']>]

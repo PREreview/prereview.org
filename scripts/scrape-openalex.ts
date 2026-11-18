@@ -1,26 +1,26 @@
+import { NodeFileSystem, NodeHttpClient } from '@effect/platform-node'
 import {
-  FileSystem,
-  SchemaIssue,
-  SchemaGetter,
-  SchemaTransformation,
-  Effect,
   Chunk,
   Config,
+  Effect,
+  FileSystem,
   flow,
   identity,
   Layer,
   Logger,
-  Order,
-  References,
-  pipe,
-  Schema,
-  Stream,
-  String,
   Number,
   Option,
+  Order,
+  pipe,
+  References,
+  Schema,
+  SchemaGetter,
+  SchemaIssue,
+  SchemaTransformation,
+  Stream,
+  String,
 } from 'effect'
 import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse, UrlParams } from 'effect/http'
-import { NodeFileSystem, NodeHttpClient } from '@effect/platform-node'
 import path from 'node:path'
 
 const NumberFromStringSchema = Schema.String.pipe(

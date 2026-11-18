@@ -1,6 +1,5 @@
-import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Result, Option } from 'effect'
+import { Option, Result } from 'effect'
 import {
   ContactAddressIdHasAlreadyBeenUsed,
   ContactEmailAddressHasAlreadyBeenVerified,
@@ -10,6 +9,7 @@ import * as Events from '../../../src/Events.ts'
 import { EmailAddress } from '../../../src/types/EmailAddress.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Uuid } from '../../../src/types/Uuid.ts'
+import { expect, test } from '../../vitest.ts'
 
 const input = {
   contactAddressId: Uuid('e08d00fa-42ea-487a-a536-dc0642e2ab85'),

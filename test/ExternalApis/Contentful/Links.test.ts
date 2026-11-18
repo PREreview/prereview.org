@@ -1,4 +1,3 @@
-import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect, Layer, Schema } from 'effect'
 import * as _ from '../../../src/ExternalApis/Contentful/Links.ts'
 import {
@@ -12,6 +11,7 @@ import {
   ImageAsset,
 } from '../../../src/ExternalApis/Contentful/index.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
+import { describe, expect, it, vi } from '../../vitest.ts'
 
 describe('LinkedEntry', () => {
   it.effect.each<{ id: string; slug: string }>([

@@ -1,5 +1,5 @@
+import { Data, pipe, Result, Schema, Struct } from 'effect'
 import type { UrlParams } from 'effect/http'
-import { Data, Result, pipe, Schema, Struct } from 'effect'
 
 export type ReceiveNotificationsForm = EmptyForm | InvalidForm | CompletedForm
 

@@ -1,6 +1,7 @@
 import { Array, flow, identity, Match, Option, pipe, Struct } from 'effect'
 import { format } from 'fp-ts-routing'
 import type { PublishedCommentWithAuthor } from '../../Domain/Comments/index.ts'
+import type { Prereview } from '../../Domain/PreprintReviews/index.ts'
 import { matchPersona } from '../../Domain/Prereviewers/index.ts'
 import { fixHeadingLevels, type Html, html, plainText, rawHtml } from '../../html.ts'
 import { languageAttributesFor } from '../../Locales.ts'
@@ -14,7 +15,6 @@ import type { Name } from '../../types/Name.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import { isPseudonym } from '../../types/Pseudonym.ts'
 import { PageResponse } from '../Response/index.ts'
-import type { Prereview } from '../../Domain/PreprintReviews/index.ts'
 
 export const createPreprintReviewPage = ({
   id,

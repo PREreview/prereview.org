@@ -1,9 +1,9 @@
 import { Data, Effect, type Option, pipe } from 'effect'
-import type { Doi } from '../../../types/Doi.ts'
 import { OpenAlex } from '../../../ExternalApis/index.ts'
 import type { Html } from '../../../html.ts'
-import type { OrcidId } from '../../../types/OrcidId.ts'
+import type { Doi } from '../../../types/Doi.ts'
 import type { Name } from '../../../types/Name.ts'
+import type { OrcidId } from '../../../types/OrcidId.ts'
 import { FrontmatterFromWork } from './FrontmatterFromWork.ts'
 
 interface Author {

@@ -1,7 +1,7 @@
 import { HttpBody } from 'effect/http'
-import { describe, expect, it } from '../../../vitest.ts'
 import * as _ from '../../../../src/ExternalApis/DetectLanguage/Detect/CreateRequest.ts'
 import * as fc from '../../../fc.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 
 describe('CreateRequest', () => {
   it.prop('creates a POST request', [fc.string()], ([string]) => {

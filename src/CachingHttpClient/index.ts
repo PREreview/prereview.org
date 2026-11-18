@@ -1,12 +1,4 @@
 import {
-  Headers,
-  HttpClient,
-  HttpClientError,
-  HttpClientResponse,
-  UrlParams,
-  type HttpClientRequest,
-} from 'effect/http'
-import {
   Context,
   DateTime,
   Effect,
@@ -20,6 +12,14 @@ import {
   Queue,
   type Duration,
 } from 'effect'
+import {
+  Headers,
+  HttpClient,
+  HttpClientError,
+  HttpClientResponse,
+  UrlParams,
+  type HttpClientRequest,
+} from 'effect/http'
 import * as StatusCodes from '../StatusCodes.ts'
 import * as HttpCache from './HttpCache.ts'
 

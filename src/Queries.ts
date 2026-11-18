@@ -2,17 +2,17 @@ import {
   Array,
   Data,
   Effect,
+  Filter,
+  flow,
   identity,
   Option,
   pipe,
   Predicate,
   Record,
   Ref,
+  Result,
   Schema,
   Struct,
-  Result,
-  Filter,
-  flow,
 } from 'effect'
 import * as EventDispatcher from './EventDispatcher.ts'
 import type * as Events from './Events.ts'

@@ -1,4 +1,4 @@
-import { Array, Data, Result, flow, HashMap, Option, pipe } from 'effect'
+import { Array, Data, flow, HashMap, Option, pipe, Result } from 'effect'
 import type * as Events from '../../Events.ts'
 import * as Queries from '../../Queries.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'

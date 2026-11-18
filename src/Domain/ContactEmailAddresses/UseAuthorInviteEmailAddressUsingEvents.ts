@@ -1,5 +1,5 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Array, Result, Match, Option, pipe, type Types } from 'effect'
+import { Array, Match, Option, pipe, Result, type Types } from 'effect'
 import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
 import type { EmailAddress } from '../../types/EmailAddress.ts'

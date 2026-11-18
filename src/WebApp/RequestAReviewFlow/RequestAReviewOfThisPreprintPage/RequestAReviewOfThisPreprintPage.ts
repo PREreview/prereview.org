@@ -1,9 +1,9 @@
 import { Boolean, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
+import type { PreprintTitle } from '../../../Domain/Preprints/index.ts'
 import { html, plainText, type Html } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import type { PreprintTitle } from '../../../Domain/Preprints/index.ts'
 import * as Routes from '../../../routes.ts'
 import { PageResponse } from '../../Response/index.ts'
 

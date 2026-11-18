@@ -1,4 +1,3 @@
-import { describe, expect, it, vi } from '../../../vitest.ts'
 import { Effect, Layer, pipe } from 'effect'
 import { Slack } from '../../../../src/ExternalApis/index.ts'
 import { SlackError } from '../../../../src/ExternalApis/Slack/Types.ts'
@@ -6,6 +5,7 @@ import * as _ from '../../../../src/ExternalInteractions/CommunitySlack/RemoveOr
 import { layerShouldUpdateCommunitySlack } from '../../../../src/ExternalInteractions/CommunitySlack/ShouldUpdateCommunitySlack.ts'
 import * as fc from '../../../fc.ts'
 import { shouldNotBeCalled } from '../../../should-not-be-called.ts'
+import { describe, expect, it, vi } from '../../../vitest.ts'
 
 describe('RemoveOrcidFromSlackProfile', () => {
   describe('when Slack should be updated', () => {

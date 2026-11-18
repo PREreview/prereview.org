@@ -1,16 +1,16 @@
-import { describe, expect, it } from '../../../vitest.ts'
 import { Effect, Layer, Option, pipe } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
 import { format } from 'fp-ts-routing'
 import { Locale } from '../../../../src/Context.ts'
-import { CloudinaryAvatars } from '../../../../src/ExternalInteractions/index.ts'
 import { Avatars } from '../../../../src/Domain/Prereviewers/index.ts'
+import { CloudinaryAvatars } from '../../../../src/ExternalInteractions/index.ts'
 import * as Routes from '../../../../src/routes.ts'
 import * as StatusCodes from '../../../../src/StatusCodes.ts'
 import { LoggedInUser } from '../../../../src/user.ts'
 import * as _ from '../../../../src/WebApp/MyDetails/RemoveAvatarPage/index.ts'
 import * as fc from '../../../fc.ts'
 import { shouldNotBeCalled } from '../../../should-not-be-called.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 
 const unavailable = (method: string) =>
   Effect.fail(new KeyValueStore.KeyValueStoreError({ message: 'unavailable', method }))

@@ -1,4 +1,3 @@
-import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
@@ -25,6 +24,7 @@ import type {
 import * as _ from '../../../src/WebApp/author-invite-flow/index.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
+import { describe, expect, it, vi } from '../../vitest.ts'
 
 describe('authorInvite', () => {
   describe('when the user is logged in', () => {

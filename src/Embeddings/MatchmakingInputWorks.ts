@@ -1,11 +1,11 @@
 import type { OpenRouterClient } from '@effect/ai-openrouter'
+import type { Tokenizer } from '@huggingface/tokenizers'
+import { Array, Effect, Option, Schema, Struct } from 'effect'
 import type { SqlClient, SqlError } from 'effect/sql'
-import { Effect, Array, Option, Schema, Struct } from 'effect'
-import { generateEmbeddings } from './OpenRouter.ts'
-import { PgVector, UnableToGetMatches, type Embedding } from './Shared.ts'
 import type { Doi } from '../types/Doi.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
-import type { Tokenizer } from '@huggingface/tokenizers'
+import { generateEmbeddings } from './OpenRouter.ts'
+import { PgVector, UnableToGetMatches, type Embedding } from './Shared.ts'
 
 export interface MatchmakingInputWork {
   doi: Doi

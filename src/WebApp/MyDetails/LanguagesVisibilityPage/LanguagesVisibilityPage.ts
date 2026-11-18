@@ -1,8 +1,8 @@
-import { format } from 'fp-ts-routing'
 import { Match } from 'effect'
+import { format } from 'fp-ts-routing'
+import type { Languages } from '../../../Domain/Prereviewers/index.ts'
 import { html, plainText } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'
-import type { Languages } from '../../../Domain/Prereviewers/index.ts'
 import * as Routes from '../../../routes.ts'
 import { PageResponse } from '../../Response/index.ts'
 

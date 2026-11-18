@@ -1,6 +1,5 @@
-import { test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Result, Option } from 'effect'
+import { Option, Result } from 'effect'
 import { expect } from 'vitest'
 import {
   UnverifiedContactEmailAddress,
@@ -12,6 +11,7 @@ import * as Events from '../../../src/Events.ts'
 import { EmailAddress } from '../../../src/types/EmailAddress.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Uuid } from '../../../src/types/Uuid.ts'
+import { test } from '../../vitest.ts'
 
 const input = OrcidId('0000-0002-1825-0097')
 

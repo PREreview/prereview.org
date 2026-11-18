@@ -1,4 +1,4 @@
-import { Array, Option, type Types, Filter } from 'effect'
+import { Array, Filter, Option, type Types } from 'effect'
 import type * as Events from '../Events.ts'
 
 export type NextExpectedCommand =

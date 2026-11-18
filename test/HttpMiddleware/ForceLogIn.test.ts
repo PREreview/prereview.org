@@ -1,6 +1,5 @@
-import { HttpServerRequest, HttpServerResponse, Url } from 'effect/http'
-import { describe, expect, it } from '../vitest.ts'
 import { Effect, Redacted } from 'effect'
+import { HttpServerRequest, HttpServerResponse, Url } from 'effect/http'
 import { Locale } from '../../src/Context.ts'
 import * as _ from '../../src/HttpMiddleware/ForceLogIn.ts'
 import * as OrcidOauth from '../../src/OrcidOauth.ts'
@@ -8,6 +7,7 @@ import { PublicUrl } from '../../src/public-url.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import { OrcidLocale } from '../../src/types/index.ts'
 import * as fc from '../fc.ts'
+import { describe, expect, it } from '../vitest.ts'
 
 describe('forceLogIn', () => {
   it.effect.prop(

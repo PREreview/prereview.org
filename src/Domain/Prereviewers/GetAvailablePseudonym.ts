@@ -1,4 +1,4 @@
-import { Array, Data, Result, Iterable, pipe } from 'effect'
+import { Array, Data, Iterable, pipe, Result } from 'effect'
 import type * as Events from '../../Events.ts'
 import * as Queries from '../../Queries.ts'
 import type { Pseudonym } from '../../types/Pseudonym.ts'

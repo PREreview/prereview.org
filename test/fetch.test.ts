@@ -1,10 +1,10 @@
-import { describe, expect, it } from './vitest.ts'
 import { SystemClock } from 'clock-ts'
 import { Effect } from 'effect'
 import fetchMock from 'fetch-mock'
 import * as IO from 'fp-ts/lib/IO.js'
 import * as _ from '../src/fetch.ts'
 import * as fc from './fc.ts'
+import { describe, expect, it } from './vitest.ts'
 
 describe('collapseRequests', () => {
   it.effect.prop(

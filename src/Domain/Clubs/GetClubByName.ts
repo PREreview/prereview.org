@@ -1,4 +1,4 @@
-import { Array, Result, Equal, Option } from 'effect'
+import { Array, Equal, Option, Result } from 'effect'
 import type { Name } from '../../types/Name.ts'
 import type { ClubDetails, ClubName } from './Clubs.ts'
 import { ClubNotFound } from './Errors.ts'

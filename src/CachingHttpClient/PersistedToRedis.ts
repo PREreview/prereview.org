@@ -1,5 +1,5 @@
-import { Headers, type HttpClientRequest, HttpClientResponse, UrlParams } from 'effect/http'
 import { Effect, Layer, Option, pipe, Schema } from 'effect'
+import { Headers, type HttpClientRequest, HttpClientResponse, UrlParams } from 'effect/http'
 import type { Redis as IoRedis } from 'ioredis'
 import _normalizeUrl from 'normalize-url'
 import * as Redis from '../Redis.ts'

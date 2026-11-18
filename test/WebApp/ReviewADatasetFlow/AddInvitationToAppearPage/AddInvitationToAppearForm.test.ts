@@ -1,10 +1,10 @@
-import { UrlParams } from 'effect/http'
-import { describe, expect, it } from '../../../vitest.ts'
 import { Result } from 'effect'
+import { UrlParams } from 'effect/http'
 import * as _ from '../../../../src/WebApp/ReviewADatasetFlow/AddInvitationToAppearPage/AddInvitationToAppearForm.ts'
 import { EmailAddress } from '../../../../src/types/EmailAddress.ts'
 import { Name } from '../../../../src/types/Name.ts'
 import { NonEmptyString } from '../../../../src/types/NonEmptyString.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 
 describe('fromBody', () => {
   it.each<[string, UrlParams.Input, _.AddInvitationToAppearForm]>([

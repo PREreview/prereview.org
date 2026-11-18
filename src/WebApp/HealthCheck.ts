@@ -1,5 +1,5 @@
-import { HttpMiddleware, HttpServerResponse } from 'effect/http'
 import { Data, Effect, Option } from 'effect'
+import { HttpMiddleware, HttpServerResponse } from 'effect/http'
 import { DataStoreRedis } from '../Redis.ts'
 import * as StatusCodes from '../StatusCodes.ts'
 

@@ -1,4 +1,3 @@
-import { expect, it, vi } from '../../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Effect, Layer } from 'effect'
 import { ClubNotFound, Clubs } from '../../../../src/Domain/Clubs/index.ts'
@@ -15,6 +14,7 @@ import { Prereviewers, UnableToGetPersona } from '../../../../src/Domain/Prerevi
 import { html } from '../../../../src/html.ts'
 import { Doi, OrcidId, Uuid } from '../../../../src/types/index.ts'
 import * as fc from '../../../fc.ts'
+import { expect, it, vi } from '../../../vitest.ts'
 
 const details = {
   authors: { named: [{ orcidId: OrcidId.OrcidId('0000-0002-1825-0097'), persona: 'public' }], anonymous: 1 },

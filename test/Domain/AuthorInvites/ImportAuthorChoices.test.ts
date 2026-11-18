@@ -1,8 +1,8 @@
-import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
+import * as _ from '../../../src/Domain/AuthorInvites/ImportAuthorChoices.ts'
 import * as Events from '../../../src/Events.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
-import * as _ from '../../../src/Domain/AuthorInvites/ImportAuthorChoices.ts'
+import { expect, test } from '../../vitest.ts'
 
 const input = {
   reviewId: 12345,

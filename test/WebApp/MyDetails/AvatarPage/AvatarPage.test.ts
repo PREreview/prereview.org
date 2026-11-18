@@ -1,16 +1,16 @@
-import { Multipart } from 'effect/http'
-import { describe, expect, it, vi } from '../../../vitest.ts'
 import { Effect, Inspectable, Layer, Option, pipe, Result } from 'effect'
+import { Multipart } from 'effect/http'
 import { format } from 'fp-ts-routing'
 import { Locale } from '../../../../src/Context.ts'
-import { CloudinaryAvatars } from '../../../../src/ExternalInteractions/index.ts'
 import { Avatars } from '../../../../src/Domain/Prereviewers/index.ts'
+import { CloudinaryAvatars } from '../../../../src/ExternalInteractions/index.ts'
 import * as Routes from '../../../../src/routes.ts'
 import * as StatusCodes from '../../../../src/StatusCodes.ts'
 import { LoggedInUser } from '../../../../src/user.ts'
 import * as _ from '../../../../src/WebApp/MyDetails/AvatarPage/index.ts'
 import * as fc from '../../../fc.ts'
 import { shouldNotBeCalled } from '../../../should-not-be-called.ts'
+import { describe, expect, it, vi } from '../../../vitest.ts'
 
 const imageFile = (): fc.Arbitrary<Multipart.PersistedFile> =>
   fc

@@ -1,4 +1,4 @@
-import { Result, Match, pipe } from 'effect'
+import { Match, pipe, Result } from 'effect'
 import { format } from 'fp-ts-routing'
 import { html, plainText, rawHtml } from '../../../html.ts'
 import { translate, type SupportedLocale } from '../../../locales/index.ts'

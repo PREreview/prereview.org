@@ -1,4 +1,3 @@
-import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
@@ -20,6 +19,7 @@ import { OrcidIdEquivalence } from '../../../src/types/OrcidId.ts'
 import * as _ from '../../../src/WebApp/author-invite-flow/need-to-verify-email-address-page/index.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
+import { describe, expect, it, vi } from '../../vitest.ts'
 
 describe('authorInviteNeedToVerifyEmailAddress', () => {
   describe('when the user is logged in', () => {

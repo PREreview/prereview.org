@@ -1,9 +1,9 @@
-import { describe, expect, it } from './vitest.ts'
 import { Effect, Layer, Redacted, Result } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
 import { IsOpenForRequestsStore } from '../src/Domain/Prereviewers/index.ts'
 import * as _ from '../src/SlackUserIds.ts'
 import * as fc from './fc.ts'
+import { describe, expect, it } from './vitest.ts'
 
 const unavailableStore = Layer.succeed(
   KeyValueStore.KeyValueStore,

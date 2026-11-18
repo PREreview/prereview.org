@@ -3,9 +3,6 @@ import { format } from 'fp-ts-routing'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import * as L from 'logger-fp-ts'
 import { ContactEmailAddresses } from '../../Domain/ContactEmailAddresses/index.ts'
-import type { EnvFor } from '../../Fpts.ts'
-import type { SupportedLocale } from '../../locales/index.ts'
-import { maybeGetOrcidToken } from '../../orcid-token.ts'
 import {
   maybeGetAvatar,
   maybeGetCareerStage,
@@ -15,6 +12,9 @@ import {
   maybeIsOpenForRequests,
   Prereviewers,
 } from '../../Domain/Prereviewers/index.ts'
+import type { EnvFor } from '../../Fpts.ts'
+import type { SupportedLocale } from '../../locales/index.ts'
+import { maybeGetOrcidToken } from '../../orcid-token.ts'
 import { EffectToFpts } from '../../RefactoringUtilities/index.ts'
 import { myDetailsMatch } from '../../routes.ts'
 import { maybeGetSlackUser } from '../../slack-user.ts'

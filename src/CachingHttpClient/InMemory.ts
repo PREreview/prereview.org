@@ -1,5 +1,5 @@
-import { Headers, type HttpClientRequest, HttpClientResponse, UrlParams } from 'effect/http'
 import { Effect, Layer, pipe, Schema } from 'effect'
+import { Headers, type HttpClientRequest, HttpClientResponse, UrlParams } from 'effect/http'
 import _normalizeUrl from 'normalize-url'
 import { type CacheValue, HttpCache, InternalHttpCacheFailure, StoredResponseSchema } from './HttpCache.ts'
 

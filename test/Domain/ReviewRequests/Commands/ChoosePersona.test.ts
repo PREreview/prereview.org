@@ -1,11 +1,11 @@
-import { describe, expect, it } from '../../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Result, Option } from 'effect'
-import type * as Events from '../../../../src/Events.ts'
+import { Option, Result } from 'effect'
 import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
 import * as _ from '../../../../src/Domain/ReviewRequests/Commands/ChoosePersona.ts'
 import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
+import type * as Events from '../../../../src/Events.ts'
 import { Doi, Name, OrcidId, Uuid } from '../../../../src/types/index.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 
 const commandPersona = 'pseudonym' as const
 

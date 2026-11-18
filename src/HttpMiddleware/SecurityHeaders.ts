@@ -1,6 +1,6 @@
-import { Headers } from 'effect/http'
 import cspBuilder from 'content-security-policy-builder'
 import { Duration } from 'effect'
+import { Headers } from 'effect/http'
 
 const crowdin = {
   scriptSrc: ['cdn.crowdin.com', "'unsafe-inline'", "'unsafe-eval'"],

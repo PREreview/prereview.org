@@ -1,5 +1,5 @@
-import { Headers, type HttpClientRequest, type HttpClientResponse } from 'effect/http'
 import { Context, Data, type DateTime, type Effect, type Option, Schema, SchemaTransformation } from 'effect'
+import { Headers, type HttpClientRequest, type HttpClientResponse } from 'effect/http'
 
 export interface CacheValue {
   staleAt: DateTime.Utc

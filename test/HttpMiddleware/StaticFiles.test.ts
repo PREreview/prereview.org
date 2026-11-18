@@ -1,5 +1,5 @@
-import { describe, expect, it } from '../vitest.ts'
 import * as _ from '../../src/HttpMiddleware/StaticFiles.ts'
+import { describe, expect, it } from '../vitest.ts'
 
 describe('hasContentHash', () => {
   it.each([

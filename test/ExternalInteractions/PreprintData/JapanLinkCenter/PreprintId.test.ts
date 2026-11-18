@@ -1,6 +1,6 @@
-import { describe, expect, it } from '../../../vitest.ts'
 import * as _ from '../../../../src/ExternalInteractions/PreprintData/JapanLinkCenter/PreprintId.ts'
 import * as fc from '../../../fc.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 
 describe('isJapanLinkCenterPreprintId', () => {
   it.prop('with a Japan Link Center ID', [fc.japanLinkCenterPreprintId()], ([id]) => {

@@ -1,13 +1,13 @@
-import { expect, test } from '../../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Result } from 'effect'
-import * as Events from '../../../../src/Events.ts'
 import { BiorxivOrMedrxivPreprintId, BiorxivPreprintId } from '../../../../src/Domain/Preprints/PreprintId.ts'
 import { ReviewRequestHasBeenPublished, UnknownReviewRequest } from '../../../../src/Domain/ReviewRequests/Errors.ts'
 import * as _ from '../../../../src/Domain/ReviewRequests/Queries/DoesAReviewRequestNeedADecisionOnReviewNotifications.ts'
+import * as Events from '../../../../src/Events.ts'
 import { Doi } from '../../../../src/types/Doi.ts'
 import { OrcidId } from '../../../../src/types/OrcidId.ts'
 import { Uuid } from '../../../../src/types/Uuid.ts'
+import { expect, test } from '../../../vitest.ts'
 
 const preprintDoi = Doi('10.1101/2023.01.01.123456')
 

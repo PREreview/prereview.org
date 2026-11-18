@@ -1,6 +1,6 @@
+import { Array, Effect, flow, Layer, Option, pipe, Record, Schema, Struct, Tuple } from 'effect'
 import { Model } from 'effect/schema'
 import { SqlClient, SqlModel, SqlSchema, type SqlError } from 'effect/sql'
-import { Array, Effect, flow, Layer, Option, pipe, Record, Schema, Struct, Tuple } from 'effect'
 import * as SensitiveDataStore from './SensitiveDataStore.ts'
 import { Uuid } from './types/index.ts'
 

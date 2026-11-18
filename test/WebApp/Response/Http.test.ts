@@ -1,7 +1,7 @@
-import { describe, expect, it, test } from '../../vitest.ts'
 import { Array, Result, Schema } from 'effect'
 import * as _ from '../../../src/WebApp/Response/Http.ts'
 import * as fc from '../../fc.ts'
+import { describe, expect, it, test } from '../../vitest.ts'
 
 describe('LinkHeaderSchema', () => {
   it.prop(

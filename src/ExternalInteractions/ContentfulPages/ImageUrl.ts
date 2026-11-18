@@ -1,5 +1,5 @@
-import { Url, UrlParams } from 'effect/http'
 import { Array, identity, pipe } from 'effect'
+import { Url, UrlParams } from 'effect/http'
 
 interface ImageFile {
   readonly url: URL

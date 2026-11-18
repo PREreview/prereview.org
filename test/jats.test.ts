@@ -1,6 +1,6 @@
-import { describe, expect, test } from './vitest.ts'
 import { rawHtml } from '../src/html.ts'
 import * as _ from '../src/jats.ts'
+import { describe, expect, test } from './vitest.ts'
 
 describe('transformJatsToHtml', () => {
   test.each([

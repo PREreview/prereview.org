@@ -1,5 +1,5 @@
-import { Headers, HttpClient, HttpClientRequest, UrlParams } from 'effect/http'
 import { Effect, Layer, pipe } from 'effect'
+import { Headers, HttpClient, HttpClientRequest, UrlParams } from 'effect/http'
 
 export const loggingHttpClient: Effect.Effect<HttpClient.HttpClient, never, HttpClient.HttpClient> = Effect.gen(
   function* () {

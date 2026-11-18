@@ -12,9 +12,9 @@ import {
   Predicate,
   Record,
   Schema,
+  SchemaTransformation,
   Struct,
   Tuple,
-  SchemaTransformation,
 } from 'effect'
 import { decode, encode } from 'html-entities'
 import { Parser } from 'htmlparser2'

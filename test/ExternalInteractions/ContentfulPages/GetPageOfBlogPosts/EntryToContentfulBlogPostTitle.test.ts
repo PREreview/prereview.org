@@ -1,6 +1,5 @@
-import { FileSystem, Effect, Array, Layer, pipe, Schema } from 'effect'
 import { NodeFileSystem } from '@effect/platform-node'
-import { expect, it } from '../../../vitest.ts'
+import { Array, Effect, FileSystem, Layer, pipe, Schema } from 'effect'
 import { Locale } from '../../../../src/Context.ts'
 import { Contentful, Entries, LinkContext } from '../../../../src/ExternalApis/Contentful/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/ContentfulPages/GetPageOfBlogPosts/EntryToContentfulBlogPostTitle.ts'
@@ -9,6 +8,7 @@ import { html } from '../../../../src/html.ts'
 import { DefaultLocale } from '../../../../src/locales/index.ts'
 import { Slug } from '../../../../src/types/Slug.ts'
 import { Instant } from '../../../../src/types/Temporal.ts'
+import { expect, it } from '../../../vitest.ts'
 
 it.effect.each<{
   response: string

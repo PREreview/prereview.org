@@ -1,4 +1,4 @@
-import { Array, Data, Result, Equal, Match, Option, Struct, type Types } from 'effect'
+import { Array, Data, Equal, Match, Option, Result, Struct, type Types } from 'effect'
 import * as Commands from '../../../Commands.ts'
 import * as Events from '../../../Events.ts'
 import type { OrcidId, Uuid } from '../../../types/index.ts'

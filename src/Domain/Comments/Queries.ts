@@ -1,4 +1,4 @@
-import { Array, Data, Result, Equal, Option, pipe, Record } from 'effect'
+import { Array, Data, Equal, Option, pipe, Record, Result } from 'effect'
 import * as Queries from '../../Queries.ts'
 import type { Uuid } from '../../types/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'

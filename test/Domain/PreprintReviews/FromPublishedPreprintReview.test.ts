@@ -1,4 +1,3 @@
-import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Option } from 'effect'
 import * as _ from '../../../src/Domain/PreprintReviews/FromPublishedPreprintReview.ts'
@@ -8,11 +7,12 @@ import { BiorxivPreprintId } from '../../../src/Domain/Preprints/index.ts'
 import { PseudonymPersona, PublicPersona } from '../../../src/Domain/Prereviewers/index.ts'
 import { html } from '../../../src/html.ts'
 import { translate } from '../../../src/locales/index.ts'
-import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
 import { Doi } from '../../../src/types/Doi.ts'
 import { Name } from '../../../src/types/Name.ts'
+import { NonEmptyString } from '../../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Pseudonym } from '../../../src/types/Pseudonym.ts'
+import { expect, test } from '../../vitest.ts'
 
 const review = new PublishedPreprintReview({
   addendum: html`<p>An addendum</p>`,

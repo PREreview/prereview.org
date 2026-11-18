@@ -1,5 +1,5 @@
-import { Multipart } from 'effect/http'
 import { Data, Match, pipe, Result, Schema } from 'effect'
+import { Multipart } from 'effect/http'
 import type { CloudinaryAvatars } from '../../../ExternalInteractions/index.ts'
 
 export type AvatarForm = EmptyForm | InvalidForm | CompletedForm

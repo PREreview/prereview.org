@@ -1,4 +1,3 @@
-import { describe, expect, it } from '../../vitest.ts'
 import { HashMap, HashSet, Option, Tuple } from 'effect'
 import {
   CrowdinInContextLocale,
@@ -10,6 +9,7 @@ import {
 import { constructPageUrls } from '../../../src/WebApp/Response/ConstructPageUrls.ts'
 import type { PageResponse } from '../../../src/WebApp/Response/index.ts'
 import * as fc from '../../fc.ts'
+import { describe, expect, it } from '../../vitest.ts'
 
 describe('constructPageUrls', () => {
   describe('when there is a canonical url', () => {

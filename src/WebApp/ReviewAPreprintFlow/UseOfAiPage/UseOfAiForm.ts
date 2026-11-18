@@ -1,5 +1,5 @@
+import { Data, Match, Option, pipe, Result, Schema, Struct } from 'effect'
 import type { UrlParams } from 'effect/http'
-import { Data, Result, Match, Option, pipe, Schema, Struct } from 'effect'
 import { NonEmptyString } from '../../../types/index.ts'
 
 export type UseOfAiForm = EmptyForm | InvalidForm | CompletedForm

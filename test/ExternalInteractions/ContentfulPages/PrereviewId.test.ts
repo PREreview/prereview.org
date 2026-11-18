@@ -1,7 +1,7 @@
-import { describe, expect, it } from '../../vitest.ts'
 import { Option, Schema } from 'effect'
 import * as _ from '../../../src/ExternalInteractions/ContentfulPages/PrereviewId.ts'
 import { Uuid } from '../../../src/types/index.ts'
+import { describe, expect, it } from '../../vitest.ts'
 
 describe('PrereviewIdFromUrl', () => {
   describe('decoding', () => {

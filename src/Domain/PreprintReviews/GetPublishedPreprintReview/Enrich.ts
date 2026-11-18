@@ -1,11 +1,11 @@
 import { Effect, Struct, UndefinedOr } from 'effect'
 import type * as Queries from '../../../Queries.ts'
+import { Clubs } from '../../Clubs/index.ts'
+import { Preprints } from '../../Preprints/index.ts'
+import { Prereviewers, type UnableToGetPersona } from '../../Prereviewers/index.ts'
 import type { PublishedPreprintReviewDetails } from './Query.ts'
 import { PublishedPreprintReview } from './Types.ts'
 import type { WasAReviewRequested } from './WasAReviewRequested.ts'
-import { Preprints } from '../../Preprints/index.ts'
-import { Prereviewers, type UnableToGetPersona } from '../../Prereviewers/index.ts'
-import { Clubs } from '../../Clubs/index.ts'
 
 export const Enrich = (wasAReviewRequested: Queries.FromStatefulQuery<typeof WasAReviewRequested>) =>
   Effect.fn('PreprintReviews.getPublishedPreprintReview.Enrich')(function* (

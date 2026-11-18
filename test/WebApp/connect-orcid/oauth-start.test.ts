@@ -1,4 +1,3 @@
-import { describe, expect, it } from '../../vitest.ts'
 import { Effect } from 'effect'
 import { format } from 'fp-ts-routing'
 import { connectOrcidMatch } from '../../../src/routes.ts'
@@ -6,6 +5,7 @@ import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { OrcidLocale } from '../../../src/types/index.ts'
 import * as _ from '../../../src/WebApp/connect-orcid/oauth-start.ts'
 import * as fc from '../../fc.ts'
+import { describe, expect, it } from '../../vitest.ts'
 
 describe('connectOrcidStart', () => {
   it.effect.prop(

@@ -1,12 +1,12 @@
-import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import { Result, Option } from 'effect'
+import { Option, Result } from 'effect'
 import * as _ from '../../../src/Domain/AuthorInvites/ChoosePersona.ts'
 import { DryadDatasetId } from '../../../src/Domain/Datasets/index.ts'
 import * as Events from '../../../src/Events.ts'
 import { Doi } from '../../../src/types/Doi.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Uuid } from '../../../src/types/Uuid.ts'
+import { expect, test } from '../../vitest.ts'
 
 const input = {
   reviewId: Uuid('4ecba4c3-f0f7-4631-8011-58e7a0a62e6a'),

@@ -1,12 +1,12 @@
+import { Duration, Effect, Fiber, Layer, pipe, Queue, Result } from 'effect'
 import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse } from 'effect/http'
-import { beforeEach, describe, expect, it } from '../vitest.ts'
-import { Duration, Effect, Result, Fiber, Layer, pipe, Queue } from 'effect'
 import { TestClock } from 'effect/testing'
 import * as _ from '../../src/CachingHttpClient/index.ts'
 import { InternalHttpCacheFailure } from '../../src/CachingHttpClient/index.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import * as fc from '../fc.ts'
 import { shouldNotBeCalled } from '../should-not-be-called.ts'
+import { beforeEach, describe, expect, it } from '../vitest.ts'
 
 const stubbedClient = (
   response: HttpClientResponse.HttpClientResponse,

@@ -1,16 +1,16 @@
 // oxlint-disable no-comments/disallowComments
-import { Array, Effect, Order, pipe, Record, Schema } from 'effect'
-import { PgVector, UnableToAddWorksWithRequests, UnableToQuery, type Embedding } from './Shared.ts'
-import type { SqlClient, SqlError } from 'effect/sql'
 import type { OpenRouterClient } from '@effect/ai-openrouter'
-import { generateEmbeddings } from './OpenRouter.ts'
+import type { Tokenizer } from '@huggingface/tokenizers'
+import { Temporal } from '@js-temporal/polyfill'
+import { Array, Effect, Order, pipe, Record, Schema } from 'effect'
+import type { SqlClient, SqlError } from 'effect/sql'
 import type { LanguageCode } from 'iso-639-1'
+import { IndeterminatePreprintIdFromStringSchema, type IndeterminatePreprintId } from '../Domain/Preprints/index.ts'
 import type { Doi } from '../types/Doi.ts'
 import type { OrcidId } from '../types/OrcidId.ts'
 import { OrderInstant } from '../types/Temporal.ts'
-import { Temporal } from '@js-temporal/polyfill'
-import type { Tokenizer } from '@huggingface/tokenizers'
-import { IndeterminatePreprintIdFromStringSchema, type IndeterminatePreprintId } from '../Domain/Preprints/index.ts'
+import { generateEmbeddings } from './OpenRouter.ts'
+import { PgVector, UnableToAddWorksWithRequests, UnableToQuery, type Embedding } from './Shared.ts'
 
 export interface WorkWithRequest {
   preprintId: IndeterminatePreprintId

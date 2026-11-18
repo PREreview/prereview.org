@@ -1,11 +1,11 @@
-import { describe, expect, it, vi } from '../../vitest.ts'
 import { Deferred, Effect, Layer, Option, pipe } from 'effect'
 import { KeyValueStore } from 'effect/persistence'
-import { CloudinaryAvatars } from '../../../src/ExternalInteractions/index.ts'
 import * as _ from '../../../src/Domain/Prereviewers/Avatars.ts'
+import { CloudinaryAvatars } from '../../../src/ExternalInteractions/index.ts'
 import type { NonEmptyString, OrcidId } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
+import { describe, expect, it, vi } from '../../vitest.ts'
 
 const unavailable = (method: string) =>
   Effect.fail(new KeyValueStore.KeyValueStoreError({ message: 'unavailable', method }))

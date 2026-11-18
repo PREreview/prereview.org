@@ -1,9 +1,9 @@
-import { describe, expect, it } from './vitest.ts'
 import { pipe } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as _ from '../src/user.ts'
 import * as fc from './fc.ts'
+import { describe, expect, it } from './vitest.ts'
 
 describe('UserC', () => {
   it.prop('when the user can be decoded', [fc.user()], ([user]) => {

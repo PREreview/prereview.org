@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Clock, Effect, type Order, Schema, SchemaIssue, SchemaGetter } from 'effect'
+import { Clock, Effect, type Order, Schema, SchemaGetter, SchemaIssue } from 'effect'
 
 export type Instant = Temporal.Instant
 export type PlainDate = Temporal.PlainDate

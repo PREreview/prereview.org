@@ -1,4 +1,4 @@
-import { Data, Effect, Result, Match, pipe, Schema, SchemaTransformation } from 'effect'
+import { Data, Effect, Match, pipe, Result, Schema, SchemaTransformation } from 'effect'
 import markdownIt from 'markdown-it'
 import type * as Comments from '../../../Domain/Comments/index.ts'
 import { type Html, SanitizeHtmlSchema } from '../../../html.ts'

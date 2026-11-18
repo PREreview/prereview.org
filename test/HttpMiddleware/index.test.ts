@@ -1,10 +1,10 @@
-import { HttpBody, HttpPlatform, HttpServerRequest, HttpServerResponse } from 'effect/http'
-import { describe, expect, it } from '../vitest.ts'
 import { ByteSize, Effect, FileSystem, Layer, Path, PlatformError, Tracer } from 'effect'
+import { HttpBody, HttpPlatform, HttpServerRequest, HttpServerResponse } from 'effect/http'
 import path from 'node:path'
 import * as _ from '../../src/HttpMiddleware/index.ts'
 import { PublicUrl } from '../../src/public-url.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
+import { describe, expect, it } from '../vitest.ts'
 
 const assetsDirectory = new URL('../../dist/assets/', import.meta.url).pathname
 

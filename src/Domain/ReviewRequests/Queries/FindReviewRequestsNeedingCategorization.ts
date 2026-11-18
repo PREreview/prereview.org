@@ -1,4 +1,4 @@
-import { Array, Result, flow, HashMap, pipe, Struct } from 'effect'
+import { Array, flow, HashMap, pipe, Result, Struct } from 'effect'
 import * as Events from '../../../Events.ts'
 import * as Queries from '../../../Queries.ts'
 import { Temporal, type Uuid } from '../../../types/index.ts'

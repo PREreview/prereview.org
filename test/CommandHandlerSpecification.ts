@@ -1,5 +1,5 @@
+import { Array, Option, Result } from 'effect'
 import { expect } from './vitest.ts'
-import { Array, Result, Option } from 'effect'
 
 export type CommandHandlerSpecfication<Command, Event, Error> = (...givenEvents: ReadonlyArray<Event>) => {
   when: (command: Command) => {

@@ -1,6 +1,6 @@
-import { describe, expect, it } from '../../vitest.ts'
 import * as E from 'fp-ts/lib/Either.js'
 import { CompletedFormC } from '../../../src/Domain/PreprintReviews/index.ts'
+import { describe, expect, it } from '../../vitest.ts'
 import * as fc from '../../WebApp/write-review/fc.ts'
 
 describe('CompletedFormC', () => {

@@ -1,5 +1,5 @@
-import { Url } from 'effect/http'
 import { Context, Effect } from 'effect'
+import { Url } from 'effect/http'
 import { format, type Formatter } from 'fp-ts-routing'
 import * as R from 'fp-ts/lib/Reader.js'
 import type { QueryRoute, Route } from './routes.ts'

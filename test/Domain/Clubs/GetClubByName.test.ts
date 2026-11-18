@@ -1,4 +1,3 @@
-import { expect, it } from '../../vitest.ts'
 import { type Array, Result } from 'effect'
 import * as _ from '../../../src/Domain/Clubs/GetClubByName.ts'
 import { type ClubDetails, ClubNotFound } from '../../../src/Domain/Clubs/index.ts'
@@ -8,6 +7,7 @@ import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Slug } from '../../../src/types/Slug.ts'
 import { PlainDate } from '../../../src/types/Temporal.ts'
 import { Uuid } from '../../../src/types/Uuid.ts'
+import { expect, it } from '../../vitest.ts'
 
 const clubName = Name('Superheroes Club')
 const formerName = Name('Bad Guys Club')

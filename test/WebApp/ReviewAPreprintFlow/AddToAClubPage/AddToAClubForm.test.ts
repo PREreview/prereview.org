@@ -1,8 +1,8 @@
+import { Option, Result } from 'effect'
 import { UrlParams } from 'effect/http'
-import { describe, expect, it } from '../../../vitest.ts'
-import { Result, Option } from 'effect'
 import * as _ from '../../../../src/WebApp/ReviewAPreprintFlow/AddToAClubPage/AddToAClubForm.ts'
 import { Uuid } from '../../../../src/types/Uuid.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 
 describe('fromBody', () => {
   it.each<[string, UrlParams.Input, _.AddToAClubForm]>([

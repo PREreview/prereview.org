@@ -1,8 +1,8 @@
-import { describe, expect, it } from '../vitest.ts'
 import { Effect, Option } from 'effect'
 import { EnabledLocales } from '../../src/Context.ts'
 import * as _ from '../../src/HttpMiddleware/DetectLocale.ts'
 import { UserSelectableLocales } from '../../src/locales/index.ts'
+import { describe, expect, it } from '../vitest.ts'
 
 describe('detectLocale', () => {
   it.effect.each<[string, string]>([

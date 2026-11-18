@@ -1,4 +1,4 @@
-import { pipe, Schema, SchemaIssue, SchemaGetter, Effect } from 'effect'
+import { Effect, pipe, Schema, SchemaGetter, SchemaIssue } from 'effect'
 import domains from './data/domains.json' with { type: 'json' }
 
 export type DomainId = keyof typeof domains

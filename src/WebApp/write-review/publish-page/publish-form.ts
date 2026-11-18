@@ -1,9 +1,6 @@
 import { Array, flow, Match, pipe } from 'effect'
 import { format } from 'fp-ts-routing'
 import type { ClubName } from '../../../Domain/Clubs/index.ts'
-import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
-import { languageAttributesFor } from '../../../Locales.ts'
-import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import {
   getCompetingInterests,
   getLicense,
@@ -13,6 +10,9 @@ import {
 import type { PreprintTitle } from '../../../Domain/Preprints/index.ts'
 import * as Preprints from '../../../Domain/Preprints/index.ts'
 import * as Prereviewers from '../../../Domain/Prereviewers/index.ts'
+import { fixHeadingLevels, html, plainText, rawHtml, type Html } from '../../../html.ts'
+import { languageAttributesFor } from '../../../Locales.ts'
+import { translate, type SupportedLocale } from '../../../locales/index.ts'
 import * as Routes from '../../../routes.ts'
 import {
   profileMatch,

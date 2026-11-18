@@ -1,4 +1,4 @@
-import { ChildProcess } from 'effect/process'
+import { NodeRuntime, NodeServices } from '@effect/platform-node'
 import {
   Array,
   Boolean,
@@ -13,7 +13,7 @@ import {
   String,
   Tuple,
 } from 'effect'
-import { NodeServices, NodeRuntime } from '@effect/platform-node'
+import { ChildProcess } from 'effect/process'
 import Handlebars from 'handlebars'
 
 const defaultLocale = 'en-US'

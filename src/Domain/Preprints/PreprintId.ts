@@ -1,22 +1,22 @@
-import { Url, UrlParams } from 'effect/http'
 import {
   Array,
   Data,
+  Effect,
   type Equivalence,
+  Filter,
+  Number,
   Option,
   Predicate,
   Schema,
+  SchemaGetter,
+  SchemaIssue,
+  SchemaTransformation,
   Struct,
   Tuple,
   flow,
   pipe,
-  SchemaIssue,
-  SchemaGetter,
-  SchemaTransformation,
-  Effect,
-  Filter,
-  Number,
 } from 'effect'
+import { Url, UrlParams } from 'effect/http'
 import * as D from 'io-ts/lib/Decoder.js'
 import { P, match } from 'ts-pattern'
 import { Doi } from '../../types/index.ts'

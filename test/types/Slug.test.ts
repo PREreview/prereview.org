@@ -1,7 +1,7 @@
-import { describe, expect, it } from '../vitest.ts'
-import { Effect, Result, Schema, Tuple, SchemaIssue } from 'effect'
+import { Effect, Result, Schema, SchemaIssue, Tuple } from 'effect'
 import * as _ from '../../src/types/Slug.ts'
 import * as fc from '../fc.ts'
+import { describe, expect, it } from '../vitest.ts'
 
 const formatError = (error: Schema.SchemaError) => SchemaIssue.makeFormatterStandardSchemaV1()(error.issue).issues
 

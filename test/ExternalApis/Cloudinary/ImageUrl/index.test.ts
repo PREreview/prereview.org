@@ -1,7 +1,7 @@
-import { describe, expect, it } from '../../../vitest.ts'
 import { Effect } from 'effect'
-import { Cloudinary } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalApis/Cloudinary/ImageUrl/index.ts'
+import { Cloudinary } from '../../../../src/ExternalApis/index.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 import * as fc from '../fc.ts'
 
 describe('ImageUrl', () => {

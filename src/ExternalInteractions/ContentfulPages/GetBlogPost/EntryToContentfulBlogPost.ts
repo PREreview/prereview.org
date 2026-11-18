@@ -1,5 +1,11 @@
 import { Array, Effect, flow, HashSet, Layer, Option, pipe, Predicate, Record, Ref, Schema } from 'effect'
 import { Locale } from '../../../Context.ts'
+import type {
+  PrereviewIsNotFound,
+  PrereviewIsUnavailable,
+  Prereviews,
+  PrereviewWasRemoved,
+} from '../../../Domain/Prereviews/index.ts'
 import {
   type Contentful,
   ContentfulId,
@@ -9,12 +15,6 @@ import {
 } from '../../../ExternalApis/Contentful/index.ts'
 import { html } from '../../../html.ts'
 import { DefaultLocale } from '../../../locales/index.ts'
-import type {
-  PrereviewIsNotFound,
-  PrereviewIsUnavailable,
-  PrereviewWasRemoved,
-  Prereviews,
-} from '../../../Domain/Prereviews/index.ts'
 import { NameSchema } from '../../../types/Name.ts'
 import { InstantFromSelfSchema } from '../../../types/Temporal.ts'
 import { HeroImageEntry } from '../ContentfulTypes.ts'

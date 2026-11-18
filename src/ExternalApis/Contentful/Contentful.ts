@@ -1,5 +1,5 @@
-import type { HttpClient } from 'effect/http'
 import { Context, Effect, flow, Layer, Scope } from 'effect'
+import type { HttpClient } from 'effect/http'
 import type { ContentfulConfig } from './ContentfulConfig.ts'
 import { GetAssets } from './GetAssets/index.ts'
 import { GetEntries } from './GetEntries/index.ts'

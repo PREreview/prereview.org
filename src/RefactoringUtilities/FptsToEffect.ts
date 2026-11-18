@@ -1,4 +1,4 @@
-import { type Array, Effect, Result, flow, identity, Option } from 'effect'
+import { type Array, Effect, flow, identity, Option, Result } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as O from 'fp-ts/lib/Option.js'
 import type { Reader } from 'fp-ts/lib/Reader.js'

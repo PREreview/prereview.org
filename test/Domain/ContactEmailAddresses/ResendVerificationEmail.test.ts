@@ -1,12 +1,11 @@
 import { LibsqlClient } from '@effect/sql-libsql'
-import { expect, it, vi } from '../../vitest.ts'
-import { Array, Effect, Result, Layer, Option, Struct, pipe, PubSub, Stream } from 'effect'
+import { Array, Effect, Layer, Option, pipe, PubSub, Result, Stream, Struct } from 'effect'
+import { Locale } from '../../../src/Context.ts'
 import {
   ContactEmailAddressHasAlreadyBeenVerified,
   ContactEmailAddressIsNotFound,
 } from '../../../src/Domain/ContactEmailAddresses/index.ts'
 import * as _ from '../../../src/Domain/ContactEmailAddresses/ResendVerificationEmail.ts'
-import { Locale } from '../../../src/Context.ts'
 import { ContactAddressImported, Events, type Event } from '../../../src/Events.ts'
 import { EventStore } from '../../../src/EventStore.ts'
 import { Email, OrcidRecords } from '../../../src/ExternalInteractions/index.ts'
@@ -17,6 +16,7 @@ import { EmailAddress } from '../../../src/types/EmailAddress.ts'
 import { Uuid } from '../../../src/types/index.ts'
 import { Name } from '../../../src/types/Name.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
+import { expect, it, vi } from '../../vitest.ts'
 
 const orcidIdWithNoEmailAddress = OrcidId('0000-0002-1825-0097')
 const orcidIdWithUnverified = OrcidId('0000-0002-6109-0367')

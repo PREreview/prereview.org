@@ -1,4 +1,4 @@
-import { Effect, Result, Number, Option, pipe, Random, Schema, type Brand } from 'effect'
+import { Effect, Number, Option, pipe, Random, Result, Schema, type Brand } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { EffectToFpts } from '../RefactoringUtilities/index.ts'

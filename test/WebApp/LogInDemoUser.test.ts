@@ -1,11 +1,11 @@
-import { describe, expect, it } from '../vitest.ts'
 import { Effect, Layer } from 'effect'
 import { Locale } from '../../src/Context.ts'
-import * as FeatureFlags from '../../src/FeatureFlags.ts'
 import { Prereviewers } from '../../src/Domain/Prereviewers/index.ts'
+import * as FeatureFlags from '../../src/FeatureFlags.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import * as _ from '../../src/WebApp/LogInDemoUser.ts'
 import * as fc from '../fc.ts'
+import { describe, expect, it } from '../vitest.ts'
 
 describe('LogInDemoUser', () => {
   it.effect.prop('when can log in as the demo user', [fc.supportedLocale()], ([locale]) =>

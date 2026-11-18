@@ -1,4 +1,3 @@
-import { describe, expect, it } from '../../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Effect } from 'effect'
 import { Datacite } from '../../../../src/ExternalApis/index.ts'
@@ -6,6 +5,7 @@ import { LanguageDetection } from '../../../../src/ExternalInteractions/index.ts
 import * as _ from '../../../../src/ExternalInteractions/PreprintData/Datacite/Preprint.ts'
 import { Doi } from '../../../../src/types/Doi.ts'
 import * as fc from '../../../fc.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 
 describe('recordToPreprint', () => {
   it.effect.prop(

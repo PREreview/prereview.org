@@ -1,5 +1,5 @@
-import { HttpClientRequest } from 'effect/http'
 import { Effect, identity, Option, pipe } from 'effect'
+import { HttpClientRequest } from 'effect/http'
 import type { OrcidId } from '../../../types/index.ts'
 import { OrcidApi } from '../OrcidApi.ts'
 

@@ -1,7 +1,7 @@
-import { describe, expect, it } from '../vitest.ts'
 import { Result, Schema, Tuple } from 'effect'
 import * as _ from '../../src/types/SciProfilesId.ts'
 import * as fc from '../fc.ts'
+import { describe, expect, it } from '../vitest.ts'
 
 describe('SciProfilesIdSchema', () => {
   describe('decode', () => {

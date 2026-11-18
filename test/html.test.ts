@@ -1,9 +1,9 @@
-import { describe, expect, it, test } from './vitest.ts'
 import { Effect, Equal, Hash, Tuple } from 'effect'
 import * as E from 'fp-ts/lib/Either.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import * as _ from '../src/html.ts'
 import * as fc from './fc.ts'
+import { describe, expect, it, test } from './vitest.ts'
 
 test.each([
   ['html variable', _.html`${_.rawHtml('<p>a</p>')}`, '<p>a</p>'],

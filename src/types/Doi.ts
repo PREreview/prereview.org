@@ -1,5 +1,5 @@
 import * as Doi from 'doi-ts'
-import { type Equivalence, pipe, Schema, SchemaIssue, SchemaGetter, Effect } from 'effect'
+import { Effect, type Equivalence, pipe, Schema, SchemaGetter, SchemaIssue } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { FptsToEffect } from '../RefactoringUtilities/index.ts'

@@ -1,4 +1,4 @@
-import { Array, Boolean, Data, Result, Equal, Function, Match, Option } from 'effect'
+import { Array, Boolean, Data, Equal, Function, Match, Option, Result } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import * as Events from '../../../Events.ts'
 import type { Uuid } from '../../../types/index.ts'

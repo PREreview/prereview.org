@@ -1,7 +1,7 @@
+import type { Prereview } from '../../../Domain/PreprintReviews/index.ts'
 import { html, plainText } from '../../../html.ts'
 import { languageAttributesFor } from '../../../Locales.ts'
 import { type SupportedLocale, translate } from '../../../locales/index.ts'
-import type { Prereview } from '../../../Domain/PreprintReviews/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
 import { PageResponse } from '../../Response/index.ts'

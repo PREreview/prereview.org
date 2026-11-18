@@ -1,6 +1,6 @@
-import { describe, expect, it } from '../../../vitest.ts'
 import * as _ from '../../../../src/ExternalInteractions/OpenAlexWorks/GetCategories/CategoriesFromWork.ts'
 import * as fc from '../../../fc.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 
 describe('CategoriesFromWork', () => {
   it.prop(

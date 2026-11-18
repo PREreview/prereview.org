@@ -1,6 +1,6 @@
 import { Effect } from 'effect'
-import { ContactEmailAddresses } from '../../Domain/ContactEmailAddresses/index.ts'
 import type { Locale } from '../../Context.ts'
+import { ContactEmailAddresses } from '../../Domain/ContactEmailAddresses/index.ts'
 import { Temporal } from '../../types/index.ts'
 import type { Uuid } from '../../types/Uuid.ts'
 import { LoggedInUser } from '../../user.ts'

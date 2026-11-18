@@ -1,8 +1,8 @@
-import { describe, expect, it } from '../../../vitest.ts'
 import { Effect, Result } from 'effect'
 import * as _ from '../../../../src/ExternalApis/Crossref/GetWork/HandleResponse.ts'
 import * as StatusCodes from '../../../../src/StatusCodes.ts'
 import * as fc from '../../../fc.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 
 describe('HandleResponse', () => {
   describe('with a 200 status code', () => {

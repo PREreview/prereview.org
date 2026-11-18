@@ -1,13 +1,13 @@
-import { expect, it } from '../vitest.ts'
 import { Effect, Layer } from 'effect'
 import { Locale } from '../../src/Context.ts'
 import * as Prereviews from '../../src/Domain/Prereviews/index.ts'
-import { PublicUrl } from '../../src/public-url.ts'
 import * as ReviewRequests from '../../src/Domain/ReviewRequests/index.ts'
+import { PublicUrl } from '../../src/public-url.ts'
 import * as Routes from '../../src/routes.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import * as _ from '../../src/WebApp/HomePage/index.ts'
 import * as fc from '../fc.ts'
+import { expect, it } from '../vitest.ts'
 
 it.effect.prop('HomePage', [fc.supportedLocale(), fc.origin()], ([locale, publicUrl]) =>
   Effect.gen(function* () {

@@ -1,9 +1,9 @@
-import { describe, expect, it } from './vitest.ts'
 import { Effect, Layer, Result } from 'effect'
 import { Redis } from 'effect/persistence'
 import type { Redis as IoRedis } from 'ioredis'
 import * as _ from '../src/Redis.ts'
 import * as fc from './fc.ts'
+import { describe, expect, it } from './vitest.ts'
 
 describe('layerPersistenceFromDataStore', () => {
   describe('send', () => {

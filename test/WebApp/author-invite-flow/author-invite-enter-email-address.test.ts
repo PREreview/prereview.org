@@ -1,14 +1,13 @@
-import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import type { GetAuthorInviteEnv } from '../../../src/author-invite.ts'
 import * as Commands from '../../../src/Commands.ts'
+import { Locale } from '../../../src/Context.ts'
 import {
   ContactEmailAddresses,
   ContactEmailAddressIsNotFound,
 } from '../../../src/Domain/ContactEmailAddresses/index.ts'
-import { Locale } from '../../../src/Context.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
@@ -22,6 +21,7 @@ import { OrcidIdEquivalence } from '../../../src/types/OrcidId.ts'
 import * as _ from '../../../src/WebApp/author-invite-flow/enter-email-address-page/index.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
+import { describe, expect, it, vi } from '../../vitest.ts'
 
 describe('authorInviteEnterEmailAddress', () => {
   describe('when the user is logged in', () => {

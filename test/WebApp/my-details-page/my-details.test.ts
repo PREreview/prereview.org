@@ -1,4 +1,3 @@
-import { describe, expect, it, vi } from '../../vitest.ts'
 import { SystemClock } from 'clock-ts'
 import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
@@ -15,13 +14,14 @@ import {
 } from '../../../src/Domain/Prereviewers/HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests.ts'
 import { Prereviewers } from '../../../src/Domain/Prereviewers/index.ts'
 import * as Queries from '../../../src/Queries.ts'
+import { EffectToFpts } from '../../../src/RefactoringUtilities/index.ts'
 import { myDetailsMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import type { SaveUserOnboardingEnv } from '../../../src/user-onboarding.ts'
 import * as _ from '../../../src/WebApp/my-details-page/my-details.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
-import { EffectToFpts } from '../../../src/RefactoringUtilities/index.ts'
+import { describe, expect, it, vi } from '../../vitest.ts'
 
 describe('myDetails', () => {
   describe('when the user is logged in', () => {

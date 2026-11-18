@@ -1,13 +1,14 @@
 import { Context, Data, Effect, Layer, Match, pipe, type Option } from 'effect'
 import * as Commands from '../../Commands.ts'
 import { UnableToHandleCommand } from '../../Commands.ts'
-import { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
 import { OrcidRecords } from '../../ExternalInteractions/index.ts'
 import * as Queries from '../../Queries.ts'
 import { Temporal, type EmailAddress, type Name, type OrcidId } from '../../types/index.ts'
 import { possiblePseudonyms } from '../../types/Pseudonym.ts'
+import { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
 import { CountAvailablePseudonyms } from './CountAvailablePseudonyms.ts'
 import { GetAvailablePseudonym } from './GetAvailablePseudonym.ts'
+import { GetOrcidIdForPseudonym } from './GetOrcidIdForPseudonym.ts'
 import { GetPseudonym } from './GetPseudonym.ts'
 import { HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests } from './HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests.ts'
 import { IsPseudonymInUse } from './IsPseudonymInUse.ts'
@@ -17,7 +18,6 @@ import { OptInToNotificationsForReviewsPublishedInResponseToRequests } from './O
 import { OptOutOfNotificationsForReviewsPublishedInResponseToRequests } from './OptOutOfNotificationsForReviewsPublishedInResponseToRequests.ts'
 import { PseudonymPersona, PublicPersona, type Persona } from './Persona.ts'
 import { RegisterPrereviewer } from './RegisterPrereviewer.ts'
-import { GetOrcidIdForPseudonym } from './GetOrcidIdForPseudonym.ts'
 
 export class UnableToGetPersona extends Data.TaggedError('UnableToGetPersona')<{ cause?: unknown }> {}
 

@@ -1,5 +1,5 @@
 import { isEmailValid } from '@hapi/address'
-import { Result, Equivalence, Schema, String, Tuple, flow, pipe, SchemaTransformation } from 'effect'
+import { Equivalence, flow, pipe, Result, Schema, SchemaTransformation, String, Tuple } from 'effect'
 import * as C from 'io-ts/lib/Codec.js'
 import * as D from 'io-ts/lib/Decoder.js'
 import { EffectToFpts } from '../RefactoringUtilities/index.ts'

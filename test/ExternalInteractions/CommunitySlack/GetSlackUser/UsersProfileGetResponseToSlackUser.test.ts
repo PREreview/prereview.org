@@ -1,7 +1,7 @@
-import { expect, it } from '../../../vitest.ts'
 import { Struct } from 'effect'
 import * as _ from '../../../../src/ExternalInteractions/CommunitySlack/GetSlackUser/UsersProfileGetResponseToSlackUser.ts'
 import * as fc from '../../../fc.ts'
+import { expect, it } from '../../../vitest.ts'
 
 it.prop(
   'UsersProfileGetResponseToSlackUser',

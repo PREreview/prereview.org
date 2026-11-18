@@ -3,9 +3,8 @@ import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/lib/ReaderTask.js'
 import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import { match } from 'ts-pattern'
-import { ContactEmailAddresses } from '../../../Domain/ContactEmailAddresses/index.ts'
 import type { Locale } from '../../../Context.ts'
-import type { SupportedLocale } from '../../../locales/index.ts'
+import { ContactEmailAddresses } from '../../../Domain/ContactEmailAddresses/index.ts'
 import { type FormStore, getForm, nextFormPath } from '../../../Domain/PreprintReviews/index.ts'
 import {
   getPreprintTitle,
@@ -13,6 +12,7 @@ import {
   type Preprints,
   type PreprintTitle,
 } from '../../../Domain/Preprints/index.ts'
+import type { SupportedLocale } from '../../../locales/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import {
   writeReviewEnterEmailAddressMatch,

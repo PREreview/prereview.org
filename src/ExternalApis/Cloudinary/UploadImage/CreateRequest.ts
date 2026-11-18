@@ -1,7 +1,7 @@
-import { HttpClientRequest } from 'effect/http'
-import { Base64 } from 'effect/encoding'
 import { v2 as cloudinary } from 'cloudinary'
 import { Array, Clock, Effect, pipe, Record, Redacted } from 'effect'
+import { Base64 } from 'effect/encoding'
+import { HttpClientRequest } from 'effect/http'
 import { CloudinaryApi } from '../CloudinaryApi.ts'
 import type { UploadImageInput } from './UploadImageInput.ts'
 

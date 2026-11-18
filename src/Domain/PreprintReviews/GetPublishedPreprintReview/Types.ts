@@ -1,12 +1,12 @@
 import type { Temporal } from '@js-temporal/polyfill'
 import { Data, type Array } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import type { ClubName } from '../../Clubs/index.ts'
 import type { Html } from '../../../html.ts'
-import type { PreprintId } from '../../Preprints/index.ts'
-import type { Persona } from '../../Prereviewers/index.ts'
 import type { Doi } from '../../../types/Doi.ts'
 import type { TopicId } from '../../../types/Topic.ts'
+import type { ClubName } from '../../Clubs/index.ts'
+import type { PreprintId } from '../../Preprints/index.ts'
+import type { Persona } from '../../Prereviewers/index.ts'
 import type { PreprintReviewImported, StructuredPrereviewSchema } from '../Events.ts'
 
 export class PublishedPreprintReview extends Data.TaggedClass('PublishedPreprintReview')<{

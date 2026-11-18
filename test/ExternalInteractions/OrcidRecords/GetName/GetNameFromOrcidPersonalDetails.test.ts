@@ -1,9 +1,9 @@
-import { describe, expect, it, test } from '../../../vitest.ts'
 import { Option, Tuple } from 'effect'
 import { Orcid } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/OrcidRecords/GetName/GetNameFromOrcidPersonalDetails.ts'
 import { Name } from '../../../../src/types/Name.ts'
 import * as fc from '../../../fc.ts'
+import { describe, expect, it, test } from '../../../vitest.ts'
 
 describe('GetNameFromOrcidPersonalDetails', () => {
   it.prop(

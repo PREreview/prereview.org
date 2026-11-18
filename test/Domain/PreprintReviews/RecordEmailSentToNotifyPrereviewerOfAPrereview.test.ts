@@ -1,8 +1,8 @@
-import { expect, test } from '../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
-import * as Events from '../../../src/Events.ts'
 import * as _ from '../../../src/Domain/PreprintReviews/RecordEmailSentToNotifyPrereviewerOfAPrereview.ts'
+import * as Events from '../../../src/Events.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
+import { expect, test } from '../../vitest.ts'
 
 const input = {
   orcidId: OrcidId('0000-0002-1825-0097'),

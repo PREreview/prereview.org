@@ -1,5 +1,5 @@
-import { HttpClient, HttpClientRequest } from 'effect/http'
 import { Context, Effect, flow, Layer } from 'effect'
+import { HttpClient, HttpClientRequest } from 'effect/http'
 import { Detect } from './Detect/index.ts'
 import { DetectLanguageApi } from './DetectLanguageApi.ts'
 

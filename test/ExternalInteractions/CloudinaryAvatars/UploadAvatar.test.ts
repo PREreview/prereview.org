@@ -1,4 +1,3 @@
-import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect, FileSystem, Layer, pipe, PlatformError } from 'effect'
 import { Cloudinary } from '../../../src/ExternalApis/index.ts'
 import * as _ from '../../../src/ExternalInteractions/CloudinaryAvatars/UploadAvatar.ts'
@@ -6,6 +5,7 @@ import { PublicUrl } from '../../../src/public-url.ts'
 import { NonEmptyString } from '../../../src/types/index.ts'
 import * as fc from '../../fc.ts'
 import { shouldNotBeCalled } from '../../should-not-be-called.ts'
+import { describe, expect, it, vi } from '../../vitest.ts'
 
 const avatarFile = (): fc.Arbitrary<_.AvatarFile> =>
   fc.record({

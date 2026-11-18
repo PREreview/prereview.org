@@ -1,13 +1,13 @@
-import { describe, expect, it, test } from '../../../vitest.ts'
 import { Temporal } from '@js-temporal/polyfill'
 import { Result } from 'effect'
+import { JxivPreprintId, Preprint } from '../../../../src/Domain/Preprints/index.ts'
 import { JapanLinkCenter } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/PreprintData/JapanLinkCenter/Preprint.ts'
 import { rawHtml } from '../../../../src/html.ts'
-import { JxivPreprintId, Preprint } from '../../../../src/Domain/Preprints/index.ts'
 import { Doi } from '../../../../src/types/Doi.ts'
 import { Name } from '../../../../src/types/Name.ts'
 import * as fc from '../../../fc.ts'
+import { describe, expect, it, test } from '../../../vitest.ts'
 
 describe('recordToPreprint', () => {
   test('can be transformed', () => {

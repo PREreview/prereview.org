@@ -1,4 +1,4 @@
-import { pipe, Schema, SchemaIssue, SchemaGetter, Effect } from 'effect'
+import { Effect, pipe, Schema, SchemaGetter, SchemaIssue } from 'effect'
 import type { Html } from '../html.ts'
 import { type SupportedLocale, translate } from '../locales/index.ts'
 import fields from './data/fields.json' with { type: 'json' }

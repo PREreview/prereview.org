@@ -1,8 +1,8 @@
 import type { OpenRouterClient } from '@effect/ai-openrouter'
-import { Array, Effect, pipe, Schema } from 'effect'
-import { UnableToGetMatches, type Embedding } from './Shared.ts'
-import { Float32ArraySchema } from './Float32Array.ts'
 import type { Tokenizer } from '@huggingface/tokenizers'
+import { Array, Effect, pipe, Schema } from 'effect'
+import { Float32ArraySchema } from './Float32Array.ts'
+import { UnableToGetMatches, type Embedding } from './Shared.ts'
 
 interface TitleAndAbstract {
   title: string

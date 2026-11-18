@@ -1,8 +1,8 @@
-import { UrlParams } from 'effect/http'
-import { describe, expect, it } from '../../../vitest.ts'
 import { Effect, Redacted, Struct } from 'effect'
+import { UrlParams } from 'effect/http'
 import { Slack } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalApis/Slack/UsersProfileGet/CreateRequest.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 import * as fc from '../fc.ts'
 
 describe('CreateRequest', () => {

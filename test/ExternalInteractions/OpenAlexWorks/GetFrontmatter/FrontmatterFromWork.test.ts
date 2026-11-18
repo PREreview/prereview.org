@@ -1,10 +1,10 @@
 import { Option } from 'effect'
-import { describe, expect, it } from '../../../vitest.ts'
 import * as _ from '../../../../src/ExternalInteractions/OpenAlexWorks/GetFrontmatter/FrontmatterFromWork.ts'
 import { html } from '../../../../src/html.ts'
 import { Doi } from '../../../../src/types/Doi.ts'
 import { Name } from '../../../../src/types/Name.ts'
 import * as fc from '../../../fc.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 
 describe('FrontmatterFromWork', () => {
   it.prop('keeps the DOI', [fc.doi(), fc.openAlexWork()], ([doi, work]) => {

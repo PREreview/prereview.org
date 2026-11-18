@@ -1,8 +1,8 @@
-import { UrlParams } from 'effect/http'
-import { describe, expect, it } from '../../../vitest.ts'
 import { Effect, Redacted, Tuple } from 'effect'
+import { UrlParams } from 'effect/http'
 import * as _ from '../../../../src/ExternalApis/Ghost/GetPage/CreateRequest.ts'
 import { Ghost } from '../../../../src/ExternalApis/index.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 import * as fc from '../fc.ts'
 
 describe('CreateRequest', () => {

@@ -1,9 +1,9 @@
 import { Effect } from 'effect'
 import { CommunitySlack } from '../../../ExternalInteractions/index.ts'
-import * as Prereviewers from '../../Prereviewers/index.ts'
 import * as PublicUrl from '../../../public-url.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
+import * as Prereviewers from '../../Prereviewers/index.ts'
 import * as Errors from '../Errors.ts'
 import * as Queries from '../Queries/index.ts'
 

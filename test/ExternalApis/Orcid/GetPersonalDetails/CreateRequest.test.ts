@@ -1,9 +1,9 @@
-import { Headers } from 'effect/http'
-import { describe, expect, it } from '../../../vitest.ts'
 import { Effect, Option, Redacted, Tuple } from 'effect'
+import { Headers } from 'effect/http'
 import { Orcid } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalApis/Orcid/GetPersonalDetails/CreateRequest.ts'
 import { OrcidId } from '../../../../src/types/index.ts'
+import { describe, expect, it } from '../../../vitest.ts'
 import * as fc from '../fc.ts'
 
 describe('CreateRequest', () => {

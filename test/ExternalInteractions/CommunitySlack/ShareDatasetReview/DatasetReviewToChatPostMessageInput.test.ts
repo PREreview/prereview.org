@@ -1,9 +1,9 @@
-import { expect, test } from '../../../vitest.ts'
 import { Option } from 'effect'
+import * as Prereviewers from '../../../../src/Domain/Prereviewers/index.ts'
 import type { Slack } from '../../../../src/ExternalApis/index.ts'
 import * as _ from '../../../../src/ExternalInteractions/CommunitySlack/ShareDatasetReview/DatasetReviewToChatPostMessageInput.ts'
-import * as Prereviewers from '../../../../src/Domain/Prereviewers/index.ts'
 import { Name, OrcidId, Pseudonym } from '../../../../src/types/index.ts'
+import { expect, test } from '../../../vitest.ts'
 
 test.each([
   [

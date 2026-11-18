@@ -1,4 +1,3 @@
-import { describe, expect, it, vi } from '../../vitest.ts'
 import { Effect } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
@@ -7,6 +6,7 @@ import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/reviews-page/index.ts'
 import { reviewsMatch } from '../../../src/routes.ts'
 import * as fc from '../../fc.ts'
+import { describe, expect, it, vi } from '../../vitest.ts'
 
 describe('reviewsPage', () => {
   it.effect.prop(

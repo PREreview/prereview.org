@@ -1,4 +1,4 @@
-import { flow, pipe, Schema, Tuple, SchemaTransformation } from 'effect'
+import { flow, pipe, Schema, SchemaTransformation, Tuple } from 'effect'
 
 export type SciProfilesId = typeof SciProfilesIdSchema.Type
 

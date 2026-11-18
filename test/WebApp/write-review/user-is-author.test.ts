@@ -1,6 +1,6 @@
-import { describe, expect, it } from '../../vitest.ts'
 import { Result } from 'effect'
 import * as _ from '../../../src/WebApp/write-review/user-is-author.ts'
+import { describe, expect, it } from '../../vitest.ts'
 import * as fc from './fc.ts'
 
 describe('ensureUserIsNotAnAuthor', () => {
