@@ -7,7 +7,7 @@ import {
   HttpServerRequest,
   HttpServerResponse,
 } from 'effect/http'
-import { Effect, flow, Match, Option, pipe, Record, type Context, String, Struct, Tuple } from 'effect'
+import { Array, Effect, flow, Match, Option, pipe, Record, type Context, String, Struct, Tuple } from 'effect'
 import type { WorkflowEngine } from 'effect/workflow'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
@@ -15,6 +15,7 @@ import type { LoggerEnv } from 'logger-fp-ts'
 import type * as AuthorInviteStore from '../../../AuthorInviteStore.ts'
 import type * as CachingHttpClient from '../../../CachingHttpClient/index.ts'
 import type { Clubs } from '../../../Domain/Clubs/index.ts'
+import { Comments, type PublishedCommentWithAuthor } from '../../../Domain/Comments/index.ts'
 import type { ContactEmailAddresses } from '../../../Domain/ContactEmailAddresses/index.ts'
 import { type EnabledLocales, Locale, ScietyListToken, type SessionStore } from '../../../Context.ts'
 import { MakeDeprecatedLoggerEnv } from '../../../DeprecatedServices.ts'
@@ -27,7 +28,8 @@ import {
   type OpenAlexWorks,
 } from '../../../ExternalInteractions/index.ts'
 import * as FeatureFlags from '../../../FeatureFlags.ts'
-import type { SupportedLocale } from '../../../locales/index.ts'
+import { html } from '../../../html.ts'
+import { DefaultLocale, type SupportedLocale, translate } from '../../../locales/index.ts'
 import { OrcidOauth } from '../../../OrcidOauth.ts'
 import type * as OrcidTokens from '../../../OrcidTokens.ts'
 import * as SlackUserIds from '../../../SlackUserIds.ts'
@@ -49,7 +51,7 @@ import { preprintReviews } from '../../preprint-reviews-page/index.ts'
 import { profile } from '../../profile-page/index.ts'
 import * as Response from '../../Response/index.ts'
 import { reviewAPreprint } from '../../review-a-preprint-page/index.ts'
-import { CommentsForReview, reviewPage } from '../../review-page/index.ts'
+import { type Comment, CommentsForReview, reviewPage } from '../../review-page/index.ts'
 import { reviewsPage } from '../../reviews-page/index.ts'
 import type { TemplatePage } from '../../TemplatePage.ts'
 import { AuthorInviteFlowRouter } from './AuthorInviteFlowRouter.ts'
@@ -157,6 +159,7 @@ export interface Env {
   runtime: Context.Context<
     | AuthorInvites
     | Clubs
+    | Comments
     | CachingHttpClient.HttpCache
     | CloudinaryAvatars.CloudinaryAvatars
     | CommunitySlack.CommunitySlack
@@ -321,7 +324,16 @@ const routerWithoutHyperTs = pipe(
         ({ id }) =>
           (env: Env) =>
             reviewPage({ id, locale: env.locale })({
-              getComments: EffectToFpts.toTaskEitherK(env.commentsForReview.get, env.runtime),
+              getComments: env.featureFlags.useEventsForPreprintReviews
+                ? EffectToFpts.toTaskEitherK(
+                    flow(
+                      ({ id }: { id: number }) => Comments.getPublishedCommentsForAPrereview(id),
+                      Effect.map(Array.map(toReviewPageComment)),
+                      Effect.catchTag('CommentsAreUnavailable', () => Effect.fail('unavailable' as const)),
+                    ),
+                    env.runtime,
+                  )
+                : EffectToFpts.toTaskEitherK(env.commentsForReview.get, env.runtime),
               getPrereview: EffectToFpts.toTaskEitherK(
                 flow(
                   PreprintReviews.getPreprintReview,
@@ -370,3 +382,27 @@ const routerWithoutHyperTs = pipe(
   P.map(handler => flow(FptsToEffect.taskK(handler), Effect.andThen(Response.toHttpServerResponse))),
   P.alt(() => DataRouter),
 ) satisfies P.Parser<(env: Env) => Effect.Effect<HttpServerResponse.HttpServerResponse, never, unknown>>
+
+const toReviewPageComment = (comment: PublishedCommentWithAuthor): Comment => ({
+  authors: {
+    named: [
+      Prereviewers.matchPersona(comment.author, {
+        onPublic: persona => ({ name: persona.displayName, orcid: persona.orcidId }),
+        onPseudonym: persona => ({ name: persona.pseudonym }),
+      }),
+    ],
+  },
+  doi: comment.doi,
+  id: comment.id,
+  license: 'CC-BY-4.0',
+  published: comment.publishedAt.toZonedDateTimeISO('UTC').toPlainDate(),
+  text: html`${comment.comment}
+
+    <h2>${translate(DefaultLocale, 'write-comment-flow', 'competingInterestsHeading')()}</h2>
+
+    <p>
+      ${Option.getOrElse(comment.competingInterests, () =>
+        translate(DefaultLocale, 'write-comment-flow', 'noCompetingInterests')(),
+      )}
+    </p>`,
+})
