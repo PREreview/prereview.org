@@ -28,10 +28,9 @@ pipe(
   Effect.provide(
     pipe(
       Layer.effectDiscard(EventDispatcher.replayExistingEvents),
-      Layer.provideMerge(PreprintReviews.layer),
+      Layer.provideMerge(Layer.mergeAll(Comments.layer, PreprintReviews.layer)),
       Layer.provideMerge(
         Layer.mergeAll(
-          Comments.layer,
           DatasetReviews.commandsLayer,
           OpenAlexWorks.layer,
           PreprintData.layer,

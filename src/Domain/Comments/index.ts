@@ -17,6 +17,7 @@ import {
   type CreateRecordOnZenodoForComment,
   type PublishCommentOnZenodo,
 } from './Context.ts'
+import * as Comments from './Comments.ts'
 import { DecideComment } from './Decide.ts'
 import { CommentEventTypes, type CommentEvent } from './Events.ts'
 import { EvolveComment } from './Evolve.ts'
@@ -28,11 +29,13 @@ import { CommentNotStarted, type CommentState } from './State.ts'
 import { layerZenodo } from './Zenodo.ts'
 
 export * from './Commands.ts'
+export { Comments } from './Comments.ts'
 export * from './Context.ts'
 export * from './Decide.ts'
 export * from './Errors.ts'
 export * from './Events.ts'
 export * from './Evolve.ts'
+export type { CommentsAreUnavailable, PublishedCommentWithAuthor } from './GetPublishedCommentsForAPrereview/index.ts'
 export * from './ExpectedCommand.ts'
 export * from './State.ts'
 
@@ -146,6 +149,7 @@ export const makeGetNextExpectedCommandForUserOnAComment: Effect.Effect<
 })
 
 export const layer = Layer.mergeAll(
+  Comments.layer,
   Layer.effect(HandleCommentCommand, makeHandleCommentCommand),
   Layer.effect(GetNextExpectedCommandForUser, makeGetNextExpectedCommandForUser),
   Layer.effect(GetNextExpectedCommandForUserOnAComment, makeGetNextExpectedCommandForUserOnAComment),
