@@ -7,9 +7,8 @@ import * as Preprints from '../../Domain/Preprints/index.ts'
 import { DomainIdSchema, type DomainId } from '../../types/domain.ts'
 import { FieldIdSchema, type FieldId } from '../../types/field.ts'
 import { Doi, Iso639, Temporal } from '../../types/index.ts'
-import type { Name } from '../../types/Name.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
-import { isPseudonym } from '../../types/Pseudonym.ts'
+import type { Pseudonym } from '../../types/Pseudonym.ts'
 import { SubfieldIdSchema, type SubfieldId } from '../../types/subfield.ts'
 import { UuidSchema, type Uuid } from '../../types/Uuid.ts'
 import type { ScietyListEnv } from '../sciety-list/index.ts'
@@ -19,7 +18,7 @@ export interface Prereview {
   preprint: PreprintId
   createdAt: Temporal.PlainDate
   doi: Doi.Doi
-  authors: ReadonlyArray<{ name: Name; orcid?: OrcidId }>
+  authors: ReadonlyArray<{ orcid: OrcidId } | { pseudonym: Pseudonym }>
   language?: LanguageCode
   type: 'full' | 'structured'
   club?: Uuid
@@ -200,13 +199,10 @@ const transform = (prereview: Prereview): TransformedPrereview => ({
   server: preprintIdToServer(prereview.preprint),
   createdAt: prereview.createdAt,
   doi: prereview.doi,
-  authors: pipe(
-    prereview.authors,
-    Array.filter(author => author.orcid !== undefined || isPseudonym(author.name)),
-    Array.map(author => ({
-      author: author.orcid ?? author.name,
-      authorType: author.orcid === undefined ? 'pseudonym' : 'public',
-    })),
+  authors: Array.map(prereview.authors, author =>
+    'orcid' in author
+      ? { author: author.orcid, authorType: 'public' as const }
+      : { author: author.pseudonym, authorType: 'pseudonym' as const },
   ),
   language: prereview.language,
   type: prereview.type,

@@ -947,7 +947,7 @@ function recordToScietyPrereview(
 ): RTE.ReaderTaskEither<
   EffectToFpts.EffectEnv<Preprints.Preprints> & L.LoggerEnv & GetClubByNameEnv,
   'no reviewed preprint' | NotAPreprint | PreprintIsNotFound | PreprintIsUnavailable,
-  ScietyPrereview & ReviewsDataPrereview
+  ScietyPrereview & Omit<ReviewsDataPrereview, 'authors'> & { authors: ReadonlyArray<{ name: Name; orcid?: OrcidId }> }
 > {
   return pipe(
     RTE.of(record),

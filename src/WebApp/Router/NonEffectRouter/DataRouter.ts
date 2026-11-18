@@ -1,8 +1,9 @@
 import { HttpServerResponse } from 'effect/http'
-import { Array, Effect, flow, Option, pipe, Record, Redacted } from 'effect'
+import { Array, Effect, Filter, flow, Option, pipe, Record, Redacted } from 'effect'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import type * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
+import * as TE from 'fp-ts/lib/TaskEither.js'
 import { Clubs } from '../../../Domain/Clubs/index.ts'
 import { ZenodoRecords } from '../../../ExternalInteractions/index.ts'
 import { withEnv } from '../../../Fpts.ts'
@@ -14,6 +15,9 @@ import {
 } from '../../../Domain/PreprintReviews/index.ts'
 import * as Prereviewers from '../../../Domain/Prereviewers/index.ts'
 import { Temporal } from '../../../types/index.ts'
+import type { Name } from '../../../types/Name.ts'
+import type { OrcidId } from '../../../types/OrcidId.ts'
+import { isPseudonym } from '../../../types/Pseudonym.ts'
 import { EffectToFpts, FptsToEffect } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
@@ -69,21 +73,24 @@ export const DataRouter = pipe(
                   ),
                   env.runtime,
                 )
-            : withEnv(() => ZenodoRecords.getPrereviewsForSciety, {
-                fetch: env.fetch,
-                getClubByName: EffectToFpts.toTaskK(
-                  flow(
-                    getClubByName,
-                    Effect.map(Option.some),
-                    Effect.catchTag('ClubNotFound', () => Effect.succeedNone),
+            : flow(
+                withEnv(() => ZenodoRecords.getPrereviewsForSciety, {
+                  fetch: env.fetch,
+                  getClubByName: EffectToFpts.toTaskK(
+                    flow(
+                      getClubByName,
+                      Effect.map(Option.some),
+                      Effect.catchTag('ClubNotFound', () => Effect.succeedNone),
+                    ),
+                    env.runtime,
                   ),
-                  env.runtime,
-                ),
-                runtime: env.runtime,
-                zenodoApiKey: Redacted.value(env.zenodoApiConfig.key),
-                zenodoUrl: env.zenodoApiConfig.origin,
-                ...env.logger,
-              }),
+                  runtime: env.runtime,
+                  zenodoApiKey: Redacted.value(env.zenodoApiConfig.key),
+                  zenodoUrl: env.zenodoApiConfig.origin,
+                  ...env.logger,
+                }),
+                TE.map(Array.map(prereview => ({ ...prereview, authors: toReviewsDataAuthors(prereview.authors) }))),
+              ),
           getPrereviewsForSciety: env.featureFlags.useEventsForPreprintReviews
             ? () =>
                 EffectToFpts.toTaskEither(
@@ -163,7 +170,7 @@ const toReviewsDataPrereview = (prereview: Prereview): ReviewsDataPrereview => (
   preprint: prereview.preprint.id,
   createdAt: prereview.published,
   doi: prereview.doi,
-  authors: prereview.authors.named,
+  authors: toReviewsDataAuthors(prereview.authors.named),
   language: prereview.language,
   type: prereview.structured ? 'structured' : 'full',
   club: prereview.club?.id,
@@ -189,3 +196,22 @@ const toScietyListPrereview = (prereview: PublishedPreprintReviewForSciety): Sci
     }),
   ),
 })
+
+const toReviewsDataAuthors = (
+  authors: ReadonlyArray<{ name: Name; orcid?: OrcidId }>,
+): ReviewsDataPrereview['authors'] => Array.filterMap(authors, Filter.fromPredicateOption(toReviewsDataAuthor))
+
+const toReviewsDataAuthor = (author: {
+  name: Name
+  orcid?: OrcidId
+}): Option.Option<ReviewsDataPrereview['authors'][number]> => {
+  if (author.orcid !== undefined) {
+    return Option.some({ orcid: author.orcid })
+  }
+
+  if (isPseudonym(author.name)) {
+    return Option.some({ pseudonym: author.name })
+  }
+
+  return Option.none()
+}
