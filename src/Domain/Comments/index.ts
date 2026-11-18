@@ -29,7 +29,7 @@ export * from './Decide.ts'
 export * from './Errors.ts'
 export * from './Events.ts'
 export * from './Evolve.ts'
-export type { CommentsAreUnavailable, PublishedCommentWithAuthor } from './GetPublishedCommentsForAPrereview/index.ts'
+export { CommentsAreUnavailable, type PublishedCommentWithAuthor } from './GetPublishedCommentsForAPrereview/index.ts'
 export * from './ExpectedCommand.ts'
 export * from './State.ts'
 
