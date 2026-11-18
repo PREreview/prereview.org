@@ -1,11 +1,14 @@
 import cld from 'cld'
-import { Array, Effect, Option, Record } from 'effect'
+import { Array, Effect, flow, Option, Record } from 'effect'
 import iso6391, { type LanguageCode } from 'iso-639-1'
 import { type Html, PlainText } from '../../html.ts'
 import { UnableToDetectLanguage } from './Errors.ts'
 
-export const detectLanguage = Effect.fn('LanguageDetection.detectLanguage')(
-  function* (text: Html | PlainText | string, hint?: LanguageCode): Effect.fn.Return<Option.Option<LanguageCode>> {
+export const detectLanguage = flow(
+  Effect.fn('LanguageDetection.detectLanguage')(function* (
+    text: Html | PlainText | string,
+    hint?: LanguageCode,
+  ): Effect.fn.Return<Option.Option<LanguageCode>> {
     const languageHint = hint ? Option.getOrUndefined(iso6393ToHint(hint)) : undefined
 
     const result = yield* Effect.option(
@@ -23,13 +26,16 @@ export const detectLanguage = Effect.fn('LanguageDetection.detectLanguage')(
     return Option.andThen(result, result =>
       Array.findFirst(result.languages, detected => Option.liftPredicate(detected.code, iso6391.validate)),
     )
-  },
+  }),
   Effect.andThen(Option.match({ onSome: Effect.succeed, onNone: () => new UnableToDetectLanguage({}) })),
 )
 
 export function detectLanguageFrom(...languages: ReadonlyArray<LanguageCode>) {
-  return Effect.fn('LanguageDetection.detectLanguageFrom')(
-    function* (text: Html | PlainText | string, hint?: LanguageCode): Effect.fn.Return<Option.Option<LanguageCode>> {
+  return flow(
+    Effect.fn('LanguageDetection.detectLanguageFrom')(function* (
+      text: Html | PlainText | string,
+      hint?: LanguageCode,
+    ): Effect.fn.Return<Option.Option<LanguageCode>> {
       const languageHint = hint ? Option.getOrUndefined(iso6393ToHint(hint)) : undefined
 
       const result = yield* Effect.option(
@@ -59,7 +65,7 @@ export function detectLanguageFrom(...languages: ReadonlyArray<LanguageCode>) {
       }
 
       return detectedLanguage
-    },
+    }),
     Effect.andThen(Option.match({ onSome: Effect.succeed, onNone: () => new UnableToDetectLanguage({}) })),
   )
 }
