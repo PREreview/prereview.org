@@ -324,16 +324,14 @@ const routerWithoutHyperTs = pipe(
         ({ id }) =>
           (env: Env) =>
             reviewPage({ id, locale: env.locale })({
-              getComments: env.featureFlags.useEventsForPreprintReviews
-                ? EffectToFpts.toTaskEitherK(
-                    flow(
-                      ({ id }: { id: number }) => Comments.getPublishedCommentsForAPrereview(id),
-                      Effect.map(Array.map(toReviewPageComment)),
-                      Effect.catchTag('CommentsAreUnavailable', () => Effect.fail('unavailable' as const)),
-                    ),
-                    env.runtime,
-                  )
-                : EffectToFpts.toTaskEitherK(env.commentsForReview.get, env.runtime),
+              getComments: EffectToFpts.toTaskEitherK(
+                flow(
+                  ({ id }: { id: number }) => Comments.getPublishedCommentsForAPrereview(id),
+                  Effect.map(Array.map(toReviewPageComment)),
+                  Effect.catchTag('CommentsAreUnavailable', () => Effect.fail('unavailable' as const)),
+                ),
+                env.runtime,
+              ),
               getPrereview: EffectToFpts.toTaskEitherK(
                 flow(
                   PreprintReviews.getPreprintReview,
