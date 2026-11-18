@@ -19,6 +19,10 @@ import {
   type PrereviewWasRemoved,
 } from './GetPublishedPreprintReview/index.ts'
 import { GetAllPublishedPreprintReviews } from './GetAllPublishedPreprintReviews/index.ts'
+import {
+  GetAllPublishedPreprintReviewsForSciety,
+  type PublishedPreprintReviewForSciety,
+} from './GetAllPublishedPreprintReviewsForSciety/index.ts'
 import { GetPublishedPreprintReviewsForAPreprint } from './GetPublishedPreprintReviewsForAPreprint/index.ts'
 import * as FormStore from './FormStore.ts'
 import * as CheckIfUserCanAddToAClub from './CheckIfUserCanAddToAClub.ts'
@@ -46,6 +50,10 @@ export class PreprintReviews extends Context.Service<
   PreprintReviews,
   {
     getAllPublishedPreprintReviews: Effect.Effect<ReadonlyArray<Prereview>, Errors.PrereviewsAreUnavailable>
+    getAllPublishedPreprintReviewsForSciety: Effect.Effect<
+      ReadonlyArray<PublishedPreprintReviewForSciety>,
+      Errors.PrereviewsAreUnavailable
+    >
     getForPreprint: (id: PreprintId) => Effect.Effect<ReadonlyArray<PreprintPrereview>, Errors.PrereviewsAreUnavailable>
     getPreprintReview: (
       id: number,
@@ -83,6 +91,10 @@ export class PreprintReviews extends Context.Service<
 >()('PreprintReviews') {
   static readonly getAllPublishedPreprintReviews = Effect.suspend(() =>
     PreprintReviews.use(service => service.getAllPublishedPreprintReviews),
+  )
+
+  static readonly getAllPublishedPreprintReviewsForSciety = Effect.suspend(() =>
+    PreprintReviews.use(service => service.getAllPublishedPreprintReviewsForSciety),
   )
 }
 
@@ -158,6 +170,8 @@ export const layer = Layer.effect(
       Array.map(fromPublishedPreprintReview),
     )
 
+    const getAllPublishedPreprintReviewsForSciety = yield* GetAllPublishedPreprintReviewsForSciety
+
     const getPreprintReviewFromZenodo = Effect.fn('PreprintReviews.getPreprintReviewFromZenodo')(function* (
       id: number,
     ) {
@@ -198,6 +212,9 @@ export const layer = Layer.effect(
     return {
       getAllPublishedPreprintReviews: featureFlags.useEventsForPreprintReviews
         ? getAllPublishedPreprintReviews
+        : Effect.die('Not implemented with Zenodo'),
+      getAllPublishedPreprintReviewsForSciety: featureFlags.useEventsForPreprintReviews
+        ? getAllPublishedPreprintReviewsForSciety
         : Effect.die('Not implemented with Zenodo'),
       getForPreprint: featureFlags.useEventsForPreprintReviews ? getForPreprint : getForPreprintFromZenodo,
       getPreprintReview: featureFlags.useEventsForPreprintReviews ? getPreprintReview : getPreprintReviewFromZenodo,
