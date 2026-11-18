@@ -12,7 +12,7 @@ export const SendEmail = Effect.fn('Nodemailer.sendEmail')(
     )
 
     yield* Effect.tryPromise({
-      try: () => transporter.sendMail(encoded),
+      try: signal => transporter.sendMail({ ...encoded, signal }),
       catch: error => new UnableToSendEmail({ cause: error }),
     })
   },
