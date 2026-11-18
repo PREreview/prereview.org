@@ -1702,10 +1702,10 @@ export const userOnboarding = ({
 
 export const email = (): fc.Arbitrary<Nodemailer.Email> =>
   fc.record({
-    from: fc.record({ name: fc.string(), address: emailAddress() }),
-    to: fc.record({ name: fc.string(), address: emailAddress() }),
-    subject: fc.string(),
-    text: fc.string(),
+    from: fc.record({ name: nonEmptyTrimmedString(), address: emailAddress() }),
+    to: fc.record({ name: nonEmptyTrimmedString(), address: emailAddress() }),
+    subject: nonEmptyTrimmedString(),
+    text: nonEmptyTrimmedString(),
     html: html(),
   })
 
