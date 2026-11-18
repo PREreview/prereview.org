@@ -23,6 +23,10 @@ import {
   GetAllPublishedPreprintReviewsForSciety,
   type PublishedPreprintReviewForSciety,
 } from './GetAllPublishedPreprintReviewsForSciety/index.ts'
+import {
+  GetAllPublishedPreprintReviewsForReviewsData,
+  type PublishedPreprintReviewForReviewsData,
+} from './GetAllPublishedPreprintReviewsForReviewsData/index.ts'
 import { GetPublishedPreprintReviewsForAPreprint } from './GetPublishedPreprintReviewsForAPreprint/index.ts'
 import * as FormStore from './FormStore.ts'
 import * as CheckIfUserCanAddToAClub from './CheckIfUserCanAddToAClub.ts'
@@ -50,6 +54,10 @@ export class PreprintReviews extends Context.Service<
   PreprintReviews,
   {
     getAllPublishedPreprintReviews: Effect.Effect<ReadonlyArray<Prereview>, Errors.PrereviewsAreUnavailable>
+    getAllPublishedPreprintReviewsForReviewsData: Effect.Effect<
+      ReadonlyArray<PublishedPreprintReviewForReviewsData>,
+      Errors.PrereviewsAreUnavailable
+    >
     getAllPublishedPreprintReviewsForSciety: Effect.Effect<
       ReadonlyArray<PublishedPreprintReviewForSciety>,
       Errors.PrereviewsAreUnavailable
@@ -91,6 +99,10 @@ export class PreprintReviews extends Context.Service<
 >()('PreprintReviews') {
   static readonly getAllPublishedPreprintReviews = Effect.suspend(() =>
     PreprintReviews.use(service => service.getAllPublishedPreprintReviews),
+  )
+
+  static readonly getAllPublishedPreprintReviewsForReviewsData = Effect.suspend(() =>
+    PreprintReviews.use(service => service.getAllPublishedPreprintReviewsForReviewsData),
   )
 
   static readonly getAllPublishedPreprintReviewsForSciety = Effect.suspend(() =>
@@ -170,6 +182,8 @@ export const layer = Layer.effect(
       Array.map(fromPublishedPreprintReview),
     )
 
+    const getAllPublishedPreprintReviewsForReviewsData = yield* GetAllPublishedPreprintReviewsForReviewsData
+
     const getAllPublishedPreprintReviewsForSciety = yield* GetAllPublishedPreprintReviewsForSciety
 
     const getPreprintReviewFromZenodo = Effect.fn('PreprintReviews.getPreprintReviewFromZenodo')(function* (
@@ -212,6 +226,9 @@ export const layer = Layer.effect(
     return {
       getAllPublishedPreprintReviews: featureFlags.useEventsForPreprintReviews
         ? getAllPublishedPreprintReviews
+        : Effect.die('Not implemented with Zenodo'),
+      getAllPublishedPreprintReviewsForReviewsData: featureFlags.useEventsForPreprintReviews
+        ? getAllPublishedPreprintReviewsForReviewsData
         : Effect.die('Not implemented with Zenodo'),
       getAllPublishedPreprintReviewsForSciety: featureFlags.useEventsForPreprintReviews
         ? getAllPublishedPreprintReviewsForSciety
