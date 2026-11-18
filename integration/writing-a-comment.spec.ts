@@ -1,5 +1,5 @@
 import { URL } from 'node:url'
-import { type Record, RecordC, RecordsC } from 'zenodo-ts'
+import { type Record, RecordC } from 'zenodo-ts'
 import { Doi } from '../src/types/Doi.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
 import {
@@ -77,12 +77,6 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishACommen
       .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
       .get('http://example.com/review.html/content', {
         body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      })
-      .get({
-        name: 'existing-comment',
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-        response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       })
 
     await page.goto('/reviews/1061864', { waitUntil: 'commit' })
@@ -255,12 +249,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
       .get('http://example.com/review.html/content', {
         body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
       })
-      .get({
-        name: 'existing-comment',
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: { query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' } },
-        response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-      })
 
     await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
@@ -355,12 +343,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
       .get('http://example.com/review.html/content', {
         body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
       })
-      .get({
-        name: 'existing-comment',
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-        response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-      })
 
     await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
@@ -445,12 +427,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
       .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
       .get('http://example.com/review.html/content', {
         body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      })
-      .get({
-        name: 'existing-comment',
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-        response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       })
 
     await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
@@ -540,12 +516,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
       .get('http://example.com/review.html/content', {
         body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
       })
-      .get({
-        name: 'existing-comment',
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-        response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-      })
 
     await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
@@ -626,12 +596,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
       .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
       .get('http://example.com/review.html/content', {
         body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      })
-      .get({
-        name: 'existing-comment',
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-        response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       })
 
     await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
@@ -739,12 +703,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
       .get('http://example.com/review.html/content', {
         body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
       })
-      .get({
-        name: 'existing-comment',
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-        response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-      })
 
     await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
@@ -847,12 +805,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
       .get('http://example.com/review.html/content', {
         body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
       })
-      .get({
-        name: 'existing-comment',
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-        response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-      })
 
     await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
@@ -953,12 +905,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAnUnverifiedEmailAddress)(
       .get('http://example.com/review.html/content', {
         body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
       })
-      .get({
-        name: 'existing-comment',
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-        response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-      })
 
     await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
@@ -1058,12 +1004,6 @@ test.extend(canLogIn).extend(areLoggedIn)("aren't told about ORCID when already 
     .get('http://example.com/review.html/content', {
       body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
-    .get({
-      name: 'existing-comment',
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-      response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    })
 
   await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
 
@@ -1133,11 +1073,6 @@ test.extend(canLogIn).extend(areLoggedIn)('have to enter a comment', async ({ ja
     .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
     .get('http://example.com/review.html/content', {
       body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-    })
-    .get({
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-      response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     })
 
   await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
@@ -1215,11 +1150,6 @@ test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ java
     .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
     .get('http://example.com/review.html/content', {
       body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-    })
-    .get({
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-      response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     })
 
   await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
@@ -1306,12 +1236,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
       .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
       .get('http://example.com/review.html/content', {
         body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      })
-      .get({
-        name: 'existing-comment',
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-        response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       })
 
     await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
@@ -1417,12 +1341,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
       .get('http://example.com/review.html/content', {
         body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
       })
-      .get({
-        name: 'existing-comment',
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-        response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-      })
 
     await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
@@ -1511,12 +1429,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
       .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
       .get('http://example.com/review.html/content', {
         body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      })
-      .get({
-        name: 'existing-comment',
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-        response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       })
 
     await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })

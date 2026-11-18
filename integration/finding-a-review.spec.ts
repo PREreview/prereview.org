@@ -1,9 +1,14 @@
-import { Duration } from 'effect'
+import { Temporal } from '@js-temporal/polyfill'
+import { Duration, Option } from 'effect'
 import { URL } from 'node:url'
 import { type Record, RecordC, RecordsC } from 'zenodo-ts'
+import * as Events from '../src/Events.ts'
+import { html } from '../src/html.ts'
 import { Doi } from '../src/types/Doi.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
-import { areLoggedIn, canLogIn, expect, prereviewWasRemoved, test } from './base.ts'
+import { Pseudonym } from '../src/types/Pseudonym.ts'
+import { Uuid } from '../src/types/Uuid.ts'
+import { areLoggedIn, canLogIn, expect, prereviewWasRemoved, seedEvents, test } from './base.ts'
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'can see my own PREreviews',
@@ -169,12 +174,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
       })
       .getOnce('https://zenodo.org/api/files/7ff8c56b-1755-40c7-800d-d64b886ae153/review.html/content', {
         body: '<p>PTP1b has been an attractive target for drug development due to ...</p>',
-      })
-      .getOnce({
-        name: 'comments',
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: { q: 'related.identifier:"10.5281/zenodo.7747129" AND related.relation:"references"' },
-        response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
       })
 
     await page
@@ -363,12 +362,6 @@ test('can find and view a review', async ({ fetch, page }) => {
     .get('http://example.com/review.html/content', {
       body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
-    .getOnce({
-      name: 'comments',
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-      response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    })
 
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201', { waitUntil: 'commit' })
   await page
@@ -468,12 +461,6 @@ test('can find and view a question-based review', async ({ fetch, page }) => {
         </dl>
       `,
     })
-    .getOnce({
-      name: 'comments',
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-      response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    })
 
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201', { waitUntil: 'commit' })
   await page
@@ -486,7 +473,41 @@ test('can find and view a question-based review', async ({ fetch, page }) => {
   )
 })
 
-test('can find and view comments to a review', async ({ fetch, page }) => {
+test.extend(
+  seedEvents(
+    new Events.PrereviewerRegistered({
+      orcidId: OrcidId('0000-0002-1825-0097'),
+      pseudonym: Pseudonym('Orange Panda'),
+      registeredAt: Temporal.Instant.from('2022-07-01T09:00:00Z'),
+    }),
+    new Events.CommentWasStarted({
+      commentId: Uuid('e51a69b7-df03-4b89-b803-2f452767ecf8'),
+      prereviewId: 1061864,
+      authorId: OrcidId('0000-0002-1825-0097'),
+    }),
+    new Events.CommentWasEntered({
+      commentId: Uuid('e51a69b7-df03-4b89-b803-2f452767ecf8'),
+      comment: html`<p>... some comment text ...</p>`,
+    }),
+    new Events.PersonaForCommentWasChosen({
+      commentId: Uuid('e51a69b7-df03-4b89-b803-2f452767ecf8'),
+      persona: 'pseudonym',
+    }),
+    new Events.CompetingInterestsForCommentWereDeclared({
+      commentId: Uuid('e51a69b7-df03-4b89-b803-2f452767ecf8'),
+      competingInterests: Option.none(),
+    }),
+    new Events.CommentWasAssignedADoi({
+      commentId: Uuid('e51a69b7-df03-4b89-b803-2f452767ecf8'),
+      id: 1061866,
+      doi: Doi('10.5281/zenodo.1061866'),
+    }),
+    new Events.CommentWasPublished({
+      commentId: Uuid('e51a69b7-df03-4b89-b803-2f452767ecf8'),
+      publishedAt: Temporal.Instant.from('2022-07-04T09:00:00Z'),
+    }),
+  ),
+)('can find and view comments to a review', async ({ fetch, page }) => {
   const record: Record = {
     conceptdoi: Doi('10.5072/zenodo.1061863'),
     conceptrecid: 1061863,
@@ -552,64 +573,6 @@ test('can find and view comments to a review', async ({ fetch, page }) => {
     .getOnce('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
     .get('http://example.com/review.html/content', {
       body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-    })
-    .getOnce({
-      name: 'comments',
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-      response: {
-        body: RecordsC.encode({
-          hits: {
-            total: 1,
-            hits: [
-              {
-                conceptdoi: Doi('10.5072/zenodo.1061865'),
-                conceptrecid: 1061863,
-                files: [
-                  {
-                    links: {
-                      self: new URL('http://example.com/comment.html/content'),
-                    },
-                    key: 'comment.html',
-                    size: 58,
-                  },
-                ],
-                id: 1061864,
-                links: {
-                  latest: new URL('http://example.com/latest'),
-                  latest_html: new URL('http://example.com/latest_html'),
-                },
-                metadata: {
-                  access_right: 'open',
-                  communities: [{ id: 'prereview-reviews' }],
-                  creators: [{ name: 'PREreviewer' }],
-                  description: 'Description',
-                  doi: Doi('10.5281/zenodo.1061866'),
-                  language: 'eng',
-                  license: { id: 'cc-by-4.0' },
-                  publication_date: new Date('2022-07-04'),
-                  related_identifiers: [
-                    {
-                      scheme: 'doi',
-                      identifier: Doi('10.5072/zenodo.1061864'),
-                      relation: 'references',
-                      resource_type: 'publication-peerreview',
-                    },
-                  ],
-                  resource_type: {
-                    type: 'publication',
-                    subtype: 'other',
-                  },
-                  title: 'Title',
-                },
-              },
-            ],
-          },
-        }),
-      },
-    })
-    .get('http://example.com/comment.html/content', {
-      body: '<h1>Some title in the comment</h1><p>... some comment text ...</p>',
     })
 
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201', { waitUntil: 'commit' })
@@ -689,12 +652,6 @@ test("can find and view a review that's part of a Club", async ({ fetch, page })
     .get('http://example.com/review.html/content', {
       body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
-    .getOnce({
-      name: 'comments',
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-      response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    })
 
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201', { waitUntil: 'commit' })
   await page
@@ -763,12 +720,6 @@ test('can view a recent review', async ({ fetch, page }) => {
     .getOnce('http://zenodo.test/api/records/7747129', { body: RecordC.encode(record) })
     .getOnce('http://example.com/review.html/content', {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-    })
-    .getOnce({
-      name: 'comments',
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-      response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     })
 
   await page.goto('/', { waitUntil: 'commit' })
@@ -842,12 +793,6 @@ test("can view a recent review that's part of a Club", async ({ fetch, page }) =
     .getOnce('http://example.com/review.html/content', {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
-    .getOnce({
-      name: 'comments',
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-      response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    })
 
   await page.goto('/', { waitUntil: 'commit' })
   await page
@@ -920,12 +865,6 @@ test('can view an older review', async ({ fetch, javaScriptEnabled, page }) => {
     .getOnce('http://zenodo.test/api/records/7747129', { body: RecordC.encode(record) })
     .getOnce('http://example.com/review.html/content', {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-    })
-    .getOnce({
-      name: 'comments',
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-      response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     })
 
   await page.goto('/', { waitUntil: 'commit' })
@@ -1015,12 +954,6 @@ test("can view an older review that's part of a Club", async ({ fetch, page }) =
     .getOnce('http://zenodo.test/api/records/7820084', { body: RecordC.encode(record) })
     .getOnce('http://example.com/review.html/content', {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-    })
-    .getOnce({
-      name: 'comments',
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-      response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     })
 
   await page.goto('/', { waitUntil: 'commit' })

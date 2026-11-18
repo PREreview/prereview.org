@@ -55,12 +55,6 @@ test('can find and view a Club', async ({ fetch, page, port }) => {
     .getOnce('http://example.com/review.html/content', {
       body: '<p>... that this preprint seeks to answer is whether or not Nirmatrelvir plus ritonavir, used ...</p>',
     })
-    .getOnce({
-      name: 'responses',
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: { q: 'related.identifier:"10.5281/zenodo.7820084" AND related.relation:"references"' },
-      response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    })
 
   await page.goto('/reviews/7820084', { waitUntil: 'commit' })
 

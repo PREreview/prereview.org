@@ -67,12 +67,6 @@ test.extend(
     .getOnce('http://example.com/review.html/content', {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
-    .getOnce({
-      name: 'responses',
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-      response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    })
 
   await page.goto('/reviews/7747129', { waitUntil: 'commit' })
 
@@ -317,12 +311,6 @@ test.extend(
     })
     .getOnce('http://example.com/review.html/content', {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-    })
-    .getOnce({
-      name: 'responses',
-      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: { q: 'related.identifier:"10.5072/zenodo.1061864" AND related.relation:"references"' },
-      response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     })
 
   await page.goto('/reviews/7747129', { waitUntil: 'commit' })
