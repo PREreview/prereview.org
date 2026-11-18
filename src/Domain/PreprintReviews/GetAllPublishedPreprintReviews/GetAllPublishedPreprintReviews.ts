@@ -1,4 +1,4 @@
-import { Array, Effect, Option, pipe, Predicate } from 'effect'
+import { Array, Effect, Option, pipe, Predicate, Schedule } from 'effect'
 import type * as EventDispatcher from '../../../EventDispatcher.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import * as Queries from '../../../Queries.ts'
@@ -29,7 +29,11 @@ export const GetAllPublishedPreprintReviews = (
         Effect.forEach(
           id =>
             pipe(
-              getPublishedPreprintReview(id),
+              Effect.retry(getPublishedPreprintReview(id), {
+                while: error => Predicate.isTagged(error, 'PrereviewIsUnavailable') && !isNotAPreprint(error),
+                schedule: Schedule.exponential('1 second'),
+                times: 3,
+              }),
               Effect.map(Option.some),
               Effect.catchIf(
                 error => Predicate.isTagged(error, 'PrereviewIsUnavailable') && isNotAPreprint(error),
