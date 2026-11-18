@@ -52,6 +52,14 @@ export class CommentWasPublished extends Schema.TaggedClass<CommentWasPublished>
   publishedAt: Schema.optionalKey(Temporal.InstantSchema),
 }) {}
 
+export class PublicationDateForCommentWasImported extends Schema.TaggedClass<PublicationDateForCommentWasImported>()(
+  'PublicationDateForCommentWasImported',
+  {
+    commentId: Uuid.UuidSchema,
+    publishedAt: Temporal.InstantSchema,
+  },
+) {}
+
 export type CommentEvent = typeof CommentEvent.Type
 
 export const CommentEvent = Schema.Union([
@@ -64,6 +72,7 @@ export const CommentEvent = Schema.Union([
   PublicationOfCommentWasRequested,
   CommentWasAssignedADoi,
   CommentWasPublished,
+  PublicationDateForCommentWasImported,
 ])
 
 export const CommentEventTypes = Array.map(CommentEvent.members, member => member.identifier as CommentEvent['_tag'])

@@ -346,6 +346,21 @@ describe('when being published', () => {
 })
 
 describe('when published', () => {
+  test('is still published once its publication date is imported', () =>
+    given(
+      new _.CommentWasStarted({ commentId, prereviewId: 123, authorId: OrcidId('0000-0002-1825-0097') }),
+      new _.CommentWasEntered({ commentId, comment: html`<p>Some comment.</p>` }),
+      new _.PersonaForCommentWasChosen({ commentId, persona: 'public' }),
+      new _.CompetingInterestsForCommentWereDeclared({ commentId, competingInterests: Option.none() }),
+      new _.CodeOfConductForCommentWasAgreed({ commentId }),
+      new _.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId }),
+      new _.CommentWasAssignedADoi({ commentId, id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new _.CommentWasPublished({ commentId }),
+      new _.PublicationDateForCommentWasImported({ commentId, publishedAt }),
+    )
+      .when(new _.MarkCommentAsPublished({ commentId, publishedAt }))
+      .thenError(new _.CommentWasAlreadyPublished()))
+
   test('cannot be started again', () =>
     given(
       new _.CommentWasStarted({ commentId, prereviewId: 123, authorId: OrcidId('0000-0002-1825-0097') }),
