@@ -34,6 +34,7 @@ const PostgresClientLayer = Layer.mergeAll(
     url: Config.Redacted('POSTGRES_URL'),
     acquireTimeout: Config.succeed('5 seconds'),
     keepAlive: Config.succeed('30 seconds'),
+    minConnections: Config.succeed(5),
   }),
   Layer.effectDiscard(Effect.logDebug('Postgres Database connected')),
   PostgresConnectionTiming.layer,
