@@ -105,7 +105,8 @@ const ensureIsAPreprint = (
   (id._tag === 'AfricarxivUbuntunetPreprintId' && types.resourceTypeGeneral?.toLowerCase() === 'text') ||
   (id._tag === 'ArxivPreprintId' && types.resourceTypeGeneral?.toLowerCase() === 'text') ||
   (id._tag === 'ArcadiaSciencePreprintId' && types.resourceTypeGeneral?.toLowerCase() === 'other') ||
-  (id._tag === 'RadialPreprintId' && types.resourceTypeGeneral?.toLowerCase() === 'other')
+  (id._tag === 'RadialPreprintId' && types.resourceTypeGeneral?.toLowerCase() === 'other') ||
+  (id._tag === 'ZenodoPreprintId' && types.resourceTypeGeneral?.toLowerCase() === 'conferencepaper')
     ? Result.void
     : Result.fail(new Preprints.NotAPreprint({ cause: types }))
 

@@ -1,0 +1,163 @@
+{
+  "data": {
+    "id": "10.5281/zenodo.17630987",
+    "type": "dois",
+    "attributes": {
+      "doi": "10.5281/zenodo.17630987",
+      "prefix": "10.5281",
+      "suffix": "zenodo.17630987",
+      "identifiers": [{ "identifier": "oai:zenodo.org:17630987", "identifierType": "oai" }],
+      "alternateIdentifiers": [{ "alternateIdentifierType": "oai", "alternateIdentifier": "oai:zenodo.org:17630987" }],
+      "creators": [
+        {
+          "name": "Silveira, Lúcia da",
+          "nameType": "Personal",
+          "givenName": "Lúcia da",
+          "familyName": "Silveira",
+          "affiliation": ["Universidade Federal de Santa Catarina"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0003-1118-2121", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Caregnato, Sônia Elisa",
+          "nameType": "Personal",
+          "givenName": "Sônia Elisa",
+          "familyName": "Caregnato",
+          "affiliation": ["Universidade Federal do Rio Grande do Sul"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0002-5676-2763", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Melero, Remedios",
+          "nameType": "Personal",
+          "givenName": "Remedios",
+          "familyName": "Melero",
+          "affiliation": ["Spanish National Research Council (CSIC)"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0002-1813-8783", "nameIdentifierScheme": "ORCID" }]
+        },
+        {
+          "name": "Abadal, Ernest",
+          "nameType": "Personal",
+          "givenName": "Ernest",
+          "familyName": "Abadal",
+          "affiliation": ["Universitat de Barcelona"],
+          "nameIdentifiers": [{ "nameIdentifier": "0000-0002-9151-6437", "nameIdentifierScheme": "ORCID" }]
+        }
+      ],
+      "titles": [
+        {
+          "title": "Elementos de evaluación de políticas editoriales alineadas con la ciencia abierta: preprints, datos de investigación y evaluación abierta"
+        }
+      ],
+      "publisher": "2do Congreso Iberoamericano de Ciencia Abierta",
+      "container": {},
+      "publicationYear": 2025,
+      "subjects": [
+        { "subject": "Evaluación abierta" },
+        { "subject": "preprints" },
+        { "subject": "datos de investigación" },
+        { "subject": "políticas editoriales" },
+        { "subject": "monitoreo de revistas" }
+      ],
+      "contributors": [],
+      "dates": [
+        { "date": "2025-10-30", "dateType": "Issued" },
+        { "date": "2025-11-30", "dateType": "Submitted" }
+      ],
+      "language": "es",
+      "types": {
+        "ris": "CPAPER",
+        "bibtex": "article",
+        "citeproc": "",
+        "schemaOrg": "Article",
+        "resourceType": "",
+        "resourceTypeGeneral": "ConferencePaper"
+      },
+      "relatedIdentifiers": [
+        {
+          "relationType": "Reviews",
+          "relatedIdentifier": "https://prereview.org/preprints/doi-10.5281-zenodo.17626167",
+          "resourceTypeGeneral": "PeerReview",
+          "relatedIdentifierType": "URL"
+        },
+        {
+          "relationType": "IsSupplementTo",
+          "relatedIdentifier": "10.5281/zenodo.17752525",
+          "resourceTypeGeneral": "Text",
+          "relatedIdentifierType": "DOI"
+        },
+        {
+          "relationType": "IsOriginalFormOf",
+          "relatedIdentifier": "10183/265494",
+          "resourceTypeGeneral": "Dissertation",
+          "relatedIdentifierType": "Handle"
+        },
+        {
+          "relationType": "IsVersionOf",
+          "relatedIdentifier": "10.5281/zenodo.17626166",
+          "relatedIdentifierType": "DOI"
+        }
+      ],
+      "relatedItems": [],
+      "sizes": [],
+      "formats": [],
+      "version": "final-version",
+      "rightsList": [
+        {
+          "rights": "Creative Commons Attribution Non Commercial No Derivatives 4.0 International",
+          "rightsUri": "https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc-by-nc-nd-4.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "descriptions": [
+        {
+          "description": "[319]\n\nLa ciencia abierta se ha consolidado como un movimiento clave para transformar la comunicación científica mediante transparencia, colaboración y accesibilidad. Entre sus dimensiones centrales destacan la evaluación por pares abierta (OPR), los preprints y los datos de investigación, que fortalecen la credibilidad de las revistas, pero exigen políticas editoriales claras, éticas y sostenibles. Este estudio tuvo como objetivo identificar y sistematizar elementos de evaluación que orienten la formulación de políticas editoriales alineadas con la ciencia abierta y la creación de sistemas de monitoreo de su implementación. Se realizó una scoping review siguiendo las directrices del JBI, con búsquedas en ocho bases de datos y un portafolio final de 109 artículos. A partir de la literatura, se formularon 43 elementos de evaluación distribuidos en tres dimensiones: OPR, preprints y datos de investigación. Estos elementos ofrecen un marco analítico para comparar políticas editoriales y monitorear la adopción de prácticas de ciencia abierta en distintos contextos disciplinares e institucionales.\n\nOpen science has established itself as a key movement for transforming scientific communication through transparency, collaboration, and accessibility. Among its central dimensions are open peer review (OPR), preprints, and research data, which strengthen the credibility of journals but require clear, ethical, and sustainable editorial policies. This study aimed to identify and systematize evaluation elements to guide the formulation of editorial policies aligned with open science and the creation of systems to monitor their implementation. A scoping review was conducted following JBI guidelines, with searches in eight databases and a final portfolio of 109 articles. Based on the literature, 43 evaluation elements were formulated, distributed across three dimensions: OPR, preprints, and research data. These elements provide an analytical framework for comparing editorial policies and monitoring the adoption of open science practices in different disciplinary and institutional contexts.\n\n ",
+          "descriptionType": "Abstract"
+        }
+      ],
+      "geoLocations": [],
+      "fundingReferences": [
+        {
+          "funderName": "Universidade Federal de Santa Catarina",
+          "funderIdentifier": "10.13039/501100007082",
+          "funderIdentifierType": "Crossref Funder ID"
+        }
+      ],
+      "xml": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00L21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuNTI4MS9aRU5PRE8uMTc2MzA5ODc8L2lkZW50aWZpZXI+CiAgPGNyZWF0b3JzPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPlNpbHZlaXJhLCBMw7pjaWEgZGE8L2NyZWF0b3JOYW1lPgogICAgICA8Z2l2ZW5OYW1lPkzDumNpYSBkYTwvZ2l2ZW5OYW1lPgogICAgICA8ZmFtaWx5TmFtZT5TaWx2ZWlyYTwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSIiPjAwMDAtMDAwMy0xMTE4LTIxMjE8L25hbWVJZGVudGlmaWVyPgogICAgICA8YWZmaWxpYXRpb24gYWZmaWxpYXRpb25JZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDQxYWtxODg3IiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiI+VW5pdmVyc2lkYWRlIEZlZGVyYWwgZGUgU2FudGEgQ2F0YXJpbmE8L2FmZmlsaWF0aW9uPgogICAgPC9jcmVhdG9yPgogICAgPGNyZWF0b3I+CiAgICAgIDxjcmVhdG9yTmFtZSBuYW1lVHlwZT0iUGVyc29uYWwiPkNhcmVnbmF0bywgU8O0bmlhIEVsaXNhPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5Tw7RuaWEgRWxpc2E8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+Q2FyZWduYXRvPC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9IiI+MDAwMC0wMDAyLTU2NzYtMjc2MzwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbiBhZmZpbGlhdGlvbklkZW50aWZpZXI9Imh0dHBzOi8vcm9yLm9yZy8wNDF5azJkNjQiIGFmZmlsaWF0aW9uSWRlbnRpZmllclNjaGVtZT0iUk9SIj5Vbml2ZXJzaWRhZGUgRmVkZXJhbCBkbyBSaW8gR3JhbmRlIGRvIFN1bDwvYWZmaWxpYXRpb24+CiAgICA8L2NyZWF0b3I+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lIG5hbWVUeXBlPSJQZXJzb25hbCI+TWVsZXJvLCBSZW1lZGlvczwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+UmVtZWRpb3M8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+TWVsZXJvPC9mYW1pbHlOYW1lPgogICAgICA8bmFtZUlkZW50aWZpZXIgbmFtZUlkZW50aWZpZXJTY2hlbWU9Ik9SQ0lEIiBzY2hlbWVVUkk9IiI+MDAwMC0wMDAyLTE4MTMtODc4MzwvbmFtZUlkZW50aWZpZXI+CiAgICAgIDxhZmZpbGlhdGlvbj5TcGFuaXNoIE5hdGlvbmFsIFJlc2VhcmNoIENvdW5jaWwgKENTSUMpPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWUgbmFtZVR5cGU9IlBlcnNvbmFsIj5BYmFkYWwsIEVybmVzdDwvY3JlYXRvck5hbWU+CiAgICAgIDxnaXZlbk5hbWU+RXJuZXN0PC9naXZlbk5hbWU+CiAgICAgIDxmYW1pbHlOYW1lPkFiYWRhbDwvZmFtaWx5TmFtZT4KICAgICAgPG5hbWVJZGVudGlmaWVyIG5hbWVJZGVudGlmaWVyU2NoZW1lPSJPUkNJRCIgc2NoZW1lVVJJPSIiPjAwMDAtMDAwMi05MTUxLTY0Mzc8L25hbWVJZGVudGlmaWVyPgogICAgICA8YWZmaWxpYXRpb24gYWZmaWxpYXRpb25JZGVudGlmaWVyPSJodHRwczovL3Jvci5vcmcvMDIxMDE4czU3IiBhZmZpbGlhdGlvbklkZW50aWZpZXJTY2hlbWU9IlJPUiI+VW5pdmVyc2l0YXQgZGUgQmFyY2Vsb25hPC9hZmZpbGlhdGlvbj4KICAgIDwvY3JlYXRvcj4KICA8L2NyZWF0b3JzPgogIDx0aXRsZXM+CiAgICA8dGl0bGU+RWxlbWVudG9zIGRlIGV2YWx1YWNpw7NuIGRlIHBvbMOtdGljYXMgZWRpdG9yaWFsZXMgYWxpbmVhZGFzIGNvbiBsYSBjaWVuY2lhIGFiaWVydGE6IHByZXByaW50cywgZGF0b3MgZGUgaW52ZXN0aWdhY2nDs24geSBldmFsdWFjacOzbiBhYmllcnRhPC90aXRsZT4KICA8L3RpdGxlcz4KICA8cHVibGlzaGVyPjJkbyBDb25ncmVzbyBJYmVyb2FtZXJpY2FubyBkZSBDaWVuY2lhIEFiaWVydGE8L3B1Ymxpc2hlcj4KICA8cHVibGljYXRpb25ZZWFyPjIwMjU8L3B1YmxpY2F0aW9uWWVhcj4KICA8cmVzb3VyY2VUeXBlIHJlc291cmNlVHlwZUdlbmVyYWw9IkNvbmZlcmVuY2VQYXBlciIvPgogIDxzdWJqZWN0cz4KICAgIDxzdWJqZWN0PkV2YWx1YWNpw7NuIGFiaWVydGE8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5wcmVwcmludHM8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5kYXRvcyBkZSBpbnZlc3RpZ2FjacOzbjwvc3ViamVjdD4KICAgIDxzdWJqZWN0PnBvbMOtdGljYXMgZWRpdG9yaWFsZXM8L3N1YmplY3Q+CiAgICA8c3ViamVjdD5tb25pdG9yZW8gZGUgcmV2aXN0YXM8L3N1YmplY3Q+CiAgPC9zdWJqZWN0cz4KICA8ZGF0ZXM+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iSXNzdWVkIj4yMDI1LTEwLTMwPC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IlN1Ym1pdHRlZCI+MjAyNS0xMS0zMDwvZGF0ZT4KICA8L2RhdGVzPgogIDxsYW5ndWFnZT5lczwvbGFuZ3VhZ2U+CiAgPGFsdGVybmF0ZUlkZW50aWZpZXJzPgogICAgPGFsdGVybmF0ZUlkZW50aWZpZXIgYWx0ZXJuYXRlSWRlbnRpZmllclR5cGU9Im9haSI+b2FpOnplbm9kby5vcmc6MTc2MzA5ODc8L2FsdGVybmF0ZUlkZW50aWZpZXI+CiAgPC9hbHRlcm5hdGVJZGVudGlmaWVycz4KICA8cmVsYXRlZElkZW50aWZpZXJzPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iVVJMIiByZWxhdGlvblR5cGU9IlJldmlld3MiIHJlc291cmNlVHlwZUdlbmVyYWw9IlBlZXJSZXZpZXciPmh0dHBzOi8vcHJlcmV2aWV3Lm9yZy9wcmVwcmludHMvZG9pLTEwLjUyODEtemVub2RvLjE3NjI2MTY3PC9yZWxhdGVkSWRlbnRpZmllcj4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSIgcmVsYXRpb25UeXBlPSJJc1N1cHBsZW1lbnRUbyIgcmVzb3VyY2VUeXBlR2VuZXJhbD0iVGV4dCI+MTAuNTI4MS96ZW5vZG8uMTc3NTI1MjU8L3JlbGF0ZWRJZGVudGlmaWVyPgogICAgPHJlbGF0ZWRJZGVudGlmaWVyIHJlbGF0ZWRJZGVudGlmaWVyVHlwZT0iSGFuZGxlIiByZWxhdGlvblR5cGU9IklzT3JpZ2luYWxGb3JtT2YiIHJlc291cmNlVHlwZUdlbmVyYWw9IkRpc3NlcnRhdGlvbiI+MTAxODMvMjY1NDk0PC9yZWxhdGVkSWRlbnRpZmllcj4KICAgIDxyZWxhdGVkSWRlbnRpZmllciByZWxhdGVkSWRlbnRpZmllclR5cGU9IkRPSSIgcmVsYXRpb25UeXBlPSJJc1ZlcnNpb25PZiI+MTAuNTI4MS96ZW5vZG8uMTc2MjYxNjY8L3JlbGF0ZWRJZGVudGlmaWVyPgogIDwvcmVsYXRlZElkZW50aWZpZXJzPgogIDxzaXplcy8+CiAgPGZvcm1hdHMvPgogIDx2ZXJzaW9uPmZpbmFsLXZlcnNpb248L3ZlcnNpb24+CiAgPHJpZ2h0c0xpc3Q+CiAgICA8cmlnaHRzIHJpZ2h0c1VSST0iaHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLW5kLzQuMC9sZWdhbGNvZGUiIHJpZ2h0c0lkZW50aWZpZXI9ImNjLWJ5LW5jLW5kLTQuMCIgcmlnaHRzSWRlbnRpZmllclNjaGVtZT0iU1BEWCIgc2NoZW1lVVJJPSJodHRwczovL3NwZHgub3JnL2xpY2Vuc2VzLyI+Q3JlYXRpdmUgQ29tbW9ucyBBdHRyaWJ1dGlvbiBOb24gQ29tbWVyY2lhbCBObyBEZXJpdmF0aXZlcyA0LjAgSW50ZXJuYXRpb25hbDwvcmlnaHRzPgogIDwvcmlnaHRzTGlzdD4KICA8ZGVzY3JpcHRpb25zPgogICAgPGRlc2NyaXB0aW9uIGRlc2NyaXB0aW9uVHlwZT0iQWJzdHJhY3QiPlszMTldCgpMYSBjaWVuY2lhIGFiaWVydGEgc2UgaGEgY29uc29saWRhZG8gY29tbyB1biBtb3ZpbWllbnRvIGNsYXZlIHBhcmEgdHJhbnNmb3JtYXIgbGEgY29tdW5pY2FjacOzbiBjaWVudMOtZmljYSBtZWRpYW50ZSB0cmFuc3BhcmVuY2lhLCBjb2xhYm9yYWNpw7NuIHkgYWNjZXNpYmlsaWRhZC4gRW50cmUgc3VzIGRpbWVuc2lvbmVzIGNlbnRyYWxlcyBkZXN0YWNhbiBsYSBldmFsdWFjacOzbiBwb3IgcGFyZXMgYWJpZXJ0YSAoT1BSKSwgbG9zIHByZXByaW50cyB5IGxvcyBkYXRvcyBkZSBpbnZlc3RpZ2FjacOzbiwgcXVlIGZvcnRhbGVjZW4gbGEgY3JlZGliaWxpZGFkIGRlIGxhcyByZXZpc3RhcywgcGVybyBleGlnZW4gcG9sw610aWNhcyBlZGl0b3JpYWxlcyBjbGFyYXMsIMOpdGljYXMgeSBzb3N0ZW5pYmxlcy4gRXN0ZSBlc3R1ZGlvIHR1dm8gY29tbyBvYmpldGl2byBpZGVudGlmaWNhciB5IHNpc3RlbWF0aXphciBlbGVtZW50b3MgZGUgZXZhbHVhY2nDs24gcXVlIG9yaWVudGVuIGxhIGZvcm11bGFjacOzbiBkZSBwb2zDrXRpY2FzIGVkaXRvcmlhbGVzIGFsaW5lYWRhcyBjb24gbGEgY2llbmNpYSBhYmllcnRhIHkgbGEgY3JlYWNpw7NuIGRlIHNpc3RlbWFzIGRlIG1vbml0b3JlbyBkZSBzdSBpbXBsZW1lbnRhY2nDs24uIFNlIHJlYWxpesOzIHVuYSBzY29waW5nIHJldmlldyBzaWd1aWVuZG8gbGFzIGRpcmVjdHJpY2VzIGRlbCBKQkksIGNvbiBiw7pzcXVlZGFzIGVuIG9jaG8gYmFzZXMgZGUgZGF0b3MgeSB1biBwb3J0YWZvbGlvIGZpbmFsIGRlIDEwOSBhcnTDrWN1bG9zLiBBIHBhcnRpciBkZSBsYSBsaXRlcmF0dXJhLCBzZSBmb3JtdWxhcm9uIDQzIGVsZW1lbnRvcyBkZSBldmFsdWFjacOzbiBkaXN0cmlidWlkb3MgZW4gdHJlcyBkaW1lbnNpb25lczogT1BSLCBwcmVwcmludHMgeSBkYXRvcyBkZSBpbnZlc3RpZ2FjacOzbi4gRXN0b3MgZWxlbWVudG9zIG9mcmVjZW4gdW4gbWFyY28gYW5hbMOtdGljbyBwYXJhIGNvbXBhcmFyIHBvbMOtdGljYXMgZWRpdG9yaWFsZXMgeSBtb25pdG9yZWFyIGxhIGFkb3BjacOzbiBkZSBwcsOhY3RpY2FzIGRlIGNpZW5jaWEgYWJpZXJ0YSBlbiBkaXN0aW50b3MgY29udGV4dG9zIGRpc2NpcGxpbmFyZXMgZSBpbnN0aXR1Y2lvbmFsZXMuCgpPcGVuIHNjaWVuY2UgaGFzIGVzdGFibGlzaGVkIGl0c2VsZiBhcyBhIGtleSBtb3ZlbWVudCBmb3IgdHJhbnNmb3JtaW5nIHNjaWVudGlmaWMgY29tbXVuaWNhdGlvbiB0aHJvdWdoIHRyYW5zcGFyZW5jeSwgY29sbGFib3JhdGlvbiwgYW5kIGFjY2Vzc2liaWxpdHkuIEFtb25nIGl0cyBjZW50cmFsIGRpbWVuc2lvbnMgYXJlIG9wZW4gcGVlciByZXZpZXcgKE9QUiksIHByZXByaW50cywgYW5kIHJlc2VhcmNoIGRhdGEsIHdoaWNoIHN0cmVuZ3RoZW4gdGhlIGNyZWRpYmlsaXR5IG9mIGpvdXJuYWxzIGJ1dCByZXF1aXJlIGNsZWFyLCBldGhpY2FsLCBhbmQgc3VzdGFpbmFibGUgZWRpdG9yaWFsIHBvbGljaWVzLiBUaGlzIHN0dWR5IGFpbWVkIHRvIGlkZW50aWZ5IGFuZCBzeXN0ZW1hdGl6ZSBldmFsdWF0aW9uIGVsZW1lbnRzIHRvIGd1aWRlIHRoZSBmb3JtdWxhdGlvbiBvZiBlZGl0b3JpYWwgcG9saWNpZXMgYWxpZ25lZCB3aXRoIG9wZW4gc2NpZW5jZSBhbmQgdGhlIGNyZWF0aW9uIG9mIHN5c3RlbXMgdG8gbW9uaXRvciB0aGVpciBpbXBsZW1lbnRhdGlvbi4gQSBzY29waW5nIHJldmlldyB3YXMgY29uZHVjdGVkIGZvbGxvd2luZyBKQkkgZ3VpZGVsaW5lcywgd2l0aCBzZWFyY2hlcyBpbiBlaWdodCBkYXRhYmFzZXMgYW5kIGEgZmluYWwgcG9ydGZvbGlvIG9mIDEwOSBhcnRpY2xlcy4gQmFzZWQgb24gdGhlIGxpdGVyYXR1cmUsIDQzIGV2YWx1YXRpb24gZWxlbWVudHMgd2VyZSBmb3JtdWxhdGVkLCBkaXN0cmlidXRlZCBhY3Jvc3MgdGhyZWUgZGltZW5zaW9uczogT1BSLCBwcmVwcmludHMsIGFuZCByZXNlYXJjaCBkYXRhLiBUaGVzZSBlbGVtZW50cyBwcm92aWRlIGFuIGFuYWx5dGljYWwgZnJhbWV3b3JrIGZvciBjb21wYXJpbmcgZWRpdG9yaWFsIHBvbGljaWVzIGFuZCBtb25pdG9yaW5nIHRoZSBhZG9wdGlvbiBvZiBvcGVuIHNjaWVuY2UgcHJhY3RpY2VzIGluIGRpZmZlcmVudCBkaXNjaXBsaW5hcnkgYW5kIGluc3RpdHV0aW9uYWwgY29udGV4dHMuCgrCoDwvZGVzY3JpcHRpb24+CiAgPC9kZXNjcmlwdGlvbnM+CiAgPGZ1bmRpbmdSZWZlcmVuY2VzPgogICAgPGZ1bmRpbmdSZWZlcmVuY2U+CiAgICAgIDxmdW5kZXJOYW1lPlVuaXZlcnNpZGFkZSBGZWRlcmFsIGRlIFNhbnRhIENhdGFyaW5hPC9mdW5kZXJOYW1lPgogICAgICA8ZnVuZGVySWRlbnRpZmllciBmdW5kZXJJZGVudGlmaWVyVHlwZT0iQ3Jvc3NyZWYgRnVuZGVyIElEIj4xMC4xMzAzOS81MDExMDAwMDcwODI8L2Z1bmRlcklkZW50aWZpZXI+CiAgICA8L2Z1bmRpbmdSZWZlcmVuY2U+CiAgPC9mdW5kaW5nUmVmZXJlbmNlcz4KPC9yZXNvdXJjZT4K",
+      "url": "https://zenodo.org/doi/10.5281/zenodo.17630987",
+      "contentUrl": null,
+      "metadataVersion": 4,
+      "schemaVersion": "http://datacite.org/schema/kernel-4",
+      "source": "api",
+      "isActive": true,
+      "state": "findable",
+      "reason": null,
+      "viewCount": 0,
+      "viewsOverTime": [],
+      "downloadCount": 0,
+      "downloadsOverTime": [],
+      "referenceCount": 0,
+      "citationCount": 1,
+      "citationsOverTime": [{ "year": "2026", "total": 1 }],
+      "partCount": 0,
+      "partOfCount": 0,
+      "versionCount": 0,
+      "versionOfCount": 1,
+      "created": "2025-11-17T13:32:13.000Z",
+      "registered": "2025-11-17T13:32:13.000Z",
+      "published": "2025",
+      "updated": "2026-10-24T17:19:13.000Z"
+    },
+    "relationships": {
+      "client": { "data": { "id": "cern.zenodo", "type": "clients" } },
+      "provider": { "data": { "id": "cern", "type": "providers" } },
+      "media": { "data": { "id": "10.5281/zenodo.17630987", "type": "media" } },
+      "references": { "data": [] },
+      "citations": { "data": [{ "id": "10.5281/zenodo.17752525", "type": "dois" }] },
+      "parts": { "data": [] },
+      "partOf": { "data": [] },
+      "versions": { "data": [] },
+      "versionOf": { "data": [{ "id": "10.5281/zenodo.17626166", "type": "dois" }] }
+    }
+  }
+}

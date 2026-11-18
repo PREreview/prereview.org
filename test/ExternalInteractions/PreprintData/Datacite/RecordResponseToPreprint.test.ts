@@ -313,6 +313,32 @@ it.effect.each([
     }),
   },
   {
+    response: 'zenodo-conference-paper',
+    expected: Preprint({
+      abstract: {
+        language: 'es',
+        text: rawHtml(
+          '<p>[319]</p>\n\n<p>La ciencia abierta se ha consolidado como un movimiento clave para transformar la comunicación científica mediante transparencia, colaboración y accesibilidad. Entre sus dimensiones centrales destacan la evaluación por pares abierta (OPR), los preprints y los datos de investigación, que fortalecen la credibilidad de las revistas, pero exigen políticas editoriales claras, éticas y sostenibles. Este estudio tuvo como objetivo identificar y sistematizar elementos de evaluación que orienten la formulación de políticas editoriales alineadas con la ciencia abierta y la creación de sistemas de monitoreo de su implementación. Se realizó una scoping review siguiendo las directrices del JBI, con búsquedas en ocho bases de datos y un portafolio final de 109 artículos. A partir de la literatura, se formularon 43 elementos de evaluación distribuidos en tres dimensiones: OPR, preprints y datos de investigación. Estos elementos ofrecen un marco analítico para comparar políticas editoriales y monitorear la adopción de prácticas de ciencia abierta en distintos contextos disciplinares e institucionales.</p>\n\n<p>Open science has established itself as a key movement for transforming scientific communication through transparency, collaboration, and accessibility. Among its central dimensions are open peer review (OPR), preprints, and research data, which strengthen the credibility of journals but require clear, ethical, and sustainable editorial policies. This study aimed to identify and systematize evaluation elements to guide the formulation of editorial policies aligned with open science and the creation of systems to monitor their implementation. A scoping review was conducted following JBI guidelines, with searches in eight databases and a final portfolio of 109 articles. Based on the literature, 43 evaluation elements were formulated, distributed across three dimensions: OPR, preprints, and research data. These elements provide an analytical framework for comparing editorial policies and monitoring the adoption of open science practices in different disciplinary and institutional contexts.</p>',
+        ),
+      },
+      authors: [
+        { name: Name('Lúcia da Silveira'), orcid: OrcidId('0000-0003-1118-2121') },
+        { name: Name('Sônia Elisa Caregnato'), orcid: OrcidId('0000-0002-5676-2763') },
+        { name: Name('Remedios Melero'), orcid: OrcidId('0000-0002-1813-8783') },
+        { name: Name('Ernest Abadal'), orcid: OrcidId('0000-0002-9151-6437') },
+      ],
+      id: new ZenodoPreprintId({ value: Doi('10.5281/zenodo.17630987') }),
+      posted: Temporal.PlainDate.from({ year: 2025, month: 11, day: 30 }),
+      title: {
+        language: 'es',
+        text: rawHtml(
+          'Elementos de evaluación de políticas editoriales alineadas con la ciencia abierta: preprints, datos de investigación y evaluación abierta',
+        ),
+      },
+      url: new URL('https://zenodo.org/doi/10.5281/zenodo.17630987'),
+    }),
+  },
+  {
     response: 'zenodo-iso6393-wrong-language',
     expected: Preprint({
       abstract: {
