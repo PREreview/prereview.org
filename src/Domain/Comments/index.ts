@@ -1,5 +1,6 @@
 import { Array, Context, Effect, Layer, Match, Option, pipe, PubSub, Schedule, Scope, Struct, flow } from 'effect'
 import { type Sharding, Singleton } from 'effect/cluster'
+import * as Commands from '../../Commands.ts'
 import type { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
 import * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
@@ -10,6 +11,7 @@ import {
   GetNextExpectedCommandForUser,
   GetNextExpectedCommandForUserOnAComment,
   HandleCommentCommand,
+  ImportPublicationDateForComment,
   UnableToHandleCommand,
   type CreateRecordOnZenodoForComment,
   type PublishCommentOnZenodo,
@@ -17,6 +19,7 @@ import {
 import { DecideComment } from './Decide.ts'
 import { CommentEventTypes, type CommentEvent } from './Events.ts'
 import { EvolveComment } from './Evolve.ts'
+import { ImportPublicationDateForComment as ImportPublicationDateForCommentCommand } from './ImportPublicationDateForComment.ts'
 import * as Queries from './Queries.ts'
 import * as React from './React.ts'
 import { CommentNotStarted, type CommentState } from './State.ts'
@@ -145,6 +148,7 @@ export const layer = Layer.mergeAll(
   Layer.effect(GetNextExpectedCommandForUser, makeGetNextExpectedCommandForUser),
   Layer.effect(GetNextExpectedCommandForUserOnAComment, makeGetNextExpectedCommandForUserOnAComment),
   Layer.effect(GetComment, makeGetComment),
+  Layer.effect(ImportPublicationDateForComment, Commands.makeCommand(ImportPublicationDateForCommentCommand)),
 )
 
 const AssignADoiToCommentsInNeedOfOne = Singleton.make(
