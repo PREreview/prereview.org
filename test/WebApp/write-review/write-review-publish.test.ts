@@ -13,11 +13,12 @@ import {
   FormC,
   formKey,
   FormStore,
+  PreprintReviews,
   type PublishPrereviewEnv,
 } from '../../../src/Domain/PreprintReviews/index.ts'
 import { PreprintIsNotFound, PreprintIsUnavailable, Preprints } from '../../../src/Domain/Preprints/index.ts'
 import * as Prereviewers from '../../../src/Domain/Prereviewers/index.ts'
-import { LanguageDetection } from '../../../src/ExternalInteractions/index.ts'
+import { LanguageDetection, OpenAlexWorks } from '../../../src/ExternalInteractions/index.ts'
 import * as FeatureFlags from '../../../src/FeatureFlags.ts'
 import * as Routes from '../../../src/routes.ts'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../../src/routes.ts'
@@ -52,6 +53,8 @@ describe('writeReviewPublish', () => {
           | Locale
           | Prereviewers.Prereviewers
           | Preprints
+          | PreprintReviews
+          | OpenAlexWorks.OpenAlexWorks
         >()
         const formStore = yield* FormStore.Store
         yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
@@ -77,6 +80,8 @@ describe('writeReviewPublish', () => {
           LanguageDetection.layerCld,
           Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
+          Layer.mock(PreprintReviews, {}),
+          Layer.mock(OpenAlexWorks.OpenAlexWorks, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
           FormStore.layerInMemory,
         ]),
@@ -106,6 +111,8 @@ describe('writeReviewPublish', () => {
           | Locale
           | Prereviewers.Prereviewers
           | Preprints
+          | PreprintReviews
+          | OpenAlexWorks.OpenAlexWorks
         >()
         const formStore = yield* FormStore.Store
         yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
@@ -133,6 +140,8 @@ describe('writeReviewPublish', () => {
           Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          Layer.mock(PreprintReviews, {}),
+          Layer.mock(OpenAlexWorks.OpenAlexWorks, {}),
           FormStore.layerInMemory,
         ]),
       ),
@@ -160,6 +169,8 @@ describe('writeReviewPublish', () => {
           | Locale
           | Prereviewers.Prereviewers
           | Preprints
+          | PreprintReviews
+          | OpenAlexWorks.OpenAlexWorks
         >()
         const formStore = yield* FormStore.Store
         yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
@@ -187,6 +198,8 @@ describe('writeReviewPublish', () => {
           Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          Layer.mock(PreprintReviews, {}),
+          Layer.mock(OpenAlexWorks.OpenAlexWorks, {}),
           FormStore.layerInMemory,
         ]),
       ),
@@ -230,6 +243,8 @@ describe('writeReviewPublish', () => {
           | Locale
           | Prereviewers.Prereviewers
           | Preprints
+          | PreprintReviews
+          | OpenAlexWorks.OpenAlexWorks
         >()
         const formStore = yield* FormStore.Store
         yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
@@ -284,6 +299,8 @@ describe('writeReviewPublish', () => {
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          Layer.mock(PreprintReviews, { importPreprintReview: () => Effect.void }),
+          Layer.mock(OpenAlexWorks.OpenAlexWorks, { getTopics: () => Effect.succeed([]) }),
           FormStore.layerInMemory,
         ]),
       ),
@@ -327,6 +344,8 @@ describe('writeReviewPublish', () => {
           | Locale
           | Prereviewers.Prereviewers
           | Preprints
+          | PreprintReviews
+          | OpenAlexWorks.OpenAlexWorks
         >()
         const formStore = yield* FormStore.Store
         yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
@@ -381,6 +400,8 @@ describe('writeReviewPublish', () => {
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          Layer.mock(PreprintReviews, { importPreprintReview: () => Effect.void }),
+          Layer.mock(OpenAlexWorks.OpenAlexWorks, { getTopics: () => Effect.succeed([]) }),
           FormStore.layerInMemory,
         ]),
       ),
@@ -408,6 +429,8 @@ describe('writeReviewPublish', () => {
           | Locale
           | Prereviewers.Prereviewers
           | Preprints
+          | PreprintReviews
+          | OpenAlexWorks.OpenAlexWorks
         >()
         const formStore = yield* FormStore.Store
         yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newPrereview))
@@ -434,6 +457,8 @@ describe('writeReviewPublish', () => {
           Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          Layer.mock(PreprintReviews, {}),
+          Layer.mock(OpenAlexWorks.OpenAlexWorks, {}),
           FormStore.layerInMemory,
         ]),
       ),
@@ -453,6 +478,8 @@ describe('writeReviewPublish', () => {
           | Locale
           | Prereviewers.Prereviewers
           | Preprints
+          | PreprintReviews
+          | OpenAlexWorks.OpenAlexWorks
         >()
 
         const actual = yield* Effect.promise(() =>
@@ -477,6 +504,8 @@ describe('writeReviewPublish', () => {
           Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          Layer.mock(PreprintReviews, {}),
+          Layer.mock(OpenAlexWorks.OpenAlexWorks, {}),
           FormStore.layerInMemory,
         ]),
       ),
@@ -496,6 +525,8 @@ describe('writeReviewPublish', () => {
           | Locale
           | Prereviewers.Prereviewers
           | Preprints
+          | PreprintReviews
+          | OpenAlexWorks.OpenAlexWorks
         >()
 
         const actual = yield* Effect.promise(() =>
@@ -523,6 +554,8 @@ describe('writeReviewPublish', () => {
           Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => new PreprintIsUnavailable({}) }),
+          Layer.mock(PreprintReviews, {}),
+          Layer.mock(OpenAlexWorks.OpenAlexWorks, {}),
           FormStore.layerInMemory,
         ]),
       ),
@@ -542,6 +575,8 @@ describe('writeReviewPublish', () => {
           | Locale
           | Prereviewers.Prereviewers
           | Preprints
+          | PreprintReviews
+          | OpenAlexWorks.OpenAlexWorks
         >()
 
         const actual = yield* Effect.promise(() =>
@@ -569,6 +604,8 @@ describe('writeReviewPublish', () => {
           Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => new PreprintIsNotFound({}) }),
+          Layer.mock(PreprintReviews, {}),
+          Layer.mock(OpenAlexWorks.OpenAlexWorks, {}),
           FormStore.layerInMemory,
         ]),
       ),
@@ -588,6 +625,8 @@ describe('writeReviewPublish', () => {
           | Locale
           | Prereviewers.Prereviewers
           | Preprints
+          | PreprintReviews
+          | OpenAlexWorks.OpenAlexWorks
         >()
 
         const actual = yield* Effect.promise(() =>
@@ -612,6 +651,8 @@ describe('writeReviewPublish', () => {
           Layer.succeed(Locale, locale),
           Layer.mock(Prereviewers.Prereviewers, {}),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          Layer.mock(PreprintReviews, {}),
+          Layer.mock(OpenAlexWorks.OpenAlexWorks, {}),
           FormStore.layerInMemory,
         ]),
       ),
@@ -653,6 +694,8 @@ describe('writeReviewPublish', () => {
           | Locale
           | Prereviewers.Prereviewers
           | Preprints
+          | PreprintReviews
+          | OpenAlexWorks.OpenAlexWorks
         >()
         const formStore = yield* FormStore.Store
         yield* formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
@@ -688,6 +731,8 @@ describe('writeReviewPublish', () => {
             getPseudonymPersona: () => Effect.succeed(pseudonymPersona),
           }),
           Layer.mock(Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          Layer.mock(PreprintReviews, {}),
+          Layer.mock(OpenAlexWorks.OpenAlexWorks, {}),
           FormStore.layerInMemory,
         ]),
       ),
