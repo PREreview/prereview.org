@@ -1105,6 +1105,19 @@ test.extend(canLogIn).extend(areLoggedIn)('have to enter a comment', async ({ ja
   await page.getByRole('link', { name: 'Enter your comment' }).click()
 
   await expect(page.getByLabel('Write your comment')).toBeFocused()
+
+  await waitForProseMirrorFocus(page.getByLabel('Write your comment'))
+  await page.keyboard.press('Enter')
+  await page.keyboard.type('  ')
+  await page.keyboard.press('Enter')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+  }
+  await expect(page.getByLabel('Write your comment')).toHaveAttribute('aria-invalid', 'true')
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ javaScriptEnabled, fetch, page }) => {

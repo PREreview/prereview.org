@@ -236,7 +236,7 @@ describe('EnterCommentSubmission', () => {
               .oneof(fc.commentInProgress(), fc.commentReadyForPublishing())
               .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
             fc.supportedLocale(),
-            fc.record({ comment: fc.nonEmptyString() }),
+            fc.record({ comment: fc.html().map(String) }),
             fc.oneof(fc.constant(new Comments.UnableToHandleCommand({})), fc.commentError()),
           ],
           ([commentId, [comment, user], locale, body, error]) =>
@@ -270,7 +270,7 @@ describe('EnterCommentSubmission', () => {
             .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
           fc.supportedLocale(),
           fc.oneof(
-            fc.record({ comment: fc.constant('') }, { requiredKeys: [] }),
+            fc.record({ comment: fc.blankHtml() }, { requiredKeys: [] }),
             fc
               .anything()
               .filter(body => typeof body === 'object' && (body === null || !Object.hasOwn(body, 'comment'))),

@@ -1658,7 +1658,7 @@ export const blankHtml = (): fc.Arbitrary<string> => {
   }))
 
   return fc
-    .tuple(nonEmptyArray(block, { maxLength: 3 }), constantFrom('', '\n'))
+    .tuple(fc.array(block, { maxLength: 3 }), constantFrom('', '\n'))
     .map(([blocks, separator]) => blocks.join(separator))
 }
 

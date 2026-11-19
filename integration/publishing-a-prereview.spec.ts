@@ -2254,6 +2254,19 @@ test.extend(canLogIn).extend(areLoggedIn)('have to enter a review', async ({ jav
   await page.getByRole('link', { name: 'Enter your PREreview' }).click()
 
   await expect(page.getByLabel('Write your PREreview')).toBeFocused()
+
+  await waitForProseMirrorFocus(page.getByLabel('Write your PREreview'))
+  await page.keyboard.press('Enter')
+  await page.keyboard.type('  ')
+  await page.keyboard.press('Enter')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+  }
+  await expect(page.getByLabel('Write your PREreview')).toHaveAttribute('aria-invalid', 'true')
 })
 
 test.extend(canLogIn).extend(areLoggedIn)(
@@ -2302,6 +2315,19 @@ test.extend(canLogIn).extend(areLoggedIn)('have to paste a review', async ({ jav
   await page.getByRole('link', { name: 'Paste your PREreview' }).click()
 
   await expect(page.getByLabel('Paste your PREreview')).toBeFocused()
+
+  await waitForProseMirrorFocus(page.getByLabel('Paste your PREreview'))
+  await page.keyboard.press('Enter')
+  await page.keyboard.type('  ')
+  await page.keyboard.press('Enter')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+  }
+  await expect(page.getByLabel('Paste your PREreview')).toHaveAttribute('aria-invalid', 'true')
 })
 
 test.extend(canLogIn).extend(areLoggedIn)(

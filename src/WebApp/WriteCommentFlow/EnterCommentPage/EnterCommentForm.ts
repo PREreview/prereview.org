@@ -1,7 +1,7 @@
 import { Data, Effect, Match, pipe, Result, Schema, SchemaTransformation } from 'effect'
 import markdownIt from 'markdown-it'
 import type * as Comments from '../../../Domain/Comments/index.ts'
-import { type Html, SanitizeHtmlSchema } from '../../../html.ts'
+import { hasText, type Html, SanitizeHtmlSchema } from '../../../html.ts'
 import { NonEmptyString } from '../../../types/index.ts'
 
 export type EnterCommentForm = EmptyForm | InvalidForm | CompletedForm
@@ -39,6 +39,7 @@ const HtmlSchema: Schema.Codec<Html, string> = Schema.String.pipe(
     SanitizeHtmlSchema(),
     SchemaTransformation.transform({ decode: string => markdownIt({ html: true }).render(string), encode: String }),
   ),
+  Schema.check(Schema.makeFilter(hasText)),
 )
 
 const CommentFieldSchema = Schema.Struct({

@@ -251,7 +251,7 @@ describe('writeReviewReview', () => {
     [
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
-      fc.record({ review: fc.constant('') }, { requiredKeys: [] }),
+      fc.record({ review: fc.blankHtml() }, { requiredKeys: [] }),
       fc.user(),
       fc.supportedLocale(),
       fc.freeformForm(),

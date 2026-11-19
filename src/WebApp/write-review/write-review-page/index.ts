@@ -21,7 +21,7 @@ import {
   getPreprintTitle,
 } from '../../../Domain/Preprints/index.ts'
 import { invalidE, missingE } from '../../../form.ts'
-import { type Html, sanitizeHtml } from '../../../html.ts'
+import { type Html, hasText, sanitizeHtml } from '../../../html.ts'
 import type { SupportedLocale } from '../../../locales/index.ts'
 import { EffectToFpts } from '../../../RefactoringUtilities/index.ts'
 import { writeReviewMatch, writeReviewReviewTypeMatch } from '../../../routes.ts'
@@ -210,6 +210,7 @@ const ReviewFieldD = pipe(
     review: NonEmptyStringC,
   }),
   D.map(({ review }) => sanitizeHtml(markdownIt({ html: true }).render(review))),
+  D.parse(review => (hasText(review) ? D.success(review) : D.failure(review, 'NonEmptyHtml'))),
 )
 
 function isSameMarkdownAs(reference: string) {
