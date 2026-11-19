@@ -1635,6 +1635,33 @@ export const slug = (): fc.Arbitrary<Slug> =>
     .map(Array.join('-'))
     .map(slug => SlugSchema.make(slug))
 
+export const blankHtml = (): fc.Arbitrary<string> => {
+  const whitespace = constantFrom(' ', '&nbsp;', ' ', '<br>', '<br />')
+
+  const { block } = fc.letrec<{ inline: string; block: string }>(tie => ({
+    inline: fc.oneof(
+      { depthSize: 'small', maxDepth: 3 },
+      whitespace,
+      fc
+        .tuple(constantFrom('a', 'b', 'em', 'i', 'strong', 'sub', 'sup'), fc.array(tie('inline'), { maxLength: 3 }))
+        .map(([tag, children]) => `<${tag}>${children.join('')}</${tag}>`),
+    ),
+    block: fc.oneof(
+      { depthSize: 'small', maxDepth: 2 },
+      fc
+        .tuple(constantFrom('h1', 'h2', 'h3', 'p'), fc.array(tie('inline'), { maxLength: 3 }))
+        .map(([tag, children]) => `<${tag}>${children.join('')}</${tag}>`),
+      fc
+        .tuple(constantFrom('ol', 'ul'), nonEmptyArray(fc.array(tie('block'), { maxLength: 2 }), { maxLength: 3 }))
+        .map(([tag, items]) => `<${tag}>${items.map(children => `<li>${children.join('')}</li>`).join('')}</${tag}>`),
+    ),
+  }))
+
+  return fc
+    .tuple(nonEmptyArray(block, { maxLength: 3 }), constantFrom('', '\n'))
+    .map(([blocks, separator]) => blocks.join(separator))
+}
+
 export const nonEmptyStringOf = (charArb: fc.Arbitrary<string>): fc.Arbitrary<NonEmptyString> =>
   fc.string({ unit: charArb, minLength: 1 }).filter(isNonEmptyString)
 

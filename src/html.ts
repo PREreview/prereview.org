@@ -264,6 +264,8 @@ export function plainText(
   return new PlainText({ value })
 }
 
+export const hasText = (html: Html): boolean => plainText(html).toString().trim().length > 0
+
 export const RawHtmlC = C.make(
   pipe(
     D.union(

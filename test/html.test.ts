@@ -1391,6 +1391,35 @@ describe('plainText', () => {
   })
 })
 
+describe('hasText', () => {
+  test.each([
+    ['text', _.html`<p>a</p>`],
+    ['text in a nested element', _.html`<ul><li><p>a</p></li></ul>`],
+    ['an entity', _.html`<p>&amp;</p>`],
+    ['math', _.html`<math><mi>x</mi></math>`],
+  ])('with text (%s)', (_name, input) => {
+    expect(_.hasText(input)).toBe(true)
+  })
+
+  test.each([
+    ['nothing', _.html``],
+    ['an empty paragraph', _.html`<p></p>`],
+    ['empty paragraphs', _.html`<p></p><p></p>`],
+    ['spaces', _.html`<p> </p>`],
+    ['newlines', _.rawHtml('<p>\n</p>\n<p>\n</p>')],
+    ['a non-breaking space', _.html`<p>&nbsp;</p>`],
+    ['a line break', _.html`<p><br></p>`],
+    ['an empty list', _.html`<ul><li></li></ul>`],
+    ['a horizontal rule', _.html`<hr>`],
+  ])('without text (%s)', (_name, input) => {
+    expect(_.hasText(input)).toBe(false)
+  })
+
+  it.prop('with blank editor content', [fc.blankHtml()], ([input]) => {
+    expect(_.hasText(_.rawHtml(input))).toBe(false)
+  })
+})
+
 describe('RawHtmlC', () => {
   describe('decode', () => {
     it.prop('with a string', [fc.string()], ([string]) => {
