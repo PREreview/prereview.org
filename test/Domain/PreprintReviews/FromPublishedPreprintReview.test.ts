@@ -124,7 +124,7 @@ test('adds competing interests and use of AI', () => {
   const actual = _.fromPublishedPreprintReview(
     new PublishedPreprintReview({
       ...review,
-      competingInterests: { _tag: 'Yes', comment: Option.some(NonEmptyString('A competing interest')) },
+      competingInterests: { _tag: 'Yes', comment: NonEmptyString('A competing interest') },
       useOfAi: { _tag: 'Yes', comment: Option.some(NonEmptyString('A use of AI')) },
     }),
   )

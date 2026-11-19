@@ -91,7 +91,7 @@ const reviewWithNamedAndUnknownAuthorsImported = new Events.PreprintReviewImport
 
 const reviewWithDeclarationsImported = new Events.PreprintReviewImported({
   ...reviewImported,
-  competingInterests: { _tag: 'Yes', comment: Option.some(NonEmptyString('A competing interest')) },
+  competingInterests: { _tag: 'Yes', comment: NonEmptyString('A competing interest') },
   useOfAi: { _tag: 'Yes', comment: Option.some(NonEmptyString('A use of AI')) },
 })
 

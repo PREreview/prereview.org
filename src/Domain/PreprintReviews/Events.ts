@@ -107,7 +107,7 @@ export class PreprintReviewImported extends Schema.TaggedClass<PreprintReviewImp
     NotAnswered: {},
   }),
   competingInterests: Schema.TaggedUnion({
-    Yes: { comment: Schema.OptionFromNullOr(NonEmptyString.NonEmptyStringSchema) },
+    Yes: { comment: NonEmptyString.NonEmptyStringSchema },
     No: {},
     NotAnswered: {},
   }),

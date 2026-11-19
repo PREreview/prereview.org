@@ -65,14 +65,10 @@ const renderCompetingInterests = (review: PublishedPreprintReview, locale: Suppo
   const t = translate(locale, 'write-review')
 
   return Match.valueTags(review.competingInterests, {
-    Yes: ({ comment }) =>
-      Option.match(comment, {
-        onNone: () => '',
-        onSome: comment => html`
-          <h2>${t('competingInterests')()}</h2>
-          <p>${comment}</p>
-        `,
-      }),
+    Yes: ({ comment }) => html`
+      <h2>${t('competingInterests')()}</h2>
+      <p>${comment}</p>
+    `,
     No: () => html`
       <h2>${t('competingInterests')()}</h2>
       <p>${hasOtherAuthors(review) ? t('competingInterestsAuthorsNo')() : t('competingInterestsNo')()}</p>
