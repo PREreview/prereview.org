@@ -163,7 +163,7 @@ const getCompetingInterests = (sections: ReturnType<typeof splitTrailingSections
         }
 
         return Effect.succeed(
-          isNoCompetingInterests(text) ? { _tag: 'No' as const } : { _tag: 'Yes' as const, comment: Option.some(text) },
+          isNoCompetingInterests(text) ? { _tag: 'No' as const } : { _tag: 'Yes' as const, comment: text },
         )
       },
     }),
