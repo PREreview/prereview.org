@@ -28,6 +28,7 @@ PUBLIC_URL = 'https://sandbox.prereview.org/'
 SEND_COAR_NOTIFY_MESSAGES = 'sandbox'
 SLACK_REQUEST_REVIEW_CHANNEL_ID = 'C05N0JHBC1Y'
 SLACK_SHARE_REVIEW_CHANNEL_ID = 'C05V6TXHETS'
+USE_EVENTS_FOR_PREPRINT_REVIEWS = 'true'
 ZENODO_URL = 'https://sandbox.zenodo.org/'
 
 [http_service]
