@@ -1,4 +1,4 @@
-import { DateTime, Effect, Option, Result, Schema } from 'effect'
+import { DateTime, Effect, Function, Option, Result, Schema } from 'effect'
 import { Headers, HttpClientRequest, HttpClientResponse } from 'effect/http'
 import type { Redis as IoRedis } from 'ioredis'
 import { CacheValueFromStringSchema, InternalHttpCacheFailure } from '../../src/CachingHttpClient/HttpCache.ts'
@@ -7,11 +7,14 @@ import * as fc from '../fc.ts'
 import { describe, expect, it, vi } from '../vitest.ts'
 
 describe('getFromRedis', () => {
-  const stubbedRedisReturning = (value: string | null) =>
-    ({
-      get: (() => Promise.resolve(value)) satisfies IoRedis['get'],
+  const stubbedRedisReturning = (value: string | null) => ({
+    primary: {
       del: vi.fn(() => Promise.resolve(1)) satisfies IoRedis['del'],
-    }) as unknown as IoRedis
+    } as unknown as IoRedis,
+    readonlyFallback: {
+      get: (() => Promise.resolve(value)) satisfies IoRedis['get'],
+    } as unknown as IoRedis,
+  })
 
   describe('there is a value for a given key', () => {
     describe('the value can be read', () => {
@@ -45,15 +48,55 @@ describe('getFromRedis', () => {
         }),
       )
 
-      it.effect.prop('removes the value', [fc.httpClientRequest(), fc.string()], ([request, unreadableValue]) =>
-        Effect.gen(function* () {
-          const redis = stubbedRedisReturning(unreadableValue)
+      it.effect.prop(
+        'removes the value from the primary',
+        [fc.httpClientRequest(), fc.string()],
+        ([request, unreadableValue]) =>
+          Effect.gen(function* () {
+            const redis = stubbedRedisReturning(unreadableValue)
 
-          yield* _.getFromRedis(redis)(request)
+            yield* _.getFromRedis(redis)(request)
+            yield* Effect.yieldNow
 
-          // oxlint-disable-next-line typescript/unbound-method
-          expect(redis.del).toHaveBeenCalledTimes(1)
-        }),
+            // oxlint-disable-next-line typescript/unbound-method
+            expect(redis.primary.del).toHaveBeenCalledWith(_.keyForRequest(request))
+          }),
+      )
+
+      it.effect.prop(
+        "doesn't wait for the value to be removed",
+        [fc.httpClientRequest(), fc.string()],
+        ([request, unreadableValue]) =>
+          Effect.gen(function* () {
+            const redis = {
+              ...stubbedRedisReturning(unreadableValue),
+              primary: {
+                del: (() => new Promise(Function.constVoid)) satisfies IoRedis['del'],
+              } as unknown as IoRedis,
+            }
+
+            const result = yield* _.getFromRedis(redis)(request)
+
+            expect(result).toStrictEqual(Option.none())
+          }),
+      )
+
+      it.effect.prop(
+        "doesn't fail when the value can't be removed",
+        [fc.httpClientRequest(), fc.string(), fc.error()],
+        ([request, unreadableValue, error]) =>
+          Effect.gen(function* () {
+            const redis = {
+              ...stubbedRedisReturning(unreadableValue),
+              primary: {
+                del: (() => Promise.reject(error)) satisfies IoRedis['del'],
+              } as unknown as IoRedis,
+            }
+
+            const result = yield* _.getFromRedis(redis)(request)
+
+            expect(result).toStrictEqual(Option.none())
+          }),
       )
     })
   })
@@ -74,8 +117,11 @@ describe('getFromRedis', () => {
     it.effect.prop('returns an error', [fc.httpClientRequest(), fc.error()], ([request, error]) =>
       Effect.gen(function* () {
         const redis = {
-          get: (() => Promise.reject(error)) satisfies IoRedis['get'],
-        } as unknown as IoRedis
+          ...stubbedRedisReturning(null),
+          readonlyFallback: {
+            get: (() => Promise.reject(error)) satisfies IoRedis['get'],
+          } as unknown as IoRedis,
+        }
 
         const result = yield* Effect.result(_.getFromRedis(redis)(request))
 

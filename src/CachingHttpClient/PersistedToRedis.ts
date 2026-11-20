@@ -11,7 +11,7 @@ export const layerPersistedToRedis = Layer.effect(
     const redis = yield* Redis.HttpCacheRedis
 
     return {
-      get: getFromRedis(redis.readonlyFallback),
+      get: getFromRedis(redis),
       set: writeToRedis(redis.primary),
       delete: deleteFromRedis(redis.primary),
     }
@@ -19,10 +19,10 @@ export const layerPersistedToRedis = Layer.effect(
 )
 
 export const getFromRedis =
-  (redis: IoRedis): (typeof HttpCache.Service)['get'] =>
+  (redis: typeof Redis.HttpCacheRedis.Service): (typeof HttpCache.Service)['get'] =>
   request =>
     pipe(
-      Effect.tryPromise({ try: () => redis.get(keyForRequest(request)), catch: String }),
+      Effect.tryPromise({ try: () => redis.readonlyFallback.get(keyForRequest(request)), catch: String }),
       Effect.andThen(Effect.fromNullishOr),
       Effect.andThen(Schema.decodeEffect(CacheValueFromStringSchema)),
       Effect.map(({ staleAt, response }) => ({
@@ -37,7 +37,12 @@ export const getFromRedis =
       })),
       Effect.catchTag('SchemaError', () =>
         pipe(
-          Effect.tryPromise({ try: () => redis.del(keyForRequest(request)), catch: String }),
+          Effect.tryPromise({ try: () => redis.primary.del(keyForRequest(request)), catch: String }),
+          Effect.tapError(error =>
+            Effect.logWarning('Unable to remove an unreadable cached response').pipe(Effect.annotateLogs({ error })),
+          ),
+          Effect.ignore,
+          Effect.forkDetach,
           Effect.andThen(() => Effect.fromOption(Option.none())),
         ),
       ),
