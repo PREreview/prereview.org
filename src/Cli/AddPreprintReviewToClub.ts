@@ -23,4 +23,8 @@ const program = Effect.fnUntraced(function* ({
   yield* preprintReviews.addPublishedReviewToAClub({ preprintReviewId, clubId: club.id })
 })
 
-export const AddPreprintReviewToClub = Command.make('add-preprint-review-to-club', { preprintReviewId, clubSlug }, program)
+export const AddPreprintReviewToClub = Command.make(
+  'add-preprint-review-to-club',
+  { preprintReviewId, clubSlug },
+  program,
+)
