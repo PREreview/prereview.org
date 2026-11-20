@@ -245,14 +245,13 @@ describe('there is a cache entry', { concurrent: false }, () => {
             Effect.gen(function* () {
               yield* pipe(
                 Layer.launch(_.layerRevalidationWorker),
-                Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
                 Effect.provide(_.layerInMemory(cache)),
                 Effect.forkChild,
               )
 
               const client = yield* pipe(
                 _.CachingHttpClient(timeToStale),
-                Effect.provideService(HttpClient.HttpClient, shouldNotBeCalledHttpClient),
+                Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
                 Effect.provide(_.layerInMemory(cache)),
               )
 
@@ -280,14 +279,13 @@ describe('there is a cache entry', { concurrent: false }, () => {
 
               yield* pipe(
                 Layer.launch(_.layerRevalidationWorker),
-                Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
                 Effect.provide(_.layerInMemory(cache)),
                 Effect.forkChild,
               )
 
               const client = yield* pipe(
                 _.CachingHttpClient(timeToStale),
-                Effect.provideService(HttpClient.HttpClient, shouldNotBeCalledHttpClient),
+                Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
                 Effect.provide(_.layerInMemory(cache)),
               )
 
@@ -312,9 +310,8 @@ describe('there is a cache entry', { concurrent: false }, () => {
           [
             fc.httpClientRequest({ method: fc.constant('GET'), url: fc.constant(url) }),
             fc.constantFrom(StatusCodes.NotFound, StatusCodes.Gone),
-            fc.httpClientResponse(),
           ],
-          ([request, status, expectedResponse]) =>
+          ([request, status]) =>
             Effect.gen(function* () {
               const newResponse = HttpClientResponse.fromWeb(
                 HttpClientRequest.get(url),
@@ -323,14 +320,13 @@ describe('there is a cache entry', { concurrent: false }, () => {
 
               yield* pipe(
                 Layer.launch(_.layerRevalidationWorker),
-                Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
                 Effect.provide(_.layerInMemory(cache)),
                 Effect.forkChild,
               )
 
               const client = yield* pipe(
                 _.CachingHttpClient(timeToStale),
-                Effect.provideService(HttpClient.HttpClient, stubbedClient(expectedResponse)),
+                Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
                 Effect.provide(_.layerInMemory(cache)),
               )
 
@@ -340,7 +336,7 @@ describe('there is a cache entry', { concurrent: false }, () => {
 
               const responseFromCacheFollowingServingOfStaleEntry = yield* client.execute(request)
 
-              expect(responseFromCacheFollowingServingOfStaleEntry).toStrictEqual(expectedResponse)
+              expect(responseFromCacheFollowingServingOfStaleEntry).toStrictEqual(newResponse)
             }).pipe(Effect.provide(_.layerRevalidationQueue)),
         )
       })
@@ -365,14 +361,13 @@ describe('there is a cache entry', { concurrent: false }, () => {
 
               yield* pipe(
                 Layer.launch(_.layerRevalidationWorker),
-                Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
                 Effect.provide(_.layerInMemory(cache)),
                 Effect.forkChild,
               )
 
               const client = yield* pipe(
                 _.CachingHttpClient(timeToStale),
-                Effect.provideService(HttpClient.HttpClient, shouldNotBeCalledHttpClient),
+                Effect.provideService(HttpClient.HttpClient, stubbedClient(newResponse)),
                 Effect.provide(_.layerInMemory(cache)),
               )
 
@@ -399,14 +394,13 @@ describe('there is a cache entry', { concurrent: false }, () => {
             Effect.gen(function* () {
               yield* pipe(
                 Layer.launch(_.layerRevalidationWorker),
-                Effect.provideService(HttpClient.HttpClient, stubbedFailingClient(error)),
                 Effect.provide(_.layerInMemory(cache)),
                 Effect.forkChild,
               )
 
               const client = yield* pipe(
                 _.CachingHttpClient(timeToStale),
-                Effect.provideService(HttpClient.HttpClient, shouldNotBeCalledHttpClient),
+                Effect.provideService(HttpClient.HttpClient, stubbedFailingClient(error)),
                 Effect.provide(_.layerInMemory(cache)),
               )
 
@@ -438,14 +432,13 @@ describe('there is a cache entry', { concurrent: false }, () => {
             Effect.gen(function* () {
               yield* pipe(
                 Layer.launch(_.layerRevalidationWorker),
-                Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
                 Effect.provide(_.layerInMemory(cache)),
                 Effect.forkChild,
               )
 
               const client = yield* pipe(
                 _.CachingHttpClient(timeToStale),
-                Effect.provideService(HttpClient.HttpClient, shouldNotBeCalledHttpClient),
+                Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
                 Effect.provide(_.layerInMemory(cache)),
               )
 

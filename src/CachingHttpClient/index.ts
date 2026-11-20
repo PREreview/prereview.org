@@ -29,7 +29,11 @@ export { layerPersistedToRedis } from './PersistedToRedis.ts'
 
 export class RevalidationQueue extends Context.Service<
   RevalidationQueue,
-  Queue.Queue<{ request: HttpClientRequest.HttpClientRequest; timeToStale: Duration.Input }>
+  Queue.Queue<{
+    request: HttpClientRequest.HttpClientRequest
+    timeToStale: Duration.Input
+    httpClient: HttpClient.HttpClient
+  }>
 >()('RevalidationQueue') {}
 
 export const CachingHttpClient: (
@@ -73,7 +77,7 @@ export const CachingHttpClient: (
           yield* Effect.logDebug('Cache hit').pipe(Effect.annotateLogs(logAnnotations))
         } else {
           yield* Effect.logDebug('Cache stale').pipe(Effect.annotateLogs(logAnnotations))
-          yield* Queue.offer(revalidationQueue, { request: req, timeToStale })
+          yield* Queue.offer(revalidationQueue, { request: req, timeToStale, httpClient })
         }
         return response.response
       }
@@ -118,15 +122,16 @@ export const layer = (...args: Parameters<typeof CachingHttpClient>) =>
 const revalidationWorker = Effect.gen(function* () {
   const cache = yield* HttpCache.HttpCache
   const revalidationQueue = yield* RevalidationQueue
-  const httpClient = yield* HttpClient.HttpClient
 
   const revalidate = Effect.fn('CachingHttpClient.revalidate')(
     function* ({
       request,
       timeToStale,
+      httpClient,
     }: {
       request: HttpClientRequest.HttpClientRequest
       timeToStale: Duration.Input
+      httpClient: HttpClient.HttpClient
     }) {
       yield* Effect.annotateCurrentSpan({ url: request.url })
       yield* Effect.logDebug('Cache revalidating request').pipe(
@@ -161,7 +166,11 @@ export const layerRevalidationQueue = Layer.effect(
   RevalidationQueue,
   Effect.acquireRelease(
     pipe(
-      Queue.sliding<{ request: HttpClientRequest.HttpClientRequest; timeToStale: Duration.Input }>(100),
+      Queue.sliding<{
+        request: HttpClientRequest.HttpClientRequest
+        timeToStale: Duration.Input
+        httpClient: HttpClient.HttpClient
+      }>(100),
       Effect.tap(Effect.logDebug('Revalidation queue started')),
     ),
     flow(Queue.shutdown, Effect.tap(Effect.logDebug('Revalidation queue stopped'))),
