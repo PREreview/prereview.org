@@ -1,13 +1,15 @@
-import { Array, Match, Option, Result } from 'effect'
+import { Array, Match, Option, Result, Schema } from 'effect'
 import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
-import type { Uuid } from '../../types/Uuid.ts'
+import { type Uuid, UuidSchema } from '../../types/Uuid.ts'
 import * as Errors from './Errors.ts'
 
-export interface Input {
-  readonly preprintReviewId: number
-  readonly clubId: Uuid
-}
+export type Input = typeof Input.Type
+
+const Input = Schema.Struct({
+  preprintReviewId: Schema.Int,
+  clubId: UuidSchema,
+})
 
 export type Error = Errors.PreprintReviewHasAlreadyBeenAddedToAClub | Errors.PreprintReviewNotFound | Errors.UnknownClub
 
@@ -59,6 +61,7 @@ const decide =
 export const AddPublishedReviewToAClub = (clubs: ReadonlyArray<Uuid>) =>
   Commands.Command({
     name: 'PreprintReviews.addPublishedReviewToAClub',
+    inputSchema: Input,
     createFilter,
     foldState,
     decide: decide(clubs),
