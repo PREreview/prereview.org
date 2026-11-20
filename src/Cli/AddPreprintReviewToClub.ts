@@ -1,4 +1,4 @@
-import { Array, Console, Effect, Option, pipe } from 'effect'
+import { Array, Console, Effect, Option, pipe, Schema } from 'effect'
 import { Command, Prompt } from 'effect/cli'
 import { Clubs } from '../Domain/Clubs/index.ts'
 import { PreprintReviews, type Prereview } from '../Domain/PreprintReviews/index.ts'
@@ -18,24 +18,34 @@ const describePrereview = (prereview: Prereview): string => {
   ].join('\n')
 }
 
+const PreprintReviewIdOrDoiSchema = Schema.Trim.pipe(
+  Schema.decodeTo(
+    Schema.Union([
+      Schema.FiniteFromString.check(Schema.isInt(), Schema.isGreaterThan(0)),
+      Doi.DoiSchema,
+      Doi.DoiFromUrlSchema,
+    ]),
+  ),
+)
+
 const program = Effect.fnUntraced(function* () {
   const preprintReviews = yield* PreprintReviews
 
   const preprintReviewIds: Array<number> = []
 
   const findPreprintReviewId = (input: string) => {
-    if (/^\d+$/.test(input.trim())) {
-      return Effect.succeedSome(parseInt(input, 10))
-    }
+    const idOrDoi = Schema.decodeOption(PreprintReviewIdOrDoiSchema)(input)
 
-    const doi = Doi.parse(input)
-
-    if (Option.isNone(doi)) {
+    if (Option.isNone(idOrDoi)) {
       return Effect.as(Console.log('Not an ID or DOI'), Option.none())
     }
 
+    if (typeof idOrDoi.value === 'number') {
+      return Effect.succeedSome(idOrDoi.value)
+    }
+
     return pipe(
-      preprintReviews.getPreprintReviewIdForADoi(doi.value),
+      preprintReviews.getPreprintReviewIdForADoi(idOrDoi.value),
       Effect.map(Option.some),
       Effect.catchTag('PrereviewIsNotFound', () => Effect.as(Console.log('Not found'), Option.none())),
     )
