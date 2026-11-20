@@ -33,6 +33,9 @@ const preprintReviewImported = ({
     ...(club !== undefined ? { club } : {}),
   })
 
+const preprintReviewWasAddedToAClub = (preprintReviewId: number, clubId: Uuid.Uuid) =>
+  new Events.PreprintReviewWasAddedToAClub({ preprintReviewId, clubId })
+
 const datasetReviewWasAddedToAClub = (datasetReviewId: Uuid.Uuid, clubId: Uuid.Uuid) =>
   new Events.DatasetReviewWasAddedToAClub({ datasetReviewId, clubId })
 
@@ -68,6 +71,45 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
     [
       _.ClubPrereviewId.PreprintReview({ id: 2 }),
       _.ClubPrereviewId.DatasetReview({ id: datasetReviewId }),
+      _.ClubPrereviewId.PreprintReview({ id: 1 }),
+    ],
+  ],
+  [
+    'a preprint review added to the club',
+    [
+      preprintReviewImported({ id: 1, published: Temporal.Instant.from('2026-11-01T09:00:00Z') }),
+      preprintReviewWasAddedToAClub(1, clubId),
+    ],
+    [_.ClubPrereviewId.PreprintReview({ id: 1 })],
+  ],
+  [
+    'a preprint review added to another club',
+    [
+      preprintReviewImported({ id: 1, published: Temporal.Instant.from('2026-11-01T09:00:00Z') }),
+      preprintReviewWasAddedToAClub(1, otherClubId),
+    ],
+    [],
+  ],
+  [
+    'a preprint review moved to another club',
+    [
+      preprintReviewImported({ id: 1, published: Temporal.Instant.from('2026-11-01T09:00:00Z'), club: clubId }),
+      preprintReviewWasAddedToAClub(1, otherClubId),
+    ],
+    [],
+  ],
+  [
+    'preprint reviews added to the club mixed with others by publication time',
+    [
+      preprintReviewImported({ id: 1, published: Temporal.Instant.from('2026-11-01T09:00:00Z') }),
+      preprintReviewImported({ id: 2, published: Temporal.Instant.from('2026-11-02T09:00:00Z'), club: clubId }),
+      preprintReviewImported({ id: 3, published: Temporal.Instant.from('2026-11-03T09:00:00Z') }),
+      preprintReviewWasAddedToAClub(3, clubId),
+      preprintReviewWasAddedToAClub(1, clubId),
+    ],
+    [
+      _.ClubPrereviewId.PreprintReview({ id: 3 }),
+      _.ClubPrereviewId.PreprintReview({ id: 2 }),
       _.ClubPrereviewId.PreprintReview({ id: 1 }),
     ],
   ],
