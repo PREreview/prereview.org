@@ -1,7 +1,9 @@
-import { Effect, Match, pipe, Schema, SchemaGetter, SchemaIssue } from 'effect'
+import { Array, Effect, Match, Option, pipe, Schema, SchemaGetter, SchemaIssue, UndefinedOr } from 'effect'
 import { HttpServerResponse } from 'effect/http'
 import * as Preprints from '../Domain/Preprints/index.ts'
 import * as ReviewRequests from '../Domain/ReviewRequests/index.ts'
+import * as PublicUrl from '../public-url.ts'
+import * as Routes from '../routes.ts'
 import * as StatusCodes from '../StatusCodes.ts'
 import { DomainIdSchema } from '../types/domain.ts'
 import { FieldIdSchema } from '../types/field.ts'
@@ -131,13 +133,40 @@ const DataToRequestSchema = RequestSchema.pipe(
   }),
 )
 
-export const RequestsData = pipe(
-  ReviewRequests.listAllPublishedReviewRequestsForStats(),
-  Effect.andThen(HttpServerResponse.schemaJson(Schema.Array(DataToRequestSchema), { concurrency: 'unbounded' })),
+export const RequestsData: (query: {
+  cursor?: Uuid.Uuid
+}) => Effect.Effect<
+  HttpServerResponse.HttpServerResponse,
+  never,
+  Preprints.Preprints | PublicUrl.PublicUrl | ReviewRequests.ReviewRequestQueries
+> = Effect.fn('RequestsData')(
+  function* ({ cursor }) {
+    const reviewRequests = yield* ReviewRequests.listAllPublishedReviewRequestsForStats()
+
+    const start = UndefinedOr.match(cursor, {
+      onUndefined: () => Option.some(0),
+      onDefined: cursor => Array.findFirstIndex(reviewRequests, ({ requestId }) => requestId === cursor),
+    })
+
+    if (Option.isNone(start)) {
+      return HttpServerResponse.empty({ status: StatusCodes.NotFound })
+    }
+
+    const [page, rest] = pipe(reviewRequests, Array.drop(start.value), Array.splitAt(100))
+
+    if (!Array.isReadonlyArrayNonEmpty(rest)) {
+      return yield* HttpServerResponse.schemaJson(Schema.Array(DataToRequestSchema), { concurrency: 'unbounded' })(page)
+    }
+
+    const nextLink = yield* PublicUrl.forRoute(Routes.RequestsData, { cursor: Array.headNonEmpty(rest).requestId })
+
+    return yield* HttpServerResponse.schemaJson(Schema.Array(DataToRequestSchema), { concurrency: 'unbounded' })(page, {
+      headers: { Link: `<${nextLink.href}>; rel="next"` },
+    })
+  },
   Effect.tapError(error => Effect.annotateLogs(Effect.logError('Failed to create requests data list'), { error })),
   Effect.catchTags({
     HttpBodyError: () => Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable })),
     UnableToQuery: () => Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable })),
   }),
-  Effect.withSpan('RequestsData'),
 )

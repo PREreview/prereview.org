@@ -119,6 +119,14 @@ export class PreprintReviewImported extends Schema.TaggedClass<PreprintReviewImp
   topics: Schema.Array(TopicIdSchema),
 }) {}
 
+export class PreprintReviewWasAddedToAClub extends Schema.TaggedClass<PreprintReviewWasAddedToAClub>()(
+  'PreprintReviewWasAddedToAClub',
+  {
+    clubId: UuidSchema,
+    preprintReviewId: Schema.Int,
+  },
+) {}
+
 export class EmailToNotifyPrereviewerOfAPrereviewWasSent extends Schema.TaggedClass<EmailToNotifyPrereviewerOfAPrereviewWasSent>()(
   'EmailToNotifyPrereviewerOfAPrereviewWasSent',
   {

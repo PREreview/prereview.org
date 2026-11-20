@@ -1,6 +1,7 @@
 import { pipe } from 'effect'
 import { Command } from 'effect/cli'
 import { AddDatasetReviewToClub } from './AddDatasetReviewToClub.ts'
+import { AddPreprintReviewToClub } from './AddPreprintReviewToClub.ts'
 import { CategorizeReviewRequest } from './CategorizeReviewRequest.ts'
 import { ImportPreprintReviews } from './ImportPreprintReviews.ts'
 import { PopulateRequestEmbeddings } from './PopulateRequestEmbeddings.ts'
@@ -14,6 +15,7 @@ const app = pipe(
     WithdrawReviewRequest,
     CategorizeReviewRequest,
     AddDatasetReviewToClub,
+    AddPreprintReviewToClub,
     PopulateRequestEmbeddings,
     ImportPreprintReviews,
   ]),

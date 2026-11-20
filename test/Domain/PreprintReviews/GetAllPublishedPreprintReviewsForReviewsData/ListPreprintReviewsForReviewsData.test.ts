@@ -185,6 +185,44 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
     [expected({ id: 1, published: Temporal.PlainDate.from('2026-11-01') })],
   ],
   [
+    'with a club it was added to',
+    [
+      preprintReviewImported({ id: 1, published: Temporal.PlainDate.from('2026-11-01') }),
+      new Events.PreprintReviewWasAddedToAClub({
+        preprintReviewId: 1,
+        clubId: Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753'),
+      }),
+    ],
+    [
+      expected({
+        id: 1,
+        published: Temporal.PlainDate.from('2026-11-01'),
+        club: Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753'),
+      }),
+    ],
+  ],
+  [
+    'with a club it was moved to',
+    [
+      preprintReviewImported({
+        id: 1,
+        published: Temporal.PlainDate.from('2026-11-01'),
+        club: Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753'),
+      }),
+      new Events.PreprintReviewWasAddedToAClub({
+        preprintReviewId: 1,
+        clubId: Uuid.Uuid('998f32b4-ced9-49f8-8042-ce8fe41e62ec'),
+      }),
+    ],
+    [
+      expected({
+        id: 1,
+        published: Temporal.PlainDate.from('2026-11-01'),
+        club: Uuid.Uuid('998f32b4-ced9-49f8-8042-ce8fe41e62ec'),
+      }),
+    ],
+  ],
+  [
     'ignores dataset reviews',
     [
       new Events.DatasetReviewWasPublished({

@@ -19,22 +19,24 @@ export type Result = ReadonlyArray<ClubPrereviewId>
 type PertinentEvent = Events.EventsForFilter<typeof filter>
 
 const filter = Events.EventFilter({
-  types: ['PreprintReviewImported', 'DatasetReviewWasAddedToAClub', 'DatasetReviewWasPublished'],
+  types: [
+    'PreprintReviewImported',
+    'PreprintReviewWasAddedToAClub',
+    'DatasetReviewWasAddedToAClub',
+    'DatasetReviewWasPublished',
+  ],
 })
 
-interface ClubPreprintReview {
-  readonly clubId: Uuid.Uuid
-  readonly published: Temporal.Instant
-}
-
 interface State {
-  readonly preprintReviews: HashMap.HashMap<number, ClubPreprintReview>
+  readonly preprintReviewClubs: HashMap.HashMap<number, Uuid.Uuid>
+  readonly preprintReviewsPublished: HashMap.HashMap<number, Temporal.Instant>
   readonly datasetReviewClubs: HashMap.HashMap<Uuid.Uuid, Uuid.Uuid>
   readonly datasetReviewsPublished: HashMap.HashMap<Uuid.Uuid, Temporal.Instant>
 }
 
 const initialState: State = {
-  preprintReviews: HashMap.empty(),
+  preprintReviewClubs: HashMap.empty(),
+  preprintReviewsPublished: HashMap.empty(),
   datasetReviewClubs: HashMap.empty(),
   datasetReviewsPublished: HashMap.empty(),
 }
@@ -44,19 +46,18 @@ const toInstant = (published: Temporal.Instant | Temporal.PlainDate): Temporal.I
 
 const updateStateWithPertinentEvent = (state: State, event: PertinentEvent): State =>
   Match.valueTags(event, {
-    PreprintReviewImported: event => {
-      if (event.club === undefined) {
-        return state
-      }
-
-      return {
-        ...state,
-        preprintReviews: HashMap.set(state.preprintReviews, event.id, {
-          clubId: event.club,
-          published: toInstant(event.published),
-        }),
-      }
-    },
+    PreprintReviewImported: event => ({
+      ...state,
+      preprintReviewClubs:
+        event.club === undefined
+          ? state.preprintReviewClubs
+          : HashMap.set(state.preprintReviewClubs, event.id, event.club),
+      preprintReviewsPublished: HashMap.set(state.preprintReviewsPublished, event.id, toInstant(event.published)),
+    }),
+    PreprintReviewWasAddedToAClub: event => ({
+      ...state,
+      preprintReviewClubs: HashMap.set(state.preprintReviewClubs, event.preprintReviewId, event.clubId),
+    }),
     DatasetReviewWasAddedToAClub: event => ({
       ...state,
       datasetReviewClubs: HashMap.set(state.datasetReviewClubs, event.datasetReviewId, event.clubId),
@@ -89,9 +90,15 @@ const query =
   (wasPrereviewRemoved: (id: number) => boolean) =>
   (state: State, clubId: Input): Result => {
     const preprintReviews = pipe(
-      Array.fromIterable(state.preprintReviews),
-      Array.filter(([id, review]) => review.clubId === clubId && !wasPrereviewRemoved(id)),
-      Array.map(([id, { published }]): Entry => ({ prereview: ClubPrereviewId.PreprintReview({ id }), published })),
+      Array.fromIterable(state.preprintReviewClubs),
+      Array.filter(([id, reviewClubId]) => reviewClubId === clubId && !wasPrereviewRemoved(id)),
+      Array.flatMap(([id]) =>
+        pipe(
+          HashMap.get(state.preprintReviewsPublished, id),
+          Option.map((published): Entry => ({ prereview: ClubPrereviewId.PreprintReview({ id }), published })),
+          Option.toArray,
+        ),
+      ),
     )
 
     const datasetReviews = pipe(
