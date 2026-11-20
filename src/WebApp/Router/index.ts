@@ -754,7 +754,7 @@ const AuthRouter = [
 ]
 
 const DataRouter = useMiddleware(
-  [HttpRouter.route('GET', Routes.ClubsData, ClubsData), HttpRouter.route('GET', Routes.RequestsData, RequestsData)],
+  [HttpRouter.route('GET', Routes.ClubsData, ClubsData), MakeQueryRoute('GET', Routes.RequestsData, RequestsData)],
   HttpMiddleware.requireScietyListToken,
 )
 
