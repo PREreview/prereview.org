@@ -22,7 +22,9 @@ export interface PreprintReviewForReviewsData {
 
 export type Result = ReadonlyArray<PreprintReviewForReviewsData>
 
-const filter = Events.EventFilter({ types: ['PreprintReviewImported', 'AuthorChoicesForAReviewImported'] })
+const filter = Events.EventFilter({
+  types: ['PreprintReviewImported', 'AuthorChoicesForAReviewImported', 'PreprintReviewWasAddedToAClub'],
+})
 
 interface State {
   readonly reviews: HashMap.HashMap<number, PreprintReviewForReviewsData>
@@ -73,6 +75,13 @@ const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray
             persona: authorChoice.persona,
           }),
         ),
+      }),
+      PreprintReviewWasAddedToAClub: added => ({
+        ...currentState,
+        reviews: HashMap.modify(currentState.reviews, added.preprintReviewId, review => ({
+          ...review,
+          club: added.clubId,
+        })),
       }),
     })
   })
