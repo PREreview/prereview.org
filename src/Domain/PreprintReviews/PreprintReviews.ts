@@ -26,6 +26,7 @@ import {
   type PublishedPreprintReviewForSciety,
 } from './GetAllPublishedPreprintReviewsForSciety/index.ts'
 import * as GetNextExpectedCommand from './GetNextExpectedCommand.ts'
+import { GetPreprintReviewIdForADoi } from './GetPreprintReviewIdForADoi/index.ts'
 import {
   GetPublishedPreprintReview,
   type PrereviewIsNotFound,
@@ -65,6 +66,7 @@ export class PreprintReviews extends Context.Service<
     getPreprintReview: (
       id: number,
     ) => Effect.Effect<Prereview, PrereviewIsNotFound | PrereviewIsUnavailable | PrereviewWasRemoved>
+    getPreprintReviewIdForADoi: GetPreprintReviewIdForADoi
     getRapidPrereviewsForAPreprint: (
       preprintId: IndeterminatePreprintId,
     ) => Effect.Effect<ReadonlyArray<RapidPrereview>, Queries.UnableToQuery>
@@ -223,6 +225,7 @@ export const layer = Layer.effect(
         : Effect.die('Not implemented with Zenodo'),
       getForPreprint: featureFlags.useEventsForPreprintReviews ? getForPreprint : getForPreprintFromZenodo,
       getPreprintReview: featureFlags.useEventsForPreprintReviews ? getPreprintReview : getPreprintReviewFromZenodo,
+      getPreprintReviewIdForADoi: yield* GetPreprintReviewIdForADoi,
       getRapidPrereviewsForAPreprint: id =>
         pipe(
           getRapidPrereviewsForAPreprint(id),
