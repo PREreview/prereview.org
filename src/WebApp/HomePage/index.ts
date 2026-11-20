@@ -21,7 +21,7 @@ export const HomePage: Effect.Effect<
     },
     { concurrency: 'unbounded' },
   ),
-  Effect.let('statistics', () => ({ prereviews: 2400, servers: ServerNames.length, users: 5001 })),
+  Effect.let('statistics', () => ({ prereviews: 2406, servers: ServerNames.length, users: 5016 })),
   Effect.map(createPage),
   Effect.withSpan('HomePage'),
 )
