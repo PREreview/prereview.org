@@ -106,7 +106,6 @@ export const LogIn = '/log-in'
 export const LogInDemo = '/log-in-demo'
 export const LogOut = '/log-out'
 export const ClubsData = '/clubs-data'
-export const RequestsData = '/requests-data'
 export const MyReviewRequests = '/my-review-requests'
 export const ChangeRequestedReviewNotifications = '/my-details/change-requested-review-notifications'
 export const ChangeAvatar = '/my-details/change-avatar'
@@ -211,6 +210,13 @@ export const VerifyEmailAddress = QueryRoute({
   schema: Schema.Struct({
     verificationToken: Uuid.UuidSchema,
     redirectTo: Schema.optional(Schema.TemplateLiteral(['/', Schema.String])),
+  }),
+})
+
+export const RequestsData = QueryRoute({
+  path: '/requests-data',
+  schema: Schema.Struct({
+    cursor: Schema.optionalKey(Uuid.UuidSchema),
   }),
 })
 
