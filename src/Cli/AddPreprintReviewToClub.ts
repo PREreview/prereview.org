@@ -20,11 +20,21 @@ const describePrereview = (prereview: Prereview): string => {
 const program = Effect.fnUntraced(function* () {
   const preprintReviews = yield* PreprintReviews
 
-  const preprintReviewId = yield* Prompt.Int({ message: 'Which PREreview (ID)?', min: 1 })
+  const preprintReviewIds: Array<number> = []
 
-  const prereview = yield* preprintReviews.getPreprintReview(preprintReviewId)
+  yield* Effect.gen(function* () {
+    const preprintReviewId = yield* Prompt.Int({ message: 'Which PREreview (ID)?', min: 1 })
 
-  yield* Console.log(describePrereview(prereview))
+    if (Array.contains(preprintReviewIds, preprintReviewId)) {
+      yield* Console.log('Already selected')
+    } else {
+      const prereview = yield* preprintReviews.getPreprintReview(preprintReviewId)
+
+      yield* Console.log(describePrereview(prereview))
+
+      preprintReviewIds.push(preprintReviewId)
+    }
+  }).pipe(Effect.repeat({ while: () => Prompt.Confirm({ message: 'Add another PREreview?' }) }))
 
   const clubs = yield* Clubs.listClubs
 
@@ -37,13 +47,19 @@ const program = Effect.fnUntraced(function* () {
     })),
   })
 
-  const confirmed = yield* Prompt.Confirm({ message: `Add this PREreview to ${club.name}?` })
+  const confirmed = yield* Prompt.Confirm({
+    message: `Add ${preprintReviewIds.length === 1 ? 'this PREreview' : `these ${preprintReviewIds.length} PREreviews`} to ${club.name}?`,
+  })
 
   if (!confirmed) {
     return
   }
 
-  yield* preprintReviews.addPublishedReviewToAClub({ preprintReviewId, clubId: club.id })
+  yield* Effect.forEach(
+    preprintReviewIds,
+    preprintReviewId => preprintReviews.addPublishedReviewToAClub({ preprintReviewId, clubId: club.id }),
+    { discard: true },
+  )
 })
 
 export const AddPreprintReviewToClub = Command.make('add-preprint-review-to-club', {}, program)
