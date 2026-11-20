@@ -13,6 +13,7 @@ import { Doi } from '../../../../src/types/Doi.ts'
 import { Name } from '../../../../src/types/Name.ts'
 import { NonEmptyString } from '../../../../src/types/NonEmptyString.ts'
 import { OrcidId } from '../../../../src/types/OrcidId.ts'
+import { Uuid } from '../../../../src/types/Uuid.ts'
 import { expect, test } from '../../../vitest.ts'
 
 const input = 12345 satisfies _.Input
@@ -123,6 +124,18 @@ const pseudonymChosen = new Events.AuthorChoicesForAReviewImported({
   persona: 'pseudonym',
 })
 
+const clubId = Uuid('4f8076fc-2219-49fc-be5f-6682ca7cc009')
+
+const otherClubId = Uuid('998f32b4-ced9-49f8-8042-ce8fe41e62ec')
+
+const reviewImportedInAClub = new Events.PreprintReviewImported({ ...reviewImported, club: clubId })
+
+const addedToAClub = new Events.PreprintReviewWasAddedToAClub({ preprintReviewId: input, clubId })
+
+const addedToAnotherClub = new Events.PreprintReviewWasAddedToAClub({ preprintReviewId: input, clubId: otherClubId })
+
+const otherReviewAddedToAClub = new Events.PreprintReviewWasAddedToAClub({ preprintReviewId: 67890, clubId })
+
 test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.PublishedPreprintReviewDetails, _.Error>]>([
   ['no events', input, [], Result.fail(new PrereviewIsNotFound())],
   ['review imported', input, [reviewImported], Result.succeed(prereview)],
@@ -148,6 +161,15 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, Result.Result<_.Publish
     [structuredReviewImported],
     Result.succeed({ ...prereview, content: { _tag: 'Structured', questions: structuredQuestions } }),
   ],
+  ['review imported in a club', input, [reviewImportedInAClub], Result.succeed({ ...prereview, clubId })],
+  ['review added to a club', input, [reviewImported, addedToAClub], Result.succeed({ ...prereview, clubId })],
+  [
+    'review moved to another club',
+    input,
+    [reviewImportedInAClub, addedToAnotherClub],
+    Result.succeed({ ...prereview, clubId: otherClubId }),
+  ],
+  ['another review added to a club', input, [reviewImported, otherReviewAddedToAClub], Result.succeed(prereview)],
   ['author list changed prior to import', input, [authorListChanged, reviewImported], Result.succeed(prereview)],
   [
     'author list changed after import',

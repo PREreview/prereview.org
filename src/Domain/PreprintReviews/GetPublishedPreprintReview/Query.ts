@@ -33,6 +33,7 @@ const createFilter = (id: Input) =>
   Events.EventFilter([
     { types: ['PreprintReviewImported'], predicates: { id } },
     { types: ['AuthorChoicesForAReviewImported'], predicates: { reviewId: id } },
+    { types: ['PreprintReviewWasAddedToAClub'], predicates: { preprintReviewId: id } },
   ])
 
 const query =
@@ -45,21 +46,23 @@ const query =
 
       const filteredEvents = Array.filter(events, Events.matches(createFilter(input)))
 
-      const { imported, authorChoices } = yield* Result.fromOption(
+      const { imported, authorChoices, clubId } = yield* Result.fromOption(
         Array.reduce(
           filteredEvents,
           Option.none<{
             imported: Events.PreprintReviewImported
             authorChoices: ReadonlyArray<Events.AuthorChoicesForAReviewImported>
+            clubId: Uuid | undefined
           }>(),
           (state, event) =>
             Match.valueTags(event, {
-              PreprintReviewImported: imported => Option.some({ imported, authorChoices: [] }),
+              PreprintReviewImported: imported => Option.some({ imported, authorChoices: [], clubId: imported.club }),
               AuthorChoicesForAReviewImported: authorChoice =>
                 Option.map(state, state => ({
                   ...state,
                   authorChoices: Array.append(state.authorChoices, authorChoice),
                 })),
+              PreprintReviewWasAddedToAClub: added => Option.map(state, state => ({ ...state, clubId: added.clubId })),
             }),
         ),
         () => new PrereviewIsNotFound(),
@@ -88,7 +91,7 @@ const query =
             Array.length(Array.filter(imported.authors, author => author._tag === 'Unknown')) -
             Array.length(authorChoices),
         },
-        ...(imported.club !== undefined ? { clubId: imported.club } : {}),
+        clubId,
         competingInterests: imported.competingInterests,
         doi: imported.doi,
         id: imported.id,
