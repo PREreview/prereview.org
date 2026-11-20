@@ -32,7 +32,7 @@ export const layerRateLimitedHttpClient = Layer.effect(
   Effect.gen(function* () {
     const httpClient = yield* HttpClient.HttpClient
     const limiter = yield* RateLimiter.RateLimiter
-    const concurrencyLimit = yield* Semaphore.make(3)
+    const concurrencyLimit = yield* Semaphore.make(2)
 
     return httpClient.pipe(
       HttpClient.timeout('2 seconds'),
@@ -41,7 +41,7 @@ export const layerRateLimitedHttpClient = Layer.effect(
         limiter,
         key: 'crossref',
         algorithm: 'token-bucket',
-        limit: 10,
+        limit: 8,
         window: '1 second',
         times: 3,
       }),

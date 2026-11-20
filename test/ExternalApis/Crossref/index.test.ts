@@ -55,7 +55,7 @@ describe('layerRateLimitedHttpClient', () => {
     }),
   )
 
-  it.effect('sends at most three requests at once', () =>
+  it.effect('sends at most two requests at once', () =>
     Effect.gen(function* () {
       let inFlight = 0
       let maxInFlight = 0
@@ -89,7 +89,33 @@ describe('layerRateLimitedHttpClient', () => {
       const actual = yield* Fiber.join(fiber)
 
       expect(actual).toHaveLength(6)
-      expect(maxInFlight).toBe(3)
+      expect(maxInFlight).toBe(2)
+    }),
+  )
+
+  it.effect('sends at most eight requests in a second', () =>
+    Effect.gen(function* () {
+      let requests = 0
+
+      yield* pipe(
+        Effect.forEach(
+          Array.from({ length: 16 }, (_, i) => i),
+          i => HttpClient.get(`https://api.crossref.org/works/10.1101%2F${i}`),
+          { concurrency: 'unbounded' },
+        ),
+        Effect.provide(
+          stubbedLayer(request =>
+            Effect.sync(() => {
+              requests++
+              return HttpClientResponse.fromWeb(request, new Response())
+            }),
+          ),
+        ),
+        Effect.forkChild,
+      )
+      yield* TestClock.adjust('1 millis')
+
+      expect(requests).toBe(8)
     }),
   )
 })
