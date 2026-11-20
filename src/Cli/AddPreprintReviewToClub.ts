@@ -66,7 +66,7 @@ const program = Effect.fnUntraced(function* () {
 
     yield* pipe(
       preprintReviews.getPreprintReview(preprintReviewId.value),
-      Effect.tap(prereview => Console.log(describePrereview(prereview))),
+      Effect.tap(prereview => Console.log(`\n${describePrereview(prereview)}\n`)),
       Effect.tap(() => Effect.sync(() => preprintReviewIds.push(preprintReviewId.value))),
       Effect.catchTags({
         PrereviewIsNotFound: () => Console.log('Not found'),
