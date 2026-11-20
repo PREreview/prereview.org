@@ -11,10 +11,7 @@ export const layerPersistedToRedis = Layer.effect(
     const redis = yield* Redis.HttpCacheRedis
 
     return {
-      get: request =>
-        redis.primary.status === 'ready'
-          ? getFromRedis(redis.primary)(request)
-          : getFromRedis(redis.readonlyFallback)(request),
+      get: getFromRedis(redis.readonlyFallback),
       set: writeToRedis(redis.primary),
       delete: deleteFromRedis(redis.primary),
     }
