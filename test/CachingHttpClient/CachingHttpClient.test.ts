@@ -5,7 +5,6 @@ import * as _ from '../../src/CachingHttpClient/index.ts'
 import { InternalHttpCacheFailure } from '../../src/CachingHttpClient/index.ts'
 import * as StatusCodes from '../../src/StatusCodes.ts'
 import * as fc from '../fc.ts'
-import { shouldNotBeCalled } from '../should-not-be-called.ts'
 import { beforeEach, describe, expect, it } from '../vitest.ts'
 
 const stubbedClient = (
@@ -466,29 +465,23 @@ describe('there is a cache entry', { concurrent: false }, () => {
   })
 })
 
-describe('getting from the cache is too slow', () => {
+describe('getting from the cache fails', () => {
   it.effect.prop(
     'makes the real request',
-    [fc.httpClientResponse(), fc.durationInput(), fc.durationInput({ min: '1 milli' })],
-    ([response, timeToStale, delay]) =>
+    [fc.httpClientResponse(), fc.durationInput(), fc.anything()],
+    ([response, timeToStale, error]) =>
       Effect.gen(function* () {
         const client = yield* pipe(
           _.CachingHttpClient(timeToStale),
           Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
           Effect.provide(
             Layer.mock(_.HttpCache, {
-              get: () =>
-                pipe(
-                  Effect.sync(shouldNotBeCalled),
-                  Effect.delay(Duration.sum(Duration.fromInputUnsafe(_.CacheTimeout), Duration.fromInputUnsafe(delay))),
-                ),
+              get: () => new InternalHttpCacheFailure({ cause: error }),
               set: () => Effect.void,
             }),
           ),
         )
-        const fiber = yield* pipe(client.execute(response.request), Effect.forkChild)
-        yield* TestClock.adjust(_.CacheTimeout)
-        const actualResponse = yield* Fiber.join(fiber)
+        const actualResponse = yield* client.execute(response.request)
 
         expect(actualResponse).toStrictEqual(response)
       }).pipe(Effect.provide(emptyQueue)),

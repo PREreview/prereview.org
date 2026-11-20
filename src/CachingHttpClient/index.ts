@@ -27,8 +27,6 @@ export * from './HttpCache.ts'
 export { layerInMemory } from './InMemory.ts'
 export { layerPersistedToRedis } from './PersistedToRedis.ts'
 
-export const CacheTimeout = '200 millis'
-
 export class RevalidationQueue extends Context.Service<
   RevalidationQueue,
   Queue.Queue<{ request: HttpClientRequest.HttpClientRequest; timeToStale: Duration.Input }>
@@ -58,12 +56,8 @@ export const CachingHttpClient: (
       const response = yield* pipe(
         cache.get(req),
         Effect.map(Option.getOrUndefined),
-        Effect.timeout(CacheTimeout),
         Effect.tapErrorTag('InternalHttpCacheFailure', error =>
           Effect.logError('Failed to read from the HttpCache').pipe(Effect.annotateLogs({ error })),
-        ),
-        Effect.tapErrorTag('TimeoutError', error =>
-          Effect.logWarning('Reading from HttpCache timed out').pipe(Effect.annotateLogs({ error })),
         ),
         Effect.orElseSucceed(Function.constUndefined),
       )

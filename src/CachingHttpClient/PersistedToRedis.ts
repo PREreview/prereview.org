@@ -23,6 +23,8 @@ export const getFromRedis =
   request =>
     pipe(
       Effect.tryPromise({ try: () => redis.readonlyFallback.get(keyForRequest(request)), catch: String }),
+      Effect.timeout('200 millis'),
+      Effect.catchTag('TimeoutError', cause => new InternalHttpCacheFailure({ cause })),
       Effect.andThen(Effect.fromNullishOr),
       Effect.andThen(Schema.decodeEffect(CacheValueFromStringSchema)),
       Effect.map(({ staleAt, response }) => ({
@@ -51,7 +53,6 @@ export const getFromRedis =
         cause => new InternalHttpCacheFailure({ cause }),
       ),
       Effect.catchNoSuchElement,
-      Effect.uninterruptible,
       Effect.withSpan('PersistedToRedis.getFromRedis'),
     )
 
