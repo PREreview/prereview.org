@@ -1,4 +1,18 @@
-import { Context, Data, Effect, identity, Option, pipe, Scope, type Result } from 'effect'
+import {
+  Context,
+  Data,
+  Effect,
+  Filter,
+  flow,
+  identity,
+  Option,
+  pipe,
+  Predicate,
+  Record,
+  Result,
+  Schema,
+  Scope,
+} from 'effect'
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
 
@@ -22,6 +36,7 @@ export type Command<
 > = Authorize extends true
   ? {
       name: string
+      inputSchema?: Schema.Codec<Input[0], unknown>
       createFilter: (...input: Input) => Events.EventFilter
       foldState: (events: ReadonlyArray<Events.Event>, ...input: Input) => State
       authorize: (state: State, ...input: Input) => boolean
@@ -29,6 +44,7 @@ export type Command<
     }
   : {
       name: string
+      inputSchema?: Schema.Codec<Input[0], unknown>
       createFilter: (...input: Input) => Events.EventFilter
       foldState: (events: ReadonlyArray<Events.Event>, ...input: Input) => State
       decide: (state: State, ...input: Input) => Result.Result<Option.Option<Events.Event>, Error>
@@ -36,6 +52,7 @@ export type Command<
 
 export interface StatelessCommand<Input extends ReadonlyArray<unknown>> {
   name: string
+  inputSchema?: Schema.Codec<Input[0], unknown>
   decide: (...input: Input) => Events.Event
 }
 
@@ -55,13 +72,15 @@ export const makeCommand = <Input extends ReadonlyArray<unknown>, State, Error, 
   EventStore.EventStore
 > =>
   Effect.gen(function* () {
-    const { name, createFilter, foldState, decide } = command
+    const { name, inputSchema, createFilter, foldState, decide } = command
     const authorize = 'authorize' in command ? command.authorize : () => true
 
     const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
     return Effect.fn(name)(
       function* (...input: Input) {
+        yield* annotateSpanWithInput(inputSchema, input[0])
+
         const filter = createFilter(...input)
 
         const { events, lastKnownPosition } = yield* pipe(
@@ -93,6 +112,7 @@ export const makeCommand = <Input extends ReadonlyArray<unknown>, State, Error, 
 
 export const makeStatelessCommand = <Input extends ReadonlyArray<unknown>>({
   name,
+  inputSchema,
   decide,
 }: StatelessCommand<Input>): Effect.Effect<
   (...input: Input) => Effect.Effect<void, UnableToHandleCommand>,
@@ -104,6 +124,8 @@ export const makeStatelessCommand = <Input extends ReadonlyArray<unknown>>({
 
     return Effect.fn(name)(
       function* (...input: Input) {
+        yield* annotateSpanWithInput(inputSchema, input[0])
+
         const event = decide(...input)
 
         yield* EventStore.append(event)
@@ -112,3 +134,29 @@ export const makeStatelessCommand = <Input extends ReadonlyArray<unknown>>({
       Effect.provide(context),
     )
   })
+
+const annotateSpanWithInput = <Input>(inputSchema: Schema.Codec<Input, unknown> | undefined, input: Input) =>
+  Option.match(
+    Option.flatMap(Option.fromNullishOr(inputSchema), schema => Schema.encodeOption(schema)(input)),
+    {
+      onNone: () => Effect.void,
+      onSome: encoded => Effect.annotateCurrentSpan(toInputAttributes(encoded)),
+    },
+  )
+
+const toInputAttributes = (encoded: unknown): Record<string, unknown> => {
+  if (!Predicate.isObject(encoded)) {
+    return { input: toAttributeValue(encoded) }
+  }
+
+  return pipe(
+    encoded,
+    Record.filterMap(
+      pipe(Filter.fromPredicate(Predicate.isNotUndefined), Filter.compose(flow(toAttributeValue, Result.succeed))),
+    ),
+    Record.mapKeys(key => `input.${key}`),
+  )
+}
+
+const toAttributeValue = (value: unknown): unknown =>
+  Predicate.isString(value) || Predicate.isNumber(value) || Predicate.isBoolean(value) ? value : JSON.stringify(value)
