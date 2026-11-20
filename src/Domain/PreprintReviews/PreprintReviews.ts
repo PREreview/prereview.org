@@ -10,6 +10,7 @@ import { EffectToFpts, FptsToEffect } from '../../RefactoringUtilities/index.ts'
 import { Clubs } from '../Clubs/index.ts'
 import type { IndeterminatePreprintId, PreprintId, Preprints } from '../Preprints/index.ts'
 import * as Prereviewers from '../Prereviewers/index.ts'
+import { AddPublishedReviewToAClub } from './AddPublishedReviewToAClub.ts'
 import { AddReviewToAClub } from './AddReviewToAClub.ts'
 import * as CheckIfUserCanAddToAClub from './CheckIfUserCanAddToAClub.ts'
 import { DeclareUseOfAi } from './DeclareUseOfAi.ts'
@@ -90,6 +91,7 @@ export class PreprintReviews extends Context.Service<
       Result.Result.Failure<GetUseOfAiDetails.Result> | Queries.UnableToQuery
     >
     addReviewToAClub: ReturnType<typeof AddReviewToAClub>
+    addPublishedReviewToAClub: Commands.FromCommand<ReturnType<typeof AddPublishedReviewToAClub>>
     markReviewAsNotInAClub: ReturnType<typeof MarkReviewAsNotInAClub>
     declareUseOfAi: ReturnType<typeof DeclareUseOfAi>
     importPreprintReview: Commands.FromCommand<typeof ImportPreprintReview>
@@ -248,6 +250,7 @@ export const layer = Layer.effect(
       getNextExpectedCommand: GetNextExpectedCommand.GetNextExpectedCommand(formStore),
       getUseOfAiDetails: GetUseOfAiDetails.GetUseOfAiDetails(formStore),
       addReviewToAClub: AddReviewToAClub(formStore, clubIds),
+      addPublishedReviewToAClub: yield* Commands.makeCommand(AddPublishedReviewToAClub(clubIds)),
       markReviewAsNotInAClub: MarkReviewAsNotInAClub(formStore),
       declareUseOfAi: DeclareUseOfAi(formStore),
       importPreprintReview: yield* Commands.makeCommand(ImportPreprintReview),
