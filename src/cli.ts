@@ -1,7 +1,7 @@
 import { OpenRouterClient } from '@effect/ai-openrouter'
 import { NodeHttpClient, NodeRuntime, NodeServices } from '@effect/platform-node'
 import { PgClient } from '@effect/sql-pg'
-import { Config, Effect, Layer, pipe, Redacted } from 'effect'
+import { Array, Config, Effect, Layer, pipe, Redacted, Schema } from 'effect'
 import * as AuthorInviteStore from './AuthorInviteStore.ts'
 import { Cli } from './Cli/index.ts'
 import * as Clubs from './Domain/Clubs/index.ts'
@@ -46,7 +46,15 @@ pipe(
         LanguageDetection.layerCld,
         OrcidRecords.layer,
         Layer.mock(Email.Email, {}),
-        Layer.mock(PreprintReviews.WasPrereviewRemoved, {}),
+        Layer.effect(
+          PreprintReviews.WasPrereviewRemoved,
+          pipe(
+            Config.withDefault(Config.Array(Schema.Int, 'REMOVED_PREREVIEWS'), []),
+            Config.map(removedPrereviews =>
+              PreprintReviews.WasPrereviewRemoved.of(id => Array.contains(removedPrereviews, id)),
+            ),
+          ),
+        ),
         Layer.provide(
           Layer.mergeAll(AuthorInviteStore.layer, PreprintReviews.FormStore.layer),
           Redis.layerPersistenceFromDataStore,
@@ -70,7 +78,9 @@ pipe(
       Layer.provide([Events.layer, SqlSensitiveDataStore.layer, LoggingHttpClient.layer]),
       Layer.provideMerge(EventDispatcher.EventDispatcherLayer),
       Layer.provide([
-        FeatureFlags.layerDefaults,
+        FeatureFlags.layerConfig({
+          useEventsForPreprintReviews: Config.withDefault(Config.Boolean('USE_EVENTS_FOR_PREPRINT_REVIEWS'), false),
+        }),
         NodeHttpClient.layerNodeHttp,
         OpenAlex.layerApiConfig({ key: Config.Redacted('OPENALEX_API_KEY') }),
         Layer.effect(
