@@ -1,4 +1,4 @@
-import { Array, Console, Effect } from 'effect'
+import { Array, Console, Effect, pipe } from 'effect'
 import { Command, Prompt } from 'effect/cli'
 import { Clubs } from '../Domain/Clubs/index.ts'
 import { PreprintReviews, type Prereview } from '../Domain/PreprintReviews/index.ts'
@@ -26,15 +26,23 @@ const program = Effect.fnUntraced(function* () {
     const preprintReviewId = yield* Prompt.Int({ message: 'Which PREreview (ID)?', min: 1 })
 
     if (Array.contains(preprintReviewIds, preprintReviewId)) {
-      yield* Console.log('Already selected')
-    } else {
-      const prereview = yield* preprintReviews.getPreprintReview(preprintReviewId)
-
-      yield* Console.log(describePrereview(prereview))
-
-      preprintReviewIds.push(preprintReviewId)
+      return yield* Console.log('Already selected')
     }
+
+    yield* pipe(
+      preprintReviews.getPreprintReview(preprintReviewId),
+      Effect.tap(prereview => Console.log(describePrereview(prereview))),
+      Effect.tap(() => Effect.sync(() => preprintReviewIds.push(preprintReviewId))),
+      Effect.catchTags({
+        PrereviewIsNotFound: () => Console.log('Not found'),
+        PrereviewWasRemoved: () => Console.log('Was removed'),
+      }),
+    )
   }).pipe(Effect.repeat({ while: () => Prompt.Confirm({ message: 'Add another PREreview?' }) }))
+
+  if (!Array.isArrayNonEmpty(preprintReviewIds)) {
+    return
+  }
 
   const clubs = yield* Clubs.listClubs
 
