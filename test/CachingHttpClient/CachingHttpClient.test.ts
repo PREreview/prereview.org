@@ -51,8 +51,37 @@ describe('there is no cache entry', () => {
           )
 
           const actualResponse = yield* client.execute(response.request)
+          yield* Effect.yieldNow
           expect(actualResponse).toStrictEqual(response)
           expect(cache.size).toBe(1)
+        }).pipe(Effect.provide(emptyQueue)),
+    )
+
+    it.effect.prop(
+      "doesn't wait for it to be cached",
+      [
+        fc.httpClientResponse({
+          request: fc.httpClientRequest({ method: fc.constant('GET') }),
+          status: fc.constant(StatusCodes.OK),
+        }),
+        fc.durationInput(),
+      ],
+      ([response, timeToStale]) =>
+        Effect.gen(function* () {
+          const client = yield* pipe(
+            _.CachingHttpClient(timeToStale),
+            Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
+            Effect.provide(
+              Layer.mock(_.HttpCache, {
+                get: () => Effect.succeedNone,
+                set: () => Effect.never,
+              }),
+            ),
+          )
+
+          const actualResponse = yield* client.execute(response.request)
+
+          expect(actualResponse).toStrictEqual(response)
         }).pipe(Effect.provide(emptyQueue)),
     )
 
@@ -195,6 +224,7 @@ describe('there is a cache entry', { concurrent: false }, () => {
         Effect.provide(_.layerInMemory(cache)),
       )
       yield* clientToPopulateCache.get(url)
+      yield* Effect.yieldNow
     }).pipe(Effect.provide(emptyQueue), Effect.provide(TestClock.layer()), Effect.runPromise),
   )
 

@@ -104,6 +104,7 @@ export const CachingHttpClient: (
                   Effect.logError('Unable to cache the response').pipe(Effect.annotateLogs({ error })),
                 ),
                 Effect.ignore,
+                Effect.forkDetach,
               ),
             orElse: () => Effect.void,
           }),
