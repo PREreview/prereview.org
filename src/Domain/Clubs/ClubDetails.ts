@@ -698,14 +698,20 @@ export const DefaultClubs: Array.NonEmptyReadonlyArray<ClubDetails> = [
       language: 'en',
       text: html`
         <p>
-          HHMI is a biomedical research organization and philanthropy that supports a vibrant community of researchers,
-          educators, students, and professionals. Together, we’re unlocking the fundamentals of biology and building an
-          open, inclusive future for science.
-        </p>
-        <p>
-          As part of a newly developed training pilot, participating graduate students and postdocs in HHMI labs will
-          learn to conduct peer review in a manner that is constructive and transparent.
-        </p>
+          HHMI is a private biomedical research institution that supports a vibrant community of
+researchers, educators, students, and professionals. Together, we&#39;re advancing our
+understanding of biology and building an open, collaborative future for science.
+Through the Transparent and Accountable Peer Review (TAP) Training Program, graduate
+students and postdocs in the HHMI community learn to write constructive and transparent peer
+review.
+      </p>
+      <p>
+        As part of the program, participants attend a workshop covering the principles and practice of
+peer review and write a review of a preprint under the guidance of their mentor or an
+experienced peer reviewer. HHMI staff read each review before it is posted publicly.
+A review from the TAP program signals that an early-career scientist found the work interesting
+and wanted to learn more about it.
+      </p>
       `,
     },
     added: Temporal.PlainDate.from('2023-11-14'),
