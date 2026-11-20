@@ -1,8 +1,9 @@
-import { Array, Console, Effect, pipe } from 'effect'
+import { Array, Console, Effect, Option, pipe } from 'effect'
 import { Command, Prompt } from 'effect/cli'
 import { Clubs } from '../Domain/Clubs/index.ts'
 import { PreprintReviews, type Prereview } from '../Domain/PreprintReviews/index.ts'
 import { plainText } from '../html.ts'
+import * as Doi from '../types/Doi.ts'
 
 const describePrereview = (prereview: Prereview): string => {
   const authors = Array.map(prereview.authors.named, author => author.name)
@@ -22,17 +23,41 @@ const program = Effect.fnUntraced(function* () {
 
   const preprintReviewIds: Array<number> = []
 
-  yield* Effect.gen(function* () {
-    const preprintReviewId = yield* Prompt.Int({ message: 'Which PREreview (ID)?', min: 1 })
+  const findPreprintReviewId = (input: string) => {
+    if (/^\d+$/.test(input.trim())) {
+      return Effect.succeedSome(parseInt(input, 10))
+    }
 
-    if (Array.contains(preprintReviewIds, preprintReviewId)) {
+    const doi = Doi.parse(input)
+
+    if (Option.isNone(doi)) {
+      return Effect.as(Console.log('Not an ID or DOI'), Option.none())
+    }
+
+    return pipe(
+      preprintReviews.getPreprintReviewIdForADoi(doi.value),
+      Effect.map(Option.some),
+      Effect.catchTag('PrereviewIsNotFound', () => Effect.as(Console.log('Not found'), Option.none())),
+    )
+  }
+
+  yield* Effect.gen(function* () {
+    const input = yield* Prompt.String({ message: 'Which PREreview (ID or DOI)?' })
+
+    const preprintReviewId = yield* findPreprintReviewId(input)
+
+    if (Option.isNone(preprintReviewId)) {
+      return
+    }
+
+    if (Array.contains(preprintReviewIds, preprintReviewId.value)) {
       return yield* Console.log('Already selected')
     }
 
     yield* pipe(
-      preprintReviews.getPreprintReview(preprintReviewId),
+      preprintReviews.getPreprintReview(preprintReviewId.value),
       Effect.tap(prereview => Console.log(describePrereview(prereview))),
-      Effect.tap(() => Effect.sync(() => preprintReviewIds.push(preprintReviewId))),
+      Effect.tap(() => Effect.sync(() => preprintReviewIds.push(preprintReviewId.value))),
       Effect.catchTags({
         PrereviewIsNotFound: () => Console.log('Not found'),
         PrereviewWasRemoved: () => Console.log('Was removed'),
