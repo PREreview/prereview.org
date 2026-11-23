@@ -288,42 +288,21 @@ export const PreprintIdEquivalence: Equivalence.Equivalence<IndeterminatePreprin
   return Doi.DoiEquivalence(a.value, b.value)
 }
 
+type PreprintIdWithDoiClass<R extends string> = Schema.Constraint & {
+  readonly fields: { readonly value: Doi.RegistrantDoiSchema<R> }
+}
+
+type PreprintIdWithDoiSchema<R extends string> =
+  | PreprintIdWithDoiClass<R>
+  | Schema.Union<ReadonlyArray<PreprintIdWithDoiClass<R> | Schema.Union<ReadonlyArray<PreprintIdWithDoiClass<R>>>>>
+
+const registrantsOf = <R extends string>(schema: PreprintIdWithDoiSchema<R>): ReadonlyArray<R> =>
+  'members' in schema ? Array.flatMap(schema.members, registrantsOf) : schema.fields.value.registrants
+
+export const PreprintDoiRegistrantSchema = Schema.Literals(Array.dedupe(registrantsOf(PreprintIdWithDoi)))
+
 export const isPreprintDoi: Predicate.Refinement<Doi.Doi, IndeterminatePreprintIdWithDoi['value']> = Doi.hasRegistrant(
-  '1101',
-  '1590',
-  '2139',
-  '2196',
-  '5281',
-  '6084',
-  '12688',
-  '14293',
-  '17605',
-  '21070',
-  '21203',
-  '26434',
-  '20944',
-  '22541',
-  '23668',
-  '31124',
-  '31219',
-  '31222',
-  '31223',
-  '31224',
-  '31234',
-  '31235',
-  '31730',
-  '32942',
-  '35542',
-  '36227',
-  '48550',
-  '51094',
-  '55458',
-  '57844',
-  '60763',
-  '62329',
-  '64898',
-  '71240',
-  '82153',
+  ...PreprintDoiRegistrantSchema.literals,
 )
 
 export const IndeterminatePreprintIdFromDoiSchema = Doi.DoiSchema.pipe(

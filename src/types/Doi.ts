@@ -8,9 +8,13 @@ export { Doi, getRegistrant, hasRegistrant, isDoi, toUrl } from 'doi-ts'
 
 export const DoiSchema: Schema.Codec<Doi.Doi, string> = pipe(Schema.String, Schema.refine(Doi.isDoi))
 
+export type RegistrantDoiSchema<R extends string> = Schema.Codec<Doi.Doi<R>, string> & {
+  readonly registrants: Array.NonEmptyReadonlyArray<R>
+}
+
 export const RegistrantDoiSchema = <R extends string>(
   ...registrants: Array.NonEmptyReadonlyArray<R>
-): Schema.Codec<Doi.Doi<R>, string> & { readonly registrants: Array.NonEmptyReadonlyArray<R> } =>
+): RegistrantDoiSchema<R> =>
   Object.assign(pipe(DoiSchema, Schema.refine(Doi.hasRegistrant(...registrants))), { registrants })
 
 export const DoiFromUrlSchema: Schema.Codec<Doi.Doi, string> = Schema.URLFromString.pipe(
