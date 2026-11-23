@@ -52,8 +52,7 @@ const BooleanFromStringSchema = Schema.Literals(['true', 'false']).pipe(
   ),
 )
 
-// oxlint-disable-next-line typescript/no-explicit-any
-const useMiddleware = <Routes extends ReadonlyArray<HttpRouter.Route<any, any>>, E, R>(
+const useMiddleware = <Routes extends ReadonlyArray<HttpRouter.Route<unknown, unknown>>, E, R>(
   routes: Routes,
   middleware: (
     handler: Effect.Effect<
