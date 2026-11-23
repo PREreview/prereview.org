@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Duration, Effect, Layer, Option, PubSub, Stream, Struct } from 'effect'
+import type { SqlClient } from 'effect/sql'
 import * as Preprints from '../src/Domain/Preprints/index.ts'
 import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
@@ -8,22 +9,19 @@ import * as _ from '../src/SqlEventStore.ts'
 import { Doi, NonEmptyString, OrcidId, Uuid } from '../src/types/index.ts'
 import * as fc from './fc.ts'
 import * as TestLibsqlClient from './TestLibsqlClient.ts'
+import * as TestPgClient from './TestPgClient.ts'
 import { describe, expect, it } from './vitest.ts'
 
 const now = Temporal.Now.instant()
 
-it.effect.prop(
-  'starts empty',
-  [
-    fc.oneof(
-      fc.record(
-        {
-          types: fc.nonEmptyArray(fc.constantFrom(...Events.EventTypes)),
-          predicate: fc.dictionary(fc.string(), fc.string()),
-        },
-        { requiredKeys: ['types'] },
-      ),
-      fc.nonEmptyArray(
+describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
+  ['LibSQL', TestLibsqlClient.layer],
+  ['Postgres (PGlite)', TestPgClient.layer],
+])('with %s', (_name, TestSqlClient) => {
+  it.effect.prop(
+    'starts empty',
+    [
+      fc.oneof(
         fc.record(
           {
             types: fc.nonEmptyArray(fc.constantFrom(...Events.EventTypes)),
@@ -31,41 +29,41 @@ it.effect.prop(
           },
           { requiredKeys: ['types'] },
         ),
-      ),
-    ),
-  ],
-  ([filter]) =>
-    Effect.gen(function* () {
-      const eventStore = yield* _.make
-
-      const actual = yield* eventStore.query(filter)
-      const all = yield* allEvents(eventStore)
-
-      expect(actual).toStrictEqual(Option.none())
-      expect(all).toStrictEqual([])
-    }).pipe(
-      Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
-      Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-      Effect.provide(Layer.mock(Events.Events, {} as never)),
-      Effect.provide(TestLibsqlClient.layer),
-    ),
-  { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
-)
-
-describe('when the last known position is none', () => {
-  it.effect.prop(
-    'appends the event',
-    [
-      fc.commentEvent(),
-      fc.oneof(
-        fc.record(
-          {
-            types: fc.nonEmptyArray(fc.constantFrom(...Events.CommentEventTypes)),
-            predicate: fc.dictionary(fc.string(), fc.string()),
-          },
-          { requiredKeys: ['types'] },
-        ),
         fc.nonEmptyArray(
+          fc.record(
+            {
+              types: fc.nonEmptyArray(fc.constantFrom(...Events.EventTypes)),
+              predicate: fc.dictionary(fc.string(), fc.string()),
+            },
+            { requiredKeys: ['types'] },
+          ),
+        ),
+      ),
+    ],
+    ([filter]) =>
+      Effect.gen(function* () {
+        const eventStore = yield* _.make
+
+        const actual = yield* eventStore.query(filter)
+        const all = yield* allEvents(eventStore)
+
+        expect(actual).toStrictEqual(Option.none())
+        expect(all).toStrictEqual([])
+      }).pipe(
+        Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
+        Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+        Effect.provide(Layer.mock(Events.Events, {} as never)),
+        Effect.provide(TestSqlClient),
+      ),
+    { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+  )
+
+  describe('when the last known position is none', () => {
+    it.effect.prop(
+      'appends the event',
+      [
+        fc.commentEvent(),
+        fc.oneof(
           fc.record(
             {
               types: fc.nonEmptyArray(fc.constantFrom(...Events.CommentEventTypes)),
@@ -73,442 +71,451 @@ describe('when the last known position is none', () => {
             },
             { requiredKeys: ['types'] },
           ),
+          fc.nonEmptyArray(
+            fc.record(
+              {
+                types: fc.nonEmptyArray(fc.constantFrom(...Events.CommentEventTypes)),
+                predicate: fc.dictionary(fc.string(), fc.string()),
+              },
+              { requiredKeys: ['types'] },
+            ),
+          ),
         ),
-      ),
-      fc.array(
-        fc.datasetReviewEvent().filter(event => event._tag !== 'InvitationToAppearOnADatasetReviewAddedToTheList'),
-      ),
-    ],
-    ([event, filter, otherEvents]) =>
-      Effect.gen(function* () {
-        const events = yield* PubSub.unbounded<Events.Event>()
-        const published = yield* PubSub.subscribe(events)
+        fc.array(
+          fc.datasetReviewEvent().filter(event => event._tag !== 'InvitationToAppearOnADatasetReviewAddedToTheList'),
+        ),
+      ],
+      ([event, filter, otherEvents]) =>
+        Effect.gen(function* () {
+          const events = yield* PubSub.unbounded<Events.Event>()
+          const published = yield* PubSub.subscribe(events)
 
-        const eventStore = yield* Effect.provide(_.make, Layer.succeed(Events.Events, events))
+          const eventStore = yield* Effect.provide(_.make, Layer.succeed(Events.Events, events))
 
-        yield* Effect.forEach(otherEvents, eventStore.append)
+          yield* Effect.forEach(otherEvents, eventStore.append)
 
-        yield* eventStore.appendIf(event, { filter, lastKnownPosition: Option.none() })
+          yield* eventStore.appendIf(event, { filter, lastKnownPosition: Option.none() })
 
-        const actual = yield* eventStore.query({ types: [event._tag], predicates: { commentId: event.commentId } })
-        const all = yield* allEvents(eventStore)
+          const actual = yield* eventStore.query({ types: [event._tag], predicates: { commentId: event.commentId } })
+          const all = yield* allEvents(eventStore)
 
-        expect(actual).toStrictEqual(Option.some({ events: [event], lastKnownPosition: expect.anything() }))
-        expect(all).toStrictEqual([...otherEvents, event])
-        expect(yield* PubSub.takeAll(published)).toContainEqual(event)
-      }).pipe(
-        Effect.provide(Uuid.layer),
-        Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-        Effect.provide(TestLibsqlClient.layer),
-      ),
-    { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
-  )
-})
+          expect(actual).toStrictEqual(Option.some({ events: [event], lastKnownPosition: expect.anything() }))
+          expect(all).toStrictEqual([...otherEvents, event])
+          expect(yield* PubSub.takeAll(published)).toContainEqual(event)
+        }).pipe(
+          Effect.provide(Uuid.layer),
+          Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+          Effect.provide(TestSqlClient),
+        ),
+      { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+    )
+  })
 
-describe('when the last known position has not changed', () => {
-  it.effect.prop(
-    'appends the event',
-    [fc.nonEmptyArray(fc.commentEvent()), fc.commentEvent()],
-    ([existingEvents, event]) =>
-      Effect.gen(function* () {
-        const events = yield* PubSub.unbounded<Events.Event>()
-        const published = yield* PubSub.subscribe(events)
+  describe('when the last known position has not changed', () => {
+    it.effect.prop(
+      'appends the event',
+      [fc.nonEmptyArray(fc.commentEvent()), fc.commentEvent()],
+      ([existingEvents, event]) =>
+        Effect.gen(function* () {
+          const events = yield* PubSub.unbounded<Events.Event>()
+          const published = yield* PubSub.subscribe(events)
 
-        const eventStore = yield* Effect.provide(_.make, Layer.succeed(Events.Events, events))
+          const eventStore = yield* Effect.provide(_.make, Layer.succeed(Events.Events, events))
 
-        yield* Effect.forEach(existingEvents, eventStore.append)
+          yield* Effect.forEach(existingEvents, eventStore.append)
 
-        const { lastKnownPosition } = yield* Effect.flatMap(
-          eventStore.query({ types: Events.CommentEventTypes }),
-          Effect.fromOption,
-        )
+          const { lastKnownPosition } = yield* Effect.flatMap(
+            eventStore.query({ types: Events.CommentEventTypes }),
+            Effect.fromOption,
+          )
 
-        yield* eventStore.appendIf(event, {
-          filter: { types: Events.CommentEventTypes },
-          lastKnownPosition: Option.some(lastKnownPosition),
-        })
-
-        const all = yield* allEvents(eventStore)
-
-        expect(all).toStrictEqual([...existingEvents, event])
-        expect(yield* PubSub.takeAll(published)).toContainEqual(event)
-      }).pipe(
-        Effect.provide(Uuid.layer),
-        Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-        Effect.provide(TestLibsqlClient.layer),
-      ),
-    { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
-  )
-})
-
-describe('when the last known position has changed', () => {
-  it.effect.prop(
-    'does nothing',
-    [fc.array(fc.commentEvent()), fc.commentEvent(), fc.uuid()],
-    ([existingEvents, event]) =>
-      Effect.gen(function* () {
-        const eventStore = yield* _.make
-
-        yield* Effect.forEach(existingEvents, eventStore.append)
-
-        const error = yield* Effect.flip(
-          eventStore.appendIf(event, {
+          yield* eventStore.appendIf(event, {
             filter: { types: Events.CommentEventTypes },
-            lastKnownPosition: Option.some(EventStore.Position.make(existingEvents.length - 1)),
-          }),
-        )
+            lastKnownPosition: Option.some(lastKnownPosition),
+          })
 
-        expect(error).toBeInstanceOf(EventStore.NewEventsFound)
+          const all = yield* allEvents(eventStore)
 
-        const all = yield* allEvents(eventStore)
+          expect(all).toStrictEqual([...existingEvents, event])
+          expect(yield* PubSub.takeAll(published)).toContainEqual(event)
+        }).pipe(
+          Effect.provide(Uuid.layer),
+          Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+          Effect.provide(TestSqlClient),
+        ),
+      { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+    )
+  })
 
-        expect(all).toStrictEqual(existingEvents)
-      }).pipe(
-        Effect.provide(Uuid.layer),
-        Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-        Effect.provide(Layer.mock(Events.Events, {} as never)),
-        Effect.provide(TestLibsqlClient.layer),
-      ),
-    { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
-  )
-})
+  describe('when the last known position has changed', () => {
+    it.effect.prop(
+      'does nothing',
+      [fc.array(fc.commentEvent()), fc.commentEvent(), fc.uuid()],
+      ([existingEvents, event]) =>
+        Effect.gen(function* () {
+          const eventStore = yield* _.make
 
-const commentId = Uuid.Uuid('6e0508a5-b227-4bca-b534-7285ec09afff')
-const otherCommentId = Uuid.Uuid('2b06c8ae-b1af-478e-8037-7506737e438c')
-const datasetReviewId = Uuid.Uuid('2404b8f0-ac79-436d-a452-ba7f1cdab753')
-const otherDatasetReviewId = Uuid.Uuid('cce9c7cf-0ed6-4abe-8840-f49a6ca54c6a')
-const preprintId1 = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/2024.01.01.12345') })
-const preprintId1Indeterminate = new Preprints.BiorxivOrMedrxivPreprintId({ value: preprintId1.value })
-const preprintId2 = new Preprints.PhilsciPreprintId({ value: 1 })
-const preprintId3 = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/2024.01.01.67890') })
+          yield* Effect.forEach(existingEvents, eventStore.append)
 
-it.effect.each<[string, Events.EventFilter, Array.NonEmptyReadonlyArray<Events.Event>, ReadonlyArray<Events.Event>]>([
-  [
-    'one type',
-    { types: ['CodeOfConductForCommentWasAgreed'] },
+          const error = yield* Effect.flip(
+            eventStore.appendIf(event, {
+              filter: { types: Events.CommentEventTypes },
+              lastKnownPosition: Option.some(EventStore.Position.make(existingEvents.length - 1)),
+            }),
+          )
+
+          expect(error).toBeInstanceOf(EventStore.NewEventsFound)
+
+          const all = yield* allEvents(eventStore)
+
+          expect(all).toStrictEqual(existingEvents)
+        }).pipe(
+          Effect.provide(Uuid.layer),
+          Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+          Effect.provide(Layer.mock(Events.Events, {} as never)),
+          Effect.provide(TestSqlClient),
+        ),
+      { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+    )
+  })
+
+  const commentId = Uuid.Uuid('6e0508a5-b227-4bca-b534-7285ec09afff')
+  const otherCommentId = Uuid.Uuid('2b06c8ae-b1af-478e-8037-7506737e438c')
+  const datasetReviewId = Uuid.Uuid('2404b8f0-ac79-436d-a452-ba7f1cdab753')
+  const otherDatasetReviewId = Uuid.Uuid('cce9c7cf-0ed6-4abe-8840-f49a6ca54c6a')
+  const preprintId1 = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/2024.01.01.12345') })
+  const preprintId1Indeterminate = new Preprints.BiorxivOrMedrxivPreprintId({ value: preprintId1.value })
+  const preprintId2 = new Preprints.PhilsciPreprintId({ value: 1 })
+  const preprintId3 = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/2024.01.01.67890') })
+
+  it.effect.each<[string, Events.EventFilter, Array.NonEmptyReadonlyArray<Events.Event>, ReadonlyArray<Events.Event>]>([
     [
-      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
-      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
-      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+      'one type',
+      { types: ['CodeOfConductForCommentWasAgreed'] },
+      [
+        new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+        new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+        new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+      ],
+      [
+        new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+        new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+        new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+      ],
     ],
     [
-      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
-      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
-      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
-    ],
-  ],
-  [
-    'multiple types',
-    { types: ['CodeOfConductForCommentWasAgreed', 'ExistenceOfVerifiedEmailAddressForCommentWasConfirmed'] },
-    [
-      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
-      new Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId }),
-      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
-    ],
-    [
-      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
-      new Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId }),
-      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
-    ],
-  ],
-  [
-    'other types',
-    { types: ['CodeOfConductForCommentWasAgreed'] },
-    [
-      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
-      new Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId }),
-      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+      'multiple types',
+      { types: ['CodeOfConductForCommentWasAgreed', 'ExistenceOfVerifiedEmailAddressForCommentWasConfirmed'] },
+      [
+        new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+        new Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId }),
+        new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+      ],
+      [
+        new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+        new Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId }),
+        new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+      ],
     ],
     [
-      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
-      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
-    ],
-  ],
-  [
-    'one type and predicate',
-    {
-      types: ['CodeOfConductForCommentWasAgreed', 'ExistenceOfVerifiedEmailAddressForCommentWasConfirmed'],
-      predicates: { commentId },
-    },
-    [
-      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
-      new Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId }),
-      new Events.CodeOfConductForCommentWasAgreed({ commentId: otherCommentId }),
+      'other types',
+      { types: ['CodeOfConductForCommentWasAgreed'] },
+      [
+        new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+        new Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId }),
+        new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+      ],
+      [
+        new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+        new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+      ],
     ],
     [
-      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
-      new Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId }),
-    ],
-  ],
-  [
-    'two types and two predicates',
-    {
-      types: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples', 'AnsweredIfTheDatasetHasEnoughMetadata'],
-      predicates: { datasetReviewId, answer: 'yes' },
-    },
-    [
-      new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
-        datasetReviewId,
-        answer: 'yes',
-        detail: Option.none(),
-      }),
-      new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
-        datasetReviewId,
-        answer: 'no',
-        detail: Option.none(),
-      }),
-      new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
-        datasetReviewId: otherDatasetReviewId,
-        answer: 'yes',
-        detail: Option.none(),
-      }),
-      new Events.AnsweredIfTheDatasetHasTrackedChanges({ datasetReviewId, answer: 'yes', detail: Option.none() }),
-      new Events.AnsweredIfTheDatasetHasTrackedChanges({ datasetReviewId, answer: 'partly', detail: Option.none() }),
-      new Events.AnsweredIfTheDatasetHasTrackedChanges({
-        datasetReviewId: otherDatasetReviewId,
-        answer: 'yes',
-        detail: Option.none(),
-      }),
-      new Events.AnsweredIfTheDatasetHasEnoughMetadata({
-        datasetReviewId,
-        answer: 'yes',
-        detail: Option.some(NonEmptyString.NonEmptyString('Some detail')),
-      }),
-      new Events.AnsweredIfTheDatasetHasEnoughMetadata({ datasetReviewId, answer: 'partly', detail: Option.none() }),
-      new Events.AnsweredIfTheDatasetHasEnoughMetadata({
-        datasetReviewId: otherDatasetReviewId,
-        answer: 'yes',
-        detail: Option.none(),
-      }),
+      'one type and predicate',
+      {
+        types: ['CodeOfConductForCommentWasAgreed', 'ExistenceOfVerifiedEmailAddressForCommentWasConfirmed'],
+        predicates: { commentId },
+      },
+      [
+        new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+        new Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId }),
+        new Events.CodeOfConductForCommentWasAgreed({ commentId: otherCommentId }),
+      ],
+      [
+        new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+        new Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId }),
+      ],
     ],
     [
-      new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
-        datasetReviewId,
-        answer: 'yes',
-        detail: Option.none(),
-      }),
-      new Events.AnsweredIfTheDatasetHasEnoughMetadata({
-        datasetReviewId,
-        answer: 'yes',
-        detail: Option.some(NonEmptyString.NonEmptyString('Some detail')),
-      }),
-    ],
-  ],
-  [
-    'multiple filters',
-    [
+      'two types and two predicates',
       {
         types: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples', 'AnsweredIfTheDatasetHasEnoughMetadata'],
         predicates: { datasetReviewId, answer: 'yes' },
       },
-      {
-        types: ['AnsweredIfTheDatasetHasEnoughMetadata'],
-        predicates: { datasetReviewId, answer: 'partly' },
-      },
+      [
+        new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+          datasetReviewId,
+          answer: 'yes',
+          detail: Option.none(),
+        }),
+        new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+          datasetReviewId,
+          answer: 'no',
+          detail: Option.none(),
+        }),
+        new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+          datasetReviewId: otherDatasetReviewId,
+          answer: 'yes',
+          detail: Option.none(),
+        }),
+        new Events.AnsweredIfTheDatasetHasTrackedChanges({ datasetReviewId, answer: 'yes', detail: Option.none() }),
+        new Events.AnsweredIfTheDatasetHasTrackedChanges({ datasetReviewId, answer: 'partly', detail: Option.none() }),
+        new Events.AnsweredIfTheDatasetHasTrackedChanges({
+          datasetReviewId: otherDatasetReviewId,
+          answer: 'yes',
+          detail: Option.none(),
+        }),
+        new Events.AnsweredIfTheDatasetHasEnoughMetadata({
+          datasetReviewId,
+          answer: 'yes',
+          detail: Option.some(NonEmptyString.NonEmptyString('Some detail')),
+        }),
+        new Events.AnsweredIfTheDatasetHasEnoughMetadata({ datasetReviewId, answer: 'partly', detail: Option.none() }),
+        new Events.AnsweredIfTheDatasetHasEnoughMetadata({
+          datasetReviewId: otherDatasetReviewId,
+          answer: 'yes',
+          detail: Option.none(),
+        }),
+      ],
+      [
+        new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+          datasetReviewId,
+          answer: 'yes',
+          detail: Option.none(),
+        }),
+        new Events.AnsweredIfTheDatasetHasEnoughMetadata({
+          datasetReviewId,
+          answer: 'yes',
+          detail: Option.some(NonEmptyString.NonEmptyString('Some detail')),
+        }),
+      ],
     ],
     [
-      new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
-        datasetReviewId,
-        answer: 'yes',
-        detail: Option.none(),
-      }),
-      new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
-        datasetReviewId,
-        answer: 'no',
-        detail: Option.none(),
-      }),
-      new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
-        datasetReviewId: otherDatasetReviewId,
-        answer: 'yes',
-        detail: Option.none(),
-      }),
-      new Events.AnsweredIfTheDatasetHasTrackedChanges({ datasetReviewId, answer: 'yes', detail: Option.none() }),
-      new Events.AnsweredIfTheDatasetHasTrackedChanges({ datasetReviewId, answer: 'partly', detail: Option.none() }),
-      new Events.AnsweredIfTheDatasetHasTrackedChanges({
-        datasetReviewId: otherDatasetReviewId,
-        answer: 'yes',
-        detail: Option.none(),
-      }),
-      new Events.AnsweredIfTheDatasetHasEnoughMetadata({
-        datasetReviewId,
-        answer: 'yes',
-        detail: Option.some(NonEmptyString.NonEmptyString('Some detail')),
-      }),
-      new Events.AnsweredIfTheDatasetHasEnoughMetadata({ datasetReviewId, answer: 'partly', detail: Option.none() }),
-      new Events.AnsweredIfTheDatasetHasEnoughMetadata({
-        datasetReviewId: otherDatasetReviewId,
-        answer: 'yes',
-        detail: Option.none(),
-      }),
+      'multiple filters',
+      [
+        {
+          types: ['AnsweredIfTheDatasetFollowsFairAndCarePrinciples', 'AnsweredIfTheDatasetHasEnoughMetadata'],
+          predicates: { datasetReviewId, answer: 'yes' },
+        },
+        {
+          types: ['AnsweredIfTheDatasetHasEnoughMetadata'],
+          predicates: { datasetReviewId, answer: 'partly' },
+        },
+      ],
+      [
+        new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+          datasetReviewId,
+          answer: 'yes',
+          detail: Option.none(),
+        }),
+        new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+          datasetReviewId,
+          answer: 'no',
+          detail: Option.none(),
+        }),
+        new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+          datasetReviewId: otherDatasetReviewId,
+          answer: 'yes',
+          detail: Option.none(),
+        }),
+        new Events.AnsweredIfTheDatasetHasTrackedChanges({ datasetReviewId, answer: 'yes', detail: Option.none() }),
+        new Events.AnsweredIfTheDatasetHasTrackedChanges({ datasetReviewId, answer: 'partly', detail: Option.none() }),
+        new Events.AnsweredIfTheDatasetHasTrackedChanges({
+          datasetReviewId: otherDatasetReviewId,
+          answer: 'yes',
+          detail: Option.none(),
+        }),
+        new Events.AnsweredIfTheDatasetHasEnoughMetadata({
+          datasetReviewId,
+          answer: 'yes',
+          detail: Option.some(NonEmptyString.NonEmptyString('Some detail')),
+        }),
+        new Events.AnsweredIfTheDatasetHasEnoughMetadata({ datasetReviewId, answer: 'partly', detail: Option.none() }),
+        new Events.AnsweredIfTheDatasetHasEnoughMetadata({
+          datasetReviewId: otherDatasetReviewId,
+          answer: 'yes',
+          detail: Option.none(),
+        }),
+      ],
+      [
+        new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+          datasetReviewId,
+          answer: 'yes',
+          detail: Option.none(),
+        }),
+        new Events.AnsweredIfTheDatasetHasEnoughMetadata({
+          datasetReviewId,
+          answer: 'yes',
+          detail: Option.some(NonEmptyString.NonEmptyString('Some detail')),
+        }),
+        new Events.AnsweredIfTheDatasetHasEnoughMetadata({ datasetReviewId, answer: 'partly', detail: Option.none() }),
+      ],
     ],
     [
-      new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
-        datasetReviewId,
-        answer: 'yes',
-        detail: Option.none(),
-      }),
-      new Events.AnsweredIfTheDatasetHasEnoughMetadata({
-        datasetReviewId,
-        answer: 'yes',
-        detail: Option.some(NonEmptyString.NonEmptyString('Some detail')),
-      }),
-      new Events.AnsweredIfTheDatasetHasEnoughMetadata({ datasetReviewId, answer: 'partly', detail: Option.none() }),
+      'complex predicates',
+      [
+        {
+          types: ['ReviewRequestForAPreprintWasStarted'],
+          predicates: { preprintId: preprintId1 },
+        },
+        {
+          types: ['ReviewRequestForAPreprintWasStarted'],
+          predicates: { preprintId: preprintId2 },
+        },
+      ],
+      [
+        new Events.ReviewRequestForAPreprintWasStarted({
+          startedAt: now,
+          preprintId: preprintId1,
+          reviewRequestId: Uuid.Uuid('2404b8f0-ac79-436d-a452-ba7f1cdab753'),
+          requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
+        }),
+        new Events.ReviewRequestForAPreprintWasStarted({
+          startedAt: now,
+          preprintId: preprintId2,
+          reviewRequestId: Uuid.Uuid('cce9c7cf-0ed6-4abe-8840-f49a6ca54c6a'),
+          requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
+        }),
+        new Events.ReviewRequestForAPreprintWasStarted({
+          startedAt: now,
+          preprintId: preprintId3,
+          reviewRequestId: Uuid.Uuid('74300474-a5d8-4fbd-b39d-1e1ff4d65fa7'),
+          requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
+        }),
+      ],
+      [
+        new Events.ReviewRequestForAPreprintWasStarted({
+          startedAt: now,
+          preprintId: preprintId1Indeterminate,
+          reviewRequestId: Uuid.Uuid('2404b8f0-ac79-436d-a452-ba7f1cdab753'),
+          requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
+        }),
+        new Events.ReviewRequestForAPreprintWasStarted({
+          startedAt: now,
+          preprintId: preprintId2,
+          reviewRequestId: Uuid.Uuid('cce9c7cf-0ed6-4abe-8840-f49a6ca54c6a'),
+          requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
+        }),
+      ],
     ],
-  ],
-  [
-    'complex predicates',
-    [
-      {
-        types: ['ReviewRequestForAPreprintWasStarted'],
-        predicates: { preprintId: preprintId1 },
-      },
-      {
-        types: ['ReviewRequestForAPreprintWasStarted'],
-        predicates: { preprintId: preprintId2 },
-      },
-    ],
-    [
-      new Events.ReviewRequestForAPreprintWasStarted({
-        startedAt: now,
-        preprintId: preprintId1,
-        reviewRequestId: Uuid.Uuid('2404b8f0-ac79-436d-a452-ba7f1cdab753'),
-        requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
-      }),
-      new Events.ReviewRequestForAPreprintWasStarted({
-        startedAt: now,
-        preprintId: preprintId2,
-        reviewRequestId: Uuid.Uuid('cce9c7cf-0ed6-4abe-8840-f49a6ca54c6a'),
-        requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
-      }),
-      new Events.ReviewRequestForAPreprintWasStarted({
-        startedAt: now,
-        preprintId: preprintId3,
-        reviewRequestId: Uuid.Uuid('74300474-a5d8-4fbd-b39d-1e1ff4d65fa7'),
-        requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
-      }),
-    ],
-    [
-      new Events.ReviewRequestForAPreprintWasStarted({
-        startedAt: now,
-        preprintId: preprintId1Indeterminate,
-        reviewRequestId: Uuid.Uuid('2404b8f0-ac79-436d-a452-ba7f1cdab753'),
-        requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
-      }),
-      new Events.ReviewRequestForAPreprintWasStarted({
-        startedAt: now,
-        preprintId: preprintId2,
-        reviewRequestId: Uuid.Uuid('cce9c7cf-0ed6-4abe-8840-f49a6ca54c6a'),
-        requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
-      }),
-    ],
-  ],
-])(
-  'find events (%s)',
-  ([, filter, events, expected]) =>
-    Effect.gen(function* () {
-      const eventStore = yield* _.make
-
-      yield* Effect.forEach(events, eventStore.append)
-
-      const actual = yield* eventStore.query(filter)
-
-      expect(actual).toStrictEqual(Option.some({ events: expected, lastKnownPosition: expect.anything() }))
-    }).pipe(
-      Effect.provide(Uuid.layer),
-      Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-      Effect.provide(Layer.mock(Events.Events, {} as never)),
-      Effect.provide(TestLibsqlClient.layer),
-    ),
-  { timeout: Duration.toMillis('60 seconds') },
-)
-
-describe('all', () => {
-  it.effect('streams nothing when there are no events', () =>
-    Effect.gen(function* () {
-      const eventStore = yield* _.make
-
-      const actual = yield* Stream.runCollect(eventStore.all)
-
-      expect(actual).toStrictEqual([])
-    }).pipe(
-      Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
-      Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-      Effect.provide(Layer.mock(Events.Events, {} as never)),
-      Effect.provide(TestLibsqlClient.layer),
-    ),
-  )
-
-  it.effect.prop(
-    'streams every event',
-    [fc.nonEmptyArray(fc.commentEvent())],
-    ([events]) =>
+  ])(
+    'find events (%s)',
+    ([, filter, events, expected]) =>
       Effect.gen(function* () {
         const eventStore = yield* _.make
 
         yield* Effect.forEach(events, eventStore.append)
+
+        const actual = yield* eventStore.query(filter)
+
+        expect(actual).toStrictEqual(Option.some({ events: expected, lastKnownPosition: expect.anything() }))
+      }).pipe(
+        Effect.provide(Uuid.layer),
+        Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+        Effect.provide(Layer.mock(Events.Events, {} as never)),
+        Effect.provide(TestSqlClient),
+      ),
+    { timeout: Duration.toMillis('60 seconds') },
+  )
+
+  describe('all', () => {
+    it.effect('streams nothing when there are no events', () =>
+      Effect.gen(function* () {
+        const eventStore = yield* _.make
 
         const actual = yield* Stream.runCollect(eventStore.all)
 
-        expect(actual).toStrictEqual([{ events, lastKnownPosition: expect.anything() }])
+        expect(actual).toStrictEqual([])
       }).pipe(
-        Effect.provide(Uuid.layer),
+        Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
         Effect.provide(Layer.mock(Events.Events, {} as never)),
-        Effect.provide(TestLibsqlClient.layer),
+        Effect.provide(TestSqlClient),
       ),
-    { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
-  )
+    )
 
-  it.effect.prop(
-    'streams many events in pages',
-    [fc.array(fc.commentEvent(), { minLength: 7, maxLength: 9 })],
-    ([events]) =>
-      Effect.gen(function* () {
-        const eventStore = yield* _.make
+    it.effect.prop(
+      'streams every event',
+      [fc.nonEmptyArray(fc.commentEvent())],
+      ([events]) =>
+        Effect.gen(function* () {
+          const eventStore = yield* _.make
 
-        yield* Effect.forEach(events, eventStore.append)
+          yield* Effect.forEach(events, eventStore.append)
 
-        const pages = yield* Stream.runCollect(eventStore.all)
+          const actual = yield* Stream.runCollect(eventStore.all)
 
-        expect(Array.map(pages, page => page.events.length)).toStrictEqual([3, 3, events.length - 6])
-        expect(Array.flatMap(pages, page => page.events)).toStrictEqual(events)
-        expect(Array.map(pages, page => page.lastKnownPosition)).toStrictEqual([3, 6, events.length])
-      }).pipe(
-        Effect.provide(Layer.succeed(_.PageSize, 3)),
-        Effect.provide(Uuid.layer),
-        Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-        Effect.provide(Layer.mock(Events.Events, {} as never)),
-        Effect.provide(TestLibsqlClient.layer),
-      ),
-    { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
-  )
-})
+          expect(actual).toStrictEqual([{ events, lastKnownPosition: expect.anything() }])
+        }).pipe(
+          Effect.provide(Uuid.layer),
+          Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+          Effect.provide(Layer.mock(Events.Events, {} as never)),
+          Effect.provide(TestSqlClient),
+        ),
+      { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+    )
 
-describe('since', () => {
-  it.effect.prop(
-    'streams events since a position',
-    [fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent())],
-    ([existingEvents, newEvents]) =>
-      Effect.gen(function* () {
-        const eventStore = yield* _.make
+    it.effect.prop(
+      'streams many events in pages',
+      [fc.array(fc.commentEvent(), { minLength: 7, maxLength: 9 })],
+      ([events]) =>
+        Effect.gen(function* () {
+          const eventStore = yield* _.make
 
-        yield* Effect.forEach(existingEvents, eventStore.append)
+          yield* Effect.forEach(events, eventStore.append)
 
-        const { lastKnownPosition } = yield* Effect.flatMap(Stream.runLast(eventStore.all), Effect.fromOption)
+          const pages = yield* Stream.runCollect(eventStore.all)
 
-        yield* Effect.forEach(newEvents, eventStore.append)
+          expect(Array.map(pages, page => page.events.length)).toStrictEqual([3, 3, events.length - 6])
+          expect(Array.flatMap(pages, page => page.events)).toStrictEqual(events)
+          expect(Array.map(pages, page => page.lastKnownPosition)).toStrictEqual([3, 6, events.length])
+        }).pipe(
+          Effect.provide(Layer.succeed(_.PageSize, 3)),
+          Effect.provide(Uuid.layer),
+          Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+          Effect.provide(Layer.mock(Events.Events, {} as never)),
+          Effect.provide(TestSqlClient),
+        ),
+      { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+    )
+  })
 
-        const actual = yield* Stream.runCollect(eventStore.since(lastKnownPosition))
+  describe('since', () => {
+    it.effect.prop(
+      'streams events since a position',
+      [fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent())],
+      ([existingEvents, newEvents]) =>
+        Effect.gen(function* () {
+          const eventStore = yield* _.make
 
-        expect(actual).toStrictEqual([{ events: newEvents, lastKnownPosition: expect.anything() }])
-      }).pipe(
-        Effect.provide(Uuid.layer),
-        Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-        Effect.provide(Layer.mock(Events.Events, {} as never)),
-        Effect.provide(TestLibsqlClient.layer),
-      ),
-    { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
-  )
+          yield* Effect.forEach(existingEvents, eventStore.append)
+
+          const { lastKnownPosition } = yield* Effect.flatMap(Stream.runLast(eventStore.all), Effect.fromOption)
+
+          yield* Effect.forEach(newEvents, eventStore.append)
+
+          const actual = yield* Stream.runCollect(eventStore.since(lastKnownPosition))
+
+          expect(actual).toStrictEqual([{ events: newEvents, lastKnownPosition: expect.anything() }])
+        }).pipe(
+          Effect.provide(Uuid.layer),
+          Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
+          Effect.provide(Layer.mock(Events.Events, {} as never)),
+          Effect.provide(TestSqlClient),
+        ),
+      { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+    )
+  })
 })
 
 const allEvents = (eventStore: EventStore.EventStore) =>

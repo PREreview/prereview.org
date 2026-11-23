@@ -144,6 +144,9 @@ importers:
       '@effect/sql-libsql':
         specifier: ^4.1.2
         version: 4.1.2(effect@4.1.2)
+      '@effect/sql-pglite':
+        specifier: ^4.1.2
+        version: 4.1.2(effect@4.1.2)
       '@effect/vitest':
         specifier: ^4.1.2
         version: 4.1.2(effect@4.1.2)(vitest@5.1.1(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))
@@ -732,11 +735,19 @@ packages:
     peerDependencies:
       effect: ^4.1.2
 
+  '@effect/sql-pglite@4.1.2':
+    resolution: {integrity: sha512-VlSvLP7+nO/dCPdwQ2fsq2WWitPnTdFEWWEQ2Vy9VI4YKMF1639MgRtiSO3CgST2TkHevaFYfiTWximxR55/0g==}
+    peerDependencies:
+      effect: ^4.1.2
+
   '@effect/vitest@4.1.2':
     resolution: {integrity: sha512-JJPwAHkJHxvM/woW9mMW/khjasAHcmwWdOMAgMy16rfqsxcVhFDnrRsvN9VI2+kMv8zDCCyBE2q1n5hzZlfE0w==}
     peerDependencies:
       effect: ^4.1.2
       vitest: '>=5.0.0 <6.0.0'
+
+  '@electric-sql/pglite@0.5.17':
+    resolution: {integrity: sha512-8SvKjiUjaU+0O0dbxjOfN+jXz14TEqDWbwDkYOW1aQ11y/ph2JvFVI27ABBo5nfw+ZfSqy4hKCNlbnbB1TDE+g==}
 
   '@esbuild/aix-ppc64@0.28.1':
     resolution: {integrity: sha512-Svl7tq8k/08+p6CXPpRjQ1fKX+1odH/BQbb48fV6fj3CWHhsoIOoY87w1oHXm0qEpkIK3ZfVgp0hed3XBXzXMQ==}
@@ -4673,10 +4684,17 @@ snapshots:
     dependencies:
       effect: 4.1.2
 
+  '@effect/sql-pglite@4.1.2(effect@4.1.2)':
+    dependencies:
+      '@electric-sql/pglite': 0.5.17
+      effect: 4.1.2
+
   '@effect/vitest@4.1.2(effect@4.1.2)(vitest@5.1.1(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))':
     dependencies:
       effect: 4.1.2
       vitest: 5.1.1(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0))
+
+  '@electric-sql/pglite@0.5.17': {}
 
   '@esbuild/aix-ppc64@0.28.1':
     optional: true
