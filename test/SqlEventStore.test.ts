@@ -1,7 +1,5 @@
-import { NodeFileSystem } from '@effect/platform-node'
-import { LibsqlClient } from '@effect/sql-libsql'
 import { Temporal } from '@js-temporal/polyfill'
-import { Array, Duration, Effect, FileSystem, Layer, Option, PubSub, Stream, Struct } from 'effect'
+import { Array, Duration, Effect, Layer, Option, PubSub, Stream, Struct } from 'effect'
 import * as Preprints from '../src/Domain/Preprints/index.ts'
 import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
@@ -9,6 +7,7 @@ import * as SensitiveDataStore from '../src/SensitiveDataStore.ts'
 import * as _ from '../src/SqlEventStore.ts'
 import { Doi, NonEmptyString, OrcidId, Uuid } from '../src/types/index.ts'
 import * as fc from './fc.ts'
+import * as TestLibsqlClient from './TestLibsqlClient.ts'
 import { describe, expect, it } from './vitest.ts'
 
 const now = Temporal.Now.instant()
@@ -48,7 +47,7 @@ it.effect.prop(
       Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
       Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
       Effect.provide(Layer.mock(Events.Events, {} as never)),
-      Effect.provide(TestLibsqlClient),
+      Effect.provide(TestLibsqlClient.layer),
     ),
   { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
 )
@@ -100,7 +99,7 @@ describe('when the last known position is none', () => {
       }).pipe(
         Effect.provide(Uuid.layer),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-        Effect.provide(TestLibsqlClient),
+        Effect.provide(TestLibsqlClient.layer),
       ),
     { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
   )
@@ -136,7 +135,7 @@ describe('when the last known position has not changed', () => {
       }).pipe(
         Effect.provide(Uuid.layer),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-        Effect.provide(TestLibsqlClient),
+        Effect.provide(TestLibsqlClient.layer),
       ),
     { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
   )
@@ -168,7 +167,7 @@ describe('when the last known position has changed', () => {
         Effect.provide(Uuid.layer),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
         Effect.provide(Layer.mock(Events.Events, {} as never)),
-        Effect.provide(TestLibsqlClient),
+        Effect.provide(TestLibsqlClient.layer),
       ),
     { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
   )
@@ -418,7 +417,7 @@ it.effect.each<[string, Events.EventFilter, Array.NonEmptyReadonlyArray<Events.E
       Effect.provide(Uuid.layer),
       Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
       Effect.provide(Layer.mock(Events.Events, {} as never)),
-      Effect.provide(TestLibsqlClient),
+      Effect.provide(TestLibsqlClient.layer),
     ),
   { timeout: Duration.toMillis('60 seconds') },
 )
@@ -435,7 +434,7 @@ describe('all', () => {
       Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
       Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
       Effect.provide(Layer.mock(Events.Events, {} as never)),
-      Effect.provide(TestLibsqlClient),
+      Effect.provide(TestLibsqlClient.layer),
     ),
   )
 
@@ -455,7 +454,7 @@ describe('all', () => {
         Effect.provide(Uuid.layer),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
         Effect.provide(Layer.mock(Events.Events, {} as never)),
-        Effect.provide(TestLibsqlClient),
+        Effect.provide(TestLibsqlClient.layer),
       ),
     { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
   )
@@ -479,7 +478,7 @@ describe('all', () => {
         Effect.provide(Uuid.layer),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
         Effect.provide(Layer.mock(Events.Events, {} as never)),
-        Effect.provide(TestLibsqlClient),
+        Effect.provide(TestLibsqlClient.layer),
       ),
     { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
   )
@@ -506,7 +505,7 @@ describe('since', () => {
         Effect.provide(Uuid.layer),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
         Effect.provide(Layer.mock(Events.Events, {} as never)),
-        Effect.provide(TestLibsqlClient),
+        Effect.provide(TestLibsqlClient.layer),
       ),
     { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
   )
@@ -514,12 +513,3 @@ describe('since', () => {
 
 const allEvents = (eventStore: EventStore.EventStore) =>
   Effect.map(Stream.runCollect(eventStore.all), Array.flatMap(Struct.get('events')))
-
-const TestLibsqlClient = Layer.unwrap(
-  Effect.gen(function* () {
-    const fs = yield* FileSystem.FileSystem
-    const file = yield* fs.makeTempFileScoped()
-
-    return LibsqlClient.layer({ url: `file:${file}` })
-  }),
-).pipe(Layer.provide(NodeFileSystem.layer))
