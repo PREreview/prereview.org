@@ -95,7 +95,7 @@ export const makeCommand = <Input extends CommandInput, State, Error, Authorize 
         const state = foldState(events, ...input)
 
         if (!authorize(state, ...input)) {
-          throw new UnableToHandleCommand({ cause: 'unauthorized' })
+          return yield* new UnableToHandleCommand({ cause: 'unauthorized' })
         }
 
         const decision = yield* Effect.fromResult(decide(state, ...input))

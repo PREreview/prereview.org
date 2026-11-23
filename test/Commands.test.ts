@@ -94,6 +94,27 @@ describe('makeCommand', () => {
       expect(attributesOf(spans, 'Test.command')).toStrictEqual({})
     }),
   )
+
+  it.effect('fails when not authorized', () =>
+    Effect.gen(function* () {
+      const definition = _.Command<[], undefined, never, true>({
+        name: 'Test.command',
+        createFilter: () => Events.EventFilter({ types: ['PreprintReviewImported'] }),
+        foldState: () => undefined,
+        authorize: () => false,
+        decide: () => Result.succeedNone,
+      })
+
+      const error = yield* pipe(
+        _.makeCommand(definition),
+        Effect.flatMap(command => command()),
+        Effect.flip,
+        Effect.provide(Layer.mock(EventStore.EventStore, { query: () => Effect.succeed(Option.none()) })),
+      )
+
+      expect(error).toStrictEqual(new _.UnableToHandleCommand({ cause: 'unauthorized' }))
+    }),
+  )
 })
 
 describe('makeStatelessCommand', () => {
