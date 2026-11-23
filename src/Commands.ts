@@ -28,15 +28,19 @@ export type FromStatelessCommand<T extends StatelessCommand<any>> = [T] extends 
 
 export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: unknown }> {}
 
+type CommandInput = readonly [] | readonly [input: unknown]
+
+type InputSchema<Input extends CommandInput> = Input extends readonly [infer I] ? Schema.Codec<I, unknown> : never
+
 export type Command<
-  Input extends ReadonlyArray<unknown>,
+  Input extends CommandInput,
   State,
   Error,
   Authorize extends boolean = false,
 > = Authorize extends true
   ? {
       name: string
-      inputSchema?: Schema.Codec<Input[0], unknown>
+      inputSchema?: InputSchema<Input>
       createFilter: (...input: Input) => Events.EventFilter
       foldState: (events: ReadonlyArray<Events.Event>, ...input: Input) => State
       authorize: (state: State, ...input: Input) => boolean
@@ -44,27 +48,27 @@ export type Command<
     }
   : {
       name: string
-      inputSchema?: Schema.Codec<Input[0], unknown>
+      inputSchema?: InputSchema<Input>
       createFilter: (...input: Input) => Events.EventFilter
       foldState: (events: ReadonlyArray<Events.Event>, ...input: Input) => State
       decide: (state: State, ...input: Input) => Result.Result<Option.Option<Events.Event>, Error>
     }
 
-export interface StatelessCommand<Input extends ReadonlyArray<unknown>> {
+export interface StatelessCommand<Input extends CommandInput> {
   name: string
-  inputSchema?: Schema.Codec<Input[0], unknown>
+  inputSchema?: InputSchema<Input>
   decide: (...input: Input) => Events.Event
 }
 
-export const Command: <Input extends ReadonlyArray<unknown>, State, Error, Authorize extends boolean = false>(
+export const Command: <Input extends CommandInput, State, Error, Authorize extends boolean = false>(
   command: Command<Input, State, Error, Authorize>,
 ) => Command<Input, State, Error, Authorize> = identity
 
-export const StatelessCommand: <Input extends ReadonlyArray<unknown>>(
+export const StatelessCommand: <Input extends CommandInput>(
   command: StatelessCommand<Input>,
 ) => StatelessCommand<Input> = identity
 
-export const makeCommand = <Input extends ReadonlyArray<unknown>, State, Error, Authorize extends boolean = false>(
+export const makeCommand = <Input extends CommandInput, State, Error, Authorize extends boolean = false>(
   command: Command<Input, State, Error, Authorize>,
 ): Effect.Effect<
   (...input: Input) => Effect.Effect<void, Error | UnableToHandleCommand>,
@@ -110,7 +114,7 @@ export const makeCommand = <Input extends ReadonlyArray<unknown>, State, Error, 
     )
   })
 
-export const makeStatelessCommand = <Input extends ReadonlyArray<unknown>>({
+export const makeStatelessCommand = <Input extends CommandInput>({
   name,
   inputSchema,
   decide,
