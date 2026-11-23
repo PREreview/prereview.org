@@ -23,20 +23,15 @@ export type Query<F extends (...args: never) => unknown, E = never> = (
   ? Effect.Effect<R, UnableToQuery | Exclude<E | L, UnexpectedSequenceOfEvents>>
   : Effect.Effect<ReturnType<F>, UnableToQuery | Exclude<E, UnexpectedSequenceOfEvents>>
 
-// oxlint-disable-next-line typescript/no-explicit-any
-export type FromOnDemandQuery<T extends OnDemandQuery<any, any, any>> = [T] extends [
-  OnDemandQuery<infer Input, infer Result, infer Error>,
-]
-  ? (...input: Input) => Effect.Effect<Result, UnableToQuery | Error>
-  : never
+export type FromOnDemandQuery<T> =
+  T extends OnDemandQuery<infer Input extends QueryInput, infer Result, infer Error>
+    ? (...input: Input) => Effect.Effect<Result, UnableToQuery | Error>
+    : never
 
-// oxlint-disable-next-line typescript/no-explicit-any
-export type FromStatefulQuery<T extends StatefulQuery<any, any, any, any>> = [T] extends [
-  // oxlint-disable-next-line typescript/no-explicit-any
-  StatefulQuery<infer Input, infer Result, infer Error, any>,
-]
-  ? (...input: Input) => Effect.Effect<Result, Error>
-  : never
+export type FromStatefulQuery<T> =
+  T extends Pick<StatefulQuery<infer Input extends QueryInput, infer Result, infer Error, never>, 'query'>
+    ? (...input: Input) => Effect.Effect<Result, Error>
+    : never
 
 export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: unknown }> {}
 

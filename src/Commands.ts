@@ -2,15 +2,15 @@ import { Context, Data, Effect, identity, Option, pipe, Predicate, Record, type 
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
 
-// oxlint-disable-next-line typescript/no-explicit-any
-export type FromCommand<T extends Command<any, any, any>> = [T] extends [Command<infer Input, any, infer Error>]
-  ? (...input: Input) => Effect.Effect<void, Error | UnableToHandleCommand>
-  : never
+export type FromCommand<T> =
+  T extends Pick<Command<infer Input extends CommandInput, never, infer Error>, 'decide'>
+    ? (...input: Input) => Effect.Effect<void, Error | UnableToHandleCommand>
+    : never
 
-// oxlint-disable-next-line typescript/no-explicit-any
-export type FromStatelessCommand<T extends StatelessCommand<any>> = [T] extends [StatelessCommand<infer Input>]
-  ? (...input: Input) => Effect.Effect<void, UnableToHandleCommand>
-  : never
+export type FromStatelessCommand<T> =
+  T extends StatelessCommand<infer Input extends CommandInput>
+    ? (...input: Input) => Effect.Effect<void, UnableToHandleCommand>
+    : never
 
 export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: unknown }> {}
 
