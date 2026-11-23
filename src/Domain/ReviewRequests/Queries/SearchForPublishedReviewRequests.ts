@@ -3,8 +3,9 @@ import type { LanguageCode } from 'iso-639-1'
 import * as Events from '../../../Events.ts'
 import * as Queries from '../../../Queries.ts'
 import { getRegistrant, type Registrant } from '../../../types/Doi.ts'
-import type { FieldId } from '../../../types/field.ts'
+import { type FieldId, FieldIdSchema } from '../../../types/field.ts'
 import { Temporal, type Uuid } from '../../../types/index.ts'
+import { Iso6391Schema } from '../../../types/iso639.ts'
 import { getTopicField, type TopicId } from '../../../types/Topic.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import * as Errors from '../Errors.ts'
@@ -23,12 +24,14 @@ export interface PageOfReviewRequests {
   }>
 }
 
-export interface Input {
-  field?: FieldId
-  language?: LanguageCode
-  page: number
-  doiRegistrants?: Array.NonEmptyReadonlyArray<Registrant<Preprints.IndeterminatePreprintIdWithDoi['value']>>
-}
+export type Input = typeof Input.Type
+
+const Input = Schema.Struct({
+  field: Schema.optional(FieldIdSchema),
+  language: Schema.optional(Iso6391Schema),
+  page: Schema.Int,
+  doiRegistrants: Schema.optional(Schema.NonEmptyArray(Preprints.PreprintDoiRegistrantSchema)),
+})
 
 export type Result = Result.Result<PageOfReviewRequests, Errors.NoReviewRequestsFound>
 
@@ -244,6 +247,7 @@ const query = (state: State, input: Input): Result =>
 
 export const SearchForPublishedReviewRequests = Queries.StatefulQuery({
   name: 'ReviewRequestQueries.searchForPublishedReviewRequests',
+  inputSchema: Input,
   initialState,
   updateStateWithEvents,
   query,
