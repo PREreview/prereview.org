@@ -1,4 +1,4 @@
-import { Array, Record } from 'effect'
+import { Array, pipe, Record, Struct } from 'effect'
 import * as Preprints from '../../Domain/Preprints/index.ts'
 import type { SupportedLocale } from '../../locales/index.ts'
 import type { Registrant } from '../../types/Doi.ts'
@@ -36,4 +36,8 @@ export const isServer = (value: string): value is Server => value in servers
 export const registrantsForServer = (
   server: Server,
 ): Array.NonEmptyReadonlyArray<Registrant<Preprints.PreprintIdWithDoi['value']>> =>
-  Array.flatten(Array.map(servers[server], type => type.fields.value.registrants)) as never
+  pipe(
+    Struct.get(servers, server),
+    Array.flatMap(type => type.fields.value.registrants),
+    Array.dedupe,
+  )
