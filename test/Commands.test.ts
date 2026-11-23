@@ -62,7 +62,7 @@ describe('makeCommand', () => {
 
       expect(attributesOf(spans, 'Test.command')).toStrictEqual({
         'input.id': '123',
-        'input.tags': '["a","b"]',
+        'input.tags': ['a', 'b'],
         'input.flag': true,
       })
     }),
@@ -84,6 +84,46 @@ describe('makeCommand', () => {
       const spans = yield* run(command(Schema.NumberFromString), 123)
 
       expect(attributesOf(spans, 'Test.command')).toStrictEqual({ input: '123' })
+    }),
+  )
+
+  it.effect('records bigints as strings', () =>
+    Effect.gen(function* () {
+      const spans = yield* run(command(Schema.Struct({ id: Schema.BigInt, ids: Schema.Array(Schema.BigInt) })), {
+        id: 1n,
+        ids: [2n, 3n],
+      })
+
+      expect(attributesOf(spans, 'Test.command')).toStrictEqual({ 'input.id': '1', 'input.ids': ['2', '3'] })
+    }),
+  )
+
+  it.effect('records a single bigint as a string', () =>
+    Effect.gen(function* () {
+      const spans = yield* run(command(Schema.BigInt), 1n)
+
+      expect(attributesOf(spans, 'Test.command')).toStrictEqual({ input: '1' })
+    }),
+  )
+
+  it.effect('records an array as a single value', () =>
+    Effect.gen(function* () {
+      const spans = yield* run(command(Schema.Array(Schema.String)), ['a', 'b'])
+
+      expect(attributesOf(spans, 'Test.command')).toStrictEqual({ input: ['a', 'b'] })
+    }),
+  )
+
+  it.effect('records a nested object as it is', () =>
+    Effect.gen(function* () {
+      const spans = yield* run(
+        command(Schema.Struct({ author: Schema.Struct({ id: Schema.NumberFromString, name: Schema.String }) })),
+        { author: { id: 123, name: 'Josiah Carberry' } },
+      )
+
+      expect(attributesOf(spans, 'Test.command')).toStrictEqual({
+        'input.author': { id: '123', name: 'Josiah Carberry' },
+      })
     }),
   )
 
@@ -137,7 +177,7 @@ describe('makeStatelessCommand', () => {
 
       expect(attributesOf(spans, 'Test.statelessCommand')).toStrictEqual({
         'input.id': '123',
-        'input.tags': '[]',
+        'input.tags': [],
         'input.flag': false,
       })
     }),

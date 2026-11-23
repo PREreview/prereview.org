@@ -1,18 +1,4 @@
-import {
-  Context,
-  Data,
-  Effect,
-  Filter,
-  flow,
-  identity,
-  Option,
-  pipe,
-  Predicate,
-  Record,
-  Result,
-  Schema,
-  Scope,
-} from 'effect'
+import { Context, Data, Effect, identity, Option, pipe, Predicate, Record, type Result, Schema, Scope } from 'effect'
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
 
@@ -81,9 +67,11 @@ export const makeCommand = <Input extends CommandInput, State, Error, Authorize 
 
     const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
+    const annotateSpanWithInput = makeAnnotateSpanWithInput(inputSchema)
+
     return Effect.fn(name)(
       function* (...input: Input) {
-        yield* annotateSpanWithInput(inputSchema, input[0])
+        yield* annotateSpanWithInput(input[0])
 
         const filter = createFilter(...input)
 
@@ -126,9 +114,11 @@ export const makeStatelessCommand = <Input extends CommandInput>({
   Effect.gen(function* () {
     const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 
+    const annotateSpanWithInput = makeAnnotateSpanWithInput(inputSchema)
+
     return Effect.fn(name)(
       function* (...input: Input) {
-        yield* annotateSpanWithInput(inputSchema, input[0])
+        yield* annotateSpanWithInput(input[0])
 
         const event = decide(...input)
 
@@ -139,28 +129,32 @@ export const makeStatelessCommand = <Input extends CommandInput>({
     )
   })
 
-const annotateSpanWithInput = <Input>(inputSchema: Schema.Codec<Input, unknown> | undefined, input: Input) =>
-  Option.match(
-    Option.flatMap(Option.fromNullishOr(inputSchema), schema => Schema.encodeOption(schema)(input)),
-    {
+const makeAnnotateSpanWithInput = <Input>(
+  inputSchema: Schema.Codec<Input, unknown> | undefined,
+): ((input: Input) => Effect.Effect<void>) => {
+  if (inputSchema === undefined) {
+    return () => Effect.void
+  }
+
+  const encode = Schema.encodeOption(Schema.toCodecJson(inputSchema))
+
+  return input =>
+    Option.match(encode(input), {
       onNone: () => Effect.void,
       onSome: encoded => Effect.annotateCurrentSpan(toInputAttributes(encoded)),
-    },
-  )
+    })
+}
 
-const toInputAttributes = (encoded: unknown): Record<string, unknown> => {
-  if (!Predicate.isObject(encoded)) {
-    return { input: toAttributeValue(encoded) }
+const toInputAttributes = (encoded: Schema.Json): Record<string, Schema.Json> => {
+  if (!isJsonObject(encoded)) {
+    return encoded === null ? {} : { input: encoded }
   }
 
   return pipe(
     encoded,
-    Record.filterMap(
-      pipe(Filter.fromPredicate(Predicate.isNotUndefined), Filter.compose(flow(toAttributeValue, Result.succeed))),
-    ),
+    Record.filter(Predicate.isNotNull),
     Record.mapKeys(key => `input.${key}`),
   )
 }
 
-const toAttributeValue = (value: unknown): unknown =>
-  Predicate.isString(value) || Predicate.isNumber(value) || Predicate.isBoolean(value) ? value : JSON.stringify(value)
+const isJsonObject: (json: Schema.Json) => json is Schema.JsonObject = Schema.is(Schema.JsonObject)

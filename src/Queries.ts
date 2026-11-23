@@ -2,15 +2,13 @@ import {
   Array,
   Data,
   Effect,
-  Filter,
-  flow,
   identity,
   Option,
   pipe,
   Predicate,
   Record,
   Ref,
-  Result,
+  type Result,
   Schema,
   Struct,
 } from 'effect'
@@ -87,9 +85,11 @@ export const makeOnDemandQuery = <Input extends QueryInput, Result, Error = neve
   Effect.gen(function* () {
     const eventStore = yield* EventStore.EventStore
 
+    const annotateSpanWithInput = makeAnnotateSpanWithInput(inputSchema)
+
     return Effect.fn(name)(
       function* (...input: Input) {
-        yield* annotateSpanWithInput(inputSchema, input[0])
+        yield* annotateSpanWithInput(input[0])
 
         const filter = createFilter(...input)
 
@@ -134,8 +134,10 @@ export const makeStatefulQuery = <Input extends QueryInput, Result, Error = neve
       ),
     )
 
+    const annotateSpanWithInput = makeAnnotateSpanWithInput(inputSchema)
+
     return Effect.fn(name)(function* (...input: Input) {
-      yield* annotateSpanWithInput(inputSchema, input[0])
+      yield* annotateSpanWithInput(input[0])
 
       const currentState = yield* Ref.get(state)
 
@@ -143,31 +145,35 @@ export const makeStatefulQuery = <Input extends QueryInput, Result, Error = neve
     })
   })
 
-const annotateSpanWithInput = <Input>(inputSchema: Schema.Codec<Input, unknown> | undefined, input: Input) =>
-  Option.match(
-    Option.flatMap(Option.fromNullishOr(inputSchema), schema => Schema.encodeOption(schema)(input)),
-    {
+const makeAnnotateSpanWithInput = <Input>(
+  inputSchema: Schema.Codec<Input, unknown> | undefined,
+): ((input: Input) => Effect.Effect<void>) => {
+  if (inputSchema === undefined) {
+    return () => Effect.void
+  }
+
+  const encode = Schema.encodeOption(Schema.toCodecJson(inputSchema))
+
+  return input =>
+    Option.match(encode(input), {
       onNone: () => Effect.void,
       onSome: encoded => Effect.annotateCurrentSpan(toInputAttributes(encoded)),
-    },
-  )
+    })
+}
 
-const toInputAttributes = (encoded: unknown): Record<string, unknown> => {
-  if (!Predicate.isObject(encoded)) {
-    return { input: toAttributeValue(encoded) }
+const toInputAttributes = (encoded: Schema.Json): Record<string, Schema.Json> => {
+  if (!isJsonObject(encoded)) {
+    return encoded === null ? {} : { input: encoded }
   }
 
   return pipe(
     encoded,
-    Record.filterMap(
-      pipe(Filter.fromPredicate(Predicate.isNotUndefined), Filter.compose(flow(toAttributeValue, Result.succeed))),
-    ),
+    Record.filter(Predicate.isNotNull),
     Record.mapKeys(key => `input.${key}`),
   )
 }
 
-const toAttributeValue = (value: unknown): unknown =>
-  Predicate.isString(value) || Predicate.isNumber(value) || Predicate.isBoolean(value) ? value : JSON.stringify(value)
+const isJsonObject: (json: Schema.Json) => json is Schema.JsonObject = Schema.is(Schema.JsonObject)
 
 /** @deprecated */
 export const makeQuery = <Filter extends Events.EventFilter, Input, Result, Error>(
