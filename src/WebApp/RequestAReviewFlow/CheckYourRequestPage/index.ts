@@ -55,7 +55,6 @@ export const CheckYourRequestPage: ({
           RedirectResponse({ location: routeForMissing[Array.headNonEmpty(error.missing)].href({ preprintId }) }),
         ),
       UnableToGetPersona: () => HavingProblemsPage,
-      UnableToQuery: () => HavingProblemsPage,
       UnknownReviewRequest: () => PageNotFound,
       UserIsNotLoggedIn: () =>
         Effect.succeed(LogInResponse({ location: Routes.RequestAReviewOfThisPreprint.href({ preprintId }) })),
@@ -98,7 +97,6 @@ export const CheckYourRequestSubmission: ({
           RedirectResponse({ location: routeForMissing[Array.headNonEmpty(error.missing)].href({ preprintId }) }),
         ),
       UnableToHandleCommand: () => Locale.useSync(FailureMessage),
-      UnableToQuery: () => Locale.useSync(FailureMessage),
       UnknownReviewRequest: () => PageNotFound,
       UserIsNotLoggedIn: () =>
         Effect.succeed(LogInResponse({ location: Routes.RequestAReviewOfThisPreprint.href({ preprintId }) })),

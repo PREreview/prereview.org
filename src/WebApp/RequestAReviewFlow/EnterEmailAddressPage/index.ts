@@ -46,7 +46,6 @@ export const EnterEmailAddressPage: ({
       PreprintIsUnavailable: () => HavingProblemsPage,
       ReviewRequestHasBeenPublished: () =>
         Effect.succeed(RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId }) })),
-      UnableToQuery: () => HavingProblemsPage,
       UnknownReviewRequest: () => PageNotFound,
       UserIsNotLoggedIn: () =>
         Effect.succeed(LogInResponse({ location: Routes.RequestAReviewOfThisPreprint.href({ preprintId }) })),
@@ -107,7 +106,6 @@ export const EnterEmailAddressSubmission: ({
       ReviewRequestHasBeenPublished: () =>
         Effect.succeed(RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId }) })),
       UnableToHandleCommand: () => HavingProblemsPage,
-      UnableToQuery: () => HavingProblemsPage,
       UnknownReviewRequest: () => PageNotFound,
       UserIsNotLoggedIn: () =>
         Effect.succeed(LogInResponse({ location: Routes.RequestAReviewOfThisPreprint.href({ preprintId }) })),

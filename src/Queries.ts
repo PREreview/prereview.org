@@ -37,7 +37,7 @@ export type FromStatefulQuery<T extends StatefulQuery<any, any, any, any>> = [T]
   // oxlint-disable-next-line typescript/no-explicit-any
   StatefulQuery<infer Input, infer Result, infer Error, any>,
 ]
-  ? (...input: Input) => Effect.Effect<Result, Error | UnableToQuery>
+  ? (...input: Input) => Effect.Effect<Result, Error>
   : never
 
 export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: unknown }> {}

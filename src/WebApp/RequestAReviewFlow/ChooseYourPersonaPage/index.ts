@@ -54,7 +54,6 @@ export const ChooseYourPersonaPage: ({
       PreprintIsUnavailable: () => HavingProblemsPage,
       ReviewRequestHasBeenPublished: () =>
         Effect.succeed(RedirectResponse({ location: Routes.RequestAReviewPublished.href({ preprintId }) })),
-      UnableToQuery: () => HavingProblemsPage,
       UnableToGetPersona: () => HavingProblemsPage,
       UnknownReviewRequest: () => PageNotFound,
       UserIsNotLoggedIn: () =>

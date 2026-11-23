@@ -2,13 +2,12 @@ import { Effect, Layer } from 'effect'
 import { Locale } from '../../../src/Context.ts'
 import * as Preprints from '../../../src/Domain/Preprints/index.ts'
 import * as ReviewRequests from '../../../src/Domain/ReviewRequests/index.ts'
-import * as Queries from '../../../src/Queries.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/RequestAReviewFlow/PublishedPage/index.ts'
 import * as Routes from '../../../src/routes.ts'
 import { LoggedInUser } from '../../../src/user.ts'
 import * as fc from '../../fc.ts'
-import { describe, expect, it, vi } from '../../vitest.ts'
+import { describe, expect, it } from '../../vitest.ts'
 
 describe('requestReviewPublished', () => {
   describe('when the user is logged in', () => {
@@ -69,41 +68,6 @@ describe('requestReviewPublished', () => {
             Layer.mock(ReviewRequests.ReviewRequestQueries, {
               getPublishedReviewRequestByAPrereviewer: () => new ReviewRequests.UnknownReviewRequest({}),
             }),
-          ]),
-        ),
-    )
-
-    it.effect.prop(
-      "when the review can't be loaded",
-      [fc.indeterminatePreprintId(), fc.user(), fc.preprintTitle({ id: fc.preprintId() }), fc.supportedLocale()],
-      ([preprintId, user, preprintTitle, locale]) =>
-        Effect.gen(function* () {
-          const getPublishedReviewRequestByAPrereviewer = vi.fn<
-            (typeof ReviewRequests.ReviewRequestQueries.Service)['getPublishedReviewRequestByAPrereviewer']
-          >(() => new Queries.UnableToQuery({}))
-
-          const actual = yield* Effect.provide(
-            _.PublishedPage({ preprintId }),
-            Layer.mock(ReviewRequests.ReviewRequestQueries, { getPublishedReviewRequestByAPrereviewer }),
-          )
-
-          expect(actual).toStrictEqual({
-            _tag: 'PageResponse',
-            status: StatusCodes.ServiceUnavailable,
-            title: expect.anything(),
-            main: expect.anything(),
-            skipToLabel: 'main',
-            js: [],
-          })
-          expect(getPublishedReviewRequestByAPrereviewer).toHaveBeenCalledWith({
-            requesterId: user.orcid,
-            preprintId: preprintTitle.id,
-          })
-        }).pipe(
-          Effect.provide([
-            Layer.succeed(Locale, locale),
-            Layer.succeed(LoggedInUser, user),
-            Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
           ]),
         ),
     )
