@@ -26,14 +26,14 @@ export type Query<F extends (...args: never) => unknown, E = never> = (
   : Effect.Effect<ReturnType<F>, UnableToQuery | Exclude<E, UnexpectedSequenceOfEvents>>
 
 // oxlint-disable-next-line typescript/no-explicit-any
-export type FromOnDemandQuery<T extends OnDemandQuery<ReadonlyArray<any>, any, any>> = [T] extends [
+export type FromOnDemandQuery<T extends OnDemandQuery<any, any, any>> = [T] extends [
   OnDemandQuery<infer Input, infer Result, infer Error>,
 ]
   ? (...input: Input) => Effect.Effect<Result, UnableToQuery | Error>
   : never
 
 // oxlint-disable-next-line typescript/no-explicit-any
-export type FromStatefulQuery<T extends StatefulQuery<ReadonlyArray<any>, any, any, any>> = [T] extends [
+export type FromStatefulQuery<T extends StatefulQuery<any, any, any, any>> = [T] extends [
   // oxlint-disable-next-line typescript/no-explicit-any
   StatefulQuery<infer Input, infer Result, infer Error, any>,
 ]
@@ -44,9 +44,13 @@ export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: u
 
 export class UnexpectedSequenceOfEvents extends Data.TaggedError('UnexpectedSequenceOfEvents')<{ cause?: unknown }> {}
 
-export interface OnDemandQuery<Input extends ReadonlyArray<unknown>, Result, Error = never> {
+type QueryInput = readonly [] | readonly [input: unknown]
+
+type InputSchema<Input extends QueryInput> = Input extends readonly [infer I] ? Schema.Codec<I, unknown> : never
+
+export interface OnDemandQuery<Input extends QueryInput, Result, Error = never> {
   name: string
-  inputSchema?: Schema.Codec<Input[0], unknown>
+  inputSchema?: InputSchema<Input>
   createFilter: (...input: Input) => Events.EventFilter
   query: (
     events: ReadonlyArray<Events.Event>,
@@ -54,23 +58,23 @@ export interface OnDemandQuery<Input extends ReadonlyArray<unknown>, Result, Err
   ) => Result.Result<Result, Error | UnexpectedSequenceOfEvents>
 }
 
-export interface StatefulQuery<Input extends ReadonlyArray<unknown>, Result, Error = never, State = unknown> {
+export interface StatefulQuery<Input extends QueryInput, Result, Error = never, State = unknown> {
   name: string
-  inputSchema?: Schema.Codec<Input[0], unknown>
+  inputSchema?: InputSchema<Input>
   initialState: State
   updateStateWithEvents: (state: State, events: Array.NonEmptyReadonlyArray<Events.Event>) => State
   query: (state: State, ...input: Input) => Result.Result<Result, Error>
 }
 
-export const OnDemandQuery: <Input extends ReadonlyArray<unknown>, Result, Error = never>(
+export const OnDemandQuery: <Input extends QueryInput, Result, Error = never>(
   query: OnDemandQuery<Input, Result, Error>,
 ) => OnDemandQuery<Input, Result, Error> = identity
 
-export const StatefulQuery: <Input extends ReadonlyArray<unknown>, Result, Error = never, State = unknown>(
+export const StatefulQuery: <Input extends QueryInput, Result, Error = never, State = unknown>(
   query: StatefulQuery<Input, Result, Error, State>,
 ) => StatefulQuery<Input, Result, Error, State> = identity
 
-export const makeOnDemandQuery = <Input extends ReadonlyArray<unknown>, Result, Error = never>({
+export const makeOnDemandQuery = <Input extends QueryInput, Result, Error = never>({
   name,
   inputSchema,
   createFilter,
@@ -103,7 +107,7 @@ export const makeOnDemandQuery = <Input extends ReadonlyArray<unknown>, Result, 
     )
   })
 
-export const makeStatefulQuery = <Input extends ReadonlyArray<unknown>, Result, Error = never, State = unknown>({
+export const makeStatefulQuery = <Input extends QueryInput, Result, Error = never, State = unknown>({
   name,
   inputSchema,
   initialState,
