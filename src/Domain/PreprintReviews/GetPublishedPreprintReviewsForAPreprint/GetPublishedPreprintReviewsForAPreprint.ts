@@ -1,6 +1,6 @@
 import { Effect, pipe, Schema } from 'effect'
-import type * as EventDispatcher from '../../../EventDispatcher.ts'
 import * as Queries from '../../../Queries.ts'
+import type * as StatefulQueries from '../../../StatefulQueries.ts'
 import { type IndeterminatePreprintId, IndeterminatePreprintIdFromStringSchema } from '../../Preprints/index.ts'
 import type { GetPublishedPreprintReview, PublishedPreprintReview } from '../GetPublishedPreprintReview/index.ts'
 import { WasPrereviewRemoved } from '../WasPrereviewRemoved.ts'
@@ -16,7 +16,7 @@ export const GetPublishedPreprintReviewsForAPreprint = (
 ): Effect.Effect<
   GetPublishedPreprintReviewsForAPreprint,
   never,
-  EventDispatcher.EventDispatcher | WasPrereviewRemoved
+  StatefulQueries.StatefulQueries | WasPrereviewRemoved
 > =>
   Effect.gen(function* () {
     const wasPrereviewRemoved = yield* WasPrereviewRemoved

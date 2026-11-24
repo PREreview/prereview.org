@@ -13,9 +13,9 @@ import {
   Schema,
   Struct,
 } from 'effect'
-import * as EventDispatcher from './EventDispatcher.ts'
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
+import * as StatefulQueries from './StatefulQueries.ts'
 
 /** @deprecated */
 export type Query<F extends (...args: never) => unknown, E = never> = (
@@ -112,15 +112,15 @@ export const makeStatefulQuery = <Input extends QueryInput, Result, Error = neve
 }: StatefulQuery<Input, Result, Error, State>): Effect.Effect<
   (...input: Input) => Effect.Effect<Result, Error | UnableToQuery>,
   never,
-  EventDispatcher.EventDispatcher
+  StatefulQueries.StatefulQueries
 > =>
   Effect.gen(function* () {
-    const eventDispatcher = yield* EventDispatcher.EventDispatcher
+    const statefulQueries = yield* StatefulQueries.StatefulQueries
 
     const state = yield* Ref.make(initialState)
     const failure = yield* Ref.make(Option.none<unknown>())
 
-    yield* eventDispatcher.addSubscriber(events =>
+    yield* statefulQueries.register(events =>
       pipe(
         Effect.forEach(
           Array.chunksOf(events, 100),

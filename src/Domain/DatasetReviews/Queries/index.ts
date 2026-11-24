@@ -1,7 +1,7 @@
 import { Array, Context, Effect, Layer, Scope } from 'effect'
-import type * as EventDispatcher from '../../../EventDispatcher.ts'
 import * as EventStore from '../../../EventStore.ts'
 import * as Queries from '../../../Queries.ts'
+import type * as StatefulQueries from '../../../StatefulQueries.ts'
 import type { Uuid } from '../../../types/index.ts'
 import type { Clubs } from '../../Clubs/index.ts'
 import type { Datasets } from '../../Datasets/index.ts'
@@ -327,7 +327,7 @@ export type { UseOfAi } from './CheckIfUserCanDeclareIfAiWasUsedToGenerateNewIde
 const makeDatasetReviewQueries: Effect.Effect<
   typeof DatasetReviewQueries.Service,
   never,
-  Clubs | Datasets | EventStore.EventStore | EventDispatcher.EventDispatcher | Prereviewers
+  Clubs | Datasets | EventStore.EventStore | StatefulQueries.StatefulQueries | Prereviewers
 > = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
 

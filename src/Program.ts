@@ -11,7 +11,6 @@ import * as PreprintReviews from './Domain/PreprintReviews/index.ts'
 import * as Prereviewers from './Domain/Prereviewers/index.ts'
 import * as Prereviews from './Domain/Prereviews/index.ts'
 import * as ReviewRequests from './Domain/ReviewRequests/index.ts'
-import * as EventDispatcher from './EventDispatcher.ts'
 import { Contentful } from './ExternalApis/Contentful/index.ts'
 import {
   Cloudinary,
@@ -44,6 +43,7 @@ import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import * as RequestCollapsingHttpClient from './RequestCollapsingHttpClient.ts'
 import * as SqlEventStore from './SqlEventStore.ts'
 import * as SqlSensitiveDataStore from './SqlSensitiveDataStore.ts'
+import * as StatefulQueries from './StatefulQueries.ts'
 import { Uuid } from './types/index.ts'
 import * as WebApp from './WebApp/index.ts'
 
@@ -53,7 +53,7 @@ const Workers = Layer.mergeAll(
   ReviewRequests.reactionsWorker,
   Comments.ReactToCommentEvents,
   CachingHttpClient.layerRevalidationWorker,
-  EventDispatcher.worker,
+  StatefulQueries.worker,
 )
 
 const Domain = pipe(
@@ -110,7 +110,7 @@ const Infrastructure = pipe(
   Layer.provideMerge(SqlSensitiveDataStore.layer),
   Layer.provideMerge(
     Layer.mergeAll(
-      EventDispatcher.EventDispatcherLayer,
+      StatefulQueries.layer,
       Uuid.layer,
       CachingHttpClient.layerRevalidationQueue,
       Layer.provide(RateLimiter.layer, RateLimiter.layerStoreMemory),
@@ -121,7 +121,7 @@ const Infrastructure = pipe(
 
 export const Program = pipe(
   Layer.mergeAll(WebApp.layer, Workers),
-  Layer.provide(Layer.effectDiscard(EventDispatcher.replayExistingEvents)),
+  Layer.provide(Layer.effectDiscard(StatefulQueries.replay)),
   Layer.provide(Domain),
   Layer.provide(ExternalInteractions),
   Layer.provide(Clubs.layer),

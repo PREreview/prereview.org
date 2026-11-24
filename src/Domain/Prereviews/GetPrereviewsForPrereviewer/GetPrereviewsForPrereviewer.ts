@@ -1,6 +1,6 @@
 import { Array, Context, Effect, flow, Option, pipe, Scope, Struct } from 'effect'
-import type * as EventDispatcher from '../../../EventDispatcher.ts'
 import * as Queries from '../../../Queries.ts'
+import type * as StatefulQueries from '../../../StatefulQueries.ts'
 import type { OrcidId } from '../../../types/index.ts'
 import { getTopicField, getTopicSubfield } from '../../../types/Topic.ts'
 import { DatasetReviewQueries } from '../../DatasetReviews/index.ts'
@@ -22,7 +22,7 @@ export type GetPrereviewsForPrereviewer = (
 export const GetPrereviewsForPrereviewer: Effect.Effect<
   GetPrereviewsForPrereviewer,
   never,
-  DatasetReviewQueries | EventDispatcher.EventDispatcher | PreprintReviews | WasPrereviewRemoved
+  DatasetReviewQueries | StatefulQueries.StatefulQueries | PreprintReviews | WasPrereviewRemoved
 > = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<DatasetReviewQueries | PreprintReviews>(), Context.omit(Scope.Scope))
   const wasPrereviewRemoved = yield* WasPrereviewRemoved

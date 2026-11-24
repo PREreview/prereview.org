@@ -11,7 +11,6 @@ import * as PreprintReviews from './Domain/PreprintReviews/index.ts'
 import * as Prereviewers from './Domain/Prereviewers/index.ts'
 import * as ReviewRequest from './Domain/ReviewRequests/index.ts'
 import { embeddingsLayer } from './Embeddings/index.ts'
-import * as EventDispatcher from './EventDispatcher.ts'
 import { Crossref, Datacite, JapanLinkCenter, OpenAlex, Orcid, Philsci, Zenodo } from './ExternalApis/index.ts'
 import { Email, LanguageDetection, OpenAlexWorks, OrcidRecords, PreprintData } from './ExternalInteractions/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
@@ -19,13 +18,14 @@ import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import * as Redis from './Redis.ts'
 import * as SqlEventStore from './SqlEventStore.ts'
 import * as SqlSensitiveDataStore from './SqlSensitiveDataStore.ts'
+import * as StatefulQueries from './StatefulQueries.ts'
 import { Uuid } from './types/index.ts'
 
 pipe(
   Cli(process.argv.slice(2)),
   Effect.provide(
     pipe(
-      Layer.effectDiscard(EventDispatcher.replayExistingEvents),
+      Layer.effectDiscard(StatefulQueries.replay),
       Layer.provideMerge(PreprintReviews.layer),
       Layer.provideMerge(
         Layer.mergeAll(
@@ -75,7 +75,7 @@ pipe(
         ),
       ),
       Layer.provide([SqlSensitiveDataStore.layer, LoggingHttpClient.layer]),
-      Layer.provideMerge(EventDispatcher.EventDispatcherLayer),
+      Layer.provideMerge(StatefulQueries.layer),
       Layer.provide([
         FeatureFlags.layerConfig({
           useEventsForPreprintReviews: Config.withDefault(Config.Boolean('USE_EVENTS_FOR_PREPRINT_REVIEWS'), false),

@@ -1,7 +1,7 @@
 import { Context, Effect, pipe, Scope } from 'effect'
-import type { EventDispatcher } from '../../../EventDispatcher.ts'
 import type * as EventStore from '../../../EventStore.ts'
 import * as Queries from '../../../Queries.ts'
+import type { StatefulQueries } from '../../../StatefulQueries.ts'
 import type { Clubs } from '../../Clubs/index.ts'
 import type { Preprints } from '../../Preprints/index.ts'
 import type { Prereviewers } from '../../Prereviewers/index.ts'
@@ -23,7 +23,7 @@ export type GetPublishedPreprintReview = (
 export const GetPublishedPreprintReview: Effect.Effect<
   GetPublishedPreprintReview,
   never,
-  Clubs | EventDispatcher | EventStore.EventStore | Preprints | Prereviewers | WasPrereviewRemoved
+  Clubs | StatefulQueries | EventStore.EventStore | Preprints | Prereviewers | WasPrereviewRemoved
 > = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<Clubs | Preprints | Prereviewers>(), Context.omit(Scope.Scope))
 

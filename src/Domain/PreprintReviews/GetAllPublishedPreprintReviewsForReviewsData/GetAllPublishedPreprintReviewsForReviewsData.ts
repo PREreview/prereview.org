@@ -1,6 +1,6 @@
 import { Array, Context, Effect, Option, pipe, Predicate, Schedule, Scope } from 'effect'
-import type * as EventDispatcher from '../../../EventDispatcher.ts'
 import * as Queries from '../../../Queries.ts'
+import type * as StatefulQueries from '../../../StatefulQueries.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import { Prereviewers } from '../../Prereviewers/index.ts'
 import { WasPrereviewRemoved } from '../WasPrereviewRemoved.ts'
@@ -19,7 +19,7 @@ export type GetAllPublishedPreprintReviewsForReviewsData = Effect.Effect<
 export const GetAllPublishedPreprintReviewsForReviewsData: Effect.Effect<
   GetAllPublishedPreprintReviewsForReviewsData,
   never,
-  EventDispatcher.EventDispatcher | Preprints.Preprints | Prereviewers | WasPrereviewRemoved
+  StatefulQueries.StatefulQueries | Preprints.Preprints | Prereviewers | WasPrereviewRemoved
 > = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<Preprints.Preprints | Prereviewers>(), Context.omit(Scope.Scope))
 

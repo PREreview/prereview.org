@@ -5,29 +5,29 @@ import * as EventStore from './EventStore.ts'
 type Subscriber = (events: Array.NonEmptyReadonlyArray<Events.Event>) => Effect.Effect<void>
 
 class LastCursor extends Context.Service<LastCursor, Ref.Ref<Option.Option<EventStore.Cursor>>>()(
-  'EventDispatcher/LastCursor',
+  'StatefulQueries/LastCursor',
 ) {}
 
 class Subscribers extends Context.Service<Subscribers, Ref.Ref<ReadonlyArray<Subscriber>>>()(
-  'EventDispatcher/Subscribers',
+  'StatefulQueries/Subscribers',
 ) {}
 
-export class EventDispatcher extends Context.Service<
-  EventDispatcher,
+export class StatefulQueries extends Context.Service<
+  StatefulQueries,
   {
-    addSubscriber: (subscriber: Subscriber) => Effect.Effect<void>
+    register: (subscriber: Subscriber) => Effect.Effect<void>
   }
->()('EventDispatcher') {}
+>()('StatefulQueries') {}
 
-export const EventDispatcherLayer = Layer.mergeAll(
+export const layer = Layer.mergeAll(
   Layer.provideMerge(
     Layer.effect(
-      EventDispatcher,
+      StatefulQueries,
       Effect.gen(function* () {
         const subscribers = yield* Subscribers
 
         return {
-          addSubscriber: subscriber => Ref.update(subscribers, Array.append(subscriber)),
+          register: subscriber => Ref.update(subscribers, Array.append(subscriber)),
         }
       }),
     ),
@@ -36,7 +36,7 @@ export const EventDispatcherLayer = Layer.mergeAll(
   Layer.effect(LastCursor, Ref.make(Option.none())),
 )
 
-const dispatchPage = Effect.fn('EventDispatcher.dispatchPage')(function* (page: EventStore.Page) {
+const updateWithPage = Effect.fn('StatefulQueries.updateWithPage')(function* (page: EventStore.Page) {
   const lastCursor = yield* LastCursor
   const subscribers = yield* Subscribers
   const allSubscribers = yield* Ref.get(subscribers)
@@ -52,7 +52,9 @@ const dispatchPage = Effect.fn('EventDispatcher.dispatchPage')(function* (page: 
             Array.filter(other => other !== subscriber),
           ),
           Effect.andThen(
-            Effect.annotateLogs(Effect.logError('Subscriber failed, so no longer dispatching to it'), { defect }),
+            Effect.annotateLogs(Effect.logError('Stateful query failed to update, so no longer updating it'), {
+              defect,
+            }),
           ),
         ),
       ),
@@ -62,7 +64,7 @@ const dispatchPage = Effect.fn('EventDispatcher.dispatchPage')(function* (page: 
   yield* Ref.set(lastCursor, Option.some(Array.lastNonEmpty(page).cursor))
 })
 
-const dispatchExistingEvents = Effect.gen(function* () {
+const updateWithExistingEvents = Effect.gen(function* () {
   const lastCursor = yield* LastCursor
 
   yield* Stream.runForEach(
@@ -70,16 +72,16 @@ const dispatchExistingEvents = Effect.gen(function* () {
       onNone: () => EventStore.all,
       onSome: EventStore.since,
     }),
-    dispatchPage,
+    updateWithPage,
   )
-}).pipe(Effect.withSpan('EventDispatcher.dispatchExistingEvents'))
+}).pipe(Effect.withSpan('StatefulQueries.replay'))
 
-const dispatchNewEvents = Effect.gen(function* () {
+const updateWithNewEvents = Effect.gen(function* () {
   const lastCursor = yield* LastCursor
 
   yield* Stream.runForEach(
     EventStore.subscribe({ after: Option.getOrUndefined(yield* Ref.get(lastCursor)) }),
-    dispatchPage,
+    updateWithPage,
   )
 })
 
@@ -87,22 +89,24 @@ export const worker = Layer.effectDiscard(
   Effect.acquireRelease(
     Effect.gen(function* () {
       yield* pipe(
-        dispatchNewEvents,
-        Effect.tapError(error => Effect.annotateLogs(Effect.logError('DispatchNewEvents failed'), { error })),
+        updateWithNewEvents,
+        Effect.tapError(error =>
+          Effect.annotateLogs(Effect.logError('Unable to update stateful queries with new events'), { error }),
+        ),
         Effect.retry(Schedule.spaced('2 seconds')),
         Effect.forkScoped,
       )
 
-      yield* Effect.logDebug('EventDispatcher worker started')
+      yield* Effect.logDebug('StatefulQueries worker started')
     }),
-    () => Effect.logDebug('EventDispatcher worker stopped'),
+    () => Effect.logDebug('StatefulQueries worker stopped'),
     { interruptible: true },
   ),
 )
 
-export const replayExistingEvents = pipe(
+export const replay = pipe(
   Effect.logDebug('Replaying existing events'),
-  Effect.andThen(dispatchExistingEvents),
+  Effect.andThen(updateWithExistingEvents),
   Effect.timeout('20 seconds'),
   Effect.tap(() => Effect.logDebug('Existing events replayed')),
   Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to replay existing events'), { error })),

@@ -1,6 +1,6 @@
 import { Effect, pipe } from 'effect'
-import type * as EventDispatcher from '../../../EventDispatcher.ts'
 import * as Queries from '../../../Queries.ts'
+import type * as StatefulQueries from '../../../StatefulQueries.ts'
 import type { Doi } from '../../../types/Doi.ts'
 import { Query } from './Query.ts'
 import type { PrereviewIsNotFound } from './Types.ts'
@@ -12,7 +12,7 @@ export type GetPreprintReviewIdForADoi = (
 export const GetPreprintReviewIdForADoi: Effect.Effect<
   GetPreprintReviewIdForADoi,
   never,
-  EventDispatcher.EventDispatcher
+  StatefulQueries.StatefulQueries
 > = Effect.gen(function* () {
   const query = yield* Queries.makeStatefulQuery(Query)
 

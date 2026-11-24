@@ -42,7 +42,6 @@ import * as PreprintReviews from '../src/Domain/PreprintReviews/index.ts'
 import { BiorxivPreprintId } from '../src/Domain/Preprints/index.ts'
 import * as Prereviewers from '../src/Domain/Prereviewers/index.ts'
 import { Embeddings } from '../src/Embeddings/index.ts'
-import * as EventDispatcher from '../src/EventDispatcher.ts'
 import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
 import { ContentfulConfig, ContentfulId, type Entries } from '../src/ExternalApis/Contentful/index.ts'
@@ -60,6 +59,7 @@ import { SlackOauth } from '../src/SlackOauth.ts'
 import * as SlackUserIds from '../src/SlackUserIds.ts'
 import * as SqlEventStore from '../src/SqlEventStore.ts'
 import * as SqlSensitiveDataStore from '../src/SqlSensitiveDataStore.ts'
+import * as StatefulQueries from '../src/StatefulQueries.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
 import { Doi } from '../src/types/Doi.ts'
 import { EmailAddress } from '../src/types/EmailAddress.ts'
@@ -2537,7 +2537,7 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
           Effect.provide(
             pipe(
               SqlEventStore.layer,
-              Layer.provide([SqlSensitiveDataStore.layer, EventDispatcher.EventDispatcherLayer]),
+              Layer.provide([SqlSensitiveDataStore.layer, StatefulQueries.layer]),
               Layer.provide([Uuid.layer, sqlClientLayer]),
             ),
           ),

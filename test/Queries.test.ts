@@ -1,8 +1,8 @@
 import { Effect, Layer, Option, pipe, Result, Schema, Tracer } from 'effect'
-import * as EventDispatcher from '../src/EventDispatcher.ts'
 import * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
 import * as _ from '../src/Queries.ts'
+import * as StatefulQueries from '../src/StatefulQueries.ts'
 import { Temporal, Uuid } from '../src/types/index.ts'
 import { describe, expect, it } from './vitest.ts'
 
@@ -152,7 +152,7 @@ describe('makeStatefulQuery', () => {
       yield* pipe(
         _.makeStatefulQuery(definition),
         Effect.flatMap(query => query({ id: 123, tags: [], flag: false })),
-        Effect.provide(Layer.mock(EventDispatcher.EventDispatcher, { addSubscriber: () => Effect.void })),
+        Effect.provide(Layer.mock(StatefulQueries.StatefulQueries, { register: () => Effect.void })),
         Effect.withTracer(tracer),
       )
 
@@ -166,7 +166,7 @@ describe('makeStatefulQuery', () => {
 
   it.effect('fails its queries once updating its state has failed', () =>
     Effect.gen(function* () {
-      const subscribers: Array<Parameters<(typeof EventDispatcher.EventDispatcher.Service)['addSubscriber']>[0]> = []
+      const subscribers: Array<Parameters<(typeof StatefulQueries.StatefulQueries.Service)['register']>[0]> = []
 
       const query = yield* pipe(
         _.makeStatefulQuery(
@@ -180,8 +180,8 @@ describe('makeStatefulQuery', () => {
           }),
         ),
         Effect.provide(
-          Layer.mock(EventDispatcher.EventDispatcher, {
-            addSubscriber: subscriber => Effect.sync(() => subscribers.push(subscriber)),
+          Layer.mock(StatefulQueries.StatefulQueries, {
+            register: subscriber => Effect.sync(() => subscribers.push(subscriber)),
           }),
         ),
       )
@@ -197,7 +197,7 @@ describe('makeStatefulQuery', () => {
   it.effect('records updating its state on a span', () =>
     Effect.gen(function* () {
       const { spans, tracer } = recordSpans()
-      const subscribers: Array<Parameters<(typeof EventDispatcher.EventDispatcher.Service)['addSubscriber']>[0]> = []
+      const subscribers: Array<Parameters<(typeof StatefulQueries.StatefulQueries.Service)['register']>[0]> = []
 
       yield* pipe(
         _.makeStatefulQuery(
@@ -209,8 +209,8 @@ describe('makeStatefulQuery', () => {
           }),
         ),
         Effect.provide(
-          Layer.mock(EventDispatcher.EventDispatcher, {
-            addSubscriber: subscriber => Effect.sync(() => subscribers.push(subscriber)),
+          Layer.mock(StatefulQueries.StatefulQueries, {
+            register: subscriber => Effect.sync(() => subscribers.push(subscriber)),
           }),
         ),
       )

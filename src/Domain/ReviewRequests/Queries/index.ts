@@ -1,7 +1,7 @@
 import { Context, Effect, Fiber, Layer, Match } from 'effect'
-import type * as EventDispatcher from '../../../EventDispatcher.ts'
 import type * as EventStore from '../../../EventStore.ts'
 import * as Queries from '../../../Queries.ts'
+import type * as StatefulQueries from '../../../StatefulQueries.ts'
 import { ReviewRequestNotReadyToBePublished } from '../Errors.ts'
 import { DoesAPreprintHaveAReviewRequest } from './DoesAPreprintHaveAReviewRequest.ts'
 import { DoesAReviewRequestNeedAContactAddressToBeVerified } from './DoesAReviewRequestNeedAContactAddressToBeVerified.ts'
@@ -141,7 +141,7 @@ export { ReviewRequestForStats } from './ListAllPublishedReviewRequestsForStats.
 const makeReviewRequestQueries: Effect.Effect<
   typeof ReviewRequestQueries.Service,
   never,
-  EventStore.EventStore | EventDispatcher.EventDispatcher
+  EventStore.EventStore | StatefulQueries.StatefulQueries
 > = Effect.gen(function* () {
   const getReviewRequestReadyToBePublished = yield* Queries.makeStatefulQuery(GetReviewRequestReadyToBePublished)
 
