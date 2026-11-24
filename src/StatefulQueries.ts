@@ -1,4 +1,4 @@
-import { Array, Context, Effect, Layer, Option, pipe, Ref, Schedule, Stream, Struct } from 'effect'
+import { Array, Context, Data, Effect, Layer, Option, pipe, Ref, Schedule, Stream, Struct } from 'effect'
 import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
 
@@ -11,6 +11,10 @@ class LastCursor extends Context.Service<LastCursor, Ref.Ref<Option.Option<Event
 class Subscribers extends Context.Service<Subscribers, Ref.Ref<ReadonlyArray<Subscriber>>>()(
   'StatefulQueries/Subscribers',
 ) {}
+
+class HasReplayed extends Context.Service<HasReplayed, Ref.Ref<boolean>>()('StatefulQueries/HasReplayed') {}
+
+export class RegisteredAfterReplay extends Data.TaggedError('RegisteredAfterReplay') {}
 
 export class StatefulQueries extends Context.Service<
   StatefulQueries,
@@ -25,13 +29,23 @@ export const layer = Layer.mergeAll(
       StatefulQueries,
       Effect.gen(function* () {
         const subscribers = yield* Subscribers
+        const hasReplayed = yield* HasReplayed
 
         return {
-          register: subscriber => Ref.update(subscribers, Array.append(subscriber)),
+          register: Effect.fnUntraced(function* (subscriber) {
+            if (yield* Ref.get(hasReplayed)) {
+              return yield* Effect.die(new RegisteredAfterReplay())
+            }
+
+            yield* Ref.update(subscribers, Array.append(subscriber))
+          }),
         }
       }),
     ),
-    Layer.effect(Subscribers, Ref.make([] as ReadonlyArray<Subscriber>)),
+    Layer.mergeAll(
+      Layer.effect(Subscribers, Ref.make([] as ReadonlyArray<Subscriber>)),
+      Layer.effect(HasReplayed, Ref.make(false)),
+    ),
   ),
   Layer.effect(LastCursor, Ref.make(Option.none())),
 )
@@ -66,6 +80,8 @@ const updateWithPage = Effect.fn('StatefulQueries.updateWithPage')(function* (pa
 
 const updateWithExistingEvents = Effect.gen(function* () {
   const lastCursor = yield* LastCursor
+
+  yield* Ref.set(yield* HasReplayed, true)
 
   yield* Stream.runForEach(
     Option.match(yield* Ref.get(lastCursor), {

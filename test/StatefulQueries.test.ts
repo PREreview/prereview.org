@@ -1,4 +1,4 @@
-import { Effect, Layer, pipe, Queue, Ref } from 'effect'
+import { Effect, Exit, Layer, pipe, Queue, Ref, Result } from 'effect'
 import { sample } from 'fast-check'
 import type * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
@@ -27,6 +27,20 @@ describe('replay', () => {
       ])
 
       expect(actual).toStrictEqual([events, events])
+    }).pipe(Effect.provide(TestLayer)),
+  )
+})
+
+describe('register', () => {
+  it.effect('refuses a stateful query once the replay has started', () =>
+    Effect.gen(function* () {
+      const statefulQueries = yield* _.StatefulQueries
+
+      yield* _.replay
+
+      const actual = yield* Effect.exit(statefulQueries.register(() => Effect.void))
+
+      expect(Exit.findDefect(actual)).toStrictEqual(Result.succeed(new _.RegisteredAfterReplay()))
     }).pipe(Effect.provide(TestLayer)),
   )
 })
