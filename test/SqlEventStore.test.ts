@@ -522,7 +522,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
           yield* Effect.forEach(existingEvents, eventStore.append)
 
-          const cursor = yield* Effect.flatMap(eventStore.latestCursor, Effect.fromOption)
+          const cursor = yield* eventStore.latestCursor
 
           yield* Effect.forEach(newEvents, eventStore.append)
 
@@ -550,7 +550,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
           yield* Effect.forEach(existingEvents, eventStore.append)
 
-          const cursor = yield* Effect.flatMap(eventStore.latestCursor, Effect.fromOption)
+          const cursor = yield* eventStore.latestCursor
 
           yield* Effect.forEach(newEvents, eventStore.append)
 
@@ -595,21 +595,29 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
   })
 
   describe('latestCursor', () => {
-    it.effect('is none when there are no events', () =>
-      Effect.gen(function* () {
-        const eventStore = yield* _.make
+    it.effect.prop(
+      'is the beginning when there are no events',
+      [fc.nonEmptyArray(fc.commentEvent())],
+      ([events]) =>
+        Effect.gen(function* () {
+          const eventStore = yield* _.make
 
-        const actual = yield* eventStore.latestCursor
+          const cursor = yield* eventStore.latestCursor
 
-        expect(actual).toStrictEqual(Option.none())
-      }).pipe(
-        Effect.provide([
-          Layer.mock(Uuid.GenerateUuid, {}),
-          Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-          Layer.mock(Events.Events, {} as never),
-          TestSqlClient,
-        ]),
-      ),
+          yield* Effect.forEach(events, eventStore.append)
+
+          const actual = yield* Stream.runCollect(eventStore.since(cursor))
+
+          expect(actual).toStrictEqual([{ events, cursor: expect.anything() }])
+        }).pipe(
+          Effect.provide([
+            Uuid.layer,
+            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
+            Layer.mock(Events.Events, {} as never),
+            TestSqlClient,
+          ]),
+        ),
+      { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
     )
 
     it.effect.prop(
@@ -625,7 +633,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
           const actual = yield* eventStore.latestCursor
 
-          expect(actual).toStrictEqual(Option.some(cursor))
+          expect(actual).toStrictEqual(cursor)
         }).pipe(
           Effect.provide([
             Uuid.layer,
@@ -669,7 +677,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
           yield* Effect.forEach(events, eventStore.append)
 
-          const cursor = yield* Effect.flatMap(eventStore.latestCursor, Effect.fromOption)
+          const cursor = yield* eventStore.latestCursor
 
           yield* eventStore.saveCheckpoint(name, cursor)
 
@@ -696,11 +704,11 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
           yield* Effect.forEach(existingEvents, eventStore.append)
 
-          yield* eventStore.saveCheckpoint(name, yield* Effect.flatMap(eventStore.latestCursor, Effect.fromOption))
+          yield* eventStore.saveCheckpoint(name, yield* eventStore.latestCursor)
 
           yield* Effect.forEach(newEvents, eventStore.append)
 
-          const cursor = yield* Effect.flatMap(eventStore.latestCursor, Effect.fromOption)
+          const cursor = yield* eventStore.latestCursor
 
           yield* eventStore.saveCheckpoint(name, cursor)
 
@@ -727,7 +735,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
           yield* Effect.forEach(events, eventStore.append)
 
-          yield* eventStore.saveCheckpoint(name!, yield* Effect.flatMap(eventStore.latestCursor, Effect.fromOption))
+          yield* eventStore.saveCheckpoint(name!, yield* eventStore.latestCursor)
 
           const actual = yield* eventStore.loadCheckpoint(otherName!)
 
@@ -840,7 +848,7 @@ describe('on Postgres', () => {
 
       const actual = yield* eventStore.latestCursor
 
-      expect(actual).toStrictEqual(Option.some(cursor))
+      expect(actual).toStrictEqual(cursor)
     }).pipe(
       Effect.provide([
         Events.layer,
@@ -961,7 +969,7 @@ describe('on a real Postgres', { skip: process.env['SKIP_CONTAINER_TESTS'] === '
         yield* Deferred.await(slowEventAppended)
         yield* eventStore.append(fastEvent!)
 
-        const latestCursor = yield* Effect.flatMap(eventStore.latestCursor, Effect.fromOption)
+        const latestCursor = yield* eventStore.latestCursor
 
         yield* Deferred.succeed(commitSlowEvent, undefined)
         yield* Fiber.join(slowTransaction)

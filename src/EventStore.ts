@@ -31,7 +31,7 @@ export interface EventStore {
 
   readonly since: (cursor: Cursor, filter?: EventFilter) => Stream.Stream<Page, FailedToGetEvents>
 
-  readonly latestCursor: Effect.Effect<Option.Option<Cursor>, FailedToGetEvents>
+  readonly latestCursor: Effect.Effect<Cursor, FailedToGetEvents>
 
   readonly loadCheckpoint: (name: string) => Effect.Effect<Option.Option<Cursor>, FailedToLoadCheckpoint>
 

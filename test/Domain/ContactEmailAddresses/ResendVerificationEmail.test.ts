@@ -85,7 +85,7 @@ it.effect.each<[string, _.Input, Result.Result<void, _.Error>, EmailAddress | un
       ]),
     )
     const actualEvents = yield* pipe(
-      Stream.runCollect(Option.match(cursor, { onNone: () => eventStore.all, onSome: eventStore.since })),
+      Stream.runCollect(eventStore.since(cursor)),
       Effect.map(Array.flatMap(Struct.get('events'))),
       Effect.map(Array.map(event => event._tag)),
     )

@@ -313,7 +313,7 @@ export const make: Effect.Effect<
       orElse: () => Stream.paginate(cursor, cursor => getNextPageAfter(cursor, filter)),
     })
 
-  const all: EventStore.EventStore['all'] = streamAfter(makeCursor(BigInt(0), EventStore.Position.make(0)))
+  const all: EventStore.EventStore['all'] = streamAfter(beginning)
 
   const since: EventStore.EventStore['since'] = streamAfter
 
@@ -348,7 +348,10 @@ export const make: Effect.Effect<
     Effect.map(
       flow(
         Array.head,
-        Option.map(row => makeCursor(row.transactionId ?? BigInt(0), row.position)),
+        Option.match({
+          onNone: () => beginning,
+          onSome: row => makeCursor(row.transactionId ?? BigInt(0), row.position),
+        }),
       ),
     ),
     Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to get the latest cursor'), { error })),
@@ -614,6 +617,8 @@ const CursorParts = Schema.TemplateLiteralParser([Schema.BigInt, ':', EventStore
 
 const makeCursor = (transactionId: bigint, position: EventStore.Position) =>
   EventStore.Cursor.make(Schema.encodeSync(CursorParts)([transactionId, ':', position]))
+
+const beginning = makeCursor(BigInt(0), EventStore.Position.make(0))
 
 const readCursor = (cursor: EventStore.Cursor) =>
   Effect.map(Schema.decodeUnknownEffect(CursorParts)(cursor), ([transactionId, , position]) => ({
