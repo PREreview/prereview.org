@@ -1,6 +1,6 @@
 import { Data, Effect, Option, pipe, Schema, SchemaGetter, SchemaIssue } from 'effect'
+import { Uuid } from '../types/index.ts'
 import * as SensitiveDataStore from './SensitiveDataStore.ts'
-import { Uuid } from './types/index.ts'
 
 export const SensitiveData = <A, I, R>(schema: Schema.Codec<A, I, R, R>) =>
   Uuid.UuidSchema.pipe(

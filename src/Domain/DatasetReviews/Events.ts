@@ -1,5 +1,5 @@
 import { Array, Schema } from 'effect'
-import { SensitiveData } from '../../SensitiveData.ts'
+import { SensitiveData } from '../../SensitiveData/index.ts'
 import { Doi, EmailAddress, Name, NonEmptyString, OrcidId, Temporal, Uuid } from '../../types/index.ts'
 import * as Datasets from '../Datasets/index.ts'
 
@@ -144,7 +144,7 @@ export class InvitationToAppearOnADatasetReviewAddedToTheList extends Schema.Tag
   {
     datasetReviewId: Uuid.UuidSchema,
     invitationId: Uuid.UuidSchema,
-    contactDetails: SensitiveData(
+    contactDetails: SensitiveData.SensitiveData(
       Schema.Struct({
         name: Name.NameSchema,
         emailAddress: EmailAddress.EmailAddressSchema,

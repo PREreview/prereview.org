@@ -1,7 +1,7 @@
 import { Array, Data, Equal, type Equivalence, Match, Option, Result, Struct } from 'effect'
 import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
-import { SensitiveDataReference } from '../../SensitiveData.ts'
+import { SensitiveData } from '../../SensitiveData/index.ts'
 import { Temporal } from '../../types/index.ts'
 import * as Preprints from '../Preprints/index.ts'
 
@@ -73,7 +73,7 @@ const AuthorEquivalence: Equivalence.Equivalence<Input['authors'][number]> = (a,
   if (
     'name' in a &&
     'name' in b &&
-    (a.name instanceof SensitiveDataReference || b.name instanceof SensitiveDataReference)
+    (a.name instanceof SensitiveData.SensitiveDataReference || b.name instanceof SensitiveData.SensitiveDataReference)
   ) {
     return Equal.equals(Struct.omit(a, ['name']), Struct.omit(b, ['name']))
   }

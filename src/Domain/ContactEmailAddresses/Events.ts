@@ -1,5 +1,5 @@
 import { Schema } from 'effect'
-import { SensitiveData } from '../../SensitiveData.ts'
+import { SensitiveData } from '../../SensitiveData/index.ts'
 import { EmailAddressSchema } from '../../types/EmailAddress.ts'
 import { OrcidIdSchema } from '../../types/OrcidId.ts'
 import { InstantSchema } from '../../types/Temporal.ts'
@@ -7,7 +7,7 @@ import { UuidSchema } from '../../types/Uuid.ts'
 
 export class ContactAddressImported extends Schema.TaggedClass<ContactAddressImported>()('ContactAddressImported', {
   contactAddressId: UuidSchema,
-  emailAddress: SensitiveData(EmailAddressSchema),
+  emailAddress: SensitiveData.SensitiveData(EmailAddressSchema),
   orcidId: OrcidIdSchema,
   verificationStatus: Schema.Literals(['verified', 'unverified']),
 }) {}
@@ -20,7 +20,7 @@ export class ContactAddressVerified extends Schema.TaggedClass<ContactAddressVer
 
 export class ContactAddressRecorded extends Schema.TaggedClass<ContactAddressRecorded>()('ContactAddressRecorded', {
   contactAddressId: UuidSchema,
-  emailAddress: SensitiveData(EmailAddressSchema),
+  emailAddress: SensitiveData.SensitiveData(EmailAddressSchema),
   orcidId: OrcidIdSchema,
 }) {}
 
@@ -35,7 +35,7 @@ export class EmailToVerifyContactAddressSent extends Schema.TaggedClass<EmailToV
 export class AuthorInviteEmailAddressChosenAsContactAddress extends Schema.TaggedClass<AuthorInviteEmailAddressChosenAsContactAddress>()(
   'AuthorInviteEmailAddressChosenAsContactAddress',
   {
-    emailAddress: SensitiveData(EmailAddressSchema),
+    emailAddress: SensitiveData.SensitiveData(EmailAddressSchema),
     inviteId: UuidSchema,
     orcidId: OrcidIdSchema,
     chosenAt: InstantSchema,

@@ -8,7 +8,7 @@ import { make as makeSqlEventStore } from '../../../src/EventSourcing/SqlEventSt
 import { EventStore } from '../../../src/EventStore.ts'
 import { Email, OrcidRecords } from '../../../src/ExternalInteractions/index.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
-import { layer as sqlSensitiveDataStoreLayer } from '../../../src/SqlSensitiveDataStore.ts'
+import { layer as sqlSensitiveDataStoreLayer } from '../../../src/SensitiveData/SqlSensitiveDataStore.ts'
 import { EmailAddress } from '../../../src/types/EmailAddress.ts'
 import { Uuid } from '../../../src/types/index.ts'
 import { Name } from '../../../src/types/Name.ts'

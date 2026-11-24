@@ -1,8 +1,8 @@
 import { Array, Effect, flow, Layer, Option, pipe, Record, Schema, Struct, Tuple } from 'effect'
 import { Model } from 'effect/schema'
 import { SqlClient, SqlModel, SqlSchema, type SqlError } from 'effect/sql'
+import { Uuid } from '../types/index.ts'
 import * as SensitiveDataStore from './SensitiveDataStore.ts'
-import { Uuid } from './types/index.ts'
 
 class SensitiveData extends Model.Class<SensitiveData>('SensitiveData')({
   id: Model.GeneratedByApp(Uuid.UuidSchema),

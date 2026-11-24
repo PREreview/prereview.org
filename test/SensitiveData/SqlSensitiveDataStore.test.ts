@@ -1,9 +1,9 @@
 import { Effect, Option } from 'effect'
-import * as _ from '../src/SqlSensitiveDataStore.ts'
-import { Uuid } from '../src/types/index.ts'
-import * as fc from './fc.ts'
-import * as TestLibsqlClient from './TestLibsqlClient.ts'
-import { expect, it } from './vitest.ts'
+import * as _ from '../../src/SensitiveData/SqlSensitiveDataStore.ts'
+import { Uuid } from '../../src/types/index.ts'
+import * as fc from '../fc.ts'
+import * as TestLibsqlClient from '../TestLibsqlClient.ts'
+import { expect, it } from '../vitest.ts'
 
 it.effect.prop('might not find a value', [fc.uuid()], ([id]) =>
   Effect.gen(function* () {

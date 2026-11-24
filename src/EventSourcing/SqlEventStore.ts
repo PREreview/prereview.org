@@ -25,7 +25,7 @@ import {
 import { SqlClient, type SqlError, type Statement } from 'effect/sql'
 import * as EventStore from '../EventStore.ts'
 import * as Events from '../Events.ts'
-import type * as SensitiveDataStore from '../SensitiveDataStore.ts'
+import type { SensitiveDataStore } from '../SensitiveData/index.ts'
 import { Uuid } from '../types/index.ts'
 
 class UnexpectedEventFound extends Data.TaggedError('UnexpectedEventFound') {}

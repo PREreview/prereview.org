@@ -17,7 +17,7 @@ import { Email, LanguageDetection, OpenAlexWorks, OrcidRecords, PreprintData } f
 import * as FeatureFlags from './FeatureFlags.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import * as Redis from './Redis.ts'
-import * as SqlSensitiveDataStore from './SqlSensitiveDataStore.ts'
+import { SqlSensitiveDataStore } from './SensitiveData/index.ts'
 import * as StatefulQueries from './StatefulQueries.ts'
 import { Uuid } from './types/index.ts'
 

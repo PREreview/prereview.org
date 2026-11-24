@@ -1,6 +1,6 @@
 import { Array, Schema } from 'effect'
 import { Slack } from '../../ExternalApis/index.ts'
-import { SensitiveData } from '../../SensitiveData.ts'
+import { SensitiveData } from '../../SensitiveData/index.ts'
 import { EmailAddress, Iso639, Name, OrcidId, SciProfilesId, Temporal, Uuid } from '../../types/index.ts'
 import { TopicIdSchema } from '../../types/Topic.ts'
 import * as Preprints from '../Preprints/index.ts'
@@ -40,7 +40,7 @@ export class ReviewRequestForAPreprintWasReceived extends Schema.TaggedClass<Rev
     receivedFrom: Schema.URLFromString,
     preprintId: Preprints.IndeterminatePreprintIdFromStringSchema,
     reviewRequestId: Uuid.UuidSchema,
-    requester: SensitiveData(
+    requester: SensitiveData.SensitiveData(
       Schema.Struct({
         name: Name.NameSchema,
         orcidId: Schema.optional(OrcidId.OrcidIdSchema),
@@ -88,7 +88,7 @@ export class ReviewRequestFromAPreprintServerWasImported extends Schema.TaggedCl
     receivedFrom: Schema.URLFromString,
     preprintId: Preprints.IndeterminatePreprintIdFromStringSchema,
     reviewRequestId: Uuid.UuidSchema,
-    requester: SensitiveData(
+    requester: SensitiveData.SensitiveData(
       Schema.Struct({
         name: Name.NameSchema,
         orcidId: Schema.optional(OrcidId.OrcidIdSchema),

@@ -1,6 +1,6 @@
 import { Schema } from 'effect'
 import { HtmlSchema } from '../../html.ts'
-import { LazySensitiveData } from '../../SensitiveData.ts'
+import { SensitiveData } from '../../SensitiveData/index.ts'
 import { DoiSchema } from '../../types/Doi.ts'
 import { NonEmptyString, OrcidId, Temporal, Uuid } from '../../types/index.ts'
 import { Iso6391Schema } from '../../types/iso639.ts'
@@ -88,9 +88,9 @@ export class PreprintReviewImported extends Schema.TaggedClass<PreprintReviewImp
   addendum: Schema.optional(HtmlSchema),
   authors: Schema.NonEmptyArray(
     Schema.TaggedUnion({
-      PublicPersona: { name: LazySensitiveData(NameSchema), orcidId: OrcidId.OrcidIdSchema },
+      PublicPersona: { name: SensitiveData.LazySensitiveData(NameSchema), orcidId: OrcidId.OrcidIdSchema },
       PseudonymPersona: { orcidId: OrcidId.OrcidIdSchema },
-      Unknown: { name: LazySensitiveData(NameSchema) },
+      Unknown: { name: SensitiveData.LazySensitiveData(NameSchema) },
     }),
   ),
   otherAuthors: Schema.Int,

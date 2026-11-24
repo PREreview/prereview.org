@@ -1,5 +1,5 @@
 import { Array, Context, Data, Effect, type Option, pipe, Record, Request, RequestResolver } from 'effect'
-import type { Uuid } from './types/index.ts'
+import type { Uuid } from '../types/index.ts'
 
 export const SensitiveDataStore = Context.Service<SensitiveDataStore>('SensitiveDataStore')
 

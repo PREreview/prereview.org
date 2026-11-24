@@ -19,7 +19,7 @@ import type { NonEmptyReadonlyArray } from 'effect/Array'
 import { SqlClient } from 'effect/sql'
 import path from 'node:path'
 import { ContactAddressImported, Event, type EventTypes } from '../src/Events.ts'
-import * as SensitiveDataStore from '../src/SensitiveDataStore.ts'
+import { SensitiveDataStore } from '../src/SensitiveData/index.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
 import { Uuid } from '../src/types/Uuid.ts'
 
