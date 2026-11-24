@@ -35,32 +35,27 @@ const eventStoreWithEvents = Layer.mock(EventStore.EventStore, {
 })
 const id = 107286
 
-describe('AssignADoi', () => {
-  it.effect('assigns a DOI', () =>
+describe('CreateRecordOnZenodo', () => {
+  it.effect('creates a record', () =>
     Effect.gen(function* () {
       const createRecordOnZenodoForComment = vi.fn<typeof Comments.CreateRecordOnZenodoForComment.Service>(() =>
         Effect.succeed([doi, id]),
       )
-      const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(() => Effect.void)
 
       const actual = yield* pipe(
-        _.AssignADoi(commentId),
-        Effect.provide([
-          Layer.succeed(Comments.CreateRecordOnZenodoForComment, createRecordOnZenodoForComment),
-          Layer.succeed(Comments.HandleCommentCommand, handleCommentCommand),
-        ]),
+        _.CreateRecordOnZenodo(commentId),
+        Effect.provideService(Comments.CreateRecordOnZenodoForComment, createRecordOnZenodoForComment),
         Effect.result,
       )
 
-      expect(actual).toStrictEqual(Result.void)
+      expect(actual).toStrictEqual(Result.succeed([doi, id]))
       expect(createRecordOnZenodoForComment).toHaveBeenCalledWith(inputForCommentZenodoRecord)
-      expect(handleCommentCommand).toHaveBeenCalledWith(new Comments.MarkDoiAsAssigned({ commentId, doi, id }))
     }).pipe(Effect.provide(eventStoreWithEvents)),
   )
 
   it.effect("when the comment's events can't be read", () =>
     Effect.gen(function* () {
-      const actual = yield* Effect.result(_.AssignADoi(commentId))
+      const actual = yield* Effect.result(_.CreateRecordOnZenodo(commentId))
 
       expect(actual).toStrictEqual(
         Result.fail(new Comments.UnableToAssignADoi({ cause: new EventStore.FailedToGetEvents({}) })),
@@ -69,14 +64,13 @@ describe('AssignADoi', () => {
       Effect.provide([
         Layer.mock(EventStore.EventStore, { query: () => new EventStore.FailedToGetEvents({}) }),
         Layer.succeed(Comments.CreateRecordOnZenodoForComment, shouldNotBeCalled),
-        Layer.succeed(Comments.HandleCommentCommand, shouldNotBeCalled),
       ]),
     ),
   )
 
   it.effect("when the comment's events don't make a record", () =>
     Effect.gen(function* () {
-      const actual = yield* Effect.result(_.AssignADoi(commentId))
+      const actual = yield* Effect.result(_.CreateRecordOnZenodo(commentId))
 
       expect(actual).toStrictEqual(
         Result.fail(new Comments.UnableToAssignADoi({ cause: new Queries.UnexpectedSequenceOfEvents({}) })),
@@ -85,38 +79,47 @@ describe('AssignADoi', () => {
       Effect.provide([
         Layer.mock(EventStore.EventStore, { query: () => Effect.succeedNone }),
         Layer.succeed(Comments.CreateRecordOnZenodoForComment, shouldNotBeCalled),
-        Layer.succeed(Comments.HandleCommentCommand, shouldNotBeCalled),
       ]),
     ),
   )
 
   it.effect("when a record can't be created", () =>
     Effect.gen(function* () {
-      const actual = yield* Effect.result(_.AssignADoi(commentId))
+      const actual = yield* Effect.result(_.CreateRecordOnZenodo(commentId))
 
       expect(actual).toStrictEqual(Result.fail(new Comments.UnableToAssignADoi({})))
     }).pipe(
       Effect.provide([
         eventStoreWithEvents,
         Layer.succeed(Comments.CreateRecordOnZenodoForComment, () => new Comments.UnableToAssignADoi({})),
-        Layer.succeed(Comments.HandleCommentCommand, shouldNotBeCalled),
       ]),
     ),
+  )
+})
+
+describe('RecordAssignedDoi', () => {
+  it.effect('records the DOI', () =>
+    Effect.gen(function* () {
+      const handleCommentCommand = vi.fn<typeof Comments.HandleCommentCommand.Service>(() => Effect.void)
+
+      const actual = yield* pipe(
+        _.RecordAssignedDoi(commentId, doi, id),
+        Effect.provideService(Comments.HandleCommentCommand, handleCommentCommand),
+        Effect.result,
+      )
+
+      expect(actual).toStrictEqual(Result.void)
+      expect(handleCommentCommand).toHaveBeenCalledWith(new Comments.MarkDoiAsAssigned({ commentId, doi, id }))
+    }),
   )
 
   it.effect("when the DOI can't be recorded", () =>
     Effect.gen(function* () {
-      const actual = yield* Effect.result(_.AssignADoi(commentId))
+      const actual = yield* Effect.result(_.RecordAssignedDoi(commentId, doi, id))
 
       expect(actual).toStrictEqual(
         Result.fail(new Comments.UnableToAssignADoi({ cause: new Comments.DoiIsAlreadyAssigned() })),
       )
-    }).pipe(
-      Effect.provide([
-        eventStoreWithEvents,
-        Layer.succeed(Comments.CreateRecordOnZenodoForComment, () => Effect.succeed([doi, id])),
-        Layer.succeed(Comments.HandleCommentCommand, () => new Comments.DoiIsAlreadyAssigned()),
-      ]),
-    ),
+    }).pipe(Effect.provideService(Comments.HandleCommentCommand, () => new Comments.DoiIsAlreadyAssigned())),
   )
 })

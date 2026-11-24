@@ -1,5 +1,6 @@
 import { Array, Effect, Option, Struct } from 'effect'
 import * as EventStore from '../../../EventStore.ts'
+import type { Doi } from '../../../types/Doi.ts'
 import type { Uuid } from '../../../types/index.ts'
 import { MarkDoiAsAssigned } from '../Commands.ts'
 import { CreateRecordOnZenodoForComment, HandleCommentCommand } from '../Context.ts'
@@ -7,9 +8,8 @@ import * as Errors from '../Errors.ts'
 import { CommentEventTypes } from '../Events.ts'
 import * as Queries from '../Queries.ts'
 
-export const AssignADoi = Effect.fn('Comments.assignADoi')(
+export const CreateRecordOnZenodo = Effect.fn('Comments.createRecordOnZenodo')(
   function* (commentId: Uuid.Uuid) {
-    const handleCommand = yield* HandleCommentCommand
     const createRecordOnZenodoForComment = yield* CreateRecordOnZenodoForComment
 
     const events = yield* Effect.map(
@@ -19,14 +19,22 @@ export const AssignADoi = Effect.fn('Comments.assignADoi')(
 
     const inputForCommentZenodoRecord = yield* Effect.fromResult(Queries.buildInputForCommentZenodoRecord(events))
 
-    const [doi, id] = yield* createRecordOnZenodoForComment(inputForCommentZenodoRecord)
+    return yield* createRecordOnZenodoForComment(inputForCommentZenodoRecord)
+  },
+  Effect.catchTag(
+    ['FailedToGetEvents', 'UnexpectedSequenceOfEvents'],
+    error => new Errors.UnableToAssignADoi({ cause: error }),
+  ),
+)
+
+export const RecordAssignedDoi = Effect.fn('Comments.recordAssignedDoi')(
+  function* (commentId: Uuid.Uuid, doi: Doi, id: number) {
+    const handleCommand = yield* HandleCommentCommand
 
     yield* handleCommand(new MarkDoiAsAssigned({ commentId, doi, id }))
   },
   Effect.catchTag(
     [
-      'FailedToGetEvents',
-      'UnexpectedSequenceOfEvents',
       'UnableToHandleCommand',
       'CommentWasAlreadyStarted',
       'CommentHasNotBeenStarted',
