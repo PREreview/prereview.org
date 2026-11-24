@@ -748,6 +748,38 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
     )
 
     it.effect.prop(
+      "doesn't move a checkpoint backwards",
+      [fc.string(), fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent())],
+      ([name, existingEvents, newEvents]) =>
+        Effect.gen(function* () {
+          const eventStore = yield* _.make
+
+          yield* Effect.forEach(existingEvents, eventStore.append)
+
+          const earlierCursor = yield* eventStore.latestCursor
+
+          yield* Effect.forEach(newEvents, eventStore.append)
+
+          const laterCursor = yield* eventStore.latestCursor
+
+          yield* eventStore.saveCheckpoint(name, laterCursor)
+          yield* eventStore.saveCheckpoint(name, earlierCursor)
+
+          const actual = yield* eventStore.loadCheckpoint(name)
+
+          expect(actual).toStrictEqual(Option.some(laterCursor))
+        }).pipe(
+          Effect.provide([
+            Uuid.layer,
+            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
+            Events.layer,
+            TestSqlClient,
+          ]),
+        ),
+      { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+    )
+
+    it.effect.prop(
       'keeps checkpoints separate by name',
       [fc.uniqueArray(fc.string(), { minLength: 2, maxLength: 2 }), fc.nonEmptyArray(fc.commentEvent())],
       ([[name, otherName], events]) =>

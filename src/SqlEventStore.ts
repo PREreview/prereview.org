@@ -408,6 +408,11 @@ export const make: Effect.Effect<
           SET
             transaction_id = excluded.transaction_id,
             position = excluded.position
+          WHERE
+            (
+              event_checkpoints.transaction_id,
+              event_checkpoints.position
+            ) < (excluded.transaction_id, excluded.position)
         `,
         orElse: () => sql`
           INSERT INTO
@@ -420,6 +425,8 @@ export const make: Effect.Effect<
           ON CONFLICT (name) DO UPDATE
           SET
             position = excluded.position
+          WHERE
+            event_checkpoints.position < excluded.position
         `,
       })
     },
