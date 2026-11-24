@@ -197,12 +197,12 @@ export const make: Effect.Effect<
     const decoded = yield* Schema.decodeUnknownEffect(Schema.NonEmptyArray(EventsTableSelect), {
       concurrency: 'unbounded',
     })(rows)
-    const lastRow = yield* Schema.decodeUnknownEffect(CursorRow)(Array.lastNonEmpty(rows))
+    const cursors = yield* Schema.decodeUnknownEffect(Schema.NonEmptyArray(CursorRow))(rows)
 
-    return {
-      events: Array.map(decoded, Struct.get('event')),
-      cursor: makeCursor(lastRow.transactionId ?? BigInt(0), lastRow.position),
-    } satisfies EventStore.Page
+    return Array.zipWith(decoded, cursors, ({ event }, { transactionId, position }) => ({
+      event,
+      cursor: makeCursor(transactionId ?? BigInt(0), position),
+    })) satisfies EventStore.Page
   }, Effect.provide(context))
 
   const matching: (filter?: Events.EventFilter) => ReadonlyArray<Statement.Fragment> = UndefinedOr.match({
@@ -263,7 +263,7 @@ export const make: Effect.Effect<
 
     const { page, isLastPage } = result.value
 
-    return Tuple.make([page], isLastPage ? Option.none() : Option.some(page.cursor))
+    return Tuple.make([page], isLastPage ? Option.none() : Option.some(Array.lastNonEmpty(page).cursor))
   })
 
   const streamAfter = (

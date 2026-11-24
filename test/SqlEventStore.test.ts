@@ -472,7 +472,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
           const actual = yield* Stream.runCollect(eventStore.all)
 
-          expect(actual).toStrictEqual([{ events, cursor: expect.anything() }])
+          expect(actual).toStrictEqual([Array.map(events, event => ({ event, cursor: expect.anything() }))])
         }).pipe(
           Effect.provide(Uuid.layer),
           Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
@@ -493,14 +493,14 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
           const pages = yield* Stream.runCollect(eventStore.all)
 
-          expect(Array.map(pages, page => page.events.length)).toStrictEqual([3, 3, events.length - 6])
-          expect(Array.flatMap(pages, page => page.events)).toStrictEqual(events)
+          expect(Array.map(pages, page => page.length)).toStrictEqual([3, 3, events.length - 6])
+          expect(eventsIn(pages)).toStrictEqual(events)
 
-          const eventsAfterEachPage = yield* Effect.forEach(pages, page =>
-            Effect.map(Stream.runCollect(eventStore.since(page.cursor)), Array.flatMap(Struct.get('events'))),
+          const eventsAfterEachEvent = yield* Effect.forEach(Array.flatten(pages), ({ cursor }) =>
+            Effect.map(Stream.runCollect(eventStore.since(cursor)), eventsIn),
           )
 
-          expect(eventsAfterEachPage).toStrictEqual([Array.drop(events, 3), Array.drop(events, 6), []])
+          expect(eventsAfterEachEvent).toStrictEqual(Array.map(events, (_, index) => Array.drop(events, index + 1)))
         }).pipe(
           Effect.provide(Layer.succeed(_.PageSize, 3)),
           Effect.provide(Uuid.layer),
@@ -528,7 +528,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
           const actual = yield* Stream.runCollect(eventStore.since(cursor))
 
-          expect(actual).toStrictEqual([{ events: newEvents, cursor: expect.anything() }])
+          expect(actual).toStrictEqual([Array.map(newEvents, event => ({ event, cursor: expect.anything() }))])
         }).pipe(
           Effect.provide(Uuid.layer),
           Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
@@ -561,7 +561,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
               Array.filter(newEvents, event => event._tag === 'CommentWasStarted'),
               {
                 onEmpty: () => [],
-                onNonEmpty: events => [{ events, cursor: expect.anything() }],
+                onNonEmpty: events => [Array.map(events, event => ({ event, cursor: expect.anything() }))],
               },
             ),
           )
@@ -608,7 +608,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
           const actual = yield* Stream.runCollect(eventStore.since(cursor))
 
-          expect(actual).toStrictEqual([{ events, cursor: expect.anything() }])
+          expect(actual).toStrictEqual([Array.map(events, event => ({ event, cursor: expect.anything() }))])
         }).pipe(
           Effect.provide([
             Uuid.layer,
@@ -629,7 +629,9 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
           yield* Effect.forEach(events, eventStore.append)
 
-          const { cursor } = yield* Effect.flatMap(Stream.runLast(eventStore.all), Effect.fromOption)
+          const { cursor } = Array.lastNonEmpty(
+            yield* Effect.flatMap(Stream.runLast(eventStore.all), Effect.fromOption),
+          )
 
           const actual = yield* eventStore.latestCursor
 
@@ -844,7 +846,7 @@ describe('on Postgres', () => {
         }),
       )
 
-      const { cursor } = yield* Effect.flatMap(Stream.runLast(eventStore.all), Effect.fromOption)
+      const { cursor } = Array.lastNonEmpty(yield* Effect.flatMap(Stream.runLast(eventStore.all), Effect.fromOption))
 
       const actual = yield* eventStore.latestCursor
 
@@ -935,11 +937,11 @@ describe('on a real Postgres', { skip: process.env['SKIP_CONTAINER_TESTS'] === '
         yield* Deferred.succeed(commitSlowEvent, undefined)
         yield* Fiber.join(slowTransaction)
 
-        const { cursor } = yield* Effect.fromOption(Array.last(firstRead))
+        const { cursor } = yield* Effect.fromOption(Array.last(Array.flatten(firstRead)))
         const secondRead = yield* Stream.runCollect(eventStore.since(cursor))
 
-        expect(Array.flatMap(firstRead, Struct.get('events'))).toStrictEqual([committedEvent])
-        expect(Array.flatMap(secondRead, Struct.get('events'))).toStrictEqual([slowEvent, fastEvent])
+        expect(eventsIn(firstRead)).toStrictEqual([committedEvent])
+        expect(eventsIn(secondRead)).toStrictEqual([slowEvent, fastEvent])
       }).pipe(
         Effect.provide([Events.layer, Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), RealPgClient]),
       ),
@@ -976,7 +978,7 @@ describe('on a real Postgres', { skip: process.env['SKIP_CONTAINER_TESTS'] === '
 
         const actual = yield* Stream.runCollect(eventStore.since(latestCursor))
 
-        expect(Array.flatMap(actual, Struct.get('events'))).toStrictEqual([slowEvent, fastEvent])
+        expect(eventsIn(actual)).toStrictEqual([slowEvent, fastEvent])
       }).pipe(
         Effect.provide([Events.layer, Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), RealPgClient]),
       ),
@@ -995,5 +997,6 @@ const RealPgClient = Layer.unwrap(
   }),
 )
 
-const allEvents = (eventStore: EventStore.EventStore) =>
-  Effect.map(Stream.runCollect(eventStore.all), Array.flatMap(Struct.get('events')))
+const allEvents = (eventStore: EventStore.EventStore) => Effect.map(Stream.runCollect(eventStore.all), eventsIn)
+
+const eventsIn = (pages: ReadonlyArray<EventStore.Page>) => Array.flatMap(pages, Array.map(Struct.get('event')))

@@ -115,9 +115,9 @@ export const subscribe = Effect.fnUntraced(function* <H extends Types.NoExcessPr
           () => 0,
           (eventsHandled, page) =>
             pipe(
-              Effect.forEach(page.events, handle, { discard: true }),
-              Effect.andThen(saveCursor(page.cursor)),
-              Effect.as(eventsHandled + page.events.length),
+              Effect.forEach(page, ({ event }) => handle(event), { discard: true }),
+              Effect.andThen(saveCursor(Array.lastNonEmpty(page).cursor)),
+              Effect.as(eventsHandled + page.length),
             ),
         ),
     })

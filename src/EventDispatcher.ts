@@ -1,4 +1,4 @@
-import { Array, Context, Effect, Layer, Option, pipe, PubSub, Ref, Schedule, Semaphore, Stream } from 'effect'
+import { Array, Context, Effect, Layer, Option, pipe, PubSub, Ref, Schedule, Semaphore, Stream, Struct } from 'effect'
 import * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
 
@@ -45,12 +45,12 @@ const dispatchNewEvents = Effect.gen(function* () {
       onNone: () => EventStore.all,
       onSome: EventStore.since,
     }),
-    Effect.fnUntraced(function* ({ events: newEvents, cursor: newCursor }) {
+    Effect.fnUntraced(function* (page) {
       const allSubscribers = yield* Ref.get(subscribers)
 
-      yield* Ref.set(lastCursor, Option.some(newCursor))
+      yield* Ref.set(lastCursor, Option.some(Array.lastNonEmpty(page).cursor))
 
-      yield* Effect.forEach(allSubscribers, subscriber => subscriber(newEvents), {
+      yield* Effect.forEach(allSubscribers, subscriber => subscriber(Array.map(page, Struct.get('event'))), {
         discard: true,
         concurrency: 'unbounded',
       })

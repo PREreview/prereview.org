@@ -92,7 +92,7 @@ it.effect.each<[string, _.Input, Result.Result<void, _.Error>, ReadonlyArray<Eve
     )
     const actualEvents = yield* pipe(
       Stream.runCollect(eventStore.all),
-      Effect.map(Array.flatMap(Struct.get('events'))),
+      Effect.map(Array.flatMap(Array.map(Struct.get('event')))),
       Effect.map(Array.map(event => event._tag)),
     )
 

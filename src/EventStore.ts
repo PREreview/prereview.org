@@ -21,10 +21,12 @@ export const Cursor = pipe(Schema.String, Schema.brand('Cursor'))
 
 export type Cursor = typeof Cursor.Type
 
-export interface Page {
-  readonly events: Array.NonEmptyReadonlyArray<Event>
+export interface RecordedEvent {
+  readonly event: Event
   readonly cursor: Cursor
 }
+
+export type Page = Array.NonEmptyReadonlyArray<RecordedEvent>
 
 export interface EventStore {
   readonly all: Stream.Stream<Page, FailedToGetEvents>
