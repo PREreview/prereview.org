@@ -30,7 +30,7 @@
     "intl-parse-accept-language": "^1.0.0",
     "io-ts": "^2.2.22",
     "ioredis": "^6.0.0",
-    "iso-639-1": "^3.1.6",
+    "iso-639-1": "^3.1.7",
     "katex": "^0.19.1",
     "logger-fp-ts": "^0.2.2",
     "logging-ts": "^0.3.4",
