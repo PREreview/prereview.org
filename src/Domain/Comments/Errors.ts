@@ -30,3 +30,8 @@ export class UnableToAssignADoi extends Schema.TaggedError<UnableToAssignADoi>()
 export class UnableToPublishComment extends Schema.TaggedError<UnableToPublishComment>()('UnableToPublishComment', {
   cause: Schema.optional(Schema.Unknown),
 }) {}
+
+export class UnableToCheckForAVerifiedEmailAddress extends Schema.TaggedError<UnableToCheckForAVerifiedEmailAddress>()(
+  'UnableToCheckForAVerifiedEmailAddress',
+  { cause: Schema.optional(Schema.Unknown) },
+) {}
