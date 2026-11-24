@@ -47,7 +47,10 @@ const program = Effect.fnUntraced(function* () {
     return pipe(
       preprintReviews.getPreprintReviewIdForADoi(idOrDoi.value),
       Effect.map(Option.some),
-      Effect.catchTag('PrereviewIsNotFound', () => Effect.as(Console.log('Not found'), Option.none())),
+      Effect.catchTags({
+        PrereviewIsNotFound: () => Effect.as(Console.log('Not found'), Option.none()),
+        UnableToQuery: () => Effect.as(Console.log('Unable to look it up'), Option.none()),
+      }),
     )
   }
 

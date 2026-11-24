@@ -190,7 +190,7 @@ export const layer = Layer.effect(
           yield* registerPrereviewer(prereviewer)
         },
         Effect.catchTag(
-          ['MismatchWithExistingDataForOrcid', 'NoPseudonymAvailable', 'PseudonymAlreadyInUse'],
+          ['MismatchWithExistingDataForOrcid', 'NoPseudonymAvailable', 'PseudonymAlreadyInUse', 'UnableToQuery'],
           error => new UnableToHandleCommand({ cause: error }),
         ),
       ),

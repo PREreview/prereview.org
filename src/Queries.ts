@@ -109,7 +109,7 @@ export const makeStatefulQuery = <Input extends QueryInput, Result, Error = neve
   updateStateWithEvents,
   query,
 }: StatefulQuery<Input, Result, Error, State>): Effect.Effect<
-  (...input: Input) => Effect.Effect<Result, Error>,
+  (...input: Input) => Effect.Effect<Result, Error | UnableToQuery>,
   never,
   EventDispatcher.EventDispatcher
 > =>

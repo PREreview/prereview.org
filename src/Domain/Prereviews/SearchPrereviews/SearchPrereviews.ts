@@ -58,6 +58,7 @@ export const SearchPrereviews: Effect.Effect<
           'PrereviewIsNotFound',
           'PrereviewIsUnavailable',
           'PrereviewWasRemoved',
+          'UnableToQuery',
           'UnknownDatasetReview',
         ],
         error => new PrereviewsAreUnavailable({ cause: error }),

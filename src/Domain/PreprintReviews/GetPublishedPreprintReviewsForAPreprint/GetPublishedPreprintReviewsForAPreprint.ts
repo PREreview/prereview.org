@@ -27,7 +27,7 @@ export const GetPublishedPreprintReviewsForAPreprint = (
         listPreprintReviewIds(preprintId),
         Effect.andThen(Effect.forEach(getPublishedPreprintReview, { concurrency: 'unbounded' })),
         Effect.catchTag(
-          ['PrereviewIsNotFound', 'PrereviewIsUnavailable', 'PrereviewWasRemoved'],
+          ['PrereviewIsNotFound', 'PrereviewIsUnavailable', 'PrereviewWasRemoved', 'UnableToQuery'],
           error => new PrereviewsAreUnavailable({ cause: error }),
         ),
         Effect.withSpan('PreprintReviews.getPublishedPreprintReviewsForAPreprint', {

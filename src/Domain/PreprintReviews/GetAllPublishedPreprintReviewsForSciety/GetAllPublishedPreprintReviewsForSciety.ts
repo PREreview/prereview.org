@@ -36,7 +36,7 @@ export const GetAllPublishedPreprintReviewsForSciety: Effect.Effect<
         { concurrency: 10 },
       ),
     ),
-    Effect.catchTag(['UnableToGetPersona'], error => new PrereviewsAreUnavailable({ cause: error })),
+    Effect.catchTag(['UnableToGetPersona', 'UnableToQuery'], error => new PrereviewsAreUnavailable({ cause: error })),
     Effect.provideContext(context),
     Effect.withSpan('PreprintReviews.getAllPublishedPreprintReviewsForSciety'),
   )

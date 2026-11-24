@@ -28,7 +28,7 @@ export const GetPublishedCommentsForAPrereview: Effect.Effect<
       listPublishedComments(prereviewId),
       Effect.andThen(Effect.forEach(Enrich, { concurrency: 'unbounded' })),
       Effect.catchTag(
-        ['UnexpectedSequenceOfEvents', 'UnableToGetPersona', 'UnableToDetectLanguage'],
+        ['UnexpectedSequenceOfEvents', 'UnableToGetPersona', 'UnableToDetectLanguage', 'UnableToQuery'],
         error => new CommentsAreUnavailable({ cause: error }),
       ),
       Effect.provideContext(context),

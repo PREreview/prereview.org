@@ -5,7 +5,9 @@ import type { Doi } from '../../../types/Doi.ts'
 import { Query } from './Query.ts'
 import type { PrereviewIsNotFound } from './Types.ts'
 
-export type GetPreprintReviewIdForADoi = (doi: Doi) => Effect.Effect<number, PrereviewIsNotFound>
+export type GetPreprintReviewIdForADoi = (
+  doi: Doi,
+) => Effect.Effect<number, PrereviewIsNotFound | Queries.UnableToQuery>
 
 export const GetPreprintReviewIdForADoi: Effect.Effect<
   GetPreprintReviewIdForADoi,

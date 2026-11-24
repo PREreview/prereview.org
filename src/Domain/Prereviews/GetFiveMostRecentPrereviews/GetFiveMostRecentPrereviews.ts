@@ -36,6 +36,7 @@ export const GetFiveMostRecentPrereviews: Effect.Effect<
       ),
     ),
     Effect.map(Tuple.get(0)),
+    Effect.catchTag('UnableToQuery', () => Effect.succeed(Array.empty())),
     Effect.provideContext(context),
     Effect.withSpan('Prereviews.getFiveMostRecentPrereviews'),
   )
