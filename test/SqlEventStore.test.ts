@@ -35,7 +35,7 @@ const now = Temporal.Now.instant()
 describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
   ['LibSQL', TestLibsqlClient.layer],
   ['Postgres (PGlite)', TestPgClient.layer],
-])('with %s', (_name, TestSqlClient) => {
+])('with %s', (name, TestSqlClient) => {
   it.effect.prop(
     'starts empty',
     [
@@ -614,6 +614,42 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
     )
 
+    describe('while the session can be shared', { skip: name === 'Postgres (PGlite)' }, () => {
+      it.effect.prop(
+        "doesn't miss events written while it's handling earlier ones",
+        [fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent())],
+        ([existingEvents, newEvents]) =>
+          Effect.gen(function* () {
+            const eventStore = yield* _.make
+            const cursor = yield* eventStore.latestCursor
+            const received = yield* Queue.unbounded<Events.Event>()
+            const handling = yield* Deferred.make<undefined>()
+            const finishHandling = yield* Deferred.make<undefined>()
+
+            yield* Effect.forEach(existingEvents, eventStore.append)
+
+            yield* Effect.forkChild(
+              Stream.runForEach(eventStore.subscribe({ after: cursor }), page =>
+                Effect.gen(function* () {
+                  yield* Queue.offerAll(received, Array.map(page, Struct.get('event')))
+                  yield* Deferred.succeed(handling, undefined)
+                  yield* Deferred.await(finishHandling)
+                }),
+              ),
+            )
+
+            yield* Deferred.await(handling)
+            yield* Effect.forEach(newEvents, eventStore.append)
+            yield* Deferred.succeed(finishHandling, undefined)
+
+            const actual = yield* Queue.takeN(received, existingEvents.length + newEvents.length)
+
+            expect(actual).toStrictEqual([...existingEvents, ...newEvents])
+          }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestSqlClient])),
+        { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+      )
+    })
+
     it.effect.prop(
       'streams from the beginning without a cursor',
       [fc.nonEmptyArray(fc.commentEvent())],
@@ -1087,6 +1123,84 @@ describe('on a real Postgres', { skip: process.env['SKIP_CONTAINER_TESTS'] === '
         const actual = yield* Effect.flip(Fiber.join(secondAppend))
 
         expect(actual).toBeInstanceOf(EventStore.NewEventsFound)
+      }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), RealPgClient])),
+    { timeout: Duration.toMillis('1 minute') },
+  )
+
+  it.effect(
+    "doesn't miss events written while a subscriber is handling earlier ones",
+    () =>
+      Effect.gen(function* () {
+        const [existingEvent, newEvent] = sample(fc.commentWasStarted(), 2)
+        const eventStore = yield* _.make
+        const cursor = yield* eventStore.latestCursor
+        const received = yield* Queue.unbounded<Events.Event>()
+        const handling = yield* Deferred.make<undefined>()
+        const finishHandling = yield* Deferred.make<undefined>()
+
+        yield* eventStore.append(existingEvent!)
+
+        yield* Effect.forkChild(
+          Stream.runForEach(eventStore.subscribe({ after: cursor }), page =>
+            Effect.gen(function* () {
+              yield* Queue.offerAll(received, Array.map(page, Struct.get('event')))
+              yield* Deferred.succeed(handling, undefined)
+              yield* Deferred.await(finishHandling)
+            }),
+          ),
+        )
+
+        yield* Deferred.await(handling)
+        yield* eventStore.append(newEvent!)
+        yield* Deferred.succeed(finishHandling, undefined)
+
+        const actual = yield* Queue.takeN(received, 2)
+
+        expect(actual).toStrictEqual([existingEvent, newEvent])
+      }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), RealPgClient])),
+    { timeout: Duration.toMillis('1 minute') },
+  )
+
+  it.effect(
+    'wakes up a subscriber when an event held back by an open transaction becomes visible',
+    () =>
+      Effect.gen(function* () {
+        const [committedEvent, slowEvent] = sample(fc.commentWasStarted(), 2)
+        const [fastEvent] = sample(fc.commentWasPublished(), 1)
+        const sql = yield* SqlClient.SqlClient
+        const eventStore = yield* _.make
+        const otherEventStore = yield* _.make
+        const cursor = yield* eventStore.latestCursor
+        const slowEventAppended = yield* Deferred.make<undefined>()
+        const commitSlowEvent = yield* Deferred.make<undefined>()
+
+        yield* eventStore.append(committedEvent!)
+
+        const received = yield* receive(eventStore.subscribe({ after: cursor }))
+        yield* Queue.take(received)
+
+        const slowTransaction = yield* pipe(
+          otherEventStore.append(slowEvent!),
+          Effect.andThen(Deferred.succeed(slowEventAppended, undefined)),
+          Effect.andThen(Deferred.await(commitSlowEvent)),
+          sql.withTransaction,
+          Effect.forkScoped,
+        )
+
+        yield* Deferred.await(slowEventAppended)
+        yield* otherEventStore.append(fastEvent!)
+        yield* TestClock.adjust('1 second')
+
+        const receivedWhileHeldBack = yield* Queue.size(received)
+
+        yield* Deferred.succeed(commitSlowEvent, undefined)
+        yield* Fiber.join(slowTransaction)
+        yield* TestClock.adjust('1 second')
+
+        const actual = yield* Queue.takeN(received, 2)
+
+        expect(receivedWhileHeldBack).toStrictEqual(0)
+        expect(actual).toStrictEqual([slowEvent, fastEvent])
       }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), RealPgClient])),
     { timeout: Duration.toMillis('1 minute') },
   )
