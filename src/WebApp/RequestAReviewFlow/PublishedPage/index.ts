@@ -36,6 +36,7 @@ export const PublishedPage: ({
     Effect.catchTags(error, {
       PreprintIsNotFound: () => PageNotFound,
       PreprintIsUnavailable: () => HavingProblemsPage,
+      UnableToQuery: () => HavingProblemsPage,
       UnknownReviewRequest: () => PageNotFound,
       UserIsNotLoggedIn: () =>
         Effect.succeed(LogInResponse({ location: Routes.RequestAReviewOfThisPreprint.href({ preprintId }) })),

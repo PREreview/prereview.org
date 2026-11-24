@@ -50,5 +50,6 @@ export const StartNowPage: (input: {
     DatasetIsNotFound: () => HavingProblemsPage,
     UnableToGetPersona: () => HavingProblemsPage,
     DatasetIsUnavailable: () => HavingProblemsPage,
+    UnableToQuery: () => HavingProblemsPage,
   }),
 )

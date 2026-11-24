@@ -30,7 +30,7 @@ export type FromOnDemandQuery<T> =
 
 export type FromStatefulQuery<T> =
   T extends Pick<StatefulQuery<infer Input extends QueryInput, infer Result, infer Error, never>, 'query'>
-    ? (...input: Input) => Effect.Effect<Result, Error>
+    ? (...input: Input) => Effect.Effect<Result, Error | UnableToQuery>
     : never
 
 export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: unknown }> {}

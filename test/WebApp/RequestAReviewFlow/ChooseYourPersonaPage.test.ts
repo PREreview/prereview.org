@@ -5,6 +5,7 @@ import { Locale } from '../../../src/Context.ts'
 import * as Preprints from '../../../src/Domain/Preprints/index.ts'
 import * as Prereviewers from '../../../src/Domain/Prereviewers/index.ts'
 import * as ReviewRequests from '../../../src/Domain/ReviewRequests/index.ts'
+import * as Queries from '../../../src/Queries.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/RequestAReviewFlow/ChooseYourPersonaPage/index.ts'
 import { RouteForCommand } from '../../../src/WebApp/RequestAReviewFlow/RouteForCommand.ts'
@@ -125,6 +126,33 @@ describe('ChooseYourPersonaPage', () => {
         ),
     )
   })
+
+  it.effect.prop(
+    'when the request cannot be loaded',
+    [fc.indeterminatePreprintId(), fc.user(), fc.preprintTitle({ id: fc.preprintId() }), fc.supportedLocale()],
+    ([preprintId, user, preprintTitle, locale]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.ChooseYourPersonaPage({ preprintId })
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide([
+          Layer.succeed(Locale, locale),
+          Layer.succeed(LoggedInUser, user),
+          Layer.mock(Prereviewers.Prereviewers, {}),
+          Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+          Layer.mock(ReviewRequests.ReviewRequestQueries, { getPersonaChoice: () => new Queries.UnableToQuery({}) }),
+        ]),
+      ),
+  )
 
   it.effect.prop(
     'when the preprint cannot be loaded',
@@ -406,6 +434,39 @@ describe('ChooseYourPersonaSubmission', () => {
         ),
     )
   })
+
+  it.effect.prop(
+    'when the request cannot be loaded',
+    [
+      fc.indeterminatePreprintId(),
+      fc.user(),
+      fc.preprintTitle({ id: fc.preprintId() }),
+      fc.urlParams(),
+      fc.supportedLocale(),
+    ],
+    ([preprintId, user, preprintTitle, body, locale]) =>
+      Effect.gen(function* () {
+        const actual = yield* _.ChooseYourPersonaSubmission({ body, preprintId })
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: StatusCodes.ServiceUnavailable,
+          title: expect.anything(),
+          main: expect.anything(),
+          skipToLabel: 'main',
+          js: [],
+        })
+      }).pipe(
+        Effect.provide([
+          Layer.succeed(Locale, locale),
+          Layer.succeed(LoggedInUser, user),
+          Layer.mock(Prereviewers.Prereviewers, {}),
+          Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+          Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+          Layer.mock(ReviewRequests.ReviewRequestQueries, { getPersonaChoice: () => new Queries.UnableToQuery({}) }),
+        ]),
+      ),
+  )
 
   it.effect.prop(
     'when the preprint cannot be loaded',

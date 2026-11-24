@@ -167,5 +167,6 @@ export const RequestsData: (query: {
   Effect.tapError(error => Effect.annotateLogs(Effect.logError('Failed to create requests data list'), { error })),
   Effect.catchTags({
     HttpBodyError: () => Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable })),
+    UnableToQuery: () => Effect.succeed(HttpServerResponse.empty({ status: StatusCodes.ServiceUnavailable })),
   }),
 )

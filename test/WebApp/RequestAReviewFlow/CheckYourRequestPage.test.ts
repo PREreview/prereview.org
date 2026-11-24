@@ -4,6 +4,7 @@ import { Locale } from '../../../src/Context.ts'
 import * as Preprints from '../../../src/Domain/Preprints/index.ts'
 import * as Prereviewers from '../../../src/Domain/Prereviewers/index.ts'
 import * as ReviewRequests from '../../../src/Domain/ReviewRequests/index.ts'
+import * as Queries from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { Temporal } from '../../../src/types/index.ts'
@@ -149,6 +150,43 @@ describe('CheckYourRequestPage', () => {
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
             status: StatusCodes.NotFound,
+            title: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+          expect(getReviewRequestReadyToBePublished).toHaveBeenCalledWith({
+            requesterId: user.orcid,
+            preprintId: preprintTitle.id,
+          })
+        }).pipe(
+          Effect.provide([
+            Layer.succeed(Locale, locale),
+            Layer.succeed(LoggedInUser, user),
+            Layer.mock(Prereviewers.Prereviewers, {}),
+            Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+            Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+          ]),
+        ),
+    )
+
+    it.effect.prop(
+      "when the request can't be loaded",
+      [fc.indeterminatePreprintId(), fc.user(), fc.preprintTitle({ id: fc.preprintId() }), fc.supportedLocale()],
+      ([preprintId, user, preprintTitle, locale]) =>
+        Effect.gen(function* () {
+          const getReviewRequestReadyToBePublished = vi.fn<
+            (typeof ReviewRequests.ReviewRequestQueries.Service)['getReviewRequestReadyToBePublished']
+          >(() => new Queries.UnableToQuery({}))
+
+          const actual = yield* Effect.provide(
+            _.CheckYourRequestPage({ preprintId }),
+            Layer.mock(ReviewRequests.ReviewRequestQueries, { getReviewRequestReadyToBePublished }),
+          )
+
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: StatusCodes.ServiceUnavailable,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
@@ -395,6 +433,42 @@ describe('CheckYourRequestSubmission', () => {
           expect(actual).toStrictEqual({
             _tag: 'PageResponse',
             status: StatusCodes.NotFound,
+            title: expect.anything(),
+            main: expect.anything(),
+            skipToLabel: 'main',
+            js: [],
+          })
+          expect(getReviewRequestReadyToBePublished).toHaveBeenCalledWith({
+            requesterId: user.orcid,
+            preprintId: preprintTitle.id,
+          })
+        }).pipe(
+          Effect.provide([
+            Layer.succeed(Locale, locale),
+            Layer.succeed(LoggedInUser, user),
+            Layer.mock(Preprints.Preprints, { getPreprintTitle: () => Effect.succeed(preprintTitle) }),
+            Layer.mock(ReviewRequests.ReviewRequestCommands, {}),
+          ]),
+        ),
+    )
+
+    it.effect.prop(
+      "when the request can't be loaded",
+      [fc.indeterminatePreprintId(), fc.user(), fc.preprintTitle({ id: fc.preprintId() }), fc.supportedLocale()],
+      ([preprintId, user, preprintTitle, locale]) =>
+        Effect.gen(function* () {
+          const getReviewRequestReadyToBePublished = vi.fn<
+            (typeof ReviewRequests.ReviewRequestQueries.Service)['getReviewRequestReadyToBePublished']
+          >(() => new Queries.UnableToQuery({}))
+
+          const actual = yield* Effect.provide(
+            _.CheckYourRequestSubmission({ preprintId }),
+            Layer.mock(ReviewRequests.ReviewRequestQueries, { getReviewRequestReadyToBePublished }),
+          )
+
+          expect(actual).toStrictEqual({
+            _tag: 'StreamlinePageResponse',
+            status: StatusCodes.ServiceUnavailable,
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',

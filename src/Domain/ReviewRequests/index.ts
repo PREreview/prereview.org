@@ -128,6 +128,7 @@ export const layer = pipe(
           Effect.catchTags({
             PreprintIsNotFound: error => new ReviewRequestsAreUnavailable({ cause: error }),
             PreprintIsUnavailable: error => new ReviewRequestsAreUnavailable({ cause: error }),
+            UnableToQuery: error => new ReviewRequestsAreUnavailable({ cause: error }),
           }),
           Effect.provide(context),
           Effect.withSpan('ReviewRequests.listForPrereviewer'),
@@ -160,6 +161,7 @@ export const layer = pipe(
           ),
           Effect.catchTags({
             NoReviewRequestsFound: error => new ReviewRequestsNotFound({ cause: error }),
+            UnableToQuery: error => new ReviewRequestsAreUnavailable({ cause: error }),
           }),
           Effect.provide(context),
           Effect.withSpan('ReviewRequests.search'),
