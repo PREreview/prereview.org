@@ -11,6 +11,8 @@ import {
   pipe,
   PubSub,
   Record,
+  Ref,
+  Schedule,
   Schema,
   SchemaGetter,
   SchemaIssue,
@@ -33,7 +35,7 @@ export const PageSize = Context.Reference<number>('SqlEventStore/PageSize', { de
 export const make: Effect.Effect<
   EventStore.EventStore,
   SqlError.SqlError,
-  Events.Events | SqlClient.SqlClient | Uuid.GenerateUuid | SensitiveDataStore.SensitiveDataStore
+  Events.Events | SqlClient.SqlClient | Uuid.GenerateUuid | SensitiveDataStore.SensitiveDataStore | Scope.Scope
 > = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<SensitiveDataStore.SensitiveDataStore>(), Context.omit(Scope.Scope))
 
@@ -41,6 +43,7 @@ export const make: Effect.Effect<
   const pageSize = yield* PageSize
   const generateUuid = (yield* Uuid.GenerateUuid).v4()
   const events = yield* Events.Events
+  const changes = yield* PubSub.unbounded<true>()
 
   yield* sql.onDialectOrElse({
     pg: () => sql`
@@ -487,6 +490,7 @@ export const make: Effect.Effect<
       )
 
       yield* PubSub.publish(events, event)
+      yield* PubSub.publish(changes, true)
     },
     Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to commit events'), { error })),
     Effect.catchTag(['SqlError', 'SchemaError'], error => new EventStore.FailedToCommitEvent({ cause: error })),
@@ -549,13 +553,55 @@ export const make: Effect.Effect<
       }
 
       yield* PubSub.publish(events, event)
+      yield* PubSub.publish(changes, true)
     },
     Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to commit events'), { error })),
     Effect.catchTag(['SqlError', 'SchemaError'], error => new EventStore.FailedToCommitEvent({ cause: error })),
     Effect.provide(context),
   )
 
-  return { all, since, latestCursor, loadCheckpoint, saveCheckpoint, query, append, appendIf }
+  const lastSeenCursor = yield* Ref.make(Option.none<EventStore.Cursor>())
+
+  yield* pipe(
+    Effect.gen(function* () {
+      const cursor = yield* latestCursor
+      const previousCursor = yield* Ref.getAndSet(lastSeenCursor, Option.some(cursor))
+
+      if (Option.contains(previousCursor, cursor)) {
+        return
+      }
+
+      yield* PubSub.publish(changes, true)
+    }),
+    Effect.ignore,
+    Effect.withTracerEnabled(false),
+    Effect.repeat(Schedule.spaced('500 millis')),
+    Effect.forkScoped,
+  )
+
+  const subscribe: EventStore.EventStore['subscribe'] = ({ after = beginning, filter } = {}) =>
+    Stream.unwrap(
+      Effect.gen(function* () {
+        const changed = yield* PubSub.subscribe(changes)
+        const lastCursor = yield* Ref.make(after)
+
+        const readNewPages = Stream.unwrap(
+          Effect.map(Ref.get(lastCursor), cursor =>
+            Stream.tap(streamAfter(cursor, filter), page => Ref.set(lastCursor, Array.lastNonEmpty(page).cursor)),
+          ),
+        )
+
+        return Stream.concat(
+          readNewPages,
+          pipe(
+            Stream.fromEffectRepeat(PubSub.takeAll(changed)),
+            Stream.flatMap(() => readNewPages),
+          ),
+        )
+      }),
+    )
+
+  return { all, since, subscribe, latestCursor, loadCheckpoint, saveCheckpoint, query, append, appendIf }
 })
 
 export const layer = Layer.effect(EventStore.EventStore, make)

@@ -33,6 +33,11 @@ export interface EventStore {
 
   readonly since: (cursor: Cursor, filter?: EventFilter) => Stream.Stream<Page, FailedToGetEvents>
 
+  readonly subscribe: (options?: {
+    readonly after?: Cursor
+    readonly filter?: EventFilter
+  }) => Stream.Stream<Page, FailedToGetEvents>
+
   readonly latestCursor: Effect.Effect<Cursor, FailedToGetEvents>
 
   readonly loadCheckpoint: (name: string) => Effect.Effect<Option.Option<Cursor>, FailedToLoadCheckpoint>
@@ -61,6 +66,9 @@ export const all = Stream.unwrap(EventStore.useSync(service => service.all))
 
 export const since = (...args: Parameters<(typeof EventStore.Service)['since']>) =>
   Stream.unwrap(EventStore.useSync(service => service.since(...args)))
+
+export const subscribe = (...args: Parameters<(typeof EventStore.Service)['subscribe']>) =>
+  Stream.unwrap(EventStore.useSync(service => service.subscribe(...args)))
 
 export const latestCursor = EventStore.use(service => service.latestCursor)
 

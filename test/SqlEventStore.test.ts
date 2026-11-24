@@ -11,12 +11,14 @@ import {
   Option,
   pipe,
   PubSub,
+  Queue,
   Redacted,
   Schema,
   Stream,
   Struct,
 } from 'effect'
 import { SqlClient } from 'effect/sql'
+import { TestClock } from 'effect/testing'
 import { sample } from 'fast-check'
 import * as Preprints from '../src/Domain/Preprints/index.ts'
 import * as Events from '../src/Events.ts'
@@ -613,6 +615,120 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
     )
   })
 
+  describe('subscribe', () => {
+    it.effect.prop(
+      'streams existing events and then new ones',
+      [fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent())],
+      ([existingEvents, newEvents]) =>
+        Effect.gen(function* () {
+          const eventStore = yield* _.make
+          const cursor = yield* eventStore.latestCursor
+
+          yield* Effect.forEach(existingEvents, eventStore.append)
+
+          const received = yield* receive(eventStore.subscribe({ after: cursor }))
+          const receivedExistingEvents = yield* Queue.takeN(received, existingEvents.length)
+
+          yield* Effect.forEach(newEvents, eventStore.append)
+
+          const receivedNewEvents = yield* Queue.takeN(received, newEvents.length)
+
+          expect([receivedExistingEvents, receivedNewEvents]).toStrictEqual([existingEvents, newEvents])
+        }).pipe(
+          Effect.provide([
+            Uuid.layer,
+            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
+            Events.layer,
+            TestSqlClient,
+          ]),
+        ),
+      { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+    )
+
+    it.effect.prop(
+      'streams from the beginning without a cursor',
+      [fc.nonEmptyArray(fc.commentEvent())],
+      ([events]) =>
+        Effect.gen(function* () {
+          const eventStore = yield* _.make
+
+          yield* Effect.forEach(events, eventStore.append)
+
+          const received = yield* receive(eventStore.subscribe())
+          const actual = yield* Queue.takeN(received, events.length)
+
+          expect(actual).toStrictEqual(events)
+        }).pipe(
+          Effect.provide([
+            Uuid.layer,
+            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
+            Events.layer,
+            TestSqlClient,
+          ]),
+        ),
+      { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+    )
+
+    it.effect.prop(
+      'streams events written by another instance',
+      [fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent())],
+      ([existingEvents, newEvents]) =>
+        Effect.gen(function* () {
+          const eventStore = yield* _.make
+          const otherEventStore = yield* _.make
+          const cursor = yield* eventStore.latestCursor
+
+          yield* Effect.forEach(existingEvents, eventStore.append)
+
+          const received = yield* receive(eventStore.subscribe({ after: cursor }))
+          yield* Queue.takeN(received, existingEvents.length)
+
+          yield* Effect.forEach(newEvents, otherEventStore.append)
+          yield* TestClock.adjust('1 second')
+
+          const actual = yield* Queue.takeN(received, newEvents.length)
+
+          expect(actual).toStrictEqual(newEvents)
+        }).pipe(
+          Effect.provide([
+            Uuid.layer,
+            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
+            Events.layer,
+            TestSqlClient,
+          ]),
+        ),
+      { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+    )
+
+    it.effect.prop(
+      'streams events matching a filter',
+      [fc.nonEmptyArray(fc.oneof(fc.commentWasStarted(), fc.commentWasPublished())), fc.commentWasStarted()],
+      ([events, lastEvent]) =>
+        Effect.gen(function* () {
+          const eventStore = yield* _.make
+          const cursor = yield* eventStore.latestCursor
+          const expected = [...Array.filter(events, event => event._tag === 'CommentWasStarted'), lastEvent]
+
+          yield* Effect.forEach([...events, lastEvent], eventStore.append)
+
+          const received = yield* receive(
+            eventStore.subscribe({ after: cursor, filter: { types: ['CommentWasStarted'] } }),
+          )
+          const actual = yield* Queue.takeN(received, expected.length)
+
+          expect(actual).toStrictEqual(expected)
+        }).pipe(
+          Effect.provide([
+            Uuid.layer,
+            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
+            Events.layer,
+            TestSqlClient,
+          ]),
+        ),
+      { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+    )
+  })
+
   describe('latestCursor', () => {
     it.effect.prop(
       'is the beginning when there are no events',
@@ -1111,5 +1227,15 @@ const RealPgClient = Layer.unwrap(
 )
 
 const allEvents = (eventStore: EventStore.EventStore) => Effect.map(Stream.runCollect(eventStore.all), eventsIn)
+
+const receive = Effect.fnUntraced(function* <E, R>(pages: Stream.Stream<EventStore.Page, E, R>) {
+  const received = yield* Queue.unbounded<Events.Event>()
+
+  yield* Effect.forkChild(
+    Stream.runForEach(pages, page => Queue.offerAll(received, Array.map(page, Struct.get('event')))),
+  )
+
+  return received
+})
 
 const eventsIn = (pages: ReadonlyArray<EventStore.Page>) => Array.flatMap(pages, Array.map(Struct.get('event')))
