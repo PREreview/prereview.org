@@ -1,4 +1,4 @@
-import { Effect, Layer, pipe, Queue } from 'effect'
+import { Effect, Layer, pipe, Queue, Ref } from 'effect'
 import { sample } from 'fast-check'
 import * as _ from '../src/EventDispatcher.ts'
 import type * as Events from '../src/Events.ts'
@@ -69,6 +69,34 @@ describe('worker', () => {
 
       expect(actual).toStrictEqual(newEvent)
       expect(yield* Queue.size(subscriber)).toStrictEqual(0)
+    }).pipe(Effect.provide(TestLayer)),
+  )
+
+  it.effect('stops dispatching to a subscriber that fails, but carries on with the others', () =>
+    Effect.gen(function* () {
+      const [firstEvent, secondEvent] = sample(fc.commentEvent(), 2)
+      const dispatcher = yield* _.EventDispatcher
+      const failingSubscriberCalls = yield* Ref.make(0)
+      const otherSubscriber = yield* subscribe
+
+      yield* dispatcher.addSubscriber(() =>
+        Effect.andThen(
+          Ref.update(failingSubscriberCalls, calls => calls + 1),
+          Effect.die('unable to update'),
+        ),
+      )
+
+      yield* _.replayExistingEvents
+      yield* Layer.build(_.worker)
+
+      yield* EventStore.append(firstEvent!)
+      const firstReceived = yield* Queue.take(otherSubscriber)
+
+      yield* EventStore.append(secondEvent!)
+      const secondReceived = yield* Queue.take(otherSubscriber)
+
+      expect([firstReceived, secondReceived]).toStrictEqual([firstEvent, secondEvent])
+      expect(yield* Ref.get(failingSubscriberCalls)).toStrictEqual(1)
     }).pipe(Effect.provide(TestLayer)),
   )
 

@@ -1,5 +1,6 @@
 import {
   Array,
+  Cause,
   Data,
   Effect,
   identity,
@@ -117,6 +118,7 @@ export const makeStatefulQuery = <Input extends QueryInput, Result, Error = neve
     const eventDispatcher = yield* EventDispatcher.EventDispatcher
 
     const state = yield* Ref.make(initialState)
+    const failure = yield* Ref.make(Option.none<unknown>())
 
     yield* eventDispatcher.addSubscriber(events =>
       pipe(
@@ -125,6 +127,7 @@ export const makeStatefulQuery = <Input extends QueryInput, Result, Error = neve
           events => Ref.update(state, currentState => updateStateWithEvents(currentState, events)),
           { discard: true },
         ),
+        Effect.onError(cause => Ref.set(failure, Option.some(Cause.squash(cause)))),
         Effect.withSpan(`${name}.updateStateWithEvents`, { attributes: { eventCount: events.length } }),
       ),
     )
@@ -133,6 +136,12 @@ export const makeStatefulQuery = <Input extends QueryInput, Result, Error = neve
 
     return Effect.fn(name)(function* (...input: Input) {
       yield* annotateSpanWithInput(input[0])
+
+      const currentFailure = yield* Ref.get(failure)
+
+      if (Option.isSome(currentFailure)) {
+        return yield* new UnableToQuery({ cause: currentFailure.value })
+      }
 
       const currentState = yield* Ref.get(state)
 

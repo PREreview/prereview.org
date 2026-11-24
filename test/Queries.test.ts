@@ -164,6 +164,36 @@ describe('makeStatefulQuery', () => {
     }),
   )
 
+  it.effect('fails its queries once updating its state has failed', () =>
+    Effect.gen(function* () {
+      const subscribers: Array<Parameters<(typeof EventDispatcher.EventDispatcher.Service)['addSubscriber']>[0]> = []
+
+      const query = yield* pipe(
+        _.makeStatefulQuery(
+          _.StatefulQuery({
+            name: 'Test.statefulQuery',
+            initialState: 0,
+            updateStateWithEvents: () => {
+              throw new Error('unable to update')
+            },
+            query: (state: number) => Result.succeed(state),
+          }),
+        ),
+        Effect.provide(
+          Layer.mock(EventDispatcher.EventDispatcher, {
+            addSubscriber: subscriber => Effect.sync(() => subscribers.push(subscriber)),
+          }),
+        ),
+      )
+
+      yield* Effect.exit(Effect.forEach(subscribers, subscriber => subscriber([event])))
+
+      const actual = yield* Effect.result(query())
+
+      expect(actual).toStrictEqual(Result.fail(new _.UnableToQuery({ cause: new Error('unable to update') })))
+    }),
+  )
+
   it.effect('records updating its state on a span', () =>
     Effect.gen(function* () {
       const { spans, tracer } = recordSpans()

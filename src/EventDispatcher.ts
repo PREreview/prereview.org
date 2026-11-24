@@ -40,13 +40,26 @@ const dispatchPage = Effect.fn('EventDispatcher.dispatchPage')(function* (page: 
   const lastCursor = yield* LastCursor
   const subscribers = yield* Subscribers
   const allSubscribers = yield* Ref.get(subscribers)
+  const events = Array.map(page, Struct.get('event'))
+
+  yield* Effect.forEach(
+    allSubscribers,
+    subscriber =>
+      Effect.catchDefect(subscriber(events), defect =>
+        pipe(
+          Ref.update(
+            subscribers,
+            Array.filter(other => other !== subscriber),
+          ),
+          Effect.andThen(
+            Effect.annotateLogs(Effect.logError('Subscriber failed, so no longer dispatching to it'), { defect }),
+          ),
+        ),
+      ),
+    { discard: true, concurrency: 'unbounded' },
+  )
 
   yield* Ref.set(lastCursor, Option.some(Array.lastNonEmpty(page).cursor))
-
-  yield* Effect.forEach(allSubscribers, subscriber => subscriber(Array.map(page, Struct.get('event'))), {
-    discard: true,
-    concurrency: 'unbounded',
-  })
 })
 
 const dispatchExistingEvents = Effect.gen(function* () {
