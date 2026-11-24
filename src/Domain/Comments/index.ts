@@ -1,5 +1,5 @@
-import { Array, Context, Effect, flow, Layer, Option, pipe, Schedule, Scope, Struct } from 'effect'
-import { Singleton, type Sharding } from 'effect/cluster'
+import { Array, Context, Effect, Layer, Option, pipe, Scope, Struct } from 'effect'
+import type { Sharding } from 'effect/cluster'
 import type { WorkflowEngine } from 'effect/workflow'
 import { UnableToHandleCommand } from '../../Commands.ts'
 import type * as Events from '../../Events.ts'
@@ -20,7 +20,6 @@ import { DecideComment } from './Decide.ts'
 import { CommentEventTypes } from './Events.ts'
 import { EvolveComment } from './Evolve.ts'
 import * as Queries from './Queries.ts'
-import * as React from './React.ts'
 import { CommentNotStarted, type CommentState } from './State.ts'
 import * as Workflows from './Workflows/index.ts'
 import { layerZenodo } from './Zenodo.ts'
@@ -153,27 +152,6 @@ export const layer = Layer.mergeAll(
   Layer.effect(GetComment, makeGetComment),
 )
 
-const AssignADoiToCommentsInNeedOfOne = Singleton.make(
-  'Comments/AssignADoiToCommentsInNeedOfOne',
-  pipe(
-    EventStore.query({ types: ['PublicationOfCommentWasRequested', 'CommentWasAssignedADoi'] }),
-    Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
-    Effect.andThen(events => Effect.fromResult(Queries.GetACommentInNeedOfADoi(events))),
-    Effect.bindTo('commentId'),
-    Effect.bind('inputForCommentZenodoRecord', ({ commentId }) =>
-      pipe(
-        EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
-        Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
-        Effect.andThen(flow(Queries.buildInputForCommentZenodoRecord, Effect.fromResult)),
-      ),
-    ),
-    Effect.andThen(React.AssignCommentADoiWhenPublicationWasRequested),
-    Effect.catchTag('NoCommentsInNeedOfADoi', () => Effect.void),
-    Effect.catch(error => Effect.annotateLogs(Effect.logError('AssignADoiToCommentsInNeedOfOne failed'), { error })),
-    Effect.repeat(Schedule.fixed('1 minute')),
-  ),
-)
-
 const ReactToCommentEventsNoDeps: Layer.Layer<
   never,
   never,
@@ -192,6 +170,6 @@ const ReactToCommentEventsNoDeps: Layer.Layer<
   PublicationOfCommentWasRequested: ({ commentId }) =>
     Workflows.AssignCommentADoi.execute({ commentId }, { discard: true }),
   CommentWasAssignedADoi: ({ commentId, id }) => Workflows.PublishComment.execute({ commentId, id }, { discard: true }),
-}).pipe(Layer.merge(AssignADoiToCommentsInNeedOfOne), Layer.merge(Workflows.workflowsLayer))
+}).pipe(Layer.merge(Workflows.workflowsLayer))
 
 export const ReactToCommentEvents = Layer.provide(ReactToCommentEventsNoDeps, layerZenodo)

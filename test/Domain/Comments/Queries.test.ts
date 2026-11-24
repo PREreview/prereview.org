@@ -1,4 +1,4 @@
-import { Array, Option, Result } from 'effect'
+import { Option, Result } from 'effect'
 import * as _ from '../../../src/Domain/Comments/Queries.ts'
 import * as Comments from '../../../src/Domain/Comments/index.ts'
 import * as Queries from '../../../src/Queries.ts'
@@ -325,47 +325,5 @@ describe('buildInputForCommentZenodoRecord', () => {
     const actual = _.buildInputForCommentZenodoRecord([...events, publicationOfCommentWasRequested])
 
     expect(actual).toStrictEqual(Result.fail(new Queries.UnexpectedSequenceOfEvents({})))
-  })
-})
-
-describe('GetACommentInNeedOfADoi', () => {
-  const resourceId = Uuid.Uuid('358f7fc0-9725-4192-8673-d7c64f398401')
-  const publicationOfCommentWasRequested = new Comments.PublicationOfCommentWasRequested({ commentId: resourceId })
-  const commentWasAssignedADoi = new Comments.CommentWasAssignedADoi({
-    commentId: resourceId,
-    id: 107286,
-    doi: Doi('10.5072/zenodo.107286'),
-  })
-
-  test('finds a comment in need of a DOI', () => {
-    const events = [publicationOfCommentWasRequested]
-
-    const actual = _.GetACommentInNeedOfADoi(events)
-
-    expect(actual).toStrictEqual(Result.succeed(resourceId))
-  })
-
-  it.prop(
-    'finds the newest comment in need of a DOI when multiple comments need a DOI',
-    [
-      fc.nonEmptyArray(
-        fc.publicationOfCommentWasRequested({
-          commentId: fc.uuid().filter(otherResourceId => resourceId !== otherResourceId),
-        }),
-      ),
-    ],
-    ([otherEvents]) => {
-      const actual = _.GetACommentInNeedOfADoi(Array.flatten([otherEvents, Array.of(publicationOfCommentWasRequested)]))
-
-      expect(actual).toStrictEqual(Result.succeed(resourceId))
-    },
-  )
-
-  test('ignores comments that already have a DOI', () => {
-    const events = [publicationOfCommentWasRequested, commentWasAssignedADoi]
-
-    const actual = _.GetACommentInNeedOfADoi(events)
-
-    expect(actual).toStrictEqual(Result.fail(new _.NoCommentsInNeedOfADoi()))
   })
 })

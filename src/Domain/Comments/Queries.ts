@@ -1,10 +1,10 @@
-import { Array, Data, Equal, Option, pipe, Record, Result } from 'effect'
+import { Array, Equal, Option, pipe, Record, Result } from 'effect'
 import * as Queries from '../../Queries.ts'
 import type { Uuid } from '../../types/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { InputForCommentZenodoRecord } from './Context.ts'
 import * as Errors from './Errors.ts'
-import type { CommentEvent, CommentWasAssignedADoi, PublicationOfCommentWasRequested } from './Events.ts'
+import type { CommentEvent } from './Events.ts'
 import { EvolveComment } from './Evolve.ts'
 import * as ExpectedCommand from './ExpectedCommand.ts'
 import { CommentNotStarted, type CommentState } from './State.ts'
@@ -149,25 +149,4 @@ export const buildInputForCommentZenodoRecord = (
     Option.all({ authorId, prereviewId, persona, comment, competingInterests }),
     () => new Queries.UnexpectedSequenceOfEvents({}),
   )
-}
-
-export class NoCommentsInNeedOfADoi extends Data.TaggedClass('NoCommentsInNeedOfADoi') {}
-
-export const GetACommentInNeedOfADoi = (
-  events: ReadonlyArray<PublicationOfCommentWasRequested | CommentWasAssignedADoi>,
-): Result.Result<Uuid.Uuid, NoCommentsInNeedOfADoi> => {
-  const hasADoi = new Set()
-
-  for (const event of events.toReversed()) {
-    if (event._tag === 'CommentWasAssignedADoi') {
-      hasADoi.add(event.commentId)
-      continue
-    }
-
-    if (!hasADoi.has(event.commentId)) {
-      return Result.succeed(event.commentId)
-    }
-  }
-
-  return Result.fail(new NoCommentsInNeedOfADoi())
 }
