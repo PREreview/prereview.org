@@ -1,9 +1,10 @@
-import { Array, Context, Effect, flow, Layer, Match, Option, pipe, PubSub, Schedule, Scope, Struct } from 'effect'
+import { Array, Context, Effect, flow, Layer, Option, pipe, Schedule, Scope, Struct } from 'effect'
 import { Singleton, type Sharding } from 'effect/cluster'
 import type { WorkflowEngine } from 'effect/workflow'
 import { UnableToHandleCommand } from '../../Commands.ts'
-import * as Events from '../../Events.ts'
+import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
+import * as EventSubscription from '../../EventSubscription.ts'
 import { UnableToQuery } from '../../Queries.ts'
 import type { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
 import { layer as commentsServiceLayer } from './Comments.ts'
@@ -16,7 +17,7 @@ import {
   type PublishCommentOnZenodo,
 } from './Context.ts'
 import { DecideComment } from './Decide.ts'
-import { CommentEventTypes, type CommentEvent } from './Events.ts'
+import { CommentEventTypes } from './Events.ts'
 import { EvolveComment } from './Evolve.ts'
 import * as Queries from './Queries.ts'
 import * as React from './React.ts'
@@ -185,42 +186,12 @@ const ReactToCommentEventsNoDeps: Layer.Layer<
   | PublishCommentOnZenodo
   | Sharding.Sharding
   | WorkflowEngine.WorkflowEngine
-> = Layer.effectDiscard(
-  Effect.gen(function* () {
-    const events = yield* Events.Events
-    const dequeue = yield* PubSub.subscribe(events)
-
-    return yield* pipe(
-      PubSub.take(dequeue),
-      Effect.filterOrElse(Events.isCommentEvent, () => Effect.fail('not a comment event')),
-      Effect.tap(({ commentId }) => Effect.annotateLogsScoped({ commentId })),
-      Effect.andThen(
-        pipe(
-          Match.type<CommentEvent>(),
-          Match.tag('CommentWasStarted', ({ commentId }) => React.CheckIfUserHasAVerifiedEmailAddress(commentId)),
-          Match.tag('PublicationOfCommentWasRequested', ({ commentId }) =>
-            pipe(
-              EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
-              Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
-              Effect.andThen(flow(Queries.buildInputForCommentZenodoRecord, Effect.fromResult)),
-              Effect.andThen(inputForCommentZenodoRecord =>
-                React.AssignCommentADoiWhenPublicationWasRequested({ commentId, inputForCommentZenodoRecord }),
-              ),
-            ),
-          ),
-          Match.tag('CommentWasAssignedADoi', React.PublishCommentWhenCommentWasAssignedADoi),
-          Match.orElse(() => Effect.void),
-        ),
-      ),
-      Effect.catchIf(
-        error => error === 'not a comment event',
-        () => Effect.void,
-      ),
-      Effect.catch(error => Effect.annotateLogs(Effect.logError('ReactToCommentEvents failed'), { error })),
-      Effect.scoped,
-      Effect.forever,
-    )
-  }),
-).pipe(Layer.merge(AssignADoiToCommentsInNeedOfOne), Layer.merge(Workflows.workflowsLayer))
+> = EventSubscription.make('Comments/Reactions', {
+  CommentWasStarted: ({ commentId }) =>
+    Workflows.CheckIfUserHasAVerifiedEmailAddress.execute({ commentId }, { discard: true }),
+  PublicationOfCommentWasRequested: ({ commentId }) =>
+    Workflows.AssignCommentADoi.execute({ commentId }, { discard: true }),
+  CommentWasAssignedADoi: ({ commentId, id }) => Workflows.PublishComment.execute({ commentId, id }, { discard: true }),
+}).pipe(Layer.merge(AssignADoiToCommentsInNeedOfOne), Layer.merge(Workflows.workflowsLayer))
 
 export const ReactToCommentEvents = Layer.provide(ReactToCommentEventsNoDeps, layerZenodo)
