@@ -25,7 +25,7 @@ export interface Page {
 export interface EventStore {
   readonly all: Stream.Stream<Page, FailedToGetEvents>
 
-  readonly since: (cursor: Cursor) => Stream.Stream<Page, FailedToGetEvents>
+  readonly since: (cursor: Cursor, filter?: EventFilter) => Stream.Stream<Page, FailedToGetEvents>
 
   readonly query: <Filter extends EventFilter>(
     filter: Filter,

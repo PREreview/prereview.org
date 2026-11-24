@@ -16,6 +16,7 @@ import {
   Stream,
   Struct,
   Tuple,
+  UndefinedOr,
 } from 'effect'
 import { SqlClient, type SqlError, type Statement } from 'effect/sql'
 import * as EventStore from './EventStore.ts'
@@ -187,8 +188,13 @@ export const make: Effect.Effect<
     } satisfies EventStore.Page
   }, Effect.provide(context))
 
+  const matching: (filter?: Events.EventFilter) => ReadonlyArray<Statement.Fragment> = UndefinedOr.match({
+    onUndefined: Array.empty,
+    onDefined: filter => Array.of(buildFilterCondition(filter)),
+  })
+
   const getPageAfter = Effect.fn('SqlEventStore.getPageAfter')(
-    function* (cursor: EventStore.Cursor) {
+    function* (cursor: EventStore.Cursor, filter?: Events.EventFilter) {
       const after = yield* readCursor(cursor)
 
       yield* Effect.annotateCurrentSpan({ after: after.position })
@@ -202,7 +208,7 @@ export const make: Effect.Effect<
         FROM
           events
         WHERE
-          position > ${after.position}
+          ${sql.and([sql`position > ${after.position}`, ...matching(filter)])}
         ORDER BY
           position ASC
         LIMIT
@@ -227,11 +233,12 @@ export const make: Effect.Effect<
 
   const getNextPageAfter: (
     after: EventStore.Cursor,
+    filter?: Events.EventFilter,
   ) => Effect.Effect<
     readonly [ReadonlyArray<EventStore.Page>, Option.Option<EventStore.Cursor>],
     EventStore.FailedToGetEvents
-  > = Effect.fnUntraced(function* (after) {
-    const result = yield* getPageAfter(after)
+  > = Effect.fnUntraced(function* (after, filter) {
+    const result = yield* getPageAfter(after, filter)
 
     if (Option.isNone(result)) {
       return Tuple.make([], Option.none())
@@ -242,7 +249,10 @@ export const make: Effect.Effect<
     return Tuple.make([page], isLastPage ? Option.none() : Option.some(page.cursor))
   })
 
-  const streamAfter = (cursor: EventStore.Cursor): Stream.Stream<EventStore.Page, EventStore.FailedToGetEvents> =>
+  const streamAfter = (
+    cursor: EventStore.Cursor,
+    filter?: Events.EventFilter,
+  ): Stream.Stream<EventStore.Page, EventStore.FailedToGetEvents> =>
     sql.onDialectOrElse({
       pg: () =>
         pipe(
@@ -258,11 +268,16 @@ export const make: Effect.Effect<
               FROM
                 events
               WHERE
-                (transaction_id, position) > (
-                  ${after.transactionId.toString()}::XID8,
-                  ${after.position}
-                )
-                AND transaction_id < pg_snapshot_xmin(pg_current_snapshot())
+                ${sql.and([
+                  sql`
+                    (transaction_id, position) > (
+                      ${after.transactionId.toString()}::XID8,
+                      ${after.position}
+                    )
+                  `,
+                  sql`transaction_id < pg_snapshot_xmin(pg_current_snapshot())`,
+                  ...matching(filter),
+                ])}
               ORDER BY
                 events.transaction_id ASC,
                 events.position ASC
@@ -278,7 +293,7 @@ export const make: Effect.Effect<
           ),
           Stream.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
         ),
-      orElse: () => Stream.paginate(cursor, getNextPageAfter),
+      orElse: () => Stream.paginate(cursor, cursor => getNextPageAfter(cursor, filter)),
     })
 
   const all: EventStore.EventStore['all'] = streamAfter(makeCursor(BigInt(0), EventStore.Position.make(0)))

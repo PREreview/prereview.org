@@ -538,6 +538,44 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
     )
 
+    it.effect.prop(
+      'streams events matching a filter since a position',
+      [
+        fc.nonEmptyArray(fc.commentEvent()),
+        fc.nonEmptyArray(fc.oneof(fc.commentWasStarted(), fc.commentWasPublished())),
+      ],
+      ([existingEvents, newEvents]) =>
+        Effect.gen(function* () {
+          const eventStore = yield* _.make
+
+          yield* Effect.forEach(existingEvents, eventStore.append)
+
+          const { cursor } = yield* Effect.flatMap(Stream.runLast(eventStore.all), Effect.fromOption)
+
+          yield* Effect.forEach(newEvents, eventStore.append)
+
+          const actual = yield* Stream.runCollect(eventStore.since(cursor, { types: ['CommentWasStarted'] }))
+
+          expect(actual).toStrictEqual(
+            Array.match(
+              Array.filter(newEvents, event => event._tag === 'CommentWasStarted'),
+              {
+                onEmpty: () => [],
+                onNonEmpty: events => [{ events, cursor: expect.anything() }],
+              },
+            ),
+          )
+        }).pipe(
+          Effect.provide([
+            Uuid.layer,
+            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
+            Layer.mock(Events.Events, {} as never),
+            TestSqlClient,
+          ]),
+        ),
+      { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+    )
+
     it.effect("fails with a cursor it can't read", () =>
       Effect.gen(function* () {
         const eventStore = yield* _.make
