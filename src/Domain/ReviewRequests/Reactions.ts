@@ -1,57 +1,28 @@
-import { Effect, Layer, Match, pipe, PubSub, type Scope } from 'effect'
-import type { WorkflowEngine } from 'effect/workflow'
-import * as Events from '../../Events.ts'
+import { Effect } from 'effect'
+import * as EventSubscription from '../../EventSubscription.ts'
 import * as Workflows from './Workflows/index.ts'
 
-const makeReviewRequestReactions: Effect.Effect<
-  never,
-  never,
-  Events.Events | Scope.Scope | WorkflowEngine.WorkflowEngine
-> = Effect.gen(function* () {
-  const events = yield* Events.Events
-  const dequeue = yield* PubSub.subscribe(events)
-
-  return yield* pipe(
-    PubSub.take(dequeue),
-    Effect.andThen(
-      pipe(
-        Match.type<Events.Event>(),
-        Match.tag('ReviewRequestForAPreprintWasPublished', event =>
-          Effect.all(
-            [
-              Workflows.CategorizeReviewRequest.execute(event, { discard: true }),
-              Workflows.NotifyCommunitySlackOfReviewRequest.execute(event, { discard: true }),
-            ],
-            { concurrency: 'unbounded' },
-          ),
-        ),
-        Match.tag('ReviewRequestForAPreprintWasAccepted', event =>
-          Effect.all(
-            [
-              Workflows.AcknowledgeReviewRequest.execute(event, { discard: true }),
-              Workflows.CategorizeReviewRequest.execute(event, { discard: true }),
-              Workflows.NotifyCommunitySlackOfReviewRequest.execute(event, { discard: true }),
-            ],
-            { concurrency: 'unbounded' },
-          ),
-        ),
-        Match.tag('ReviewRequestByAPrereviewerWasImported', 'ReviewRequestFromAPreprintServerWasImported', event =>
-          Workflows.CategorizeReviewRequest.execute(event, { discard: true }),
-        ),
-        Match.tag('ReviewRequestForAPreprintWasReceived', event =>
-          Workflows.ProcessReceivedReviewRequest.execute(event, { discard: true }),
-        ),
-        Match.orElse(() => Effect.void),
-      ),
+export const reactionsWorker = EventSubscription.make('ReviewRequests/Reactions', {
+  ReviewRequestForAPreprintWasPublished: event =>
+    Effect.all(
+      [
+        Workflows.CategorizeReviewRequest.execute(event, { discard: true }),
+        Workflows.NotifyCommunitySlackOfReviewRequest.execute(event, { discard: true }),
+      ],
+      { concurrency: 'unbounded' },
     ),
-    Effect.forever,
-  )
+  ReviewRequestForAPreprintWasAccepted: event =>
+    Effect.all(
+      [
+        Workflows.AcknowledgeReviewRequest.execute(event, { discard: true }),
+        Workflows.CategorizeReviewRequest.execute(event, { discard: true }),
+        Workflows.NotifyCommunitySlackOfReviewRequest.execute(event, { discard: true }),
+      ],
+      { concurrency: 'unbounded' },
+    ),
+  ReviewRequestByAPrereviewerWasImported: event => Workflows.CategorizeReviewRequest.execute(event, { discard: true }),
+  ReviewRequestFromAPreprintServerWasImported: event =>
+    Workflows.CategorizeReviewRequest.execute(event, { discard: true }),
+  ReviewRequestForAPreprintWasReceived: event =>
+    Workflows.ProcessReceivedReviewRequest.execute(event, { discard: true }),
 })
-
-export const reactionsWorker = Layer.effectDiscard(
-  Effect.acquireRelease(
-    pipe(Effect.logDebug('ReviewRequests worker started'), Effect.andThen(makeReviewRequestReactions)),
-    () => Effect.logDebug('ReviewRequests worker stopped'),
-    { interruptible: true },
-  ),
-)
