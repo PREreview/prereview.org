@@ -15,7 +15,7 @@ import {
 } from 'effect'
 import { TestClock } from 'effect/testing'
 import { sample } from 'fast-check'
-import * as Events from '../src/Events.ts'
+import type * as Events from '../src/Events.ts'
 import * as EventStore from '../src/EventStore.ts'
 import * as _ from '../src/EventSubscription.ts'
 import * as SensitiveDataStore from '../src/SensitiveDataStore.ts'
@@ -292,7 +292,6 @@ describe('EventSubscription', () => {
         expect(yield* Ref.get(attempts)).toStrictEqual(2)
       }).pipe(
         Effect.provide([
-          Events.layer,
           Layer.mock(EventStore.EventStore, {
             loadCheckpoint: () =>
               pipe(
@@ -319,11 +318,6 @@ const start = <Handlers extends Types.NoExcessProperties<_.Handlers, Handlers>>(
 const TestLayer = pipe(
   SqlEventStore.layer,
   Layer.provideMerge(
-    Layer.mergeAll(
-      Events.layer,
-      Uuid.layer,
-      Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-      TestLibsqlClient.layer,
-    ),
+    Layer.mergeAll(Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestLibsqlClient.layer),
   ),
 )

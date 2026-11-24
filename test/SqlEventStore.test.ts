@@ -10,7 +10,6 @@ import {
   Layer,
   Option,
   pipe,
-  PubSub,
   Queue,
   Redacted,
   Schema,
@@ -71,7 +70,6 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       }).pipe(
         Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-        Effect.provide(Events.layer),
         Effect.provide(TestSqlClient),
       ),
     { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
@@ -106,10 +104,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       ],
       ([event, filter, otherEvents]) =>
         Effect.gen(function* () {
-          const events = yield* PubSub.unbounded<Events.Event>()
-          const published = yield* PubSub.subscribe(events)
-
-          const eventStore = yield* Effect.provide(_.make, Layer.succeed(Events.Events, events))
+          const eventStore = yield* _.make
 
           yield* Effect.forEach(otherEvents, eventStore.append)
 
@@ -120,7 +115,6 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
           expect(actual).toStrictEqual(Option.some({ events: [event], lastKnownPosition: expect.anything() }))
           expect(all).toStrictEqual([...otherEvents, event])
-          expect(yield* PubSub.takeAll(published)).toContainEqual(event)
         }).pipe(
           Effect.provide(Uuid.layer),
           Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
@@ -136,10 +130,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       [fc.nonEmptyArray(fc.commentEvent()), fc.commentEvent()],
       ([existingEvents, event]) =>
         Effect.gen(function* () {
-          const events = yield* PubSub.unbounded<Events.Event>()
-          const published = yield* PubSub.subscribe(events)
-
-          const eventStore = yield* Effect.provide(_.make, Layer.succeed(Events.Events, events))
+          const eventStore = yield* _.make
 
           yield* Effect.forEach(existingEvents, eventStore.append)
 
@@ -156,7 +147,6 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           const all = yield* allEvents(eventStore)
 
           expect(all).toStrictEqual([...existingEvents, event])
-          expect(yield* PubSub.takeAll(published)).toContainEqual(event)
         }).pipe(
           Effect.provide(Uuid.layer),
           Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
@@ -191,7 +181,6 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
         }).pipe(
           Effect.provide(Uuid.layer),
           Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-          Effect.provide(Events.layer),
           Effect.provide(TestSqlClient),
         ),
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
@@ -441,30 +430,10 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       }).pipe(
         Effect.provide(Uuid.layer),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-        Effect.provide(Events.layer),
         Effect.provide(TestSqlClient),
       ),
     { timeout: Duration.toMillis('60 seconds') },
   )
-
-  describe('append', () => {
-    it.effect.prop(
-      'announces the event',
-      [fc.commentEvent()],
-      ([event]) =>
-        Effect.gen(function* () {
-          const events = yield* PubSub.unbounded<Events.Event>()
-          const published = yield* PubSub.subscribe(events)
-
-          const eventStore = yield* Effect.provide(_.make, Layer.succeed(Events.Events, events))
-
-          yield* eventStore.append(event)
-
-          expect(yield* PubSub.takeAll(published)).toStrictEqual([event])
-        }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestSqlClient])),
-      { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
-    )
-  })
 
   describe('all', () => {
     it.effect('streams nothing when there are no events', () =>
@@ -477,7 +446,6 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       }).pipe(
         Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-        Effect.provide(Events.layer),
         Effect.provide(TestSqlClient),
       ),
     )
@@ -497,7 +465,6 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
         }).pipe(
           Effect.provide(Uuid.layer),
           Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-          Effect.provide(Events.layer),
           Effect.provide(TestSqlClient),
         ),
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
@@ -526,7 +493,6 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           Effect.provide(Layer.succeed(_.PageSize, 3)),
           Effect.provide(Uuid.layer),
           Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-          Effect.provide(Events.layer),
           Effect.provide(TestSqlClient),
         ),
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
@@ -553,7 +519,6 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
         }).pipe(
           Effect.provide(Uuid.layer),
           Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-          Effect.provide(Events.layer),
           Effect.provide(TestSqlClient),
         ),
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
@@ -586,14 +551,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
               },
             ),
           )
-        }).pipe(
-          Effect.provide([
-            Uuid.layer,
-            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-            Events.layer,
-            TestSqlClient,
-          ]),
-        ),
+        }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestSqlClient])),
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
     )
 
@@ -604,14 +562,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
         const actual = yield* Effect.flip(Stream.runCollect(eventStore.since(EventStore.Cursor.make('not a cursor'))))
 
         expect(actual).toBeInstanceOf(EventStore.FailedToGetEvents)
-      }).pipe(
-        Effect.provide([
-          Uuid.layer,
-          Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-          Events.layer,
-          TestSqlClient,
-        ]),
-      ),
+      }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestSqlClient])),
     )
   })
 
@@ -634,14 +585,32 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           const receivedNewEvents = yield* Queue.takeN(received, newEvents.length)
 
           expect([receivedExistingEvents, receivedNewEvents]).toStrictEqual([existingEvents, newEvents])
-        }).pipe(
-          Effect.provide([
-            Uuid.layer,
-            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-            Events.layer,
-            TestSqlClient,
-          ]),
-        ),
+        }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestSqlClient])),
+      { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+    )
+
+    it.effect.prop(
+      'streams new events appended with a condition',
+      [fc.nonEmptyArray(fc.commentEvent()), fc.commentEvent()],
+      ([existingEvents, newEvent]) =>
+        Effect.gen(function* () {
+          const eventStore = yield* _.make
+          const cursor = yield* eventStore.latestCursor
+
+          yield* Effect.forEach(existingEvents, eventStore.append)
+
+          const received = yield* receive(eventStore.subscribe({ after: cursor }))
+          yield* Queue.takeN(received, existingEvents.length)
+
+          yield* eventStore.appendIf(newEvent, {
+            filter: { types: [newEvent._tag], predicates: { commentId: newEvent.commentId } },
+            lastKnownPosition: Option.none(),
+          })
+
+          const actual = yield* Queue.take(received)
+
+          expect(actual).toStrictEqual(newEvent)
+        }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestSqlClient])),
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
     )
 
@@ -658,14 +627,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           const actual = yield* Queue.takeN(received, events.length)
 
           expect(actual).toStrictEqual(events)
-        }).pipe(
-          Effect.provide([
-            Uuid.layer,
-            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-            Events.layer,
-            TestSqlClient,
-          ]),
-        ),
+        }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestSqlClient])),
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
     )
 
@@ -689,14 +651,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           const actual = yield* Queue.takeN(received, newEvents.length)
 
           expect(actual).toStrictEqual(newEvents)
-        }).pipe(
-          Effect.provide([
-            Uuid.layer,
-            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-            Events.layer,
-            TestSqlClient,
-          ]),
-        ),
+        }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestSqlClient])),
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
     )
 
@@ -717,14 +672,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           const actual = yield* Queue.takeN(received, expected.length)
 
           expect(actual).toStrictEqual(expected)
-        }).pipe(
-          Effect.provide([
-            Uuid.layer,
-            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-            Events.layer,
-            TestSqlClient,
-          ]),
-        ),
+        }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestSqlClient])),
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
     )
   })
@@ -744,14 +692,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           const actual = yield* Stream.runCollect(eventStore.since(cursor))
 
           expect(actual).toStrictEqual([Array.map(events, event => ({ event, cursor: expect.anything() }))])
-        }).pipe(
-          Effect.provide([
-            Uuid.layer,
-            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-            Events.layer,
-            TestSqlClient,
-          ]),
-        ),
+        }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestSqlClient])),
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
     )
 
@@ -771,14 +712,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           const actual = yield* eventStore.latestCursor
 
           expect(actual).toStrictEqual(cursor)
-        }).pipe(
-          Effect.provide([
-            Uuid.layer,
-            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-            Events.layer,
-            TestSqlClient,
-          ]),
-        ),
+        }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestSqlClient])),
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
     )
   })
@@ -798,7 +732,6 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           Effect.provide([
             Layer.mock(Uuid.GenerateUuid, {}),
             Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-            Events.layer,
             TestSqlClient,
           ]),
         ),
@@ -821,14 +754,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           const actual = yield* eventStore.loadCheckpoint(name)
 
           expect(actual).toStrictEqual(Option.some(cursor))
-        }).pipe(
-          Effect.provide([
-            Uuid.layer,
-            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-            Events.layer,
-            TestSqlClient,
-          ]),
-        ),
+        }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestSqlClient])),
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
     )
 
@@ -852,14 +778,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           const actual = yield* eventStore.loadCheckpoint(name)
 
           expect(actual).toStrictEqual(Option.some(cursor))
-        }).pipe(
-          Effect.provide([
-            Uuid.layer,
-            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-            Events.layer,
-            TestSqlClient,
-          ]),
-        ),
+        }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestSqlClient])),
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
     )
 
@@ -884,14 +803,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           const actual = yield* eventStore.loadCheckpoint(name)
 
           expect(actual).toStrictEqual(Option.some(laterCursor))
-        }).pipe(
-          Effect.provide([
-            Uuid.layer,
-            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-            Events.layer,
-            TestSqlClient,
-          ]),
-        ),
+        }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestSqlClient])),
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
     )
 
@@ -909,14 +821,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           const actual = yield* eventStore.loadCheckpoint(otherName!)
 
           expect(actual).toStrictEqual(Option.none())
-        }).pipe(
-          Effect.provide([
-            Uuid.layer,
-            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-            Events.layer,
-            TestSqlClient,
-          ]),
-        ),
+        }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestSqlClient])),
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
     )
 
@@ -934,7 +839,6 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           Effect.provide([
             Layer.mock(Uuid.GenerateUuid, {}),
             Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-            Events.layer,
             TestSqlClient,
           ]),
         ),
@@ -975,14 +879,7 @@ describe('on Postgres', () => {
       const actual = yield* allEvents(eventStore)
 
       expect(actual).toStrictEqual([earlierEvent, laterEvent])
-    }).pipe(
-      Effect.provide([
-        Events.layer,
-        Uuid.layer,
-        Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-        TestPgClient.layer,
-      ]),
-    ),
+    }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestPgClient.layer])),
   )
 
   it.effect('has a latest cursor in transaction order', () =>
@@ -1018,14 +915,7 @@ describe('on Postgres', () => {
       const actual = yield* eventStore.latestCursor
 
       expect(actual).toStrictEqual(cursor)
-    }).pipe(
-      Effect.provide([
-        Events.layer,
-        Uuid.layer,
-        Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-        TestPgClient.layer,
-      ]),
-    ),
+    }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestPgClient.layer])),
   )
 
   it.effect('reads events from before the table was upgraded first', () =>
@@ -1064,14 +954,7 @@ describe('on Postgres', () => {
       const actual = yield* allEvents(eventStore)
 
       expect(actual).toStrictEqual([legacyEvent, newEvent])
-    }).pipe(
-      Effect.provide([
-        Events.layer,
-        Uuid.layer,
-        Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-        TestPgClient.layer,
-      ]),
-    ),
+    }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestPgClient.layer])),
   )
 })
 
@@ -1110,9 +993,7 @@ describe('on a real Postgres', { skip: process.env['SKIP_CONTAINER_TESTS'] === '
 
         expect(eventsIn(firstRead)).toStrictEqual([committedEvent])
         expect(eventsIn(secondRead)).toStrictEqual([slowEvent, fastEvent])
-      }).pipe(
-        Effect.provide([Events.layer, Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), RealPgClient]),
-      ),
+      }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), RealPgClient])),
     { timeout: Duration.toMillis('1 minute') },
   )
 
@@ -1148,9 +1029,7 @@ describe('on a real Postgres', { skip: process.env['SKIP_CONTAINER_TESTS'] === '
         const actual = yield* Stream.runCollect(eventStore.since(latestCursor))
 
         expect(eventsIn(actual)).toStrictEqual([slowEvent, fastEvent])
-      }).pipe(
-        Effect.provide([Events.layer, Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), RealPgClient]),
-      ),
+      }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), RealPgClient])),
     { timeout: Duration.toMillis('1 minute') },
   )
 
@@ -1208,9 +1087,7 @@ describe('on a real Postgres', { skip: process.env['SKIP_CONTAINER_TESTS'] === '
         const actual = yield* Effect.flip(Fiber.join(secondAppend))
 
         expect(actual).toBeInstanceOf(EventStore.NewEventsFound)
-      }).pipe(
-        Effect.provide([Events.layer, Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), RealPgClient]),
-      ),
+      }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), RealPgClient])),
     { timeout: Duration.toMillis('1 minute') },
   )
 })

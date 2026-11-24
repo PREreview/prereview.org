@@ -1,9 +1,9 @@
 import { LibsqlClient } from '@effect/sql-libsql'
-import { Array, Effect, Layer, Option, pipe, PubSub, Result, Stream, Struct } from 'effect'
+import { Array, Effect, Layer, Option, pipe, Result, Stream, Struct } from 'effect'
 import { Locale } from '../../../src/Context.ts'
 import { ContactEmailAddressHasAlreadyBeenVerified } from '../../../src/Domain/ContactEmailAddresses/index.ts'
 import * as _ from '../../../src/Domain/ContactEmailAddresses/StartVerificationOfContactEmailAddress.ts'
-import { ContactAddressImported, type Event, Events } from '../../../src/Events.ts'
+import { ContactAddressImported, type Event } from '../../../src/Events.ts'
 import { EventStore } from '../../../src/EventStore.ts'
 import { Email, OrcidRecords } from '../../../src/ExternalInteractions/index.ts'
 import { DefaultLocale } from '../../../src/locales/index.ts'
@@ -118,7 +118,6 @@ it.effect.each<[string, _.Input, Result.Result<void, _.Error>, boolean, Readonly
     Effect.provide([
       Layer.succeed(Locale, DefaultLocale),
       Layer.mock(OrcidRecords.OrcidRecords, { getName: () => Effect.succeed(name) }),
-      Layer.effect(Events, PubSub.unbounded()),
       LibsqlClient.layer({ url: ':memory:' }),
       Uuid.layer,
     ]),

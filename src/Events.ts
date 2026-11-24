@@ -1,18 +1,4 @@
-import {
-  Array,
-  Context,
-  Effect,
-  Equal,
-  Layer,
-  Option,
-  PubSub,
-  Record,
-  Schema,
-  Struct,
-  type Types,
-  flow,
-  pipe,
-} from 'effect'
+import { Array, Equal, Option, Record, Schema, Struct, type Types } from 'effect'
 // oxlint-disable  module-boundaries/use-index
 import * as AuthorInviteEvents from './Domain/AuthorInvites/Events.ts'
 import * as CommentEvents from './Domain/Comments/Events.ts'
@@ -139,17 +125,7 @@ const CommentEventTypes = Array.map(
   member => member.identifier as CommentEvents.CommentEvent['_tag'],
 )
 
-export class Events extends Context.Service<Events, PubSub.PubSub<Event>>()('Events') {}
-
 export const isCommentEvent: (event: Event) => event is CommentEvents.CommentEvent = isA(...CommentEventTypes)
-
-export const layer = Layer.effect(
-  Events,
-  Effect.acquireRelease(
-    pipe(PubSub.unbounded<Event>(), Effect.tap(Effect.logDebug('Events started'))),
-    flow(PubSub.shutdown, Effect.tap(Effect.logDebug('Events stopped'))),
-  ),
-)
 
 export type EventsForFilter<F extends EventFilter> = EventSubset<TagsFromFilter<F>>
 

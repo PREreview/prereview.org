@@ -35,14 +35,13 @@ export const PageSize = Context.Reference<number>('SqlEventStore/PageSize', { de
 export const make: Effect.Effect<
   EventStore.EventStore,
   SqlError.SqlError,
-  Events.Events | SqlClient.SqlClient | Uuid.GenerateUuid | SensitiveDataStore.SensitiveDataStore | Scope.Scope
+  SqlClient.SqlClient | Uuid.GenerateUuid | SensitiveDataStore.SensitiveDataStore | Scope.Scope
 > = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<SensitiveDataStore.SensitiveDataStore>(), Context.omit(Scope.Scope))
 
   const sql = yield* SqlClient.SqlClient
   const pageSize = yield* PageSize
   const generateUuid = (yield* Uuid.GenerateUuid).v4()
-  const events = yield* Events.Events
   const changes = yield* PubSub.unbounded<true>()
 
   yield* sql.onDialectOrElse({
@@ -489,7 +488,6 @@ export const make: Effect.Effect<
         sql.withTransaction,
       )
 
-      yield* PubSub.publish(events, event)
       yield* PubSub.publish(changes, true)
     },
     Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to commit events'), { error })),
@@ -552,7 +550,6 @@ export const make: Effect.Effect<
         return yield* new EventStore.NewEventsFound()
       }
 
-      yield* PubSub.publish(events, event)
       yield* PubSub.publish(changes, true)
     },
     Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to commit events'), { error })),

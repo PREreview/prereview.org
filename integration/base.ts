@@ -2537,7 +2537,7 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
           Effect.provide(
             pipe(
               SqlEventStore.layer,
-              Layer.provide([Events.layer, SqlSensitiveDataStore.layer, EventDispatcher.EventDispatcherLayer]),
+              Layer.provide([SqlSensitiveDataStore.layer, EventDispatcher.EventDispatcherLayer]),
               Layer.provide([Uuid.layer, sqlClientLayer]),
             ),
           ),

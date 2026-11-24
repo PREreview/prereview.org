@@ -1,8 +1,8 @@
 import { LibsqlClient } from '@effect/sql-libsql'
-import { Array, Effect, Layer, pipe, PubSub, Result, Stream, Struct } from 'effect'
+import { Array, Effect, pipe, Result, Stream, Struct } from 'effect'
 import * as AuthorInviteStore from '../../../src/AuthorInviteStore.ts'
 import * as _ from '../../../src/Domain/ContactEmailAddresses/UseAuthorInviteEmailAddress.ts'
-import { type Event, Events } from '../../../src/Events.ts'
+import type { Event } from '../../../src/Events.ts'
 import { EventStore } from '../../../src/EventStore.ts'
 import { make as makeSqlEventStore } from '../../../src/SqlEventStore.ts'
 import { layer as sqlSensitiveDataStoreLayer } from '../../../src/SqlSensitiveDataStore.ts'
@@ -100,11 +100,6 @@ it.effect.each<[string, _.Input, Result.Result<void, _.Error>, ReadonlyArray<Eve
     expect(actualEvents).toStrictEqual(expectedEvents)
   }).pipe(
     Effect.provide(sqlSensitiveDataStoreLayer),
-    Effect.provide([
-      AuthorInviteStore.layerInMemory,
-      uuidLayer,
-      Layer.effect(Events, PubSub.unbounded()),
-      LibsqlClient.layer({ url: ':memory:' }),
-    ]),
+    Effect.provide([AuthorInviteStore.layerInMemory, uuidLayer, LibsqlClient.layer({ url: ':memory:' })]),
   ),
 )

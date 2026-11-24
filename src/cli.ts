@@ -12,7 +12,6 @@ import * as Prereviewers from './Domain/Prereviewers/index.ts'
 import * as ReviewRequest from './Domain/ReviewRequests/index.ts'
 import { embeddingsLayer } from './Embeddings/index.ts'
 import * as EventDispatcher from './EventDispatcher.ts'
-import * as Events from './Events.ts'
 import { Crossref, Datacite, JapanLinkCenter, OpenAlex, Orcid, Philsci, Zenodo } from './ExternalApis/index.ts'
 import { Email, LanguageDetection, OpenAlexWorks, OrcidRecords, PreprintData } from './ExternalInteractions/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
@@ -75,7 +74,7 @@ pipe(
           Redis.layerDataStoreConfig(Config.URL('REDIS_URI').pipe(Config.map(Redacted.make))),
         ),
       ),
-      Layer.provide([Events.layer, SqlSensitiveDataStore.layer, LoggingHttpClient.layer]),
+      Layer.provide([SqlSensitiveDataStore.layer, LoggingHttpClient.layer]),
       Layer.provideMerge(EventDispatcher.EventDispatcherLayer),
       Layer.provide([
         FeatureFlags.layerConfig({

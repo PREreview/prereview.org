@@ -12,7 +12,6 @@ import * as Prereviewers from './Domain/Prereviewers/index.ts'
 import * as Prereviews from './Domain/Prereviews/index.ts'
 import * as ReviewRequests from './Domain/ReviewRequests/index.ts'
 import * as EventDispatcher from './EventDispatcher.ts'
-import * as Events from './Events.ts'
 import { Contentful } from './ExternalApis/Contentful/index.ts'
 import {
   Cloudinary,
@@ -111,7 +110,6 @@ const Infrastructure = pipe(
   Layer.provideMerge(SqlSensitiveDataStore.layer),
   Layer.provideMerge(
     Layer.mergeAll(
-      Events.layer,
       EventDispatcher.EventDispatcherLayer,
       Uuid.layer,
       CachingHttpClient.layerRevalidationQueue,

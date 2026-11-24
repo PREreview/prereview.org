@@ -2,7 +2,6 @@ import { Array, Context, Effect, Layer, Option, pipe, Scope, Struct } from 'effe
 import type { Sharding } from 'effect/cluster'
 import type { WorkflowEngine } from 'effect/workflow'
 import { UnableToHandleCommand } from '../../Commands.ts'
-import type * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import * as EventSubscription from '../../EventSubscription.ts'
 import { UnableToQuery } from '../../Queries.ts'
@@ -155,7 +154,6 @@ export const layer = Layer.mergeAll(
 const ReactToCommentEventsNoDeps: Layer.Layer<
   never,
   never,
-  | Events.Events
   | EventStore.EventStore
   | GetComment
   | HandleCommentCommand
