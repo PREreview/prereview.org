@@ -11,6 +11,7 @@ import * as PreprintReviews from './Domain/PreprintReviews/index.ts'
 import * as Prereviewers from './Domain/Prereviewers/index.ts'
 import * as Prereviews from './Domain/Prereviews/index.ts'
 import * as ReviewRequests from './Domain/ReviewRequests/index.ts'
+import { SqlEventStore } from './EventSourcing/index.ts'
 import { Contentful } from './ExternalApis/Contentful/index.ts'
 import {
   Cloudinary,
@@ -41,7 +42,6 @@ import {
 import * as FetchHttpClient from './FetchHttpClient.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import * as RequestCollapsingHttpClient from './RequestCollapsingHttpClient.ts'
-import * as SqlEventStore from './SqlEventStore.ts'
 import * as SqlSensitiveDataStore from './SqlSensitiveDataStore.ts'
 import * as StatefulQueries from './StatefulQueries.ts'
 import { Uuid } from './types/index.ts'
