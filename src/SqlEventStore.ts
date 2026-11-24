@@ -47,6 +47,7 @@ export const make: Effect.Effect<
         timestamp TIMESTAMPTZ DEFAULT (now() AT TIME ZONE 'utc'),
         payload JSONB NOT NULL,
         position SERIAL,
+        transaction_id XID8 NOT NULL DEFAULT pg_current_xact_id(),
         UNIQUE (position)
       )
     `,
@@ -63,7 +64,43 @@ export const make: Effect.Effect<
 
   yield* sql.onDialectOrElse({
     pg: () =>
+      Effect.gen(function* () {
+        const transactionIdColumn = yield* sql`
+          SELECT
+            1
+          FROM
+            information_schema.columns
+          WHERE
+            table_schema = current_schema()
+            AND table_name = 'events'
+            AND column_name = 'transaction_id'
+        `
+
+        if (Array.isReadonlyArrayNonEmpty(transactionIdColumn)) {
+          return
+        }
+
+        yield* sql.withTransaction(
+          Effect.all([
+            sql`
+              ALTER TABLE events
+              ADD COLUMN IF NOT EXISTS transaction_id XID8 NOT NULL DEFAULT '0'
+            `,
+            sql`
+              ALTER TABLE events
+              ALTER COLUMN transaction_id
+              SET DEFAULT pg_current_xact_id()
+            `,
+          ]),
+        )
+      }),
+    orElse: () => Effect.void,
+  })
+
+  yield* sql.onDialectOrElse({
+    pg: () =>
       Effect.all([
+        sql`CREATE INDEX IF NOT EXISTS idx_events_transaction_id_position ON events (transaction_id, position)`,
         sql`CREATE INDEX IF NOT EXISTS idx_events_type ON events (type)`,
         sql`CREATE INDEX IF NOT EXISTS idx_events_timestamp ON events (timestamp)`,
         sql`CREATE INDEX IF NOT EXISTS idx_events_payload_gin ON events USING gin (payload)`,
@@ -142,10 +179,11 @@ export const make: Effect.Effect<
     const decoded = yield* Schema.decodeUnknownEffect(Schema.NonEmptyArray(EventsTableSelect), {
       concurrency: 'unbounded',
     })(rows)
+    const lastRow = yield* Schema.decodeUnknownEffect(CursorRow)(Array.lastNonEmpty(rows))
 
     return {
       events: Array.map(decoded, Struct.get('event')),
-      cursor: makeCursor(Array.lastNonEmpty(decoded).position),
+      cursor: makeCursor(lastRow.transactionId ?? BigInt(0), lastRow.position),
     } satisfies EventStore.Page
   }, Effect.provide(context))
 
@@ -153,7 +191,7 @@ export const make: Effect.Effect<
     function* (cursor: EventStore.Cursor) {
       const after = yield* readCursor(cursor)
 
-      yield* Effect.annotateCurrentSpan({ after })
+      yield* Effect.annotateCurrentSpan({ after: after.position })
 
       const rows = yield* sql`
         SELECT
@@ -164,7 +202,7 @@ export const make: Effect.Effect<
         FROM
           events
         WHERE
-          position > ${after}
+          position > ${after.position}
         ORDER BY
           position ASC
         LIMIT
@@ -215,13 +253,19 @@ export const make: Effect.Effect<
                 id,
                 type,
                 payload,
-                position
+                position,
+                transaction_id::TEXT
               FROM
                 events
               WHERE
-                position > ${after}
+                (transaction_id, position) > (
+                  ${after.transactionId.toString()}::XID8,
+                  ${after.position}
+                )
+                AND transaction_id < pg_snapshot_xmin(pg_current_snapshot())
               ORDER BY
-                position ASC
+                events.transaction_id ASC,
+                events.position ASC
             `.stream,
           ),
           Stream.unwrap,
@@ -237,7 +281,7 @@ export const make: Effect.Effect<
       orElse: () => Stream.paginate(cursor, getNextPageAfter),
     })
 
-  const all: EventStore.EventStore['all'] = streamAfter(makeCursor(EventStore.Position.make(0)))
+  const all: EventStore.EventStore['all'] = streamAfter(makeCursor(BigInt(0), EventStore.Position.make(0)))
 
   const since: EventStore.EventStore['since'] = streamAfter
 
@@ -423,9 +467,18 @@ const PgResults = Schema.Struct({ rowsAffected: Schema.Number }).pipe(Schema.enc
 
 const SqlQueryResults = Schema.Union([LibsqlResults, PgResults])
 
-const CursorParts = Schema.TemplateLiteralParser([EventStore.Position])
+const CursorRow = Schema.Struct({
+  position: EventStore.Position,
+  transactionId: Schema.optionalKey(Schema.BigIntFromString),
+}).pipe(Schema.encodeKeys({ transactionId: 'transaction_id' }))
 
-const makeCursor = (position: EventStore.Position) => EventStore.Cursor.make(Schema.encodeSync(CursorParts)([position]))
+const CursorParts = Schema.TemplateLiteralParser([Schema.BigInt, ':', EventStore.Position])
+
+const makeCursor = (transactionId: bigint, position: EventStore.Position) =>
+  EventStore.Cursor.make(Schema.encodeSync(CursorParts)([transactionId, ':', position]))
 
 const readCursor = (cursor: EventStore.Cursor) =>
-  Effect.map(Schema.decodeUnknownEffect(CursorParts)(cursor), ([position]) => position)
+  Effect.map(Schema.decodeUnknownEffect(CursorParts)(cursor), ([transactionId, , position]) => ({
+    transactionId,
+    position,
+  }))

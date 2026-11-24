@@ -4,8 +4,11 @@ allowBuilds:
   '@ibm/plex-sans-arabic': false
   '@parcel/watcher': false
   cld: true
+  cpu-features: false
   esbuild: false
   msgpackr-extract: false
+  protobufjs: false
+  ssh2: false
   unrs-resolver: false
 
 minimumReleaseAgeExclude:

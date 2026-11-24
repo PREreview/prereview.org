@@ -59,6 +59,7 @@
     "@ibm/plex-sans-arabic": "^1.1.0",
     "@playwright/test": "^1.58.2",
     "@prettier/plugin-xml": "^3.4.2",
+    "@testcontainers/postgresql": "^12.2.2",
     "@tiptap/core": "^3.34.0",
     "@tiptap/extension-subscript": "^3.34.0",
     "@tiptap/extension-superscript": "^3.34.0",
