@@ -22,3 +22,7 @@ export class DoiIsNotAssigned extends Data.TaggedError('DoiIsNotAssigned') {}
 export class DoiIsAlreadyAssigned extends Data.TaggedError('DoiIsAlreadyAssigned') {}
 
 export class CommentWasAlreadyPublished extends Data.TaggedError('CommentWasAlreadyPublished') {}
+
+export class UnableToAssignADoi extends Data.TaggedError('UnableToAssignADoi')<{ cause?: Error }> {}
+
+export class UnableToPublishComment extends Data.TaggedError('UnableToPublishComment')<{ cause?: Error }> {}

@@ -9,12 +9,8 @@ import { PublicUrl } from '../../public-url.ts'
 import { FptsToEffect } from '../../RefactoringUtilities/index.ts'
 import * as PreprintReviews from '../PreprintReviews/index.ts'
 import * as Prereviewers from '../Prereviewers/index.ts'
-import {
-  CreateRecordOnZenodoForComment,
-  PublishCommentOnZenodo,
-  UnableToAssignADoi,
-  UnableToPublishComment,
-} from './Context.ts'
+import { CreateRecordOnZenodoForComment, PublishCommentOnZenodo } from './Context.ts'
+import { UnableToAssignADoi, UnableToPublishComment } from './Errors.ts'
 
 const createRecordOnZenodoForComment = Layer.effect(
   CreateRecordOnZenodoForComment,

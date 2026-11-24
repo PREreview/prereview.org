@@ -5,7 +5,7 @@ import type { Doi } from '../../types/Doi.ts'
 import type { NonEmptyString, Uuid } from '../../types/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { CommentCommand } from './Commands.ts'
-import type { CommentError } from './Errors.ts'
+import type { CommentError, UnableToAssignADoi, UnableToPublishComment } from './Errors.ts'
 import type * as Queries from './Queries.ts'
 import type { CommentState } from './State.ts'
 
@@ -50,9 +50,5 @@ export class PublishCommentOnZenodo extends Context.Service<
   PublishCommentOnZenodo,
   (commentId: number) => Effect.Effect<void, UnableToPublishComment>
 >()('PublishCommentOnZenodo') {}
-
-export class UnableToAssignADoi extends Data.TaggedError('UnableToAssignADoi')<{ cause?: Error }> {}
-
-export class UnableToPublishComment extends Data.TaggedError('UnableToPublishComment')<{ cause?: Error }> {}
 
 export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: Error }> {}

@@ -8,10 +8,9 @@ import {
   HandleCommentCommand,
   type InputForCommentZenodoRecord,
   PublishCommentOnZenodo,
-  type UnableToAssignADoi,
   UnableToHandleCommand,
 } from './Context.ts'
-import type { CommentError } from './Errors.ts'
+import type { CommentError, UnableToAssignADoi } from './Errors.ts'
 import type { CommentWasAssignedADoi } from './Events.ts'
 
 type ToDo = unknown
