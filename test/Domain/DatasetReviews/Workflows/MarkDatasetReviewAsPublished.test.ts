@@ -1,4 +1,5 @@
 import { Effect, Layer, pipe, Result } from 'effect'
+import { UnableToHandleCommand } from '../../../../src/Commands.ts'
 import * as DatasetReviews from '../../../../src/Domain/DatasetReviews/index.ts'
 import * as _ from '../../../../src/Domain/DatasetReviews/Workflows/MarkDatasetReviewAsPublished.ts'
 import * as fc from '../../../fc.ts'
@@ -26,7 +27,7 @@ describe('MarkDatasetReviewAsPublished', () => {
         new DatasetReviews.PublicationOfDatasetReviewWasNotRequested(),
         new DatasetReviews.DatasetReviewNotReadyToBeMarkedAsPublished({ missing: ['DatasetReviewWasAssignedADoi'] }),
         new DatasetReviews.NotAuthorizedToRunCommand({}),
-        new DatasetReviews.UnableToHandleCommand({}),
+        new UnableToHandleCommand({}),
       ),
     ],
     ([datasetReviewId, error]) =>

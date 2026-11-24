@@ -1,4 +1,5 @@
 import { Effect, Layer, pipe, Result } from 'effect'
+import { UnableToHandleCommand } from '../../../../src/Commands.ts'
 import * as DatasetReviews from '../../../../src/Domain/DatasetReviews/index.ts'
 import * as _ from '../../../../src/Domain/DatasetReviews/Workflows/UseZenodoRecordDoi.ts'
 import { ZenodoRecords } from '../../../../src/ExternalInteractions/index.ts'
@@ -32,7 +33,7 @@ describe('UseZenodoRecordDoi', () => {
         new DatasetReviews.DatasetReviewHasNotBeenStarted(),
         new DatasetReviews.DatasetReviewAlreadyHasADoi({}),
         new DatasetReviews.NotAuthorizedToRunCommand({}),
-        new DatasetReviews.UnableToHandleCommand({}),
+        new UnableToHandleCommand({}),
       ),
     ],
     ([datasetReviewId, recordId, doi, error]) =>

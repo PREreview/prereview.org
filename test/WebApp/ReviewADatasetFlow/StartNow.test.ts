@@ -1,4 +1,5 @@
 import { Effect, Layer } from 'effect'
+import { UnableToHandleCommand } from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as DatasetReviews from '../../../src/Domain/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Domain/Datasets/index.ts'
@@ -109,7 +110,7 @@ describe('StartNow', () => {
         fc.uuid(),
         fc.constantFrom(
           new DatasetReviews.NotAuthorizedToRunCommand({}),
-          new DatasetReviews.UnableToHandleCommand({}),
+          new UnableToHandleCommand({}),
           new DatasetReviews.DatasetReviewWasAlreadyStarted(),
         ),
       ],

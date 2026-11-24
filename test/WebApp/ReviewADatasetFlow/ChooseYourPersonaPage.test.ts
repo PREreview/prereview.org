@@ -1,5 +1,6 @@
 import { Effect, Layer, Option } from 'effect'
 import { UrlParams } from 'effect/http'
+import { UnableToHandleCommand } from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as DatasetReviews from '../../../src/Domain/DatasetReviews/index.ts'
 import * as Prereviewers from '../../../src/Domain/Prereviewers/index.ts'
@@ -302,7 +303,7 @@ describe('ChooseYourPersonaSubmission', () => {
         fc.user(),
         fc.constantFrom(
           new DatasetReviews.NotAuthorizedToRunCommand({}),
-          new DatasetReviews.UnableToHandleCommand({}),
+          new UnableToHandleCommand({}),
           new DatasetReviews.DatasetReviewHasNotBeenStarted(),
           new DatasetReviews.DatasetReviewIsBeingPublished(),
           new DatasetReviews.DatasetReviewHasBeenPublished(),

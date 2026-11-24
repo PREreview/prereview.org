@@ -1,5 +1,6 @@
 import { Effect, Layer, Option } from 'effect'
 import { UrlParams } from 'effect/http'
+import { UnableToHandleCommand } from '../../../../src/Commands.ts'
 import { Locale } from '../../../../src/Context.ts'
 import * as DatasetReviews from '../../../../src/Domain/DatasetReviews/index.ts'
 import * as Queries from '../../../../src/Queries.ts'
@@ -288,7 +289,7 @@ describe('UseOfAiSubmission', () => {
         fc.supportedLocale(),
         fc.user(),
         fc.constantFrom(
-          new DatasetReviews.UnableToHandleCommand({}),
+          new UnableToHandleCommand({}),
           new DatasetReviews.DatasetReviewHasNotBeenStarted(),
           new DatasetReviews.DatasetReviewIsBeingPublished(),
           new DatasetReviews.DatasetReviewHasBeenPublished(),

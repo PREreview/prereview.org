@@ -1,4 +1,5 @@
 import { Effect, Equal, Layer, Tuple } from 'effect'
+import { UnableToHandleCommand } from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as DatasetReviews from '../../../src/Domain/DatasetReviews/index.ts'
 import * as Datasets from '../../../src/Domain/Datasets/index.ts'
@@ -479,7 +480,7 @@ describe('CheckYourReviewSubmission', () => {
         fc.user(),
         fc.constantFrom(
           new DatasetReviews.NotAuthorizedToRunCommand({}),
-          new DatasetReviews.UnableToHandleCommand({}),
+          new UnableToHandleCommand({}),
           new DatasetReviews.DatasetReviewHasNotBeenStarted(),
           new DatasetReviews.DatasetReviewIsBeingPublished(),
           new DatasetReviews.DatasetReviewHasBeenPublished(),

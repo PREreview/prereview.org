@@ -110,11 +110,9 @@ export class DatasetReviewCommands extends Context.Service<
 
 type CommandHandler<Command extends { datasetReviewId: Uuid.Uuid }, Error> = (
   command: Command,
-) => Effect.Effect<void, NotAuthorizedToRunCommand | UnableToHandleCommand | Error>
+) => Effect.Effect<void, NotAuthorizedToRunCommand | Commands.UnableToHandleCommand | Error>
 
 export class NotAuthorizedToRunCommand extends Data.TaggedError('NotAuthorizedToRunCommand')<{ cause?: unknown }> {}
-
-export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: unknown }> {}
 
 export const startDatasetReview = (...args: Parameters<(typeof DatasetReviewCommands.Service)['startDatasetReview']>) =>
   DatasetReviewCommands.use(service => service.startDatasetReview(...args))
@@ -270,7 +268,7 @@ const makeDatasetReviewCommands: Effect.Effect<
       },
       Effect.catchTag(
         ['FailedToCommitEvent', 'FailedToGetEvents', 'NewEventsFound'],
-        cause => new UnableToHandleCommand({ cause }),
+        cause => new Commands.UnableToHandleCommand({ cause }),
       ),
       Effect.provide(context),
     )
