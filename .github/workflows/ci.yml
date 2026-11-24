@@ -256,6 +256,8 @@ jobs:
       fail-fast: false
       matrix:
         shard: [1, 2]
+    env:
+      TESTCONTAINERS_RYUK_DISABLED: 'true'
 
     steps:
       - name: 'Checkout code'
