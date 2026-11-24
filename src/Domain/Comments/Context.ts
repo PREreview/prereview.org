@@ -1,4 +1,5 @@
-import { Context, Data, type Effect, type Option } from 'effect'
+import { Context, type Effect, type Option } from 'effect'
+import type { UnableToHandleCommand } from '../../Commands.ts'
 import type { Html } from '../../html.ts'
 import type { UnableToQuery } from '../../Queries.ts'
 import type { Doi } from '../../types/Doi.ts'
@@ -50,5 +51,3 @@ export class PublishCommentOnZenodo extends Context.Service<
   PublishCommentOnZenodo,
   (commentId: number) => Effect.Effect<void, UnableToPublishComment>
 >()('PublishCommentOnZenodo') {}
-
-export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: Error }> {}

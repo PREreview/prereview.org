@@ -1,4 +1,5 @@
 import { Effect, Equal, Option, Result } from 'effect'
+import { UnableToHandleCommand } from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Comments from '../../../src/Domain/Comments/index.ts'
 import * as Queries from '../../../src/Queries.ts'
@@ -244,7 +245,7 @@ describe('CompetingInterestsSubmission', () => {
               fc.record({ competingInterests: fc.constant('no'), competingInterestsDetails: fc.string() }),
               fc.record({ competingInterests: fc.constant('yes'), competingInterestsDetails: fc.nonEmptyString() }),
             ),
-            fc.oneof(fc.constant(new Comments.UnableToHandleCommand({})), fc.commentError()),
+            fc.oneof(fc.constant(new UnableToHandleCommand({})), fc.commentError()),
           ],
           ([commentId, [comment, user], locale, body, error]) =>
             Effect.gen(function* () {

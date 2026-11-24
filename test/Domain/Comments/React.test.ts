@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Effect, Layer, pipe, Result } from 'effect'
+import { UnableToHandleCommand } from '../../../src/Commands.ts'
 import * as Comments from '../../../src/Domain/Comments/index.ts'
 import * as _ from '../../../src/Domain/Comments/React.ts'
 import {
@@ -56,7 +57,7 @@ describe('CheckIfUserHasAVerifiedEmailAddress', () => {
           Effect.result,
         )
 
-        expect(actual).toStrictEqual(Result.fail(new Comments.UnableToHandleCommand({ cause: error })))
+        expect(actual).toStrictEqual(Result.fail(new UnableToHandleCommand({ cause: error })))
       }).pipe(
         Effect.provideService(Comments.GetComment, () => Effect.succeed(comment)),
         Effect.provide(
@@ -212,7 +213,7 @@ describe('PublishCommentWhenCommentWasAssignedADoi', () => {
           Effect.result,
         )
 
-        expect(actual).toStrictEqual(Result.fail(new Comments.UnableToHandleCommand({ cause: error })))
+        expect(actual).toStrictEqual(Result.fail(new UnableToHandleCommand({ cause: error })))
       }).pipe(Effect.provideService(Comments.PublishCommentOnZenodo, () => Effect.void)),
   )
 

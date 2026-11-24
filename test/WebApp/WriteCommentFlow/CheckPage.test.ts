@@ -1,4 +1,5 @@
 import { Effect, Equal, Layer } from 'effect'
+import { UnableToHandleCommand } from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Comments from '../../../src/Domain/Comments/index.ts'
 import * as Prereviewers from '../../../src/Domain/Prereviewers/index.ts'
@@ -270,7 +271,7 @@ describe('CheckPageSubmission', () => {
           fc
             .commentReadyForPublishing()
             .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
-          fc.oneof(fc.constant(new Comments.UnableToHandleCommand({})), fc.commentError()),
+          fc.oneof(fc.constant(new UnableToHandleCommand({})), fc.commentError()),
         ],
         ([commentId, locale, [comment, user], error]) =>
           Effect.gen(function* () {

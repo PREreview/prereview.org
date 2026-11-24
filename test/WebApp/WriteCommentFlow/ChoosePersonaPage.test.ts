@@ -1,4 +1,5 @@
 import { Effect, Equal, Layer, Result } from 'effect'
+import { UnableToHandleCommand } from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Comments from '../../../src/Domain/Comments/index.ts'
 import * as Prereviewers from '../../../src/Domain/Prereviewers/index.ts'
@@ -254,7 +255,7 @@ describe('ChoosePersonaSubmission', () => {
               .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
             fc.supportedLocale(),
             fc.record({ persona: fc.constantFrom('public', 'pseudonym') }),
-            fc.oneof(fc.constant(new Comments.UnableToHandleCommand({})), fc.commentError()),
+            fc.oneof(fc.constant(new UnableToHandleCommand({})), fc.commentError()),
           ],
           ([commentId, [comment, user], locale, body, error]) =>
             Effect.gen(function* () {

@@ -1,5 +1,6 @@
 import { Array, Context, Effect, flow, Layer, Match, Option, pipe, PubSub, Schedule, Scope, Struct } from 'effect'
 import { Singleton, type Sharding } from 'effect/cluster'
+import { UnableToHandleCommand } from '../../Commands.ts'
 import * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
 import { UnableToQuery } from '../../Queries.ts'
@@ -10,7 +11,6 @@ import {
   GetNextExpectedCommandForUser,
   GetNextExpectedCommandForUserOnAComment,
   HandleCommentCommand,
-  UnableToHandleCommand,
   type CreateRecordOnZenodoForComment,
   type PublishCommentOnZenodo,
 } from './Context.ts'

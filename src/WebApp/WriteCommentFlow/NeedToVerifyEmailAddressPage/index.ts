@@ -1,4 +1,5 @@
 import { Effect, Equal, Match, pipe } from 'effect'
+import { UnableToHandleCommand } from '../../../Commands.ts'
 import { Locale } from '../../../Context.ts'
 import * as Comments from '../../../Domain/Comments/index.ts'
 import type * as ContactEmailAddress from '../../../Domain/ContactEmailAddresses/index.ts'
@@ -64,7 +65,7 @@ export const NeedToVerifyEmailAddressPage: (input: {
                     handleCommand(new Comments.ConfirmExistenceOfVerifiedEmailAddress({ commentId })),
                     Effect.catchIf(
                       cause => cause._tag !== 'UnableToHandleCommand',
-                      cause => new Comments.UnableToHandleCommand({ cause }),
+                      cause => new UnableToHandleCommand({ cause }),
                     ),
                   )
 

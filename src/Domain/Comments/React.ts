@@ -1,4 +1,5 @@
 import { Effect, pipe } from 'effect'
+import { UnableToHandleCommand } from '../../Commands.ts'
 import { Temporal, type Uuid } from '../../types/index.ts'
 import { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
 import { ConfirmExistenceOfVerifiedEmailAddress, MarkCommentAsPublished, MarkDoiAsAssigned } from './Commands.ts'
@@ -8,7 +9,6 @@ import {
   HandleCommentCommand,
   type InputForCommentZenodoRecord,
   PublishCommentOnZenodo,
-  UnableToHandleCommand,
 } from './Context.ts'
 import type { CommentError, UnableToAssignADoi } from './Errors.ts'
 import type { CommentWasAssignedADoi } from './Events.ts'

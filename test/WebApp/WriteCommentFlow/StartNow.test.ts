@@ -1,4 +1,5 @@
 import { Effect, Layer, Result } from 'effect'
+import { UnableToHandleCommand } from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Comments from '../../../src/Domain/Comments/index.ts'
 import * as PreprintReviews from '../../../src/Domain/PreprintReviews/index.ts'
@@ -72,7 +73,7 @@ describe('StartNow', () => {
           fc.user(),
           fc.prereview(),
           fc.uuid(),
-          fc.oneof(fc.constant(new Comments.UnableToHandleCommand({})), fc.commentError()),
+          fc.oneof(fc.constant(new UnableToHandleCommand({})), fc.commentError()),
         ],
         ([id, locale, user, prereview, commentId, error]) =>
           Effect.gen(function* () {

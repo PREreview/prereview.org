@@ -1,4 +1,5 @@
 import { Effect, Equal, Result } from 'effect'
+import { UnableToHandleCommand } from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Comments from '../../../src/Domain/Comments/index.ts'
 import * as Queries from '../../../src/Queries.ts'
@@ -237,7 +238,7 @@ describe('EnterCommentSubmission', () => {
               .chain(comment => fc.tuple(fc.constant(comment), fc.user({ orcid: fc.constant(comment.authorId) }))),
             fc.supportedLocale(),
             fc.record({ comment: fc.html().map(String) }),
-            fc.oneof(fc.constant(new Comments.UnableToHandleCommand({})), fc.commentError()),
+            fc.oneof(fc.constant(new UnableToHandleCommand({})), fc.commentError()),
           ],
           ([commentId, [comment, user], locale, body, error]) =>
             Effect.gen(function* () {
