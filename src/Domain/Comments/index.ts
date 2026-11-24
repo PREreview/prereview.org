@@ -1,5 +1,6 @@
 import { Array, Context, Effect, flow, Layer, Match, Option, pipe, PubSub, Schedule, Scope, Struct } from 'effect'
 import { Singleton, type Sharding } from 'effect/cluster'
+import type { WorkflowEngine } from 'effect/workflow'
 import { UnableToHandleCommand } from '../../Commands.ts'
 import * as Events from '../../Events.ts'
 import * as EventStore from '../../EventStore.ts'
@@ -20,6 +21,7 @@ import { EvolveComment } from './Evolve.ts'
 import * as Queries from './Queries.ts'
 import * as React from './React.ts'
 import { CommentNotStarted, type CommentState } from './State.ts'
+import * as Workflows from './Workflows/index.ts'
 import { layerZenodo } from './Zenodo.ts'
 
 export * from './Commands.ts'
@@ -182,6 +184,7 @@ const ReactToCommentEventsNoDeps: Layer.Layer<
   | CreateRecordOnZenodoForComment
   | PublishCommentOnZenodo
   | Sharding.Sharding
+  | WorkflowEngine.WorkflowEngine
 > = Layer.effectDiscard(
   Effect.gen(function* () {
     const events = yield* Events.Events
@@ -218,6 +221,6 @@ const ReactToCommentEventsNoDeps: Layer.Layer<
       Effect.forever,
     )
   }),
-).pipe(Layer.merge(AssignADoiToCommentsInNeedOfOne))
+).pipe(Layer.merge(AssignADoiToCommentsInNeedOfOne), Layer.merge(Workflows.workflowsLayer))
 
 export const ReactToCommentEvents = Layer.provide(ReactToCommentEventsNoDeps, layerZenodo)

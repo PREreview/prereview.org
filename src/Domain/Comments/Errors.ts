@@ -1,4 +1,4 @@
-import { Data } from 'effect'
+import { Data, Schema } from 'effect'
 
 export type CommentError =
   | CommentWasAlreadyStarted
@@ -23,6 +23,8 @@ export class DoiIsAlreadyAssigned extends Data.TaggedError('DoiIsAlreadyAssigned
 
 export class CommentWasAlreadyPublished extends Data.TaggedError('CommentWasAlreadyPublished') {}
 
-export class UnableToAssignADoi extends Data.TaggedError('UnableToAssignADoi')<{ cause?: Error }> {}
+export class UnableToAssignADoi extends Schema.TaggedError<UnableToAssignADoi>()('UnableToAssignADoi', {
+  cause: Schema.optional(Schema.Unknown),
+}) {}
 
 export class UnableToPublishComment extends Data.TaggedError('UnableToPublishComment')<{ cause?: Error }> {}
