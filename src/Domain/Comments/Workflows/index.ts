@@ -1,11 +1,11 @@
 import { Duration, Effect, Layer, pipe, Schema, Struct } from 'effect'
 import { Activity, DurableClock, Workflow } from 'effect/workflow'
 import { DoiSchema } from '../../../types/Doi.ts'
-import { Uuid } from '../../../types/index.ts'
+import { Temporal, Uuid } from '../../../types/index.ts'
 import * as Errors from '../Errors.ts'
 import { CreateRecordOnZenodo, RecordAssignedDoi } from './AssignADoi.ts'
 import { CheckIfUserHasAVerifiedEmailAddress as executeCheckIfUserHasAVerifiedEmailAddress } from './CheckIfUserHasAVerifiedEmailAddress.ts'
-import { PublishComment as executePublishComment } from './PublishComment.ts'
+import { PublishOnZenodo, RecordPublication } from './PublishComment.ts'
 
 export const AssignCommentADoi = Workflow.make('AssignCommentADoi', {
   error: Errors.UnableToAssignADoi,
@@ -78,18 +78,36 @@ export const workflowsLayer = Layer.mergeAll(
       )
     }),
   ),
-  CheckIfUserHasAVerifiedEmailAddress.toLayer(({ commentId }) =>
-    Activity.make({
-      name: CheckIfUserHasAVerifiedEmailAddress._tag,
-      error: CheckIfUserHasAVerifiedEmailAddress.errorSchema,
-      execute: executeCheckIfUserHasAVerifiedEmailAddress(commentId),
-    }),
+  CheckIfUserHasAVerifiedEmailAddress.toLayer(({ commentId }, executionId) =>
+    pipe(
+      Activity.make({
+        name: CheckIfUserHasAVerifiedEmailAddress._tag,
+        error: CheckIfUserHasAVerifiedEmailAddress.errorSchema,
+        execute: executeCheckIfUserHasAVerifiedEmailAddress(commentId),
+      }),
+      retryWithBackoff(executionId, CheckIfUserHasAVerifiedEmailAddress._tag),
+    ),
   ),
-  PublishComment.toLayer(({ commentId, id }) =>
-    Activity.make({
-      name: PublishComment._tag,
-      error: PublishComment.errorSchema,
-      execute: executePublishComment(commentId, id),
+  PublishComment.toLayer(({ commentId, id }, executionId) =>
+    Effect.gen(function* () {
+      const publishedAt = yield* pipe(
+        Activity.make({
+          name: 'PublishOnZenodo',
+          success: Temporal.InstantSchema,
+          error: PublishComment.errorSchema,
+          execute: PublishOnZenodo(id),
+        }),
+        retryWithBackoff(executionId, 'PublishOnZenodo'),
+      )
+
+      yield* pipe(
+        Activity.make({
+          name: 'RecordPublication',
+          error: PublishComment.errorSchema,
+          execute: RecordPublication(commentId, publishedAt),
+        }),
+        retryWithBackoff(executionId, 'RecordPublication'),
+      )
     }),
   ),
 )
