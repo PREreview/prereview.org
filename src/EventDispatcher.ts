@@ -4,8 +4,8 @@ import * as EventStore from './EventStore.ts'
 
 type Subscriber = (events: Array.NonEmptyReadonlyArray<Events.Event>) => Effect.Effect<void>
 
-class LastKnownPosition extends Context.Service<LastKnownPosition, Ref.Ref<Option.Option<EventStore.Position>>>()(
-  'EventDispatcher/LastKnownPosition',
+class LastCursor extends Context.Service<LastCursor, Ref.Ref<Option.Option<EventStore.Cursor>>>()(
+  'EventDispatcher/LastCursor',
 ) {}
 
 class Subscribers extends Context.Service<Subscribers, Ref.Ref<ReadonlyArray<Subscriber>>>()(
@@ -33,22 +33,22 @@ export const EventDispatcherLayer = Layer.mergeAll(
     ),
     Layer.effect(Subscribers, Ref.make([] as ReadonlyArray<Subscriber>)),
   ),
-  Layer.effect(LastKnownPosition, Ref.make(Option.none())),
+  Layer.effect(LastCursor, Ref.make(Option.none())),
 )
 
 const dispatchNewEvents = Effect.gen(function* () {
-  const lastKnownPosition = yield* LastKnownPosition
+  const lastCursor = yield* LastCursor
   const subscribers = yield* Subscribers
 
   yield* Stream.runForEach(
-    Option.match(yield* Ref.get(lastKnownPosition), {
+    Option.match(yield* Ref.get(lastCursor), {
       onNone: () => EventStore.all,
       onSome: EventStore.since,
     }),
-    Effect.fnUntraced(function* ({ events: newEvents, lastKnownPosition: newLastKnownPosition }) {
+    Effect.fnUntraced(function* ({ events: newEvents, cursor: newCursor }) {
       const allSubscribers = yield* Ref.get(subscribers)
 
-      yield* Ref.set(lastKnownPosition, Option.some(newLastKnownPosition))
+      yield* Ref.set(lastCursor, Option.some(newCursor))
 
       yield* Effect.forEach(allSubscribers, subscriber => subscriber(newEvents), {
         discard: true,

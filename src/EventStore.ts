@@ -13,15 +13,19 @@ export const Position = pipe(Schema.Number, Schema.brand('Position'))
 
 export type Position = typeof Position.Type
 
+export const Cursor = pipe(Schema.String, Schema.brand('Cursor'))
+
+export type Cursor = typeof Cursor.Type
+
 export interface Page {
   readonly events: Array.NonEmptyReadonlyArray<Event>
-  readonly lastKnownPosition: Position
+  readonly cursor: Cursor
 }
 
 export interface EventStore {
   readonly all: Stream.Stream<Page, FailedToGetEvents>
 
-  readonly since: (lastKnownPosition: Position) => Stream.Stream<Page, FailedToGetEvents>
+  readonly since: (cursor: Cursor) => Stream.Stream<Page, FailedToGetEvents>
 
   readonly query: <Filter extends EventFilter>(
     filter: Filter,

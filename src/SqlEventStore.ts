@@ -145,12 +145,14 @@ export const make: Effect.Effect<
 
     return {
       events: Array.map(decoded, Struct.get('event')),
-      lastKnownPosition: Array.lastNonEmpty(decoded).position,
+      cursor: makeCursor(Array.lastNonEmpty(decoded).position),
     } satisfies EventStore.Page
   }, Effect.provide(context))
 
   const getPageAfter = Effect.fn('SqlEventStore.getPageAfter')(
-    function* (after: number) {
+    function* (cursor: EventStore.Cursor) {
+      const after = yield* readCursor(cursor)
+
       yield* Effect.annotateCurrentSpan({ after })
 
       const rows = yield* sql`
@@ -186,37 +188,43 @@ export const make: Effect.Effect<
   )
 
   const getNextPageAfter: (
-    after: number,
-  ) => Effect.Effect<readonly [ReadonlyArray<EventStore.Page>, Option.Option<number>], EventStore.FailedToGetEvents> =
-    Effect.fnUntraced(function* (after) {
-      const result = yield* getPageAfter(after)
+    after: EventStore.Cursor,
+  ) => Effect.Effect<
+    readonly [ReadonlyArray<EventStore.Page>, Option.Option<EventStore.Cursor>],
+    EventStore.FailedToGetEvents
+  > = Effect.fnUntraced(function* (after) {
+    const result = yield* getPageAfter(after)
 
-      if (Option.isNone(result)) {
-        return Tuple.make([], Option.none())
-      }
+    if (Option.isNone(result)) {
+      return Tuple.make([], Option.none())
+    }
 
-      const { page, isLastPage } = result.value
+    const { page, isLastPage } = result.value
 
-      return Tuple.make([page], isLastPage ? Option.none() : Option.some(page.lastKnownPosition))
-    })
+    return Tuple.make([page], isLastPage ? Option.none() : Option.some(page.cursor))
+  })
 
-  const streamAfter = (after: number): Stream.Stream<EventStore.Page, EventStore.FailedToGetEvents> =>
+  const streamAfter = (cursor: EventStore.Cursor): Stream.Stream<EventStore.Page, EventStore.FailedToGetEvents> =>
     sql.onDialectOrElse({
       pg: () =>
         pipe(
-          sql`
-            SELECT
-              id,
-              type,
-              payload,
-              position
-            FROM
-              events
-            WHERE
-              position > ${after}
-            ORDER BY
-              position ASC
-          `.stream,
+          readCursor(cursor),
+          Effect.map(
+            after => sql`
+              SELECT
+                id,
+                type,
+                payload,
+                position
+              FROM
+                events
+              WHERE
+                position > ${after}
+              ORDER BY
+                position ASC
+            `.stream,
+          ),
+          Stream.unwrap,
           Stream.grouped(pageSize),
           Stream.mapEffect(decodePage),
           Stream.tapError(error =>
@@ -226,10 +234,10 @@ export const make: Effect.Effect<
           ),
           Stream.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
         ),
-      orElse: () => Stream.paginate(after, getNextPageAfter),
+      orElse: () => Stream.paginate(cursor, getNextPageAfter),
     })
 
-  const all: EventStore.EventStore['all'] = streamAfter(0)
+  const all: EventStore.EventStore['all'] = streamAfter(makeCursor(EventStore.Position.make(0)))
 
   const since: EventStore.EventStore['since'] = streamAfter
 
@@ -414,3 +422,10 @@ const LibsqlResults = Schema.Struct({ rowsAffected: Schema.Number })
 const PgResults = Schema.Struct({ rowsAffected: Schema.Number }).pipe(Schema.encodeKeys({ rowsAffected: 'rowCount' }))
 
 const SqlQueryResults = Schema.Union([LibsqlResults, PgResults])
+
+const CursorParts = Schema.TemplateLiteralParser([EventStore.Position])
+
+const makeCursor = (position: EventStore.Position) => EventStore.Cursor.make(Schema.encodeSync(CursorParts)([position]))
+
+const readCursor = (cursor: EventStore.Cursor) =>
+  Effect.map(Schema.decodeUnknownEffect(CursorParts)(cursor), ([position]) => position)

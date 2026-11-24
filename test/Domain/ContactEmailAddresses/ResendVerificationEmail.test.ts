@@ -72,10 +72,7 @@ it.effect.each<[string, _.Input, Result.Result<void, _.Error>, EmailAddress | un
       ],
       eventStore.append,
     )
-    const lastKnownPosition = yield* Effect.map(
-      Stream.runLast(eventStore.all),
-      Option.map(Struct.get('lastKnownPosition')),
-    )
+    const cursor = yield* Effect.map(Stream.runLast(eventStore.all), Option.map(Struct.get('cursor')))
 
     const verifyContactEmailAddress = vi.fn<(typeof Email.Email.Service)['verifyContactEmailAddress']>(
       () => Effect.void,
@@ -88,7 +85,7 @@ it.effect.each<[string, _.Input, Result.Result<void, _.Error>, EmailAddress | un
       ]),
     )
     const actualEvents = yield* pipe(
-      Stream.runCollect(Option.match(lastKnownPosition, { onNone: () => eventStore.all, onSome: eventStore.since })),
+      Stream.runCollect(Option.match(cursor, { onNone: () => eventStore.all, onSome: eventStore.since })),
       Effect.map(Array.flatMap(Struct.get('events'))),
       Effect.map(Array.map(event => event._tag)),
     )

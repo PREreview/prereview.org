@@ -455,7 +455,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
           const actual = yield* Stream.runCollect(eventStore.all)
 
-          expect(actual).toStrictEqual([{ events, lastKnownPosition: expect.anything() }])
+          expect(actual).toStrictEqual([{ events, cursor: expect.anything() }])
         }).pipe(
           Effect.provide(Uuid.layer),
           Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
@@ -478,7 +478,12 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
           expect(Array.map(pages, page => page.events.length)).toStrictEqual([3, 3, events.length - 6])
           expect(Array.flatMap(pages, page => page.events)).toStrictEqual(events)
-          expect(Array.map(pages, page => page.lastKnownPosition)).toStrictEqual([3, 6, events.length])
+
+          const eventsAfterEachPage = yield* Effect.forEach(pages, page =>
+            Effect.map(Stream.runCollect(eventStore.since(page.cursor)), Array.flatMap(Struct.get('events'))),
+          )
+
+          expect(eventsAfterEachPage).toStrictEqual([Array.drop(events, 3), Array.drop(events, 6), []])
         }).pipe(
           Effect.provide(Layer.succeed(_.PageSize, 3)),
           Effect.provide(Uuid.layer),
@@ -500,13 +505,13 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
           yield* Effect.forEach(existingEvents, eventStore.append)
 
-          const { lastKnownPosition } = yield* Effect.flatMap(Stream.runLast(eventStore.all), Effect.fromOption)
+          const { cursor } = yield* Effect.flatMap(Stream.runLast(eventStore.all), Effect.fromOption)
 
           yield* Effect.forEach(newEvents, eventStore.append)
 
-          const actual = yield* Stream.runCollect(eventStore.since(lastKnownPosition))
+          const actual = yield* Stream.runCollect(eventStore.since(cursor))
 
-          expect(actual).toStrictEqual([{ events: newEvents, lastKnownPosition: expect.anything() }])
+          expect(actual).toStrictEqual([{ events: newEvents, cursor: expect.anything() }])
         }).pipe(
           Effect.provide(Uuid.layer),
           Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
@@ -514,6 +519,23 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           Effect.provide(TestSqlClient),
         ),
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+    )
+
+    it.effect("fails with a cursor it can't read", () =>
+      Effect.gen(function* () {
+        const eventStore = yield* _.make
+
+        const actual = yield* Effect.flip(Stream.runCollect(eventStore.since(EventStore.Cursor.make('not a cursor'))))
+
+        expect(actual).toBeInstanceOf(EventStore.FailedToGetEvents)
+      }).pipe(
+        Effect.provide([
+          Uuid.layer,
+          Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
+          Layer.mock(Events.Events, {} as never),
+          TestSqlClient,
+        ]),
+      ),
     )
   })
 })
