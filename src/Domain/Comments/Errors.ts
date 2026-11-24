@@ -27,4 +27,6 @@ export class UnableToAssignADoi extends Schema.TaggedError<UnableToAssignADoi>()
   cause: Schema.optional(Schema.Unknown),
 }) {}
 
-export class UnableToPublishComment extends Data.TaggedError('UnableToPublishComment')<{ cause?: Error }> {}
+export class UnableToPublishComment extends Schema.TaggedError<UnableToPublishComment>()('UnableToPublishComment', {
+  cause: Schema.optional(Schema.Unknown),
+}) {}
