@@ -1,5 +1,5 @@
-import { Array, Context, Effect, Layer, Option, pipe, PubSub, Ref, Schedule, Semaphore, Stream, Struct } from 'effect'
-import * as Events from './Events.ts'
+import { Array, Context, Effect, Layer, Option, pipe, Ref, Schedule, Stream, Struct } from 'effect'
+import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
 
 type Subscriber = (events: Array.NonEmptyReadonlyArray<Events.Event>) => Effect.Effect<void>
@@ -36,51 +36,47 @@ export const EventDispatcherLayer = Layer.mergeAll(
   Layer.effect(LastCursor, Ref.make(Option.none())),
 )
 
-const dispatchNewEvents = Effect.gen(function* () {
+const dispatchPage = Effect.fn('EventDispatcher.dispatchPage')(function* (page: EventStore.Page) {
   const lastCursor = yield* LastCursor
   const subscribers = yield* Subscribers
+  const allSubscribers = yield* Ref.get(subscribers)
+
+  yield* Ref.set(lastCursor, Option.some(Array.lastNonEmpty(page).cursor))
+
+  yield* Effect.forEach(allSubscribers, subscriber => subscriber(Array.map(page, Struct.get('event'))), {
+    discard: true,
+    concurrency: 'unbounded',
+  })
+})
+
+const dispatchExistingEvents = Effect.gen(function* () {
+  const lastCursor = yield* LastCursor
 
   yield* Stream.runForEach(
     Option.match(yield* Ref.get(lastCursor), {
       onNone: () => EventStore.all,
       onSome: EventStore.since,
     }),
-    Effect.fnUntraced(function* (page) {
-      const allSubscribers = yield* Ref.get(subscribers)
-
-      yield* Ref.set(lastCursor, Option.some(Array.lastNonEmpty(page).cursor))
-
-      yield* Effect.forEach(allSubscribers, subscriber => subscriber(Array.map(page, Struct.get('event'))), {
-        discard: true,
-        concurrency: 'unbounded',
-      })
-    }),
+    dispatchPage,
   )
-}).pipe(Effect.withSpan('EventDispatcher.dispatchNewEvents'))
+}).pipe(Effect.withSpan('EventDispatcher.dispatchExistingEvents'))
+
+const dispatchNewEvents = Effect.gen(function* () {
+  const lastCursor = yield* LastCursor
+
+  yield* Stream.runForEach(
+    EventStore.subscribe({ after: Option.getOrUndefined(yield* Ref.get(lastCursor)) }),
+    dispatchPage,
+  )
+})
 
 export const worker = Layer.effectDiscard(
   Effect.acquireRelease(
     Effect.gen(function* () {
-      const events = yield* Events.Events
-      const dequeue = yield* PubSub.subscribe(events)
-
-      const mutex = yield* Semaphore.make(1)
-
-      const safelyDispatchNewEvents = mutex.withPermits(1)(dispatchNewEvents)
-
       yield* pipe(
-        safelyDispatchNewEvents,
-        Effect.catch(error => Effect.annotateLogs(Effect.logError('DispatchNewEvents on timer failed'), { error })),
-        Effect.repeat(Schedule.fixed('2 seconds')),
-        Effect.forkScoped,
-      )
-
-      yield* pipe(
-        PubSub.take(dequeue),
-        Effect.andThen(safelyDispatchNewEvents),
-        Effect.catch(error => Effect.annotateLogs(Effect.logError('DispatchNewEvents failed'), { error })),
-        Effect.scoped,
-        Effect.forever,
+        dispatchNewEvents,
+        Effect.tapError(error => Effect.annotateLogs(Effect.logError('DispatchNewEvents failed'), { error })),
+        Effect.retry(Schedule.spaced('2 seconds')),
         Effect.forkScoped,
       )
 
@@ -93,7 +89,7 @@ export const worker = Layer.effectDiscard(
 
 export const replayExistingEvents = pipe(
   Effect.logDebug('Replaying existing events'),
-  Effect.andThen(dispatchNewEvents),
+  Effect.andThen(dispatchExistingEvents),
   Effect.timeout('20 seconds'),
   Effect.tap(() => Effect.logDebug('Existing events replayed')),
   Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to replay existing events'), { error })),
