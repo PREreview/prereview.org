@@ -81,7 +81,7 @@
     "iso-639-3": "^2.2.0",
     "oauth2-mock-server": "^9.3.0",
     "oxlint": "^1.94.0",
-    "oxlint-tsgolint": "^7.0.2007",
+    "oxlint-tsgolint": "^7.0.2008",
     "postcss": "^8.5.33",
     "postcss-font-display": "^0.3.0",
     "postcss-preset-env": "^11.6.3",
