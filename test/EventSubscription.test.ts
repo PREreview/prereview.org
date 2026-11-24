@@ -175,11 +175,9 @@ describe('EventSubscription', () => {
       })
 
       yield* EventStore.append(triggerEvent!)
-      yield* TestClock.adjust('2 seconds')
       yield* Queue.take(attempted)
       yield* Effect.forEach([firstEvent!, failingEvent!, lastEvent!], EventStore.append)
       yield* Deferred.succeed(release, undefined)
-      yield* TestClock.adjust('2 seconds')
       yield* Deferred.await(failed)
       yield* TestClock.adjust('2 seconds')
 

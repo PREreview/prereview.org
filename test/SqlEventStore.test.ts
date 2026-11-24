@@ -69,7 +69,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       }).pipe(
         Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-        Effect.provide(Layer.mock(Events.Events, {} as never)),
+        Effect.provide(Events.layer),
         Effect.provide(TestSqlClient),
       ),
     { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
@@ -189,7 +189,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
         }).pipe(
           Effect.provide(Uuid.layer),
           Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-          Effect.provide(Layer.mock(Events.Events, {} as never)),
+          Effect.provide(Events.layer),
           Effect.provide(TestSqlClient),
         ),
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
@@ -439,11 +439,30 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       }).pipe(
         Effect.provide(Uuid.layer),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-        Effect.provide(Layer.mock(Events.Events, {} as never)),
+        Effect.provide(Events.layer),
         Effect.provide(TestSqlClient),
       ),
     { timeout: Duration.toMillis('60 seconds') },
   )
+
+  describe('append', () => {
+    it.effect.prop(
+      'announces the event',
+      [fc.commentEvent()],
+      ([event]) =>
+        Effect.gen(function* () {
+          const events = yield* PubSub.unbounded<Events.Event>()
+          const published = yield* PubSub.subscribe(events)
+
+          const eventStore = yield* Effect.provide(_.make, Layer.succeed(Events.Events, events))
+
+          yield* eventStore.append(event)
+
+          expect(yield* PubSub.takeAll(published)).toStrictEqual([event])
+        }).pipe(Effect.provide([Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestSqlClient])),
+      { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+    )
+  })
 
   describe('all', () => {
     it.effect('streams nothing when there are no events', () =>
@@ -456,7 +475,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       }).pipe(
         Effect.provide(Layer.mock(Uuid.GenerateUuid, {})),
         Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-        Effect.provide(Layer.mock(Events.Events, {} as never)),
+        Effect.provide(Events.layer),
         Effect.provide(TestSqlClient),
       ),
     )
@@ -476,7 +495,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
         }).pipe(
           Effect.provide(Uuid.layer),
           Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-          Effect.provide(Layer.mock(Events.Events, {} as never)),
+          Effect.provide(Events.layer),
           Effect.provide(TestSqlClient),
         ),
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
@@ -505,7 +524,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           Effect.provide(Layer.succeed(_.PageSize, 3)),
           Effect.provide(Uuid.layer),
           Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-          Effect.provide(Layer.mock(Events.Events, {} as never)),
+          Effect.provide(Events.layer),
           Effect.provide(TestSqlClient),
         ),
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
@@ -532,7 +551,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
         }).pipe(
           Effect.provide(Uuid.layer),
           Effect.provide(Layer.mock(SensitiveDataStore.SensitiveDataStore, {})),
-          Effect.provide(Layer.mock(Events.Events, {} as never)),
+          Effect.provide(Events.layer),
           Effect.provide(TestSqlClient),
         ),
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
@@ -569,7 +588,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           Effect.provide([
             Uuid.layer,
             Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-            Layer.mock(Events.Events, {} as never),
+            Events.layer,
             TestSqlClient,
           ]),
         ),
@@ -587,7 +606,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
         Effect.provide([
           Uuid.layer,
           Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-          Layer.mock(Events.Events, {} as never),
+          Events.layer,
           TestSqlClient,
         ]),
       ),
@@ -613,7 +632,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           Effect.provide([
             Uuid.layer,
             Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-            Layer.mock(Events.Events, {} as never),
+            Events.layer,
             TestSqlClient,
           ]),
         ),
@@ -640,7 +659,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           Effect.provide([
             Uuid.layer,
             Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-            Layer.mock(Events.Events, {} as never),
+            Events.layer,
             TestSqlClient,
           ]),
         ),
@@ -663,7 +682,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           Effect.provide([
             Layer.mock(Uuid.GenerateUuid, {}),
             Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-            Layer.mock(Events.Events, {} as never),
+            Events.layer,
             TestSqlClient,
           ]),
         ),
@@ -690,7 +709,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           Effect.provide([
             Uuid.layer,
             Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-            Layer.mock(Events.Events, {} as never),
+            Events.layer,
             TestSqlClient,
           ]),
         ),
@@ -721,7 +740,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           Effect.provide([
             Uuid.layer,
             Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-            Layer.mock(Events.Events, {} as never),
+            Events.layer,
             TestSqlClient,
           ]),
         ),
@@ -746,7 +765,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           Effect.provide([
             Uuid.layer,
             Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-            Layer.mock(Events.Events, {} as never),
+            Events.layer,
             TestSqlClient,
           ]),
         ),
@@ -767,7 +786,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           Effect.provide([
             Layer.mock(Uuid.GenerateUuid, {}),
             Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
-            Layer.mock(Events.Events, {} as never),
+            Events.layer,
             TestSqlClient,
           ]),
         ),

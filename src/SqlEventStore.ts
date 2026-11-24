@@ -448,7 +448,7 @@ export const make: Effect.Effect<
         event,
       })
 
-      return yield* pipe(
+      yield* pipe(
         sql`
           INSERT INTO
             events (id, type, payload)
@@ -459,6 +459,8 @@ export const make: Effect.Effect<
         `.raw,
         Effect.andThen(Schema.decodeUnknownEffect(SqlQueryResults)),
       )
+
+      yield* PubSub.publish(events, event)
     },
     Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to commit events'), { error })),
     Effect.catchTag(['SqlError', 'SchemaError'], error => new EventStore.FailedToCommitEvent({ cause: error })),
