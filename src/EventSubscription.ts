@@ -1,6 +1,6 @@
-import { Array, Data, Effect, Option, pipe, PubSub, Record, Ref, Schedule, Stream, type Types } from 'effect'
+import { Array, Data, Effect, Option, pipe, Record, Ref, Schedule, Stream, type Types } from 'effect'
 import { Singleton } from 'effect/cluster'
-import * as Events from './Events.ts'
+import type * as Events from './Events.ts'
 import * as EventStore from './EventStore.ts'
 import { Temporal } from './types/index.ts'
 
@@ -34,9 +34,6 @@ export const subscribe = Effect.fnUntraced(function* <H extends Types.NoExcessPr
       Effect.catchDefect(cause => new HandlerDefect({ cause })),
     )
   }
-
-  const events = yield* Events.Events
-  const dequeue = yield* PubSub.subscribe(events)
 
   const lastCursor = yield* pipe(
     EventStore.loadCheckpoint(name),
@@ -102,56 +99,42 @@ export const subscribe = Effect.fnUntraced(function* <H extends Types.NoExcessPr
     })
   })
 
-  const catchUpOnce = Effect.gen(function* () {
+  const handlePage = (page: EventStore.Page) =>
+    pipe(
+      Effect.forEach(
+        page,
+        ({ event }, index) =>
+          pipe(
+            handle(event),
+            Effect.tapError(() =>
+              Option.match(Array.get(page, index - 1), {
+                onNone: () => Effect.void,
+                onSome: ({ cursor }) => saveCursor(cursor),
+              }),
+            ),
+          ),
+        { discard: true },
+      ),
+      Effect.andThen(saveCursor(Array.lastNonEmpty(page).cursor)),
+      Effect.tap(recordSuccess),
+      Effect.withSpan('EventSubscription.handlePage', {
+        attributes: { name, eventsHandled: page.length, endCursor: Array.lastNonEmpty(page).cursor },
+      }),
+    )
+
+  const handleNewEvents = Effect.gen(function* () {
+    if (!Array.isReadonlyArrayNonEmpty(types)) {
+      return yield* Effect.never
+    }
+
     const startCursor = yield* Ref.get(lastCursor)
 
-    yield* Effect.annotateCurrentSpan({ startCursor })
-
-    const eventsHandled = yield* Array.match(types, {
-      onEmpty: () => Effect.succeed(0),
-      onNonEmpty: types =>
-        Stream.runFoldEffect(
-          EventStore.since(startCursor, { types }),
-          () => 0,
-          (eventsHandled, page) =>
-            pipe(
-              Effect.forEach(
-                page,
-                ({ event }, index) =>
-                  pipe(
-                    handle(event),
-                    Effect.tapError(() =>
-                      Option.match(Array.get(page, index - 1), {
-                        onNone: () => Effect.void,
-                        onSome: ({ cursor }) => saveCursor(cursor),
-                      }),
-                    ),
-                  ),
-                { discard: true },
-              ),
-              Effect.andThen(saveCursor(Array.lastNonEmpty(page).cursor)),
-              Effect.as(eventsHandled + page.length),
-            ),
-        ),
-    })
-
-    yield* Effect.annotateCurrentSpan({ endCursor: yield* Ref.get(lastCursor), eventsHandled })
-  }).pipe(Effect.withSpan('EventSubscription.catchUp', { attributes: { name } }))
-
-  const catchUp = pipe(
-    catchUpOnce,
-    Effect.tapError(recordFailure),
-    Effect.retry({ schedule: backoff }),
-    Effect.tap(recordSuccess),
-  )
+    yield* Stream.runForEach(EventStore.subscribe({ after: startCursor, filter: { types } }), handlePage)
+  })
 
   yield* Effect.logDebug('EventSubscription started').pipe(Effect.annotateLogs({ name }))
 
-  return pipe(
-    catchUp,
-    Effect.andThen(Effect.raceFirst(PubSub.takeAll(dequeue), Effect.sleep('2 seconds'))),
-    Effect.forever,
-  )
+  return pipe(handleNewEvents, Effect.tapError(recordFailure), Effect.retry({ schedule: backoff }))
 })
 
 export const make = <H extends Types.NoExcessProperties<Handlers, H>>(name: string, handlers: H) =>
