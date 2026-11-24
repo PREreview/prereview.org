@@ -9,7 +9,6 @@ import {
   Option,
   Order,
   pipe,
-  PubSub,
   Record,
   Ref,
   Schedule,
@@ -19,6 +18,7 @@ import {
   Scope,
   Stream,
   Struct,
+  SubscriptionRef,
   Tuple,
   UndefinedOr,
 } from 'effect'
@@ -42,7 +42,7 @@ export const make: Effect.Effect<
   const sql = yield* SqlClient.SqlClient
   const pageSize = yield* PageSize
   const generateUuid = (yield* Uuid.GenerateUuid).v4()
-  const changes = yield* PubSub.unbounded<true>()
+  const version = yield* SubscriptionRef.make(0)
 
   yield* sql.onDialectOrElse({
     pg: () => sql`
@@ -488,7 +488,7 @@ export const make: Effect.Effect<
         sql.withTransaction,
       )
 
-      yield* PubSub.publish(changes, true)
+      yield* SubscriptionRef.update(version, n => n + 1)
     },
     Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to commit events'), { error })),
     Effect.catchTag(['SqlError', 'SchemaError'], error => new EventStore.FailedToCommitEvent({ cause: error })),
@@ -550,7 +550,7 @@ export const make: Effect.Effect<
         return yield* new EventStore.NewEventsFound()
       }
 
-      yield* PubSub.publish(changes, true)
+      yield* SubscriptionRef.update(version, n => n + 1)
     },
     Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to commit events'), { error })),
     Effect.catchTag(['SqlError', 'SchemaError'], error => new EventStore.FailedToCommitEvent({ cause: error })),
@@ -568,7 +568,7 @@ export const make: Effect.Effect<
         return
       }
 
-      yield* PubSub.publish(changes, true)
+      yield* SubscriptionRef.update(version, n => n + 1)
     }),
     Effect.ignore,
     Effect.withTracerEnabled(false),
@@ -579,7 +579,6 @@ export const make: Effect.Effect<
   const subscribe: EventStore.EventStore['subscribe'] = ({ after = beginning, filter } = {}) =>
     Stream.unwrap(
       Effect.gen(function* () {
-        const changed = yield* PubSub.subscribe(changes)
         const lastCursor = yield* Ref.make(after)
 
         const readNewPages = Stream.unwrap(
@@ -588,12 +587,10 @@ export const make: Effect.Effect<
           ),
         )
 
-        return Stream.concat(
-          readNewPages,
-          pipe(
-            Stream.fromEffectRepeat(PubSub.takeAll(changed)),
-            Stream.flatMap(() => readNewPages),
-          ),
+        return pipe(
+          SubscriptionRef.changes(version),
+          Stream.buffer({ capacity: 1, strategy: 'sliding' }),
+          Stream.flatMap(() => readNewPages),
         )
       }),
     )
