@@ -150,6 +150,45 @@ describe('EventSubscription', () => {
     }).pipe(Effect.scoped, Effect.provide(TestLayer)),
   )
 
+  it.effect("doesn't repeat events it handled before one that fails", () =>
+    Effect.gen(function* () {
+      const [triggerEvent, firstEvent, failingEvent, lastEvent] = sample(fc.commentWasStarted(), 4)
+      const attempted = yield* Queue.unbounded<Events.Event>()
+      const release = yield* Deferred.make<undefined>()
+      const failed = yield* Deferred.make<undefined>()
+      const hasFailed = yield* Ref.make(false)
+
+      yield* start('test', {
+        CommentWasStarted: event =>
+          Effect.gen(function* () {
+            yield* Queue.offer(attempted, event)
+
+            if (event.commentId === triggerEvent!.commentId) {
+              yield* Deferred.await(release)
+            }
+
+            if (event.commentId === failingEvent!.commentId && !(yield* Ref.getAndSet(hasFailed, true))) {
+              yield* Deferred.succeed(failed, undefined)
+              return yield* Effect.fail('failed')
+            }
+          }),
+      })
+
+      yield* EventStore.append(triggerEvent!)
+      yield* TestClock.adjust('2 seconds')
+      yield* Queue.take(attempted)
+      yield* Effect.forEach([firstEvent!, failingEvent!, lastEvent!], EventStore.append)
+      yield* Deferred.succeed(release, undefined)
+      yield* TestClock.adjust('2 seconds')
+      yield* Deferred.await(failed)
+      yield* TestClock.adjust('2 seconds')
+
+      const actual = yield* Queue.takeN(attempted, 4)
+
+      expect(actual).toStrictEqual([firstEvent, failingEvent, failingEvent, lastEvent])
+    }).pipe(Effect.scoped, Effect.provide(TestLayer)),
+  )
+
   it.effect('retries an event whose handler throws', () =>
     Effect.gen(function* () {
       const [event] = sample(fc.commentWasStarted(), 1)

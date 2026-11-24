@@ -115,7 +115,20 @@ export const subscribe = Effect.fnUntraced(function* <H extends Types.NoExcessPr
           () => 0,
           (eventsHandled, page) =>
             pipe(
-              Effect.forEach(page, ({ event }) => handle(event), { discard: true }),
+              Effect.forEach(
+                page,
+                ({ event }, index) =>
+                  pipe(
+                    handle(event),
+                    Effect.tapError(() =>
+                      Option.match(Array.get(page, index - 1), {
+                        onNone: () => Effect.void,
+                        onSome: ({ cursor }) => saveCursor(cursor),
+                      }),
+                    ),
+                  ),
+                { discard: true },
+              ),
               Effect.andThen(saveCursor(Array.lastNonEmpty(page).cursor)),
               Effect.as(eventsHandled + page.length),
             ),
