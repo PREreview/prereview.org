@@ -1,6 +1,6 @@
 import { Array, Context, Effect, flow, Option, pipe, Result, Scope, Struct } from 'effect'
+import type { StatefulQueries } from '../../../EventSourcing/index.ts'
 import * as Queries from '../../../Queries.ts'
-import type * as StatefulQueries from '../../../StatefulQueries.ts'
 import * as ProfileId from '../../../types/profile-id.ts'
 import { getTopicField, getTopicSubfield } from '../../../types/Topic.ts'
 import { DatasetReviewQueries } from '../../DatasetReviews/index.ts'

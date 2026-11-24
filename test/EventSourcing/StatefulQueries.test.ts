@@ -1,14 +1,14 @@
 import { Effect, Exit, Layer, pipe, Queue, Ref, Result } from 'effect'
 import { sample } from 'fast-check'
-import type * as Events from '../src/Events.ts'
-import * as SqlEventStore from '../src/EventSourcing/SqlEventStore.ts'
-import * as EventStore from '../src/EventStore.ts'
-import * as SensitiveDataStore from '../src/SensitiveData/SensitiveDataStore.ts'
-import * as _ from '../src/StatefulQueries.ts'
-import { Uuid } from '../src/types/index.ts'
-import * as fc from './fc.ts'
-import * as TestLibsqlClient from './TestLibsqlClient.ts'
-import { describe, expect, it } from './vitest.ts'
+import type * as Events from '../../src/Events.ts'
+import * as SqlEventStore from '../../src/EventSourcing/SqlEventStore.ts'
+import * as _ from '../../src/EventSourcing/StatefulQueries.ts'
+import * as EventStore from '../../src/EventStore.ts'
+import * as SensitiveDataStore from '../../src/SensitiveData/SensitiveDataStore.ts'
+import { Uuid } from '../../src/types/index.ts'
+import * as fc from '../fc.ts'
+import * as TestLibsqlClient from '../TestLibsqlClient.ts'
+import { describe, expect, it } from '../vitest.ts'
 
 describe('replay', () => {
   it.effect('gives every stateful query the existing events', () =>
