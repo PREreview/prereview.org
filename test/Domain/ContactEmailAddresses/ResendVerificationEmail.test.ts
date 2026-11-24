@@ -72,7 +72,7 @@ it.effect.each<[string, _.Input, Result.Result<void, _.Error>, EmailAddress | un
       ],
       eventStore.append,
     )
-    const cursor = yield* Effect.map(Stream.runLast(eventStore.all), Option.map(Struct.get('cursor')))
+    const cursor = yield* eventStore.latestCursor
 
     const verifyContactEmailAddress = vi.fn<(typeof Email.Email.Service)['verifyContactEmailAddress']>(
       () => Effect.void,

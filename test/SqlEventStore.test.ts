@@ -522,7 +522,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
           yield* Effect.forEach(existingEvents, eventStore.append)
 
-          const { cursor } = yield* Effect.flatMap(Stream.runLast(eventStore.all), Effect.fromOption)
+          const cursor = yield* Effect.flatMap(eventStore.latestCursor, Effect.fromOption)
 
           yield* Effect.forEach(newEvents, eventStore.append)
 
@@ -550,7 +550,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
           yield* Effect.forEach(existingEvents, eventStore.append)
 
-          const { cursor } = yield* Effect.flatMap(Stream.runLast(eventStore.all), Effect.fromOption)
+          const cursor = yield* Effect.flatMap(eventStore.latestCursor, Effect.fromOption)
 
           yield* Effect.forEach(newEvents, eventStore.append)
 
