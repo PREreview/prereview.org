@@ -1,5 +1,5 @@
 import { Context, Effect, pipe, Scope } from 'effect'
-import type { EventStore } from '../../../../EventStore.ts'
+import type { EventStore } from '../../../../EventSourcing/index.ts'
 import * as Queries from '../../../../Queries.ts'
 import type { Uuid } from '../../../../types/index.ts'
 import type { Clubs } from '../../../Clubs/index.ts'
@@ -20,7 +20,7 @@ export type GetPublishedDatasetReview = (
 export const GetPublishedDatasetReview: Effect.Effect<
   GetPublishedDatasetReview,
   never,
-  Clubs | Datasets | EventStore | Prereviewers
+  Clubs | Datasets | EventStore.EventStore | Prereviewers
 > = Effect.gen(function* () {
   const context = yield* Effect.map(Effect.context<Clubs | Datasets | Prereviewers>(), Context.omit(Scope.Scope))
 

@@ -1,5 +1,5 @@
 import { type Array, Context, Data, Effect, type Option, pipe, Schema, Stream } from 'effect'
-import type { Event, EventFilter, EventsForFilter } from './Events.ts'
+import type { Event, EventFilter, EventsForFilter } from '../Events.ts'
 
 export const EventStore = Context.Service<EventStore>('EventStore')
 

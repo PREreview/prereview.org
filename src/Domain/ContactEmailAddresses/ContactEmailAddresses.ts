@@ -2,7 +2,7 @@ import { Context, Effect, flow, Layer, Scope } from 'effect'
 import type * as AuthorInviteStore from '../../AuthorInviteStore.ts'
 import * as Commands from '../../Commands.ts'
 import type { Locale } from '../../Context.ts'
-import type { EventStore } from '../../EventStore.ts'
+import type { EventStore } from '../../EventSourcing/index.ts'
 import type { Email, OrcidRecords } from '../../ExternalInteractions/index.ts'
 import * as Queries from '../../Queries.ts'
 import type { Uuid } from '../../types/index.ts'
@@ -34,7 +34,7 @@ export const layer = Layer.effect(
   Effect.gen(function* () {
     const context = yield* Effect.map(
       Effect.context<
-        Email.Email | OrcidRecords.OrcidRecords | Uuid.GenerateUuid | EventStore | AuthorInviteStore.Store
+        Email.Email | OrcidRecords.OrcidRecords | Uuid.GenerateUuid | EventStore.EventStore | AuthorInviteStore.Store
       >(),
       Context.omit(Scope.Scope),
     )

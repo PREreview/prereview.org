@@ -1,7 +1,7 @@
 import { Effect, pipe } from 'effect'
 import * as Commands from '../../Commands.ts'
 import type { Locale } from '../../Context.ts'
-import type { EventStore } from '../../EventStore.ts'
+import type { EventStore } from '../../EventSourcing/index.ts'
 import { Email, OrcidRecords } from '../../ExternalInteractions/index.ts'
 import * as Queries from '../../Queries.ts'
 import type { EmailAddress } from '../../types/EmailAddress.ts'
@@ -22,52 +22,55 @@ export type Error = ContactEmailAddressHasAlreadyBeenVerified | Commands.UnableT
 
 export const StartVerificationOfContactEmailAddress: (
   input: Input,
-) => Effect.Effect<void, Error, Email.Email | EventStore | Locale | OrcidRecords.OrcidRecords | Uuid.GenerateUuid> =
-  Effect.fn('ContactEmailAddresses.startVerificationOfContactEmailAddress')(
-    function* (input) {
-      const email = yield* Email.Email
-      const orcidRecords = yield* OrcidRecords.OrcidRecords
-      const uuid = yield* Uuid.GenerateUuid
+) => Effect.Effect<
+  void,
+  Error,
+  Email.Email | EventStore.EventStore | Locale | OrcidRecords.OrcidRecords | Uuid.GenerateUuid
+> = Effect.fn('ContactEmailAddresses.startVerificationOfContactEmailAddress')(
+  function* (input) {
+    const email = yield* Email.Email
+    const orcidRecords = yield* OrcidRecords.OrcidRecords
+    const uuid = yield* Uuid.GenerateUuid
 
-      const name = yield* orcidRecords.getName(input.orcidId)
+    const name = yield* orcidRecords.getName(input.orcidId)
 
-      const recordEmailCommand = yield* Commands.makeStatelessCommand(RecordEmailSentToVerifyContactAddress)
-      const recordCommand = yield* Commands.makeCommand(RecordContactAddress)
-      const getAddress = yield* Queries.makeOnDemandQuery(GetContactEmailAddress)
+    const recordEmailCommand = yield* Commands.makeStatelessCommand(RecordEmailSentToVerifyContactAddress)
+    const recordCommand = yield* Commands.makeCommand(RecordContactAddress)
+    const getAddress = yield* Queries.makeOnDemandQuery(GetContactEmailAddress)
 
-      yield* recordCommand({
-        contactAddressId: yield* uuid.v4(),
-        orcidId: input.orcidId,
-        emailAddress: input.emailAddress,
-      })
+    yield* recordCommand({
+      contactAddressId: yield* uuid.v4(),
+      orcidId: input.orcidId,
+      emailAddress: input.emailAddress,
+    })
 
-      const contactAddress = yield* pipe(
-        getAddress(input.orcidId),
-        Effect.filterOrElse(
-          contactAddress => contactAddress._tag !== 'VerifiedContactEmailAddress',
-          () => new Commands.UnableToHandleCommand({ cause: 'contact address expected to be unverified' }),
-        ),
-        Effect.catchTag(
-          ['ContactEmailAddressIsNotFound', 'UnableToQuery'],
-          error => new Commands.UnableToHandleCommand({ cause: error }),
-        ),
-      )
+    const contactAddress = yield* pipe(
+      getAddress(input.orcidId),
+      Effect.filterOrElse(
+        contactAddress => contactAddress._tag !== 'VerifiedContactEmailAddress',
+        () => new Commands.UnableToHandleCommand({ cause: 'contact address expected to be unverified' }),
+      ),
+      Effect.catchTag(
+        ['ContactEmailAddressIsNotFound', 'UnableToQuery'],
+        error => new Commands.UnableToHandleCommand({ cause: error }),
+      ),
+    )
 
-      yield* email.verifyContactEmailAddress({
-        name,
-        emailAddress: contactAddress,
-        redirectTo: input.resumeAt,
-      })
+    yield* email.verifyContactEmailAddress({
+      name,
+      emailAddress: contactAddress,
+      redirectTo: input.resumeAt,
+    })
 
-      yield* recordEmailCommand({
-        contactAddressId: contactAddress.contactAddressId,
-        sentAt: yield* Temporal.currentInstant,
-      })
-    },
-    Effect.uninterruptible,
-    Effect.catchTags({
-      ContactAddressIdHasAlreadyBeenUsed: error => new Commands.UnableToHandleCommand({ cause: error }),
-      NameIsNotAvailable: error => new Commands.UnableToHandleCommand({ cause: error }),
-      UnableToSendEmail: error => new Commands.UnableToHandleCommand({ cause: error }),
-    }),
-  )
+    yield* recordEmailCommand({
+      contactAddressId: contactAddress.contactAddressId,
+      sentAt: yield* Temporal.currentInstant,
+    })
+  },
+  Effect.uninterruptible,
+  Effect.catchTags({
+    ContactAddressIdHasAlreadyBeenUsed: error => new Commands.UnableToHandleCommand({ cause: error }),
+    NameIsNotAvailable: error => new Commands.UnableToHandleCommand({ cause: error }),
+    UnableToSendEmail: error => new Commands.UnableToHandleCommand({ cause: error }),
+  }),
+)

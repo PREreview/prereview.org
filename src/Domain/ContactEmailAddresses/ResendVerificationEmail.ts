@@ -1,7 +1,7 @@
 import { Effect, pipe } from 'effect'
 import * as Commands from '../../Commands.ts'
 import type { Locale } from '../../Context.ts'
-import type { EventStore } from '../../EventStore.ts'
+import type { EventStore } from '../../EventSourcing/index.ts'
 import { Email, OrcidRecords } from '../../ExternalInteractions/index.ts'
 import * as Queries from '../../Queries.ts'
 import { Temporal } from '../../types/index.ts'
@@ -20,7 +20,7 @@ export type Error =
 
 export const ResendVerificationEmail: (
   input: Input,
-) => Effect.Effect<void, Error, Email.Email | EventStore | Locale | OrcidRecords.OrcidRecords> = Effect.fn(
+) => Effect.Effect<void, Error, Email.Email | EventStore.EventStore | Locale | OrcidRecords.OrcidRecords> = Effect.fn(
   'ContactEmailAddresses.resendVerificationEmail',
 )(
   function* (input) {

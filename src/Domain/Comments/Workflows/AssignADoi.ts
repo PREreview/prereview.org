@@ -1,5 +1,5 @@
 import { Array, Effect, Option, Struct } from 'effect'
-import * as EventStore from '../../../EventStore.ts'
+import { EventStore } from '../../../EventSourcing/index.ts'
 import type { Doi } from '../../../types/Doi.ts'
 import type { Uuid } from '../../../types/index.ts'
 import { MarkDoiAsAssigned } from '../Commands.ts'

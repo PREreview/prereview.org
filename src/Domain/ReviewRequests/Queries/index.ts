@@ -1,6 +1,5 @@
 import { Context, Effect, Fiber, Layer, Match } from 'effect'
-import type { StatefulQueries } from '../../../EventSourcing/index.ts'
-import type * as EventStore from '../../../EventStore.ts'
+import type { EventStore, StatefulQueries } from '../../../EventSourcing/index.ts'
 import * as Queries from '../../../Queries.ts'
 import { ReviewRequestNotReadyToBePublished } from '../Errors.ts'
 import { DoesAPreprintHaveAReviewRequest } from './DoesAPreprintHaveAReviewRequest.ts'

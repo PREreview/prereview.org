@@ -1,7 +1,7 @@
 import { Data, Effect, pipe } from 'effect'
 import * as AuthorInviteStore from '../../AuthorInviteStore.ts'
 import * as Commands from '../../Commands.ts'
-import type { EventStore } from '../../EventStore.ts'
+import type { EventStore } from '../../EventSourcing/index.ts'
 import { Temporal } from '../../types/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { Uuid } from '../../types/Uuid.ts'
@@ -20,7 +20,7 @@ export type Error =
 
 export const UseAuthorInviteEmailAddress: (
   input: Input,
-) => Effect.Effect<void, Error, EventStore | AuthorInviteStore.Store> = Effect.fn(
+) => Effect.Effect<void, Error, EventStore.EventStore | AuthorInviteStore.Store> = Effect.fn(
   'ContactEmailAddresses.useAuthorInviteEmailAddress',
 )(
   function* (input) {

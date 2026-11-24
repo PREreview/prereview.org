@@ -1,7 +1,7 @@
 import { Effect, Layer, Option, pipe, Result, Schema, Tracer } from 'effect'
 import * as Events from '../src/Events.ts'
+import * as EventStore from '../src/EventSourcing/EventStore.ts'
 import * as StatefulQueries from '../src/EventSourcing/StatefulQueries.ts'
-import * as EventStore from '../src/EventStore.ts'
 import * as _ from '../src/Queries.ts'
 import { Temporal, Uuid } from '../src/types/index.ts'
 import { describe, expect, it } from './vitest.ts'

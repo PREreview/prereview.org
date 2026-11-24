@@ -1,7 +1,7 @@
 import { Array, Context, Data, Effect, flow, Layer, Option, pipe, Scope, Struct, type Result } from 'effect'
 import * as Commands from '../../../Commands.ts'
 import * as Events from '../../../Events.ts'
-import * as EventStore from '../../../EventStore.ts'
+import { EventStore } from '../../../EventSourcing/index.ts'
 import type { Uuid } from '../../../types/index.ts'
 import { Clubs } from '../../Clubs/index.ts'
 import type * as Errors from '../Errors.ts'
