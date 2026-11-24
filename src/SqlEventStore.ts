@@ -4,6 +4,7 @@ import {
   Context,
   Data,
   Effect,
+  flow,
   Layer,
   Option,
   pipe,
@@ -300,6 +301,45 @@ export const make: Effect.Effect<
 
   const since: EventStore.EventStore['since'] = streamAfter
 
+  const latestCursor: EventStore.EventStore['latestCursor'] = pipe(
+    sql.onDialectOrElse({
+      pg: () => sql`
+        SELECT
+          position,
+          transaction_id::TEXT
+        FROM
+          events
+        WHERE
+          transaction_id < pg_snapshot_xmin(pg_current_snapshot())
+        ORDER BY
+          events.transaction_id DESC,
+          events.position DESC
+        LIMIT
+          1
+      `,
+      orElse: () => sql`
+        SELECT
+          position
+        FROM
+          events
+        ORDER BY
+          position DESC
+        LIMIT
+          1
+      `,
+    }),
+    Effect.andThen(Schema.decodeUnknownEffect(Schema.Array(CursorRow))),
+    Effect.map(
+      flow(
+        Array.head,
+        Option.map(row => makeCursor(row.transactionId ?? BigInt(0), row.position)),
+      ),
+    ),
+    Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to get the latest cursor'), { error })),
+    Effect.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
+    Effect.withSpan('SqlEventStore.latestCursor'),
+  )
+
   const query: EventStore.EventStore['query'] = Effect.fn('SqlEventStore.query')(function* (filter) {
     const rows = yield* selectEventRows(filter)
 
@@ -399,7 +439,7 @@ export const make: Effect.Effect<
     Effect.provide(context),
   )
 
-  return { all, since, query, append, appendIf }
+  return { all, since, latestCursor, query, append, appendIf }
 })
 
 export const layer = Layer.effect(EventStore.EventStore, make)

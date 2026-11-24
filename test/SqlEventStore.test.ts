@@ -593,6 +593,50 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       ),
     )
   })
+
+  describe('latestCursor', () => {
+    it.effect('is none when there are no events', () =>
+      Effect.gen(function* () {
+        const eventStore = yield* _.make
+
+        const actual = yield* eventStore.latestCursor
+
+        expect(actual).toStrictEqual(Option.none())
+      }).pipe(
+        Effect.provide([
+          Layer.mock(Uuid.GenerateUuid, {}),
+          Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
+          Layer.mock(Events.Events, {} as never),
+          TestSqlClient,
+        ]),
+      ),
+    )
+
+    it.effect.prop(
+      'is the cursor of the last event',
+      [fc.nonEmptyArray(fc.commentEvent())],
+      ([events]) =>
+        Effect.gen(function* () {
+          const eventStore = yield* _.make
+
+          yield* Effect.forEach(events, eventStore.append)
+
+          const { cursor } = yield* Effect.flatMap(Stream.runLast(eventStore.all), Effect.fromOption)
+
+          const actual = yield* eventStore.latestCursor
+
+          expect(actual).toStrictEqual(Option.some(cursor))
+        }).pipe(
+          Effect.provide([
+            Uuid.layer,
+            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
+            Layer.mock(Events.Events, {} as never),
+            TestSqlClient,
+          ]),
+        ),
+      { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+    )
+  })
 })
 
 describe('on Postgres', () => {
@@ -627,6 +671,49 @@ describe('on Postgres', () => {
       const actual = yield* allEvents(eventStore)
 
       expect(actual).toStrictEqual([earlierEvent, laterEvent])
+    }).pipe(
+      Effect.provide([
+        Events.layer,
+        Uuid.layer,
+        Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
+        TestPgClient.layer,
+      ]),
+    ),
+  )
+
+  it.effect('has a latest cursor in transaction order', () =>
+    Effect.gen(function* () {
+      const [laterEvent, earlierEvent] = sample(fc.commentWasStarted(), 2)
+      const sql = yield* SqlClient.SqlClient
+      const eventStore = yield* _.make
+
+      yield* Effect.forEach(
+        [
+          [laterEvent!, '10'],
+          [earlierEvent!, '9'],
+        ] as const,
+        Effect.fnUntraced(function* ([event, transactionId]) {
+          const { _tag, ...payload } = (yield* Schema.encodeEffect(Events.Event)(event)) as { _tag: string }
+
+          yield* sql`
+            INSERT INTO
+              events (id, type, payload, transaction_id)
+            VALUES
+              (
+                ${event.commentId},
+                ${_tag},
+                ${JSON.stringify(payload)},
+                ${transactionId}::XID8
+              )
+          `
+        }),
+      )
+
+      const { cursor } = yield* Effect.flatMap(Stream.runLast(eventStore.all), Effect.fromOption)
+
+      const actual = yield* eventStore.latestCursor
+
+      expect(actual).toStrictEqual(Option.some(cursor))
     }).pipe(
       Effect.provide([
         Events.layer,
@@ -718,6 +805,43 @@ describe('on a real Postgres', { skip: process.env['SKIP_CONTAINER_TESTS'] === '
 
         expect(Array.flatMap(firstRead, Struct.get('events'))).toStrictEqual([committedEvent])
         expect(Array.flatMap(secondRead, Struct.get('events'))).toStrictEqual([slowEvent, fastEvent])
+      }).pipe(
+        Effect.provide([Events.layer, Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), RealPgClient]),
+      ),
+    { timeout: Duration.toMillis('1 minute') },
+  )
+
+  it.effect(
+    "doesn't have a latest cursor past an event whose transaction is still open",
+    () =>
+      Effect.gen(function* () {
+        const [committedEvent, slowEvent, fastEvent] = sample(fc.commentWasStarted(), 3)
+        const sql = yield* SqlClient.SqlClient
+        const eventStore = yield* _.make
+        const slowEventAppended = yield* Deferred.make<undefined>()
+        const commitSlowEvent = yield* Deferred.make<undefined>()
+
+        yield* eventStore.append(committedEvent!)
+
+        const slowTransaction = yield* pipe(
+          eventStore.append(slowEvent!),
+          Effect.andThen(Deferred.succeed(slowEventAppended, undefined)),
+          Effect.andThen(Deferred.await(commitSlowEvent)),
+          sql.withTransaction,
+          Effect.forkScoped,
+        )
+
+        yield* Deferred.await(slowEventAppended)
+        yield* eventStore.append(fastEvent!)
+
+        const latestCursor = yield* Effect.flatMap(eventStore.latestCursor, Effect.fromOption)
+
+        yield* Deferred.succeed(commitSlowEvent, undefined)
+        yield* Fiber.join(slowTransaction)
+
+        const actual = yield* Stream.runCollect(eventStore.since(latestCursor))
+
+        expect(Array.flatMap(actual, Struct.get('events'))).toStrictEqual([slowEvent, fastEvent])
       }).pipe(
         Effect.provide([Events.layer, Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), RealPgClient]),
       ),

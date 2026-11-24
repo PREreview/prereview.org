@@ -27,6 +27,8 @@ export interface EventStore {
 
   readonly since: (cursor: Cursor, filter?: EventFilter) => Stream.Stream<Page, FailedToGetEvents>
 
+  readonly latestCursor: Effect.Effect<Option.Option<Cursor>, FailedToGetEvents>
+
   readonly query: <Filter extends EventFilter>(
     filter: Filter,
   ) => Effect.Effect<
@@ -49,6 +51,8 @@ export const all = Stream.unwrap(EventStore.useSync(service => service.all))
 
 export const since = (...args: Parameters<(typeof EventStore.Service)['since']>) =>
   Stream.unwrap(EventStore.useSync(service => service.since(...args)))
+
+export const latestCursor = EventStore.use(service => service.latestCursor)
 
 export const append = (...args: Parameters<(typeof EventStore.Service)['append']>) =>
   EventStore.use(service => service.append(...args))
