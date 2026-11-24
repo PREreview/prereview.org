@@ -1,4 +1,5 @@
 import { Effect, Layer, pipe, Result } from 'effect'
+import { UnableToHandleCommand } from '../../../../src/Commands.ts'
 import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
 import * as Prereviewers from '../../../../src/Domain/Prereviewers/index.ts'
 import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
@@ -113,7 +114,7 @@ describe('NotifyCommunitySlack', () => {
         fc.pseudonymPersona(),
         fc.preprint(),
         fc.record({ channelId: fc.slackChannelId(), messageTimestamp: fc.slackTimestamp() }),
-        fc.anything().map(cause => new ReviewRequests.UnableToHandleCommand({ cause })),
+        fc.anything().map(cause => new UnableToHandleCommand({ cause })),
       ],
       ([reviewRequestId, reviewRequest, publicPersona, pseudonymPersona, preprint, response, error]) =>
         Effect.gen(function* () {

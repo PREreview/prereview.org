@@ -1,4 +1,5 @@
 import { Effect, Layer, pipe, Result } from 'effect'
+import { UnableToHandleCommand } from '../../../src/Commands.ts'
 import * as ReviewRequests from '../../../src/Domain/ReviewRequests/index.ts'
 import * as Inbox from '../../../src/WebApp/Inbox/index.ts'
 import * as _ from '../../../src/WebApp/Inbox/ProcessCoarNotifyMessage.ts'
@@ -25,7 +26,7 @@ describe('ProcessCoarNotifyMessage', () => {
       fc.coarNotifyRequestReview(),
       fc.uuid(),
       fc.instant(),
-      fc.anything().map(cause => new ReviewRequests.UnableToHandleCommand({ cause })),
+      fc.anything().map(cause => new UnableToHandleCommand({ cause })),
     ],
     ([message, messageId, receivedAt, error]) =>
       Effect.gen(function* () {

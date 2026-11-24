@@ -1,4 +1,5 @@
 import { Effect, Layer, pipe, Result } from 'effect'
+import { UnableToHandleCommand } from '../../../../src/Commands.ts'
 import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
 import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
 import * as _ from '../../../../src/Domain/ReviewRequests/Workflows/CategorizeReviewRequest.ts'
@@ -55,7 +56,7 @@ describe('CategorizeReviewRequest', () => {
           .chain(cause =>
             fc.constantFrom(
               new ReviewRequests.ReviewRequestWasAlreadyCategorized({ cause }),
-              new ReviewRequests.UnableToHandleCommand({ cause }),
+              new UnableToHandleCommand({ cause }),
             ),
           ),
       ],

@@ -1,4 +1,4 @@
-import { Context, Data, Effect, flow, Layer, Option, pipe, Result, Scope } from 'effect'
+import { Context, Effect, flow, Layer, Option, pipe, Result, Scope } from 'effect'
 import * as Commands from '../../../Commands.ts'
 import type * as Events from '../../../Events.ts'
 import * as EventStore from '../../../EventStore.ts'
@@ -37,9 +37,7 @@ export class ReviewRequestCommands extends Context.Service<
 
 type CommandHandler<Command extends { reviewRequestId: Uuid.Uuid }, Error = never> = (
   command: Command,
-) => Effect.Effect<void, UnableToHandleCommand | Error>
-
-export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: unknown }> {}
+) => Effect.Effect<void, Commands.UnableToHandleCommand | Error>
 
 export const startReviewRequest = (...args: Parameters<(typeof ReviewRequestCommands.Service)['startReviewRequest']>) =>
   ReviewRequestCommands.use(service => service.startReviewRequest(...args))
@@ -128,7 +126,7 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
         },
         Effect.catchTag(
           ['FailedToCommitEvent', 'FailedToGetEvents', 'NewEventsFound'],
-          cause => new UnableToHandleCommand({ cause }),
+          cause => new Commands.UnableToHandleCommand({ cause }),
         ),
         Effect.provide(context),
       )
@@ -173,13 +171,13 @@ const makeReviewRequestCommands: Effect.Effect<typeof ReviewRequestCommands.Serv
           command,
           RecordFailureToCategorizeReviewRequest.decide,
           EventStore.append,
-          Effect.catchTag('FailedToCommitEvent', cause => new UnableToHandleCommand({ cause })),
+          Effect.catchTag('FailedToCommitEvent', cause => new Commands.UnableToHandleCommand({ cause })),
           Effect.provide(context),
         ),
       recordEmailSentToAcknowledgeReviewRequest: flow(
         RecordEmailSentToAcknowledgeReviewRequest.decide,
         EventStore.append,
-        Effect.catchTag('FailedToCommitEvent', cause => new UnableToHandleCommand({ cause })),
+        Effect.catchTag('FailedToCommitEvent', cause => new Commands.UnableToHandleCommand({ cause })),
         Effect.provide(context),
       ),
     }

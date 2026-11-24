@@ -1,5 +1,6 @@
 import { Effect, Layer, pipe, Result } from 'effect'
 import { TestClock } from 'effect/testing'
+import { UnableToHandleCommand } from '../../../../src/Commands.ts'
 import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
 import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
 import * as _ from '../../../../src/Domain/ReviewRequests/Workflows/ProcessReceivedReviewRequest.ts'
@@ -44,7 +45,7 @@ describe('ProcessReceivedReviewRequest', () => {
         fc.uuid(),
         fc.receivedReviewRequest(),
         fc.preprintId(),
-        fc.anything().map(cause => new ReviewRequests.UnableToHandleCommand({ cause })),
+        fc.anything().map(cause => new UnableToHandleCommand({ cause })),
       ],
       ([reviewRequestId, reviewRequest, preprint, error]) =>
         Effect.gen(function* () {
@@ -138,7 +139,7 @@ describe('ProcessReceivedReviewRequest', () => {
         fc.uuid(),
         fc.receivedReviewRequest(),
         fc.anything().map(cause => new Preprints.NotAPreprint({ cause })),
-        fc.anything().map(cause => new ReviewRequests.UnableToHandleCommand({ cause })),
+        fc.anything().map(cause => new UnableToHandleCommand({ cause })),
       ],
       ([reviewRequestId, reviewRequest, preprintError, error]) =>
         Effect.gen(function* () {

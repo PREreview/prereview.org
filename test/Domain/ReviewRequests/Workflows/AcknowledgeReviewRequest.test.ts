@@ -1,4 +1,5 @@
 import { Effect, Layer, pipe, Result } from 'effect'
+import { UnableToHandleCommand } from '../../../../src/Commands.ts'
 import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
 import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
 import * as _ from '../../../../src/Domain/ReviewRequests/Workflows/AcknowledgeReviewRequest.ts'
@@ -37,7 +38,7 @@ describe('AcknowledgeReviewRequest', () => {
         fc.uuid(),
         fc.reviewRequestToAcknowledge(),
         fc.preprintTitle(),
-        fc.anything().map(cause => new ReviewRequests.UnableToHandleCommand({ cause })),
+        fc.anything().map(cause => new UnableToHandleCommand({ cause })),
       ],
       ([reviewRequestId, reviewRequest, preprint, error]) =>
         Effect.gen(function* () {
