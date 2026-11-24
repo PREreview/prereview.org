@@ -932,7 +932,8 @@ describe('on a real Postgres', { skip: process.env['SKIP_CONTAINER_TESTS'] === '
     "doesn't skip an event whose transaction commits after a later event",
     () =>
       Effect.gen(function* () {
-        const [committedEvent, slowEvent, fastEvent] = sample(fc.commentWasStarted(), 3)
+        const [committedEvent, slowEvent] = sample(fc.commentWasStarted(), 2)
+        const [fastEvent] = sample(fc.commentWasPublished(), 1)
         const sql = yield* SqlClient.SqlClient
         const eventStore = yield* _.make
         const slowEventAppended = yield* Deferred.make<undefined>()
@@ -971,7 +972,8 @@ describe('on a real Postgres', { skip: process.env['SKIP_CONTAINER_TESTS'] === '
     "doesn't have a latest cursor past an event whose transaction is still open",
     () =>
       Effect.gen(function* () {
-        const [committedEvent, slowEvent, fastEvent] = sample(fc.commentWasStarted(), 3)
+        const [committedEvent, slowEvent] = sample(fc.commentWasStarted(), 2)
+        const [fastEvent] = sample(fc.commentWasPublished(), 1)
         const sql = yield* SqlClient.SqlClient
         const eventStore = yield* _.make
         const slowEventAppended = yield* Deferred.make<undefined>()
@@ -998,6 +1000,66 @@ describe('on a real Postgres', { skip: process.env['SKIP_CONTAINER_TESTS'] === '
         const actual = yield* Stream.runCollect(eventStore.since(latestCursor))
 
         expect(eventsIn(actual)).toStrictEqual([slowEvent, fastEvent])
+      }).pipe(
+        Effect.provide([Events.layer, Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), RealPgClient]),
+      ),
+    { timeout: Duration.toMillis('1 minute') },
+  )
+
+  it.effect.each([
+    [
+      'appendIf',
+      (eventStore: EventStore.EventStore, event: Events.Event) =>
+        eventStore.appendIf(event, { filter: { types: ['CommentWasStarted'] }, lastKnownPosition: Option.none() }),
+    ],
+    ['append', (eventStore: EventStore.EventStore, event: Events.Event) => eventStore.append(event)],
+  ] as const)(
+    "doesn't append past a matching event from another transaction's %s",
+    ([, appendFirst]) =>
+      Effect.gen(function* () {
+        const [firstEvent, secondEvent] = sample(fc.commentWasStarted(), 2)
+        const sql = yield* SqlClient.SqlClient
+        const eventStore = yield* _.make
+        const firstEventAppended = yield* Deferred.make<undefined>()
+        const commitFirstEvent = yield* Deferred.make<undefined>()
+
+        const firstTransaction = yield* pipe(
+          appendFirst(eventStore, firstEvent!),
+          Effect.andThen(Deferred.succeed(firstEventAppended, undefined)),
+          Effect.andThen(Deferred.await(commitFirstEvent)),
+          sql.withTransaction,
+          Effect.forkScoped,
+        )
+
+        yield* Deferred.await(firstEventAppended)
+
+        const secondAppend = yield* Effect.forkScoped(
+          eventStore.appendIf(secondEvent!, {
+            filter: { types: ['CommentWasStarted'] },
+            lastKnownPosition: Option.none(),
+          }),
+        )
+
+        yield* Effect.raceFirst(
+          Effect.repeat(
+            sql`
+              SELECT
+                1
+              FROM
+                pg_stat_activity
+              WHERE
+                wait_event_type = 'Lock'
+            `,
+            { until: Array.isReadonlyArrayNonEmpty },
+          ),
+          Fiber.await(secondAppend),
+        )
+        yield* Deferred.succeed(commitFirstEvent, undefined)
+        yield* Fiber.join(firstTransaction)
+
+        const actual = yield* Effect.flip(Fiber.join(secondAppend))
+
+        expect(actual).toBeInstanceOf(EventStore.NewEventsFound)
       }).pipe(
         Effect.provide([Events.layer, Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), RealPgClient]),
       ),

@@ -7,6 +7,7 @@ import {
   flow,
   Layer,
   Option,
+  Order,
   pipe,
   PubSub,
   Record,
@@ -439,6 +440,22 @@ export const make: Effect.Effect<
     })
   }, Effect.provide(context))
 
+  const lockEventTypes = (types: ReadonlyArray<Events.Event['_tag']>) =>
+    sql.onDialectOrElse({
+      pg: () =>
+        Effect.forEach(
+          Array.sort(Array.dedupe(types), Order.String),
+          type => sql`
+            SELECT
+              pg_advisory_xact_lock(
+                hashtextextended (${`events:${type}`}, 0)
+              )
+          `,
+          { discard: true },
+        ),
+      orElse: () => Effect.void,
+    })
+
   const append: EventStore.EventStore['append'] = Effect.fn('SqlEventStore.append')(
     function* (event) {
       const id = yield* generateUuid
@@ -449,15 +466,17 @@ export const make: Effect.Effect<
       })
 
       yield* pipe(
-        sql`
+        lockEventTypes([event._tag]),
+        Effect.andThen(sql`
           INSERT INTO
             events (id, type, payload)
           SELECT
             ${encoded.id},
             ${encoded.type},
             ${isPgClient(sql) ? sql.json(encoded.payload) : sql`${JSON.stringify(encoded.payload)}`}
-        `.raw,
+        `.raw),
         Effect.andThen(Schema.decodeUnknownEffect(SqlQueryResults)),
+        sql.withTransaction,
       )
 
       yield* PubSub.publish(events, event)
@@ -504,7 +523,8 @@ export const make: Effect.Effect<
       })
 
       const results = yield* pipe(
-        sql`
+        lockEventTypes([event._tag, ...Array.flatMap(Array.ensure(appendCondition.filter), Struct.get('types'))]),
+        Effect.andThen(sql`
           INSERT INTO
             events (id, type, payload)
           SELECT
@@ -513,8 +533,9 @@ export const make: Effect.Effect<
             ${isPgClient(sql) ? sql.json(encoded.payload) : sql`${JSON.stringify(encoded.payload)}`}
           WHERE
             (${condition})
-        `.raw,
+        `.raw),
         Effect.andThen(Schema.decodeUnknownEffect(SqlQueryResults)),
+        sql.withTransaction,
       )
       if (results.rowsAffected !== 1) {
         return yield* new EventStore.NewEventsFound()
