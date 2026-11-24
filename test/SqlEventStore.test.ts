@@ -637,6 +637,133 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
     )
   })
+
+  describe('checkpoints', () => {
+    it.effect.prop(
+      'loads nothing when no checkpoint has been saved',
+      [fc.string()],
+      ([name]) =>
+        Effect.gen(function* () {
+          const eventStore = yield* _.make
+
+          const actual = yield* eventStore.loadCheckpoint(name)
+
+          expect(actual).toStrictEqual(Option.none())
+        }).pipe(
+          Effect.provide([
+            Layer.mock(Uuid.GenerateUuid, {}),
+            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
+            Layer.mock(Events.Events, {} as never),
+            TestSqlClient,
+          ]),
+        ),
+      { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+    )
+
+    it.effect.prop(
+      'loads a saved checkpoint',
+      [fc.string(), fc.nonEmptyArray(fc.commentEvent())],
+      ([name, events]) =>
+        Effect.gen(function* () {
+          const eventStore = yield* _.make
+
+          yield* Effect.forEach(events, eventStore.append)
+
+          const cursor = yield* Effect.flatMap(eventStore.latestCursor, Effect.fromOption)
+
+          yield* eventStore.saveCheckpoint(name, cursor)
+
+          const actual = yield* eventStore.loadCheckpoint(name)
+
+          expect(actual).toStrictEqual(Option.some(cursor))
+        }).pipe(
+          Effect.provide([
+            Uuid.layer,
+            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
+            Layer.mock(Events.Events, {} as never),
+            TestSqlClient,
+          ]),
+        ),
+      { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+    )
+
+    it.effect.prop(
+      'replaces a saved checkpoint',
+      [fc.string(), fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent())],
+      ([name, existingEvents, newEvents]) =>
+        Effect.gen(function* () {
+          const eventStore = yield* _.make
+
+          yield* Effect.forEach(existingEvents, eventStore.append)
+
+          yield* eventStore.saveCheckpoint(name, yield* Effect.flatMap(eventStore.latestCursor, Effect.fromOption))
+
+          yield* Effect.forEach(newEvents, eventStore.append)
+
+          const cursor = yield* Effect.flatMap(eventStore.latestCursor, Effect.fromOption)
+
+          yield* eventStore.saveCheckpoint(name, cursor)
+
+          const actual = yield* eventStore.loadCheckpoint(name)
+
+          expect(actual).toStrictEqual(Option.some(cursor))
+        }).pipe(
+          Effect.provide([
+            Uuid.layer,
+            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
+            Layer.mock(Events.Events, {} as never),
+            TestSqlClient,
+          ]),
+        ),
+      { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+    )
+
+    it.effect.prop(
+      'keeps checkpoints separate by name',
+      [fc.uniqueArray(fc.string(), { minLength: 2, maxLength: 2 }), fc.nonEmptyArray(fc.commentEvent())],
+      ([[name, otherName], events]) =>
+        Effect.gen(function* () {
+          const eventStore = yield* _.make
+
+          yield* Effect.forEach(events, eventStore.append)
+
+          yield* eventStore.saveCheckpoint(name!, yield* Effect.flatMap(eventStore.latestCursor, Effect.fromOption))
+
+          const actual = yield* eventStore.loadCheckpoint(otherName!)
+
+          expect(actual).toStrictEqual(Option.none())
+        }).pipe(
+          Effect.provide([
+            Uuid.layer,
+            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
+            Layer.mock(Events.Events, {} as never),
+            TestSqlClient,
+          ]),
+        ),
+      { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+    )
+
+    it.effect.prop(
+      "fails to save a checkpoint with a cursor it can't read",
+      [fc.string()],
+      ([name]) =>
+        Effect.gen(function* () {
+          const eventStore = yield* _.make
+
+          const actual = yield* Effect.flip(eventStore.saveCheckpoint(name, EventStore.Cursor.make('not a cursor')))
+
+          expect(actual).toBeInstanceOf(EventStore.FailedToSaveCheckpoint)
+        }).pipe(
+          Effect.provide([
+            Layer.mock(Uuid.GenerateUuid, {}),
+            Layer.mock(SensitiveDataStore.SensitiveDataStore, {}),
+            Layer.mock(Events.Events, {} as never),
+            TestSqlClient,
+          ]),
+        ),
+      { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
+    )
+  })
 })
 
 describe('on Postgres', () => {

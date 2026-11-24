@@ -9,6 +9,10 @@ export class FailedToCommitEvent extends Data.TaggedError('FailedToCommitEvent')
 
 export class NewEventsFound extends Data.TaggedError('NewEventsFound') {}
 
+export class FailedToLoadCheckpoint extends Data.TaggedError('FailedToLoadCheckpoint')<{ cause?: Error }> {}
+
+export class FailedToSaveCheckpoint extends Data.TaggedError('FailedToSaveCheckpoint')<{ cause?: Error }> {}
+
 export const Position = pipe(Schema.Number, Schema.brand('Position'))
 
 export type Position = typeof Position.Type
@@ -28,6 +32,10 @@ export interface EventStore {
   readonly since: (cursor: Cursor, filter?: EventFilter) => Stream.Stream<Page, FailedToGetEvents>
 
   readonly latestCursor: Effect.Effect<Option.Option<Cursor>, FailedToGetEvents>
+
+  readonly loadCheckpoint: (name: string) => Effect.Effect<Option.Option<Cursor>, FailedToLoadCheckpoint>
+
+  readonly saveCheckpoint: (name: string, cursor: Cursor) => Effect.Effect<void, FailedToSaveCheckpoint>
 
   readonly query: <Filter extends EventFilter>(
     filter: Filter,
@@ -53,6 +61,12 @@ export const since = (...args: Parameters<(typeof EventStore.Service)['since']>)
   Stream.unwrap(EventStore.useSync(service => service.since(...args)))
 
 export const latestCursor = EventStore.use(service => service.latestCursor)
+
+export const loadCheckpoint = (...args: Parameters<(typeof EventStore.Service)['loadCheckpoint']>) =>
+  EventStore.use(service => service.loadCheckpoint(...args))
+
+export const saveCheckpoint = (...args: Parameters<(typeof EventStore.Service)['saveCheckpoint']>) =>
+  EventStore.use(service => service.saveCheckpoint(...args))
 
 export const append = (...args: Parameters<(typeof EventStore.Service)['append']>) =>
   EventStore.use(service => service.append(...args))

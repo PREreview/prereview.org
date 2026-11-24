@@ -65,6 +65,22 @@ export const make: Effect.Effect<
   })
 
   yield* sql.onDialectOrElse({
+    pg: () => sql`
+      CREATE TABLE IF NOT EXISTS event_checkpoints (
+        name TEXT NOT NULL PRIMARY KEY,
+        transaction_id XID8 NOT NULL,
+        position INTEGER NOT NULL
+      )
+    `,
+    orElse: () => sql`
+      CREATE TABLE IF NOT EXISTS event_checkpoints (
+        name TEXT NOT NULL PRIMARY KEY,
+        position INTEGER NOT NULL
+      )
+    `,
+  })
+
+  yield* sql.onDialectOrElse({
     pg: () =>
       Effect.gen(function* () {
         const transactionIdColumn = yield* sql`
@@ -340,6 +356,73 @@ export const make: Effect.Effect<
     Effect.withSpan('SqlEventStore.latestCursor'),
   )
 
+  const loadCheckpoint: EventStore.EventStore['loadCheckpoint'] = Effect.fn('SqlEventStore.loadCheckpoint')(
+    function* (name) {
+      const rows = yield* sql.onDialectOrElse({
+        pg: () => sql`
+          SELECT
+            position,
+            transaction_id::TEXT
+          FROM
+            event_checkpoints
+          WHERE
+            name = ${name}
+        `,
+        orElse: () => sql`
+          SELECT
+            position
+          FROM
+            event_checkpoints
+          WHERE
+            name = ${name}
+        `,
+      })
+
+      const decoded = yield* Schema.decodeUnknownEffect(Schema.Array(CursorRow))(rows)
+
+      return Option.map(Array.head(decoded), row => makeCursor(row.transactionId ?? BigInt(0), row.position))
+    },
+    Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to load a checkpoint'), { error })),
+    Effect.mapError(error => new EventStore.FailedToLoadCheckpoint({ cause: error })),
+  )
+
+  const saveCheckpoint: EventStore.EventStore['saveCheckpoint'] = Effect.fn('SqlEventStore.saveCheckpoint')(
+    function* (name, cursor) {
+      const { transactionId, position } = yield* readCursor(cursor)
+
+      yield* sql.onDialectOrElse({
+        pg: () => sql`
+          INSERT INTO
+            event_checkpoints (name, transaction_id, position)
+          VALUES
+            (
+              ${name},
+              ${transactionId.toString()}::XID8,
+              ${position}
+            )
+          ON CONFLICT (name) DO UPDATE
+          SET
+            transaction_id = excluded.transaction_id,
+            position = excluded.position
+        `,
+        orElse: () => sql`
+          INSERT INTO
+            event_checkpoints (name, position)
+          VALUES
+            (
+              ${name},
+              ${position}
+            )
+          ON CONFLICT (name) DO UPDATE
+          SET
+            position = excluded.position
+        `,
+      })
+    },
+    Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to save a checkpoint'), { error })),
+    Effect.mapError(error => new EventStore.FailedToSaveCheckpoint({ cause: error })),
+  )
+
   const query: EventStore.EventStore['query'] = Effect.fn('SqlEventStore.query')(function* (filter) {
     const rows = yield* selectEventRows(filter)
 
@@ -439,7 +522,7 @@ export const make: Effect.Effect<
     Effect.provide(context),
   )
 
-  return { all, since, latestCursor, query, append, appendIf }
+  return { all, since, latestCursor, loadCheckpoint, saveCheckpoint, query, append, appendIf }
 })
 
 export const layer = Layer.effect(EventStore.EventStore, make)
