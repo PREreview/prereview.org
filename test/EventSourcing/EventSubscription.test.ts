@@ -15,7 +15,7 @@ import {
 } from 'effect'
 import { TestClock } from 'effect/testing'
 import { sample } from 'fast-check'
-import * as Events from '../../src/Domain/Events/Events.ts'
+import type * as Events from '../../src/Domain/Events/Events.ts'
 import * as EventStore from '../../src/Domain/Events/EventStore.ts'
 import * as SqlEventStore from '../../src/Domain/Events/SqlEventStore.ts'
 import * as _ from '../../src/EventSourcing/EventSubscription.ts'
@@ -316,7 +316,7 @@ const start = <Handlers extends Types.NoExcessProperties<_.Handlers, Handlers>>(
   pipe(_.subscribe(name, handlers), Effect.andThen(Effect.forkScoped))
 
 const TestLayer = pipe(
-  SqlEventStore.layer(Events.Event),
+  SqlEventStore.layer,
   Layer.provideMerge(
     Layer.mergeAll(Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestLibsqlClient.layer),
   ),

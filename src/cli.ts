@@ -7,7 +7,6 @@ import { Cli } from './Cli/index.ts'
 import * as Clubs from './Domain/Clubs/index.ts'
 import * as ContactEmailAddresses from './Domain/ContactEmailAddresses/index.ts'
 import * as DatasetReviews from './Domain/DatasetReviews/index.ts'
-import * as Events from './Domain/Events/index.ts'
 import { SqlEventStore } from './Domain/Events/index.ts'
 import * as PreprintReviews from './Domain/PreprintReviews/index.ts'
 import * as Prereviewers from './Domain/Prereviewers/index.ts'
@@ -71,7 +70,7 @@ pipe(
       ]),
       Layer.provideMerge(
         Layer.mergeAll(
-          SqlEventStore.layer(Events.Event),
+          SqlEventStore.layer,
           Redis.layerDataStoreConfig(Config.URL('REDIS_URI').pipe(Config.map(Redacted.make))),
         ),
       ),

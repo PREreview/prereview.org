@@ -7,7 +7,6 @@ import * as Clubs from './Domain/Clubs/index.ts'
 import * as Comments from './Domain/Comments/index.ts'
 import * as ContactEmailAddresses from './Domain/ContactEmailAddresses/index.ts'
 import * as DatasetReviews from './Domain/DatasetReviews/index.ts'
-import * as Events from './Domain/Events/index.ts'
 import { SqlEventStore } from './Domain/Events/index.ts'
 import * as PreprintReviews from './Domain/PreprintReviews/index.ts'
 import * as Prereviewers from './Domain/Prereviewers/index.ts'
@@ -107,7 +106,7 @@ const ExternalApis = Layer.mergeAll(
 
 const Infrastructure = pipe(
   Layer.mergeAll(FetchHttpClient.layer, RequestCollapsingHttpClient.layer),
-  Layer.provideMerge(Layer.mergeAll(SqlEventStore.layer(Events.Event), LoggingHttpClient.layer)),
+  Layer.provideMerge(Layer.mergeAll(SqlEventStore.layer, LoggingHttpClient.layer)),
   Layer.provideMerge(SqlSensitiveDataStore.layer),
   Layer.provideMerge(
     Layer.mergeAll(

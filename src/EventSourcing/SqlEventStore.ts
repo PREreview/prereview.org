@@ -5,7 +5,6 @@ import {
   Data,
   Effect,
   flow,
-  Layer,
   Option,
   Order,
   pipe,
@@ -23,8 +22,6 @@ import {
   UndefinedOr,
 } from 'effect'
 import { SqlClient, type SqlError, type Statement } from 'effect/sql'
-import type * as Events from '../Domain/Events/index.ts'
-import type { SensitiveDataStore } from '../SensitiveData/index.ts'
 import { Uuid } from '../types/index.ts'
 import * as EventFilter from './EventFilter.ts'
 import * as EventStore from './EventStore.ts'
@@ -33,14 +30,19 @@ class UnexpectedEventFound extends Data.TaggedError('UnexpectedEventFound') {}
 
 export const PageSize = Context.Reference<number>('SqlEventStore/PageSize', { defaultValue: () => 5000 })
 
-export const make: (
-  schema: typeof Events.Event,
+export type EventSchema<E extends EventFilter.AnyEvent, RD, RE> = EventFilter.EventSchema<E> &
+  Schema.Codec<E, { readonly _tag: string }, RD, RE>
+
+export const make: <E extends EventFilter.AnyEvent, RD, RE>(
+  schema: EventSchema<E, RD, RE>,
 ) => Effect.Effect<
-  EventStore.EventStore,
+  EventStore.EventStore<E>,
   SqlError.SqlError,
-  SqlClient.SqlClient | Uuid.GenerateUuid | SensitiveDataStore.SensitiveDataStore | Scope.Scope
-> = Effect.fnUntraced(function* (schema) {
-  const context = yield* Effect.map(Effect.context<SensitiveDataStore.SensitiveDataStore>(), Context.omit(Scope.Scope))
+  SqlClient.SqlClient | Uuid.GenerateUuid | RD | RE | Scope.Scope
+> = Effect.fnUntraced(function* <E extends EventFilter.AnyEvent, RD, RE>(schema: EventSchema<E, RD, RE>) {
+  const context = yield* Effect.map(Effect.context<RD | RE>(), Context.omit(Scope.Scope))
+  const provideSchemaServices = <A, Err>(effect: Effect.Effect<A, Err, RD | RE>) =>
+    Effect.provide(effect, context) as Effect.Effect<A, Err>
 
   const sql = yield* SqlClient.SqlClient
   const pageSize = yield* PageSize
@@ -135,7 +137,7 @@ export const make: (
     orElse: () => Effect.void,
   })
 
-  const buildFilterCondition = (filter: Events.EventFilter) =>
+  const buildFilterCondition = (filter: EventFilter.EventFilter<E>) =>
     sql.or(
       Array.map(Array.ensure(filter), filter => {
         if (!filter.predicates || Struct.keys(filter.predicates).length === 0) {
@@ -170,7 +172,7 @@ export const make: (
       }),
     )
 
-  const selectEventRows = <F extends Events.EventFilter>(filter: F) =>
+  const selectEventRows = <F extends EventFilter.EventFilter<E>>(filter: F) =>
     pipe(
       sql`
         SELECT
@@ -193,7 +195,7 @@ export const make: (
           ): result is {
             readonly id: Uuid.Uuid
             readonly position: EventStore.Position
-            readonly event: Events.EventsForFilter<F>
+            readonly event: EventFilter.EventsForFilter<E, F>
           } => matches(result.event, filter),
         ),
         () => new UnexpectedEventFound(),
@@ -211,16 +213,16 @@ export const make: (
     return Array.zipWith(decoded, cursors, ({ event }, { transactionId, position }) => ({
       event,
       cursor: makeCursor(transactionId ?? BigInt(0), position),
-    })) satisfies EventStore.Page
-  }, Effect.provide(context))
+    })) satisfies EventStore.Page<E>
+  }, provideSchemaServices)
 
-  const matching: (filter?: Events.EventFilter) => ReadonlyArray<Statement.Fragment> = UndefinedOr.match({
+  const matching: (filter?: EventFilter.EventFilter<E>) => ReadonlyArray<Statement.Fragment> = UndefinedOr.match({
     onUndefined: Array.empty,
     onDefined: filter => Array.of(buildFilterCondition(filter)),
   })
 
   const getPageAfter = Effect.fn('SqlEventStore.getPageAfter')(
-    function* (cursor: EventStore.Cursor, filter?: Events.EventFilter) {
+    function* (cursor: EventStore.Cursor, filter?: EventFilter.EventFilter<E>) {
       const after = yield* readCursor(cursor)
 
       yield* Effect.annotateCurrentSpan({ after: after.position })
@@ -259,9 +261,9 @@ export const make: (
 
   const getNextPageAfter: (
     after: EventStore.Cursor,
-    filter?: Events.EventFilter,
+    filter?: EventFilter.EventFilter<E>,
   ) => Effect.Effect<
-    readonly [ReadonlyArray<EventStore.Page>, Option.Option<EventStore.Cursor>],
+    readonly [ReadonlyArray<EventStore.Page<E>>, Option.Option<EventStore.Cursor>],
     EventStore.FailedToGetEvents
   > = Effect.fnUntraced(function* (after, filter) {
     const result = yield* getPageAfter(after, filter)
@@ -277,8 +279,8 @@ export const make: (
 
   const streamAfter = (
     cursor: EventStore.Cursor,
-    filter?: Events.EventFilter,
-  ): Stream.Stream<EventStore.Page, EventStore.FailedToGetEvents> =>
+    filter?: EventFilter.EventFilter<E>,
+  ): Stream.Stream<EventStore.Page<E>, EventStore.FailedToGetEvents> =>
     sql.onDialectOrElse({
       pg: () =>
         pipe(
@@ -322,11 +324,11 @@ export const make: (
       orElse: () => Stream.paginate(cursor, cursor => getNextPageAfter(cursor, filter)),
     })
 
-  const all: EventStore.EventStore['all'] = streamAfter(beginning)
+  const all: EventStore.EventStore<E>['all'] = streamAfter(beginning)
 
-  const since: EventStore.EventStore['since'] = streamAfter
+  const since: EventStore.EventStore<E>['since'] = streamAfter
 
-  const latestCursor: EventStore.EventStore['latestCursor'] = pipe(
+  const latestCursor: EventStore.EventStore<E>['latestCursor'] = pipe(
     sql.onDialectOrElse({
       pg: () => sql`
         SELECT
@@ -368,7 +370,7 @@ export const make: (
     Effect.withSpan('SqlEventStore.latestCursor'),
   )
 
-  const loadCheckpoint: EventStore.EventStore['loadCheckpoint'] = Effect.fn('SqlEventStore.loadCheckpoint')(
+  const loadCheckpoint: EventStore.EventStore<E>['loadCheckpoint'] = Effect.fn('SqlEventStore.loadCheckpoint')(
     function* (name) {
       const rows = yield* sql.onDialectOrElse({
         pg: () => sql`
@@ -398,7 +400,7 @@ export const make: (
     Effect.mapError(error => new EventStore.FailedToLoadCheckpoint({ cause: error })),
   )
 
-  const saveCheckpoint: EventStore.EventStore['saveCheckpoint'] = Effect.fn('SqlEventStore.saveCheckpoint')(
+  const saveCheckpoint: EventStore.EventStore<E>['saveCheckpoint'] = Effect.fn('SqlEventStore.saveCheckpoint')(
     function* (name, cursor) {
       const { transactionId, position } = yield* readCursor(cursor)
 
@@ -442,7 +444,7 @@ export const make: (
     Effect.mapError(error => new EventStore.FailedToSaveCheckpoint({ cause: error })),
   )
 
-  const query: EventStore.EventStore['query'] = Effect.fn('SqlEventStore.query')(function* (filter) {
+  const query: EventStore.EventStore<E>['query'] = Effect.fn('SqlEventStore.query')(function* (filter) {
     const rows = yield* selectEventRows(filter)
 
     return Array.match(rows, {
@@ -453,9 +455,9 @@ export const make: (
           lastKnownPosition: Array.lastNonEmpty(rows).position,
         }),
     })
-  }, Effect.provide(context))
+  }, provideSchemaServices)
 
-  const lockEventTypes = (types: ReadonlyArray<Events.Event['_tag']>) =>
+  const lockEventTypes = (types: ReadonlyArray<E['_tag']>) =>
     sql.onDialectOrElse({
       pg: () =>
         Effect.forEach(
@@ -471,7 +473,7 @@ export const make: (
       orElse: () => Effect.void,
     })
 
-  const append: EventStore.EventStore['append'] = Effect.fn('SqlEventStore.append')(
+  const append: EventStore.EventStore<E>['append'] = Effect.fn('SqlEventStore.append')(
     function* (event) {
       const id = yield* generateUuid
 
@@ -498,10 +500,10 @@ export const make: (
     },
     Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to commit events'), { error })),
     Effect.catchTag(['SqlError', 'SchemaError'], error => new EventStore.FailedToCommitEvent({ cause: error })),
-    Effect.provide(context),
+    provideSchemaServices,
   )
 
-  const appendIf: EventStore.EventStore['appendIf'] = Effect.fn('SqlEventStore.appendIf')(
+  const appendIf: EventStore.EventStore<E>['appendIf'] = Effect.fn('SqlEventStore.appendIf')(
     function* (event, appendCondition) {
       const id = yield* generateUuid
 
@@ -560,7 +562,7 @@ export const make: (
     },
     Effect.tapError(error => Effect.annotateLogs(Effect.logError('Unable to commit events'), { error })),
     Effect.catchTag(['SqlError', 'SchemaError'], error => new EventStore.FailedToCommitEvent({ cause: error })),
-    Effect.provide(context),
+    provideSchemaServices,
   )
 
   const lastSeenCursor = yield* Ref.make(Option.none<EventStore.Cursor>())
@@ -582,7 +584,7 @@ export const make: (
     Effect.forkScoped,
   )
 
-  const subscribe: EventStore.EventStore['subscribe'] = ({ after = beginning, filter } = {}) =>
+  const subscribe: EventStore.EventStore<E>['subscribe'] = ({ after = beginning, filter } = {}) =>
     Stream.unwrap(
       Effect.gen(function* () {
         const lastCursor = yield* Ref.make(after)
@@ -604,9 +606,7 @@ export const make: (
   return { all, since, subscribe, latestCursor, loadCheckpoint, saveCheckpoint, query, append, appendIf }
 })
 
-export const layer = (schema: typeof Events.Event) => Layer.effect(EventStore.EventStore, make(schema))
-
-const EventsTableInsert = (schema: typeof Events.Event) =>
+const EventsTableInsert = <E extends EventFilter.AnyEvent, RD, RE>(schema: EventSchema<E, RD, RE>) =>
   Schema.Struct({
     id: Uuid.UuidSchema,
     type: Schema.String,
@@ -641,7 +641,7 @@ const EventsTableInsert = (schema: typeof Events.Event) =>
     ),
   )
 
-const EventsTableSelect = (schema: typeof Events.Event) =>
+const EventsTableSelect = <E extends EventFilter.AnyEvent, RD, RE>(schema: EventSchema<E, RD, RE>) =>
   Schema.Struct({
     id: Uuid.UuidSchema,
     position: EventStore.Position,
