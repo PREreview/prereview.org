@@ -13,7 +13,7 @@ import {
   String,
   Tracer,
 } from 'effect'
-import { Headers, HttpMethod, HttpMiddleware, HttpServerRequest, HttpServerResponse } from 'effect/http'
+import { Headers, HttpMethod, HttpMiddleware, HttpServerRequest, HttpServerResponse, UrlParams } from 'effect/http'
 import { AllowSiteCrawlers, FlashMessage, Locale, ScietyListToken, SessionStore } from '../Context.ts'
 import * as CookieSignature from '../CookieSignature.ts'
 import * as FeatureFlags from '../FeatureFlags.ts'
@@ -96,8 +96,10 @@ export const logRequest = HttpMiddleware.make(app =>
   Effect.gen(function* () {
     const request = yield* HttpServerRequest.HttpServerRequest
     const publicUrl = yield* PublicUrl
+    const redactedNames = yield* UrlParams.CurrentRedactedNames
 
-    const url = new URL(`${publicUrl.origin}${request.url}`)
+    const redactedUrl = UrlParams.redactUrl(request.url, redactedNames)
+    const url = new URL(`${publicUrl.origin}${redactedUrl}`)
 
     if (url.pathname === '/health') {
       return yield* app
@@ -105,7 +107,7 @@ export const logRequest = HttpMiddleware.make(app =>
 
     yield* Effect.annotateLogs(Effect.logInfo('Received HTTP request'), {
       'http.method': request.method,
-      'http.url': request.url,
+      'http.url': redactedUrl,
       'http.path': url.pathname,
       'http.query': Object.fromEntries(url.searchParams),
       'http.referrer': Option.getOrUndefined(Headers.get(request.headers, 'Referer')),

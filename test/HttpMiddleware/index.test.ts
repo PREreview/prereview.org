@@ -1,5 +1,5 @@
-import { ByteSize, Effect, FileSystem, Layer, Path, PlatformError, Tracer } from 'effect'
-import { HttpBody, HttpPlatform, HttpServerRequest, HttpServerResponse } from 'effect/http'
+import { ByteSize, Effect, FileSystem, Layer, Logger, Path, PlatformError, References, Tracer } from 'effect'
+import { HttpBody, HttpPlatform, HttpServerRequest, HttpServerResponse, UrlParams } from 'effect/http'
 import path from 'node:path'
 import * as _ from '../../src/HttpMiddleware/index.ts'
 import { PublicUrl } from '../../src/public-url.ts'
@@ -102,6 +102,37 @@ describe('stopSuspiciousRequests', () => {
 
       expect(actual.body).toStrictEqual(HttpBody.text('app'))
     }).pipe(Effect.provide([requestLayer(url)])),
+  )
+})
+
+describe('logRequest', () => {
+  it.effect('redacts sensitive query parameters', () =>
+    Effect.gen(function* () {
+      const logs: Array<{ message: unknown; annotations: Readonly<Record<string, unknown>> }> = []
+
+      const capturingLogger = Logger.make(({ message, fiber }) => {
+        logs.push({ message, annotations: fiber.getRef(References.CurrentLogAnnotations) })
+      })
+
+      yield* _.logRequest(app).pipe(Effect.provide(Logger.layer([capturingLogger])))
+
+      expect(logs).toStrictEqual([
+        {
+          message: ['Received HTTP request'],
+          annotations: expect.objectContaining({
+            'http.url': '/some-page?verify=REDACTED&page=2',
+            'http.path': '/some-page',
+            'http.query': { verify: 'REDACTED', page: '2' },
+          }),
+        },
+      ])
+    }).pipe(
+      Effect.provide([
+        requestLayer('/some-page?verify=a-secret&page=2'),
+        Layer.succeed(PublicUrl, new URL('https://prereview.test')),
+        Layer.succeed(UrlParams.CurrentRedactedNames, ['verify']),
+      ]),
+    ),
   )
 })
 
