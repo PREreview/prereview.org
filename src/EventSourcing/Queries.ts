@@ -15,6 +15,7 @@ import {
 } from 'effect'
 import type { AnyEvent, EventFilter, EventsForFilter } from './EventFilter.ts'
 import type * as EventStore from './EventStore.ts'
+import type * as StatefulQueries from './StatefulQueries.ts'
 
 /** @deprecated */
 export type Query<F extends (...args: never) => unknown, E = never> = (
@@ -54,12 +55,6 @@ export interface StatefulQuery<E extends AnyEvent, Input extends QueryInput, Res
   initialState: State
   updateStateWithEvents: (state: State, events: Array.NonEmptyReadonlyArray<E>) => State
   query: (state: State, ...input: Input) => Result.Result<Result, Error>
-}
-
-export interface StatefulQueryRegistry<E extends AnyEvent> {
-  readonly register: (
-    subscriber: (events: Array.NonEmptyReadonlyArray<E>) => Effect.Effect<void>,
-  ) => Effect.Effect<void>
 }
 
 export const OnDemandQuery: <E extends AnyEvent, Input extends QueryInput, Result, Error = never>(
@@ -107,7 +102,7 @@ export const makeStatefulQuery = <
   Error = never,
   State = unknown,
 >(
-  statefulQueries: Effect.Effect<StatefulQueryRegistry<E>, never, R>,
+  statefulQueries: Effect.Effect<StatefulQueries.StatefulQueries<E>, never, R>,
   { name, inputSchema, initialState, updateStateWithEvents, query }: StatefulQuery<E, Input, Result, Error, State>,
 ): Effect.Effect<(...input: Input) => Effect.Effect<Result, Error | UnableToQuery>, never, R> =>
   Effect.gen(function* () {
