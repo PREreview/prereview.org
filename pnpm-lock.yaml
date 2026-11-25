@@ -18,17 +18,17 @@ importers:
         specifier: jsr:^3.0.0
         version: '@jsr/arendjr__text-clipper@3.0.0'
       '@effect/ai-openai':
-        specifier: ^4.1.2
-        version: 4.1.2(effect@4.1.2)
+        specifier: ^4.1.5
+        version: 4.1.5(effect@4.1.5)
       '@effect/ai-openrouter':
-        specifier: ^4.1.2
-        version: 4.1.2(effect@4.1.2)
+        specifier: ^4.1.5
+        version: 4.1.5(effect@4.1.5)
       '@effect/platform-node':
-        specifier: ^4.1.2
-        version: 4.1.2(effect@4.1.2)(redis@6.3.1(@opentelemetry/api@1.9.1))
+        specifier: ^4.1.5
+        version: 4.1.5(effect@4.1.5)(redis@6.3.1(@opentelemetry/api@1.9.1))
       '@effect/sql-pg':
-        specifier: ^4.1.2
-        version: 4.1.2(effect@4.1.2)
+        specifier: ^4.1.5
+        version: 4.1.5(effect@4.1.5)
       '@hapi/address':
         specifier: ^5.1.1
         version: 5.1.1
@@ -60,8 +60,8 @@ importers:
         specifier: ^0.1.10
         version: 0.1.10(fp-ts@2.16.11)
       effect:
-        specifier: ^4.1.2
-        version: 4.1.2
+        specifier: ^4.1.5
+        version: 4.1.5
       fetch-fp-ts:
         specifier: ^0.1.6
         version: 0.1.6(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(monocle-ts@2.3.13(fp-ts@2.16.11))
@@ -142,14 +142,14 @@ importers:
         specifier: ^0.87.5
         version: 0.87.5
       '@effect/sql-libsql':
-        specifier: ^4.1.2
-        version: 4.1.2(effect@4.1.2)
+        specifier: ^4.1.5
+        version: 4.1.5(effect@4.1.5)
       '@effect/sql-pglite':
-        specifier: ^4.1.2
-        version: 4.1.2(effect@4.1.2)
+        specifier: ^4.1.5
+        version: 4.1.5(effect@4.1.5)
       '@effect/vitest':
-        specifier: ^4.1.2
-        version: 4.1.2(effect@4.1.2)(vitest@5.1.1(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))
+        specifier: ^4.1.5
+        version: 4.1.5(effect@4.1.5)(vitest@5.1.1(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))
       '@fullhuman/postcss-purgecss':
         specifier: ^9.1.0
         version: 9.1.0(postcss@8.5.33)
@@ -704,52 +704,52 @@ packages:
     peerDependencies:
       postcss: ^8.4
 
-  '@effect/ai-openai@4.1.2':
-    resolution: {integrity: sha512-u2RkBOj718eQQmZan3mJh0PJDLzhbZ4qFmMc/uSJhS0jmUoiaQI8SsCzENpNk0TRkt8lxEK4urohpeV5/xDWBQ==}
+  '@effect/ai-openai@4.1.5':
+    resolution: {integrity: sha512-JucWxv+12K5cV71oMaU0XT97HJLQC4xSbZwT1BEWsT6AX6y2t9jL3LuzNUhczffypifs4RUUtpx9sIzjiAhYbw==}
     peerDependencies:
-      effect: ^4.1.2
+      effect: ^4.1.5
 
-  '@effect/ai-openrouter@4.1.2':
-    resolution: {integrity: sha512-iWNUPM4I8t6PZIDj7biJHZF7GUaVyevIiXNOyrd7vhZ4eYeuMyIimuELH+qwPt0AKnpU72mkY11ngBranM7/Lw==}
+  '@effect/ai-openrouter@4.1.5':
+    resolution: {integrity: sha512-4x1m+FVlZUugEJMHoUOF/6bEYaqIWXYCC2x3xF8s11543YXX+AqMHIjgUisuX8OLVX4BRW1OxmzlUHgP6P5lUw==}
     peerDependencies:
-      effect: ^4.1.2
+      effect: ^4.1.5
 
   '@effect/language-service@0.87.5':
     resolution: {integrity: sha512-np/zJgk71/PyHxtoqyUKLYcpQhoRBI+L6+1Z0ILk35JSQ/lvXzwlwOwddYZLDkeC4bdF2ukKekqKlla/F88R5w==}
     hasBin: true
 
-  '@effect/platform-node-shared@4.1.2':
-    resolution: {integrity: sha512-wSwl9A/G1hcVvF8nLI+YfB3EyOIDvWS6+lsTZBkmgDnPBL7m8YWZF+1HD+mdEsb52SUGfukip46Q3gRwSdk3QA==}
+  '@effect/platform-node-shared@4.1.5':
+    resolution: {integrity: sha512-JzlrYe4uKaBFTWihBRXo2pDjkUVB39kQpKdGfXdbp7Co5sKT8hbcjOmdB5pg/WOYESdGTddd3fxD4lwlZELbZQ==}
     engines: {node: '>=22.19.0'}
     peerDependencies:
-      effect: ^4.1.2
+      effect: ^4.1.5
 
-  '@effect/platform-node@4.1.2':
-    resolution: {integrity: sha512-ye0UjxORdd5Qu3paZ1LljgGOALWHt7muP9VTpjUSCNfcesiB/Hm7wPJIvZeu4gnwpTe5BtEnO1VHngWqjJp8mA==}
+  '@effect/platform-node@4.1.5':
+    resolution: {integrity: sha512-tFnRvxF9EKc3oU17sDHj1JeLP+TL/IkaOEl3IUk2EjgMS0x7AWs0ioUXjdNKLb3Z1LdjVfMf/DxsNh9PW5FFAg==}
     engines: {node: '>=22.19.0'}
     peerDependencies:
-      effect: ^4.1.2
+      effect: ^4.1.5
       redis: '>=5.1.0 <7.0.0'
 
-  '@effect/sql-libsql@4.1.2':
-    resolution: {integrity: sha512-1VIaOiP0w8r63hUuNSF5VHoqL2/yrvf7C38FRuSTG7NV21vI5eJx1eo7/11X59SdWSr9Zc4N0B/AAhci/EfzNQ==}
+  '@effect/sql-libsql@4.1.5':
+    resolution: {integrity: sha512-aImqE/iGOF626D2E4nTI9zSkfg6Er0UbUPgAyz3sKZqBEYrc4RsO69ai1eHlAYaj5I7kCF3XWdsR2nYR2+MOCQ==}
     peerDependencies:
-      effect: ^4.1.2
+      effect: ^4.1.5
 
-  '@effect/sql-pg@4.1.2':
-    resolution: {integrity: sha512-0UehR7B5W8dC+dX6fDeWStLbVbBb2M4pk4HBATEeH0cmV4Odl2lckTg0jFmLuadekTLa4OyB+bZQo1yTG1y2Mw==}
+  '@effect/sql-pg@4.1.5':
+    resolution: {integrity: sha512-Fs/5EmXykN4vKzWES54aRSLts0jBiQn65Y2jnGq//IX8Qj2McB7+WGYwaGNwxXUq4mXvagGWZPNMO0GefwDpQw==}
     peerDependencies:
-      effect: ^4.1.2
+      effect: ^4.1.5
 
-  '@effect/sql-pglite@4.1.2':
-    resolution: {integrity: sha512-VlSvLP7+nO/dCPdwQ2fsq2WWitPnTdFEWWEQ2Vy9VI4YKMF1639MgRtiSO3CgST2TkHevaFYfiTWximxR55/0g==}
+  '@effect/sql-pglite@4.1.5':
+    resolution: {integrity: sha512-E2kEB9PI9DRs+1nSLPxFsj2w43fGnl8gEgJJNqHqEk/3d0Z7D8JiAYQROZRPd8SB5a9Gt4VsRDdE259syvwUmg==}
     peerDependencies:
-      effect: ^4.1.2
+      effect: ^4.1.5
 
-  '@effect/vitest@4.1.2':
-    resolution: {integrity: sha512-JJPwAHkJHxvM/woW9mMW/khjasAHcmwWdOMAgMy16rfqsxcVhFDnrRsvN9VI2+kMv8zDCCyBE2q1n5hzZlfE0w==}
+  '@effect/vitest@4.1.5':
+    resolution: {integrity: sha512-18u1013wkJtSelk1ZYLc/5aUnluTQyDfi2hAemkJW1GQ9qXw4mtPSiSf0AXZPhesmGCvG1Dk2C4JYD2sz+R72w==}
     peerDependencies:
-      effect: ^4.1.2
+      effect: ^4.1.5
       vitest: '>=5.0.0 <6.0.0'
 
   '@electric-sql/pglite@0.5.17':
@@ -2547,8 +2547,8 @@ packages:
     engines: {node: '>=20'}
     hasBin: true
 
-  effect@4.1.2:
-    resolution: {integrity: sha512-d3Oah1WyKxFLFh19yWheS5IXIVaITzxZ71JkE1rkUozq/6EcJSU5nPk5bF2QrSygZ3SQoiNQB8TsxFriyMeMaQ==}
+  effect@4.1.5:
+    resolution: {integrity: sha512-xyR20KhQI0vg2gD8ILUSQRTTESEYJ0JKdP+QD8J37xbwPTqXRxFM/l0+vUVD9fuSvoYruoTqyt33C4FZv1s4TQ==}
 
   electron-to-chromium@1.5.491:
     resolution: {integrity: sha512-zMOQrvaTekJMwENqx1Rnyl3qieqGxIui5CRu9g6ktKzQ/T54fq0Qfr3V/SEhGrkStWI3eYMSzMN4rbyFwfQSzA==}
@@ -4444,10 +4444,6 @@ packages:
     resolution: {integrity: sha512-03KrMbjIFDWQR5RNPrSw3bd1r12JpyFQl9/yxjUbJtqkjmllqC5lFjZh6ujeuJCKr8EOQvRW872Oy/az+nLYxg==}
     engines: {node: '>=20.18.1'}
 
-  undici@8.12.3:
-    resolution: {integrity: sha512-+fdndUTwBP86cVjihTp21hZHo7d6oj1c/47XPA3lL8mM0XHs+C4EkcjmgRsFnFk2f/UONGDy9ItBItmXsLOQHw==}
-    engines: {node: '>=22.19.0'}
-
   undici@8.13.1:
     resolution: {integrity: sha512-Kt7EaPjh0s93lJH/PmW3d5rhkcpUa6fS3jqZ7+YGxNd9L7Xy/i827xe4C2uhhq+pJebM4tQOl5AgHmW11G5Skg==}
     engines: {node: '>=22.19.0'}
@@ -4604,8 +4600,8 @@ packages:
     resolution: {integrity: sha512-dYwyZredl67GyLLIHJnRM3h2PcOmN5SkcgC7eM5DPDEOEl6dLFqVrMg3F1Ea32usj4VSVZtd2H4MtKTNOf6nPg==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
 
-  ws@8.22.1:
-    resolution: {integrity: sha512-oyL6OPYme/CmiFvNuGzeoxCJ4nOrZE2O1FwM9MWM1AsGri6nLXB2pg+lNA8aLeXMSav0J6eIVS1j6vUPzUtK9g==}
+  ws@8.23.0:
+    resolution: {integrity: sha512-wCkmX8QMOrKjgO8HW2WyDbTSGeqkocxgDzS9iR79rEAexty6/2qzilx3Ag8Tqf9ykop3irLKle0MtVn5qjVnoQ==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -5069,55 +5065,55 @@ snapshots:
     dependencies:
       postcss: 8.5.33
 
-  '@effect/ai-openai@4.1.2(effect@4.1.2)':
+  '@effect/ai-openai@4.1.5(effect@4.1.5)':
     dependencies:
-      effect: 4.1.2
+      effect: 4.1.5
 
-  '@effect/ai-openrouter@4.1.2(effect@4.1.2)':
+  '@effect/ai-openrouter@4.1.5(effect@4.1.5)':
     dependencies:
-      effect: 4.1.2
+      effect: 4.1.5
 
   '@effect/language-service@0.87.5': {}
 
-  '@effect/platform-node-shared@4.1.2(effect@4.1.2)':
+  '@effect/platform-node-shared@4.1.5(effect@4.1.5)':
     dependencies:
       '@types/ws': 8.18.2
-      effect: 4.1.2
-      ws: 8.22.1
+      effect: 4.1.5
+      ws: 8.23.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform-node@4.1.2(effect@4.1.2)(redis@6.3.1(@opentelemetry/api@1.9.1))':
+  '@effect/platform-node@4.1.5(effect@4.1.5)(redis@6.3.1(@opentelemetry/api@1.9.1))':
     dependencies:
-      '@effect/platform-node-shared': 4.1.2(effect@4.1.2)
-      effect: 4.1.2
+      '@effect/platform-node-shared': 4.1.5(effect@4.1.5)
+      effect: 4.1.5
       redis: 6.3.1(@opentelemetry/api@1.9.1)
-      undici: 8.12.3
+      undici: 8.13.1
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@effect/sql-libsql@4.1.2(effect@4.1.2)':
+  '@effect/sql-libsql@4.1.5(effect@4.1.5)':
     dependencies:
       '@libsql/client': 0.18.0
-      effect: 4.1.2
+      effect: 4.1.5
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@effect/sql-pg@4.1.2(effect@4.1.2)':
+  '@effect/sql-pg@4.1.5(effect@4.1.5)':
     dependencies:
-      effect: 4.1.2
+      effect: 4.1.5
 
-  '@effect/sql-pglite@4.1.2(effect@4.1.2)':
+  '@effect/sql-pglite@4.1.5(effect@4.1.5)':
     dependencies:
       '@electric-sql/pglite': 0.5.17
-      effect: 4.1.2
+      effect: 4.1.5
 
-  '@effect/vitest@4.1.2(effect@4.1.2)(vitest@5.1.1(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))':
+  '@effect/vitest@4.1.5(effect@4.1.5)(vitest@5.1.1(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0)))':
     dependencies:
-      effect: 4.1.2
+      effect: 4.1.5
       vitest: 5.1.1(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.1)(jiti@2.6.1)(terser@5.46.1)(yaml@2.9.0))
 
   '@electric-sql/pglite@0.5.17': {}
@@ -5381,7 +5377,7 @@ snapshots:
   '@libsql/isomorphic-ws@0.1.5':
     dependencies:
       '@types/ws': 8.18.2
-      ws: 8.22.1
+      ws: 8.23.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -6633,7 +6629,7 @@ snapshots:
       minimatch: 10.2.6
       semver: 7.8.5
 
-  effect@4.1.2: {}
+  effect@4.1.5: {}
 
   electron-to-chromium@1.5.491: {}
 
@@ -9041,8 +9037,6 @@ snapshots:
 
   undici@7.30.1: {}
 
-  undici@8.12.3: {}
-
   undici@8.13.1: {}
 
   update-browserslist-db@1.4.0(browserslist@4.29.6):
@@ -9142,7 +9136,7 @@ snapshots:
     dependencies:
       signal-exit: 4.1.0
 
-  ws@8.22.1: {}
+  ws@8.23.0: {}
 
   y18n@5.0.8: {}
 
