@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Result } from 'effect'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
 import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
 import * as _ from '../../../../src/Domain/ReviewRequests/Queries/GetNextExpectedCommandForAUserOnAReviewRequest.ts'
@@ -15,36 +16,36 @@ const reviewRequestId2 = Uuid.Uuid('e7c61ab4-1080-4b6f-8826-397b094c4fad')
 
 const now = Temporal.Now.instant()
 
-const started = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+const started = new Events.ReviewRequestForAPreprintWasStarted({
   reviewRequestId: reviewRequestId1,
   requesterId: requesterId1,
   preprintId: preprintId1,
   startedAt: now,
 })
 
-const publicChosen = new ReviewRequests.PersonaForAReviewRequestForAPreprintWasChosen({
+const publicChosen = new Events.PersonaForAReviewRequestForAPreprintWasChosen({
   reviewRequestId: reviewRequestId1,
   persona: 'public',
 })
 
-const pseudonymChosen = new ReviewRequests.PersonaForAReviewRequestForAPreprintWasChosen({
+const pseudonymChosen = new Events.PersonaForAReviewRequestForAPreprintWasChosen({
   reviewRequestId: reviewRequestId1,
   persona: 'pseudonym',
 })
 
-const published = new ReviewRequests.ReviewRequestForAPreprintWasPublished({
+const published = new Events.ReviewRequestForAPreprintWasPublished({
   reviewRequestId: reviewRequestId1,
   publishedAt: now,
 })
 
-const imported = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+const imported = new Events.ReviewRequestByAPrereviewerWasImported({
   reviewRequestId: reviewRequestId1,
   requester: { orcidId: requesterId1, persona: 'public' },
   preprintId: preprintId1,
   publishedAt: now,
 })
 
-test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>([
+test.each<[string, _.Input, ReadonlyArray<Events.ReviewRequestEvent>, _.Result]>([
   ['no events', { reviewRequestId: reviewRequestId1 }, [], Result.fail(new ReviewRequests.UnknownReviewRequest({}))],
   [
     'different review request ID',

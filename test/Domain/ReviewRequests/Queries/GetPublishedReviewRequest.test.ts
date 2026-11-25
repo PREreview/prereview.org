@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Option, Predicate, Result, Tuple } from 'effect'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
 import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
 import * as _ from '../../../../src/Domain/ReviewRequests/Queries/GetPublishedReviewRequest.ts'
@@ -11,118 +12,118 @@ import { describe, expect, it } from '../../../vitest.ts'
 const reviewRequestId = Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753')
 const otherReviewRequestId = Uuid.Uuid('7bb629bd-9616-4e0f-bab7-f2ab07b95340')
 const preprintId = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/12345') })
-const reviewRequestForAPreprintWasStarted1 = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+const reviewRequestForAPreprintWasStarted1 = new Events.ReviewRequestForAPreprintWasStarted({
   startedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   preprintId,
   requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
   reviewRequestId,
 })
-const reviewRequestForAPreprintWasStarted2 = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+const reviewRequestForAPreprintWasStarted2 = new Events.ReviewRequestForAPreprintWasStarted({
   startedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
   preprintId,
   requesterId: OrcidId.OrcidId('0000-0002-6109-0367'),
   reviewRequestId,
 })
-const otherReviewRequestForAPreprintWasStarted = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+const otherReviewRequestForAPreprintWasStarted = new Events.ReviewRequestForAPreprintWasStarted({
   startedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   preprintId,
   requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
   reviewRequestId: otherReviewRequestId,
 })
-const personaForAReviewRequestForAPreprintWasChosen1 = new ReviewRequests.PersonaForAReviewRequestForAPreprintWasChosen(
-  { persona: 'public', reviewRequestId },
-)
-const personaForAReviewRequestForAPreprintWasChosen2 = new ReviewRequests.PersonaForAReviewRequestForAPreprintWasChosen(
-  { persona: 'pseudonym', reviewRequestId },
-)
-const reviewRequestForAPreprintWasPublished1 = new ReviewRequests.ReviewRequestForAPreprintWasPublished({
+const personaForAReviewRequestForAPreprintWasChosen1 = new Events.PersonaForAReviewRequestForAPreprintWasChosen({
+  persona: 'public',
+  reviewRequestId,
+})
+const personaForAReviewRequestForAPreprintWasChosen2 = new Events.PersonaForAReviewRequestForAPreprintWasChosen({
+  persona: 'pseudonym',
+  reviewRequestId,
+})
+const reviewRequestForAPreprintWasPublished1 = new Events.ReviewRequestForAPreprintWasPublished({
   publishedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   reviewRequestId,
 })
-const reviewRequestForAPreprintWasPublished2 = new ReviewRequests.ReviewRequestForAPreprintWasPublished({
+const reviewRequestForAPreprintWasPublished2 = new Events.ReviewRequestForAPreprintWasPublished({
   publishedAt: Temporal.Now.instant().subtract({ minutes: 10 }),
   reviewRequestId,
 })
-const otherReviewRequestForAPreprintWasPublished = new ReviewRequests.ReviewRequestForAPreprintWasPublished({
+const otherReviewRequestForAPreprintWasPublished = new Events.ReviewRequestForAPreprintWasPublished({
   publishedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   reviewRequestId: otherReviewRequestId,
 })
-const reviewRequestForAPreprintWasReceived1 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+const reviewRequestForAPreprintWasReceived1 = new Events.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({ name: Name.Name('Josiah Carberry') }),
   reviewRequestId,
 })
-const reviewRequestForAPreprintWasReceived2 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+const reviewRequestForAPreprintWasReceived2 = new Events.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({ name: Name.Name('Jean-Baptiste Botul') }),
   reviewRequestId,
 })
-const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+const otherReviewRequestForAPreprintWasReceived = new Events.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({ name: Name.Name('Josiah Carberry') }),
   reviewRequestId: otherReviewRequestId,
 })
-const reviewRequestForAPreprintWasAccepted1 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+const reviewRequestForAPreprintWasAccepted1 = new Events.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   reviewRequestId,
 })
-const reviewRequestForAPreprintWasAccepted2 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+const reviewRequestForAPreprintWasAccepted2 = new Events.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Now.instant().subtract({ minutes: 10 }),
   reviewRequestId,
 })
-const otherReviewRequestForAPreprintWasAccepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+const otherReviewRequestForAPreprintWasAccepted = new Events.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   reviewRequestId: otherReviewRequestId,
 })
-const reviewRequestFromAPreprintServerWasImported1 = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
+const reviewRequestFromAPreprintServerWasImported1 = new Events.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({ name: Name.Name('Josiah Carberry') }),
   reviewRequestId,
 })
-const reviewRequestFromAPreprintServerWasImported2 = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
+const reviewRequestFromAPreprintServerWasImported2 = new Events.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({ name: Name.Name('Jean-Baptiste Botul') }),
   reviewRequestId,
 })
-const otherReviewRequestFromAPreprintServerWasImported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported(
-  {
-    publishedAt: Temporal.Now.instant().subtract({ hours: 2 }),
-    receivedFrom: new URL('http://example.com'),
-    preprintId,
-    requester: Option.some({ name: Name.Name('Josiah Carberry') }),
-    reviewRequestId: otherReviewRequestId,
-  },
-)
-const reviewRequestByAPrereviewerWasImported1 = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+const otherReviewRequestFromAPreprintServerWasImported = new Events.ReviewRequestFromAPreprintServerWasImported({
+  publishedAt: Temporal.Now.instant().subtract({ hours: 2 }),
+  receivedFrom: new URL('http://example.com'),
+  preprintId,
+  requester: Option.some({ name: Name.Name('Josiah Carberry') }),
+  reviewRequestId: otherReviewRequestId,
+})
+const reviewRequestByAPrereviewerWasImported1 = new Events.ReviewRequestByAPrereviewerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   preprintId,
   requester: { orcidId: OrcidId.OrcidId('0000-0002-1825-0097'), persona: 'public' },
   reviewRequestId,
 })
-const reviewRequestByAPrereviewerWasImported2 = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+const reviewRequestByAPrereviewerWasImported2 = new Events.ReviewRequestByAPrereviewerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
   preprintId,
   requester: { orcidId: OrcidId.OrcidId('0000-0002-1825-0097'), persona: 'public' },
   reviewRequestId,
 })
-const otherReviewRequestByAPrereviewerWasImported = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+const otherReviewRequestByAPrereviewerWasImported = new Events.ReviewRequestByAPrereviewerWasImported({
   publishedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   preprintId,
   requester: { orcidId: OrcidId.OrcidId('0000-0002-1825-0097'), persona: 'public' },
   reviewRequestId: otherReviewRequestId,
 })
 const reviewRequestForAPreprintWasSharedOnTheCommunitySlack =
-  new ReviewRequests.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack({
+  new Events.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack({
     channelId: Slack.ChannelId.make('C123ABC456'),
     messageTimestamp: Slack.Timestamp.make('1401383885.000061'),
     reviewRequestId,
@@ -222,7 +223,7 @@ describe('GetPublishedReviewRequest', () => {
         )
         .map(([started, persona, published]) =>
           Tuple.make(
-            Array.make(started, persona, published as ReviewRequests.ReviewRequestEvent),
+            Array.make(started, persona, published as Events.ReviewRequestEvent),
             reviewRequestId,
             Tuple.make(started, persona, published),
           ),
@@ -327,7 +328,7 @@ describe('GetPublishedReviewRequest', () => {
         )
         .map(([received, accepted]) =>
           Tuple.make(
-            Array.make(received, accepted as ReviewRequests.ReviewRequestEvent),
+            Array.make(received, accepted as Events.ReviewRequestEvent),
             reviewRequestId,
             Tuple.make(received, accepted),
           ),

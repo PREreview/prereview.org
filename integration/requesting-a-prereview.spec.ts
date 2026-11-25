@@ -1,8 +1,8 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Option } from 'effect'
 import { v4 } from 'uuid'
+import * as Events from '../src/Domain/Events/index.ts'
 import { BiorxivPreprintId } from '../src/Domain/Preprints/index.ts'
-import * as ReviewRequests from '../src/Domain/ReviewRequests/index.ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
 import { Doi } from '../src/types/Doi.ts'
 import { Name } from '../src/types/Name.ts'
@@ -462,7 +462,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 
 test.extend(
   seedEvents(
-    new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+    new Events.ReviewRequestForAPreprintWasReceived({
       receivedAt: now,
       receivedFrom: new URL('https://example.com/'),
       preprintId: new BiorxivPreprintId({ value: Doi('10.1101/2023.02.28.529746') }),
@@ -471,7 +471,7 @@ test.extend(
         name: Name('Some Requester'),
       }),
     }),
-    new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+    new Events.ReviewRequestForAPreprintWasAccepted({
       acceptedAt: now,
       reviewRequestId: reviewRequestId1,
     }),
@@ -490,7 +490,7 @@ test.extend(
 
 test.extend(
   seedEvents(
-    new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+    new Events.ReviewRequestForAPreprintWasReceived({
       receivedAt: now,
       receivedFrom: new URL('https://example.com/'),
       preprintId: new BiorxivPreprintId({ value: Doi('10.1101/2023.02.28.529746') }),
@@ -499,7 +499,7 @@ test.extend(
         name: Name('Some Requester'),
       }),
     }),
-    new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+    new Events.ReviewRequestForAPreprintWasAccepted({
       acceptedAt: now,
       reviewRequestId: reviewRequestId1,
     }),
@@ -526,7 +526,7 @@ test.extend(
 
 test.extend(
   seedEvents(
-    new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+    new Events.ReviewRequestForAPreprintWasReceived({
       receivedAt: now,
       receivedFrom: new URL('https://example.com/'),
       preprintId: new BiorxivPreprintId({ value: Doi('10.1101/2023.02.28.529746') }),
@@ -535,11 +535,11 @@ test.extend(
         name: Name('Some Requester'),
       }),
     }),
-    new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+    new Events.ReviewRequestForAPreprintWasAccepted({
       acceptedAt: now,
       reviewRequestId: reviewRequestId1,
     }),
-    new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+    new Events.ReviewRequestForAPreprintWasReceived({
       receivedAt: now,
       receivedFrom: new URL('https://example.com/'),
       preprintId: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
@@ -548,11 +548,11 @@ test.extend(
         name: Name('Some Requester'),
       }),
     }),
-    new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+    new Events.ReviewRequestForAPreprintWasAccepted({
       acceptedAt: now,
       reviewRequestId: reviewRequestId2,
     }),
-    new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
+    new Events.ReviewRequestForAPreprintWasCategorized({
       reviewRequestId: reviewRequestId2,
       language: 'en',
       topics: [],
@@ -585,7 +585,7 @@ test.extend(
 
 test.extend(
   seedEvents(
-    new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+    new Events.ReviewRequestForAPreprintWasReceived({
       receivedAt: now,
       receivedFrom: new URL('https://example.com/'),
       preprintId: new BiorxivPreprintId({ value: Doi('10.1101/2023.02.28.529746') }),
@@ -594,16 +594,16 @@ test.extend(
         name: Name('Some Requester'),
       }),
     }),
-    new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+    new Events.ReviewRequestForAPreprintWasAccepted({
       acceptedAt: now,
       reviewRequestId: reviewRequestId1,
     }),
-    new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
+    new Events.ReviewRequestForAPreprintWasCategorized({
       reviewRequestId: reviewRequestId1,
       language: 'en',
       topics: ['12104', '12763', '12387'],
     }),
-    new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+    new Events.ReviewRequestForAPreprintWasReceived({
       receivedAt: now,
       receivedFrom: new URL('https://example.com/'),
       preprintId: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
@@ -612,7 +612,7 @@ test.extend(
         name: Name('Some Requester'),
       }),
     }),
-    new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+    new Events.ReviewRequestForAPreprintWasAccepted({
       acceptedAt: now,
       reviewRequestId: reviewRequestId2,
     }),
@@ -645,13 +645,13 @@ test.extend(
 test
   .extend(
     seedEvents(
-      new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+      new Events.ReviewRequestForAPreprintWasStarted({
         startedAt: now,
         preprintId: new BiorxivPreprintId({ value: Doi('10.1101/2023.02.28.529746') }),
         reviewRequestId: reviewRequestId1,
         requesterId: OrcidId('0000-0002-1825-0097'),
       }),
-      new ReviewRequests.ReviewRequestForAPreprintWasPublished({
+      new Events.ReviewRequestForAPreprintWasPublished({
         publishedAt: now,
         reviewRequestId: reviewRequestId1,
       }),

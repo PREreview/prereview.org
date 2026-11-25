@@ -1,7 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Option, Result } from 'effect'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
-import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
 import * as _ from '../../../../src/Domain/ReviewRequests/Queries/ListAllPublishedReviewRequestsForStats.ts'
 import { Doi, Name, OrcidId, Uuid } from '../../../../src/types/index.ts'
 import { expect, test } from '../../../vitest.ts'
@@ -17,42 +17,42 @@ const preprintId2 = new Preprints.MedrxivPreprintId({ value: Doi.Doi('10.1101/67
 
 const now = Temporal.Now.instant()
 
-const request1Started = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+const request1Started = new Events.ReviewRequestForAPreprintWasStarted({
   startedAt: now.subtract({ hours: 2 }),
   preprintId: preprintId1,
   requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
   reviewRequestId: request1Id,
 })
-const request1Published = new ReviewRequests.ReviewRequestForAPreprintWasPublished({
+const request1Published = new Events.ReviewRequestForAPreprintWasPublished({
   publishedAt: now.subtract({ hours: 1 }),
   reviewRequestId: request1Id,
 })
-const request1Withdrawn = new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
+const request1Withdrawn = new Events.ReviewRequestForAPreprintWasWithdrawn({
   withdrawnAt: now.subtract({ minutes: 10 }),
   reviewRequestId: request1Id,
   reason: 'preprint-withdrawn-from-preprint-server',
 })
 
-const request2Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+const request2Received = new Events.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 72 }),
   receivedFrom: new URL('http://example.com'),
   preprintId: preprintId1,
   requester: Option.some(requester1),
   reviewRequestId: request2Id,
 })
-const request2Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+const request2Accepted = new Events.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ minutes: 1 }),
   reviewRequestId: request2Id,
 })
 
-const request3Imported = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+const request3Imported = new Events.ReviewRequestByAPrereviewerWasImported({
   publishedAt: now.subtract({ hours: 8 }),
   preprintId: preprintId2,
   requester: { orcidId: OrcidId.OrcidId('0000-0002-1825-0097'), persona: 'public' },
   reviewRequestId: request3Id,
 })
 
-test.each<[string, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, unknown]>([
+test.each<[string, ReadonlyArray<Events.ReviewRequestEvent>, unknown]>([
   ['no events', [], []],
   ['only pending publication', [request1Started], []],
   ['published request', [request1Started, request1Published], [expect.objectContaining({ requestId: request1Id })]],

@@ -1,23 +1,23 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Equal, Option, Result, Tuple } from 'effect'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import * as _ from '../../../../src/Domain/ReviewRequests/Commands/CategorizeReviewRequest.ts'
-import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
 import { Uuid } from '../../../../src/types/index.ts'
 import * as fc from '../../../fc.ts'
 import { describe, expect, it, test } from '../../../vitest.ts'
 
 const reviewRequestId = Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753')
 const otherReviewRequestId = Uuid.Uuid('7bb629bd-9616-4e0f-bab7-f2ab07b95340')
-const reviewRequestForAPreprintWasAccepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+const reviewRequestForAPreprintWasAccepted = new Events.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   reviewRequestId,
 })
-const reviewRequestForAPreprintWasCategorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
+const reviewRequestForAPreprintWasCategorized = new Events.ReviewRequestForAPreprintWasCategorized({
   language: 'es',
   topics: ['12520', '13393'],
   reviewRequestId,
 })
-const otherReviewRequestForAPreprintWasCategorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
+const otherReviewRequestForAPreprintWasCategorized = new Events.ReviewRequestForAPreprintWasCategorized({
   language: 'pt',
   topics: ['14113'],
   reviewRequestId: otherReviewRequestId,
@@ -64,7 +64,7 @@ describe('foldState', () => {
     [
       fc
         .reviewRequestForAPreprintWasCategorized()
-        .map(event => Tuple.make(Array.make(event as ReviewRequests.ReviewRequestEvent), event.reviewRequestId, event)),
+        .map(event => Tuple.make(Array.make(event as Events.ReviewRequestEvent), event.reviewRequestId, event)),
     ],
     ([[events, reviewRequestId, categorized]]) => {
       const state = _.foldState(events, reviewRequestId)
@@ -100,16 +100,16 @@ describe('foldState', () => {
   )
 
   describe('recategorized', () => {
-    const categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
+    const categorized = new Events.ReviewRequestForAPreprintWasCategorized({
       language: 'es',
       topics: ['12520', '13393'],
       reviewRequestId,
     })
-    const recategorizedWithLanguage = new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
+    const recategorizedWithLanguage = new Events.ReviewRequestForAPreprintWasRecategorized({
       language: 'pt',
       reviewRequestId,
     })
-    const recategorizedWithTopics = new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
+    const recategorizedWithTopics = new Events.ReviewRequestForAPreprintWasRecategorized({
       topics: ['10010'],
       reviewRequestId,
     })
@@ -149,7 +149,7 @@ describe('decide', () => {
     expect(result).toStrictEqual(
       Result.succeed(
         Option.some(
-          new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
+          new Events.ReviewRequestForAPreprintWasCategorized({
             language: command.language,
             topics: command.topics,
             reviewRequestId: command.reviewRequestId,
@@ -179,7 +179,7 @@ describe('decide', () => {
         expect(result).toStrictEqual(
           Result.succeed(
             Option.some(
-              new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
+              new Events.ReviewRequestForAPreprintWasRecategorized({
                 reviewRequestId: command.reviewRequestId,
                 language: command.language,
               }),
@@ -207,7 +207,7 @@ describe('decide', () => {
         expect(result).toStrictEqual(
           Result.succeed(
             Option.some(
-              new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
+              new Events.ReviewRequestForAPreprintWasRecategorized({
                 reviewRequestId: command.reviewRequestId,
                 topics: command.topics,
               }),
@@ -238,7 +238,7 @@ describe('decide', () => {
         expect(result).toStrictEqual(
           Result.succeed(
             Option.some(
-              new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
+              new Events.ReviewRequestForAPreprintWasRecategorized({
                 reviewRequestId: command.reviewRequestId,
                 language: command.language,
                 topics: command.topics,

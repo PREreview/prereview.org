@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Option, Result } from 'effect'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
 import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
 import * as _ from '../../../../src/Domain/ReviewRequests/Queries/SearchForPublishedReviewRequests.ts'
@@ -33,166 +34,166 @@ const preprintId9 = new Preprints.AuthoreaPreprintId({ value: Doi.Doi('10.22541/
 
 const now = Temporal.Now.instant()
 
-const request1Started1 = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+const request1Started1 = new Events.ReviewRequestForAPreprintWasStarted({
   startedAt: now.subtract({ hours: 2 }),
   preprintId: preprintId1,
   requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
   reviewRequestId: request1Id,
 })
-const request1Started2 = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+const request1Started2 = new Events.ReviewRequestForAPreprintWasStarted({
   startedAt: now.subtract({ minutes: 20 }),
   preprintId: preprintId2,
   requesterId: OrcidId.OrcidId('0000-0002-6109-0367'),
   reviewRequestId: request1Id,
 })
-const request1Published1 = new ReviewRequests.ReviewRequestForAPreprintWasPublished({
+const request1Published1 = new Events.ReviewRequestForAPreprintWasPublished({
   publishedAt: now.subtract({ hours: 1 }),
   reviewRequestId: request1Id,
 })
-const request1Withdrawn = new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
+const request1Withdrawn = new Events.ReviewRequestForAPreprintWasWithdrawn({
   withdrawnAt: now.subtract({ minutes: 10 }),
   reviewRequestId: request1Id,
   reason: 'preprint-withdrawn-from-preprint-server',
 })
-const request1Published2 = new ReviewRequests.ReviewRequestForAPreprintWasPublished({
+const request1Published2 = new Events.ReviewRequestForAPreprintWasPublished({
   publishedAt: now.subtract({ minutes: 10 }),
   reviewRequestId: request1Id,
 })
-const request1Categorized1 = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
+const request1Categorized1 = new Events.ReviewRequestForAPreprintWasCategorized({
   language: 'es',
   topics: ['13741', '12422'],
   reviewRequestId: request1Id,
 })
-const request1Categorized2 = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
+const request1Categorized2 = new Events.ReviewRequestForAPreprintWasCategorized({
   language: 'pt',
   topics: ['13499'],
   reviewRequestId: request1Id,
 })
-const request1Recategorized = new ReviewRequests.ReviewRequestForAPreprintWasRecategorized({
+const request1Recategorized = new Events.ReviewRequestForAPreprintWasRecategorized({
   language: 'pt',
   reviewRequestId: request1Id,
 })
-const request2Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+const request2Received = new Events.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 72 }),
   receivedFrom: new URL('http://example.com'),
   preprintId: preprintId1,
   requester: Option.some(requester3),
   reviewRequestId: request2Id,
 })
-const request2Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+const request2Accepted = new Events.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ minutes: 1 }),
   reviewRequestId: request2Id,
 })
-const request2Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
+const request2Categorized = new Events.ReviewRequestForAPreprintWasCategorized({
   language: 'pt',
   topics: ['14362'],
   reviewRequestId: request2Id,
 })
-const request3Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+const request3Received = new Events.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 200 }),
   receivedFrom: new URL('http://example.com'),
   preprintId: preprintId3,
   requester: Option.some(requester4),
   reviewRequestId: request3Id,
 })
-const request3Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+const request3Accepted = new Events.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ hours: 3 }),
   reviewRequestId: request3Id,
 })
-const request3Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
+const request3Categorized = new Events.ReviewRequestForAPreprintWasCategorized({
   language: 'en',
   topics: [],
   reviewRequestId: request3Id,
 })
-const request4Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+const request4Received = new Events.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 200 }),
   receivedFrom: new URL('http://example.com'),
   preprintId: preprintId4,
   requester: Option.some(requester1),
   reviewRequestId: request4Id,
 })
-const request4Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+const request4Accepted = new Events.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ hours: 4 }),
   reviewRequestId: request4Id,
 })
-const request4Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
+const request4Categorized = new Events.ReviewRequestForAPreprintWasCategorized({
   language: 'en',
   topics: [],
   reviewRequestId: request4Id,
 })
-const request5Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+const request5Received = new Events.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 200 }),
   receivedFrom: new URL('http://example.com'),
   preprintId: preprintId5,
   requester: Option.some(requester1),
   reviewRequestId: request5Id,
 })
-const request5Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+const request5Accepted = new Events.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ hours: 5 }),
   reviewRequestId: request5Id,
 })
-const request5Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
+const request5Categorized = new Events.ReviewRequestForAPreprintWasCategorized({
   language: 'en',
   topics: [],
   reviewRequestId: request5Id,
 })
-const request6Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+const request6Received = new Events.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 200 }),
   receivedFrom: new URL('http://example.com'),
   preprintId: preprintId6,
   requester: Option.some(requester2),
   reviewRequestId: request6Id,
 })
-const request6Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+const request6Accepted = new Events.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ hours: 6 }),
   reviewRequestId: request6Id,
 })
-const request6Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
+const request6Categorized = new Events.ReviewRequestForAPreprintWasCategorized({
   language: 'en',
   topics: [],
   reviewRequestId: request6Id,
 })
-const request7Received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+const request7Received = new Events.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 200 }),
   receivedFrom: new URL('http://example.com'),
   preprintId: preprintId7,
   requester: Option.some(requester3),
   reviewRequestId: request7Id,
 })
-const request7Accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+const request7Accepted = new Events.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ hours: 7 }),
   reviewRequestId: request7Id,
 })
-const request7Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
+const request7Categorized = new Events.ReviewRequestForAPreprintWasCategorized({
   language: 'en',
   topics: [],
   reviewRequestId: request7Id,
 })
-const request8Imported = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+const request8Imported = new Events.ReviewRequestByAPrereviewerWasImported({
   publishedAt: now.subtract({ hours: 8 }),
   preprintId: preprintId8,
   requester: { orcidId: OrcidId.OrcidId('0000-0002-1825-0097'), persona: 'public' },
   reviewRequestId: request8Id,
 })
-const request8Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
+const request8Categorized = new Events.ReviewRequestForAPreprintWasCategorized({
   language: 'en',
   topics: [],
   reviewRequestId: request8Id,
 })
-const request9Imported = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
+const request9Imported = new Events.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: now.subtract({ hours: 9 }),
   receivedFrom: new URL('http://example.com'),
   preprintId: preprintId9,
   requester: Option.some(requester1),
   reviewRequestId: request9Id,
 })
-const request9Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
+const request9Categorized = new Events.ReviewRequestForAPreprintWasCategorized({
   language: 'en',
   topics: [],
   reviewRequestId: request9Id,
 })
 
-test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>([
+test.each<[string, _.Input, ReadonlyArray<Events.ReviewRequestEvent>, _.Result]>([
   ['no events', { page: 1 }, [], Result.fail(new ReviewRequests.NoReviewRequestsFound({}))],
   [
     'no received events',

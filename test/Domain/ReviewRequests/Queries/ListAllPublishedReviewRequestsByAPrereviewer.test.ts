@@ -1,7 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Result } from 'effect'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
-import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
 import * as _ from '../../../../src/Domain/ReviewRequests/Queries/ListAllPublishedReviewRequestsByAPrereviewer.ts'
 import { Doi, OrcidId, Uuid } from '../../../../src/types/index.ts'
 import { expect, test } from '../../../vitest.ts'
@@ -17,29 +17,29 @@ const preprintId2 = new Preprints.MedrxivPreprintId({ value: Doi.Doi('10.1101/67
 
 const now = Temporal.Now.instant()
 
-const request1Started = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+const request1Started = new Events.ReviewRequestForAPreprintWasStarted({
   startedAt: now.subtract({ hours: 2 }),
   preprintId: preprintId1,
   requesterId: requesterId1,
   reviewRequestId: request1Id,
 })
-const request1Categorized = new ReviewRequests.ReviewRequestForAPreprintWasCategorized({
+const request1Categorized = new Events.ReviewRequestForAPreprintWasCategorized({
   language: 'es',
   topics: ['13741', '12422'],
   reviewRequestId: request1Id,
 })
-const request1Published = new ReviewRequests.ReviewRequestForAPreprintWasPublished({
+const request1Published = new Events.ReviewRequestForAPreprintWasPublished({
   publishedAt: now.subtract({ hours: 1 }),
   reviewRequestId: request1Id,
 })
-const request2Imported = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+const request2Imported = new Events.ReviewRequestByAPrereviewerWasImported({
   publishedAt: now.subtract({ hours: 8 }),
   preprintId: preprintId2,
   requester: { orcidId: requesterId1, persona: 'public' },
   reviewRequestId: request2Id,
 })
 
-test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>([
+test.each<[string, _.Input, ReadonlyArray<Events.ReviewRequestEvent>, _.Result]>([
   ['no events', { requesterId: requesterId1 }, [], []],
   ['only pending publication', { requesterId: requesterId1 }, [request1Started], []],
   [

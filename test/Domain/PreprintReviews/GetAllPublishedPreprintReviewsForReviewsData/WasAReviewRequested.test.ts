@@ -1,8 +1,8 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Option, Result } from 'effect'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import * as _ from '../../../../src/Domain/PreprintReviews/GetAllPublishedPreprintReviewsForReviewsData/WasAReviewRequested.ts'
 import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
-import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
 import { Doi, Name, OrcidId, Uuid } from '../../../../src/types/index.ts'
 import { expect, test } from '../../../vitest.ts'
 
@@ -15,7 +15,7 @@ const reviewPublishedOn = Temporal.PlainDate.from('2026-11-10')
 
 const requestId = Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753')
 
-const started = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+const started = new Events.ReviewRequestForAPreprintWasStarted({
   startedAt: Temporal.Instant.from('2026-11-01T09:00:00Z'),
   preprintId,
   requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
@@ -23,12 +23,12 @@ const started = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
 })
 
 const publishedAt = (instant: string) =>
-  new ReviewRequests.ReviewRequestForAPreprintWasPublished({
+  new Events.ReviewRequestForAPreprintWasPublished({
     publishedAt: Temporal.Instant.from(instant),
     reviewRequestId: requestId,
   })
 
-const received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+const received = new Events.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Instant.from('2026-11-01T09:00:00Z'),
   receivedFrom: new URL('http://example.com'),
   preprintId,
@@ -36,13 +36,13 @@ const received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   reviewRequestId: requestId,
 })
 
-const accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+const accepted = new Events.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Instant.from('2026-11-02T09:00:00Z'),
   reviewRequestId: requestId,
 })
 
 const withdrawnAt = (instant: string) =>
-  new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
+  new Events.ReviewRequestForAPreprintWasWithdrawn({
     withdrawnAt: Temporal.Instant.from(instant),
     reviewRequestId: requestId,
     reason: 'requester-changed-their-mind',
@@ -50,27 +50,27 @@ const withdrawnAt = (instant: string) =>
 
 const otherRequestId = Uuid.Uuid('7bb629bd-9616-4e0f-bab7-f2ab07b95340')
 
-const otherRequestImported = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+const otherRequestImported = new Events.ReviewRequestByAPrereviewerWasImported({
   publishedAt: Temporal.Instant.from('2026-11-03T09:00:00Z'),
   preprintId,
   requester: { orcidId: OrcidId.OrcidId('0000-0002-6109-0367'), persona: 'public' },
   reviewRequestId: otherRequestId,
 })
 
-const otherRequestWithdrawn = new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
+const otherRequestWithdrawn = new Events.ReviewRequestForAPreprintWasWithdrawn({
   withdrawnAt: Temporal.Instant.from('2026-11-04T09:00:00Z'),
   reviewRequestId: otherRequestId,
   reason: 'mistakenly-requested',
 })
 
-const importedFromAPrereviewer = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+const importedFromAPrereviewer = new Events.ReviewRequestByAPrereviewerWasImported({
   publishedAt: Temporal.Instant.from('2026-11-02T09:00:00Z'),
   preprintId,
   requester: { orcidId: OrcidId.OrcidId('0000-0002-1825-0097'), persona: 'public' },
   reviewRequestId: requestId,
 })
 
-const importedFromAPreprintServer = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
+const importedFromAPreprintServer = new Events.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: Temporal.Instant.from('2026-11-02T09:00:00Z'),
   receivedFrom: new URL('http://example.com'),
   preprintId,
@@ -78,7 +78,7 @@ const importedFromAPreprintServer = new ReviewRequests.ReviewRequestFromAPreprin
   reviewRequestId: requestId,
 })
 
-test.each<[string, _.Input, ReadonlyArray<ReviewRequests.ReviewRequestEvent>, _.Result]>([
+test.each<[string, _.Input, ReadonlyArray<Events.ReviewRequestEvent>, _.Result]>([
   ['no events', { preprintId, published: reviewPublished }, [], false],
   [
     'requested by a PREreviewer before the review',

@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Equal, Option, Result, Tuple } from 'effect'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import * as _ from '../../../../src/Domain/ReviewRequests/Commands/RecordReviewRequestSharedOnTheCommunitySlack.ts'
 import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
 import { Slack } from '../../../../src/ExternalApis/index.ts'
@@ -9,18 +10,18 @@ import { describe, expect, it } from '../../../vitest.ts'
 
 const reviewRequestId = Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753')
 const otherReviewRequestId = Uuid.Uuid('7bb629bd-9616-4e0f-bab7-f2ab07b95340')
-const reviewRequestForAPreprintWasAccepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+const reviewRequestForAPreprintWasAccepted = new Events.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   reviewRequestId,
 })
 const reviewRequestForAPreprintWasSharedOnTheCommunitySlack =
-  new ReviewRequests.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack({
+  new Events.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack({
     channelId: Slack.ChannelId.make('C123ABC456'),
     messageTimestamp: Slack.Timestamp.make('1401383885.000061'),
     reviewRequestId,
   })
 const otherReviewRequestForAPreprintWasSharedOnTheCommunitySlack =
-  new ReviewRequests.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack({
+  new Events.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack({
     channelId: Slack.ChannelId.make('C123ABC442'),
     messageTimestamp: Slack.Timestamp.make('1401383885.000059'),
     reviewRequestId: otherReviewRequestId,
@@ -67,7 +68,7 @@ describe('foldState', () => {
     [
       fc
         .reviewRequestForAPreprintWasSharedOnTheCommunitySlack()
-        .map(event => Tuple.make(Array.make(event as ReviewRequests.ReviewRequestEvent), event.reviewRequestId, event)),
+        .map(event => Tuple.make(Array.make(event as Events.ReviewRequestEvent), event.reviewRequestId, event)),
     ],
     ([[events, reviewRequestId, shared]]) => {
       const state = _.foldState(events, reviewRequestId)
@@ -116,7 +117,7 @@ describe('decide', () => {
     expect(result).toStrictEqual(
       Result.succeed(
         Option.some(
-          new ReviewRequests.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack({
+          new Events.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack({
             channelId: command.channelId,
             messageTimestamp: command.messageTimestamp,
             reviewRequestId: command.reviewRequestId,

@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Option, Predicate, Result, Tuple } from 'effect'
-import type * as Events from '../../../../src/Domain/Events/Events.ts'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
 import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
 import * as _ from '../../../../src/Domain/ReviewRequests/Queries/GetReviewRequestToAcknowledge.ts'
@@ -12,7 +12,7 @@ import { describe, expect, it } from '../../../vitest.ts'
 const reviewRequestId = Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753')
 const otherReviewRequestId = Uuid.Uuid('7bb629bd-9616-4e0f-bab7-f2ab07b95340')
 const preprintId = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/12345') })
-const reviewRequestForAPreprintWasReceived1 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+const reviewRequestForAPreprintWasReceived1 = new Events.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
@@ -22,7 +22,7 @@ const reviewRequestForAPreprintWasReceived1 = new ReviewRequests.ReviewRequestFo
   }),
   reviewRequestId,
 })
-const reviewRequestForAPreprintWasReceived2 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+const reviewRequestForAPreprintWasReceived2 = new Events.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
@@ -32,66 +32,66 @@ const reviewRequestForAPreprintWasReceived2 = new ReviewRequests.ReviewRequestFo
   }),
   reviewRequestId,
 })
-const reviewRequestForAPreprintWasReceived3 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+const reviewRequestForAPreprintWasReceived3 = new Events.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({ name: Name.Name('Arne Saknussemm') }),
   reviewRequestId,
 })
-const reviewRequestForAPreprintWasReceived4 = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+const reviewRequestForAPreprintWasReceived4 = new Events.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ minutes: 20 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.none(),
   reviewRequestId,
 })
-const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+const otherReviewRequestForAPreprintWasReceived = new Events.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({ name: Name.Name('Josiah Carberry') }),
   reviewRequestId: otherReviewRequestId,
 })
-const reviewRequestForAPreprintWasAccepted1 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+const reviewRequestForAPreprintWasAccepted1 = new Events.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   reviewRequestId,
 })
-const reviewRequestForAPreprintWasAccepted2 = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+const reviewRequestForAPreprintWasAccepted2 = new Events.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Now.instant().subtract({ minutes: 10 }),
   reviewRequestId,
 })
 const emailToAcknowledgeAReviewRequestForAPreprintWasSent =
-  new ReviewRequests.EmailToAcknowledgeAReviewRequestForAPreprintWasSent({
+  new Events.EmailToAcknowledgeAReviewRequestForAPreprintWasSent({
     sentAt: Temporal.Now.instant().subtract({ minutes: 5 }),
     reviewRequestId,
   })
-const otherReviewRequestForAPreprintWasAccepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+const otherReviewRequestForAPreprintWasAccepted = new Events.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   reviewRequestId: otherReviewRequestId,
 })
 const otherEmailToAcknowledgeAReviewRequestForAPreprintWasSent =
-  new ReviewRequests.EmailToAcknowledgeAReviewRequestForAPreprintWasSent({
+  new Events.EmailToAcknowledgeAReviewRequestForAPreprintWasSent({
     sentAt: Temporal.Now.instant().subtract({ minutes: 5 }),
     reviewRequestId: otherReviewRequestId,
   })
-const reviewRequestForAPreprintWasRejected1 = new ReviewRequests.ReviewRequestForAPreprintWasRejected({
+const reviewRequestForAPreprintWasRejected1 = new Events.ReviewRequestForAPreprintWasRejected({
   rejectedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   reviewRequestId,
   reason: 'not-a-preprint',
 })
-const reviewRequestForAPreprintWasRejected2 = new ReviewRequests.ReviewRequestForAPreprintWasRejected({
+const reviewRequestForAPreprintWasRejected2 = new Events.ReviewRequestForAPreprintWasRejected({
   rejectedAt: Temporal.Now.instant().subtract({ minutes: 10 }),
   reviewRequestId,
   reason: 'unknown-preprint',
 })
-const otherReviewRequestForAPreprintWasRejected = new ReviewRequests.ReviewRequestForAPreprintWasRejected({
+const otherReviewRequestForAPreprintWasRejected = new Events.ReviewRequestForAPreprintWasRejected({
   rejectedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   reviewRequestId: otherReviewRequestId,
   reason: 'not-a-preprint',
 })
 const reviewRequestForAPreprintWasSharedOnTheCommunitySlack =
-  new ReviewRequests.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack({
+  new Events.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack({
     channelId: Slack.ChannelId.make('C123ABC456'),
     messageTimestamp: Slack.Timestamp.make('1401383885.000061'),
     reviewRequestId,

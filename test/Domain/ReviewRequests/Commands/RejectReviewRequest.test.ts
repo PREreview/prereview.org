@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Equal, Option, Result, Tuple } from 'effect'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
 import * as _ from '../../../../src/Domain/ReviewRequests/Commands/RejectReviewRequest.ts'
 import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
@@ -11,50 +12,50 @@ import { describe, expect, it } from '../../../vitest.ts'
 const reviewRequestId = Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753')
 const otherReviewRequestId = Uuid.Uuid('7bb629bd-9616-4e0f-bab7-f2ab07b95340')
 const preprintId = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/12345') })
-const reviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+const reviewRequestForAPreprintWasReceived = new Events.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({ name: Name.Name('Josiah Carberry') }),
   reviewRequestId,
 })
-const otherReviewRequestForAPreprintWasReceived = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+const otherReviewRequestForAPreprintWasReceived = new Events.ReviewRequestForAPreprintWasReceived({
   receivedAt: Temporal.Now.instant().subtract({ hours: 2 }),
   receivedFrom: new URL('http://example.com'),
   preprintId,
   requester: Option.some({ name: Name.Name('Josiah Carberry') }),
   reviewRequestId: otherReviewRequestId,
 })
-const reviewRequestForAPreprintWasAccepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+const reviewRequestForAPreprintWasAccepted = new Events.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   reviewRequestId,
 })
-const otherReviewRequestForAPreprintWasAccepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+const otherReviewRequestForAPreprintWasAccepted = new Events.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   reviewRequestId: otherReviewRequestId,
 })
-const reviewRequestForAPreprintWasRejected = new ReviewRequests.ReviewRequestForAPreprintWasRejected({
+const reviewRequestForAPreprintWasRejected = new Events.ReviewRequestForAPreprintWasRejected({
   rejectedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   reviewRequestId,
   reason: 'not-a-preprint',
 })
-const otherReviewRequestForAPreprintWasRejected = new ReviewRequests.ReviewRequestForAPreprintWasRejected({
+const otherReviewRequestForAPreprintWasRejected = new Events.ReviewRequestForAPreprintWasRejected({
   rejectedAt: Temporal.Now.instant().subtract({ hours: 1 }),
   reviewRequestId: otherReviewRequestId,
   reason: 'unknown-preprint',
 })
-const reviewRequestForAPreprintWasWithdrawn = new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
+const reviewRequestForAPreprintWasWithdrawn = new Events.ReviewRequestForAPreprintWasWithdrawn({
   withdrawnAt: Temporal.Now.instant().subtract({ hours: 1 }),
   reviewRequestId,
   reason: 'preprint-withdrawn-from-preprint-server',
 })
-const otherReviewRequestForAPreprintWasWithdrawn = new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
+const otherReviewRequestForAPreprintWasWithdrawn = new Events.ReviewRequestForAPreprintWasWithdrawn({
   withdrawnAt: Temporal.Now.instant().subtract({ hours: 1 }),
   reviewRequestId: otherReviewRequestId,
   reason: 'mistakenly-requested',
 })
 const reviewRequestForAPreprintWasSharedOnTheCommunitySlack =
-  new ReviewRequests.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack({
+  new Events.ReviewRequestForAPreprintWasSharedOnTheCommunitySlack({
     channelId: Slack.ChannelId.make('C123ABC456'),
     messageTimestamp: Slack.Timestamp.make('1401383885.000061'),
     reviewRequestId,
@@ -101,7 +102,7 @@ describe('foldState', () => {
     [
       fc
         .reviewRequestForAPreprintWasReceived()
-        .map(received => Tuple.make(Array.of<ReviewRequests.ReviewRequestEvent>(received), received.reviewRequestId)),
+        .map(received => Tuple.make(Array.of<Events.ReviewRequestEvent>(received), received.reviewRequestId)),
     ],
     ([[events, reviewRequestId]]) => {
       const state = _.foldState(events, reviewRequestId)
@@ -140,7 +141,7 @@ describe('foldState', () => {
             )
             .map(events =>
               Tuple.make(
-                Array.make<Array.NonEmptyArray<ReviewRequests.ReviewRequestEvent>>(...events),
+                Array.make<Array.NonEmptyArray<Events.ReviewRequestEvent>>(...events),
                 events[0].reviewRequestId,
               ),
             ),
@@ -204,7 +205,7 @@ describe('foldState', () => {
             )
             .map(events =>
               Tuple.make(
-                Array.make<Array.NonEmptyArray<ReviewRequests.ReviewRequestEvent>>(...events),
+                Array.make<Array.NonEmptyArray<Events.ReviewRequestEvent>>(...events),
                 events[0].reviewRequestId,
               ),
             ),
@@ -258,7 +259,7 @@ describe('foldState', () => {
             )
             .map(events =>
               Tuple.make(
-                Array.make<Array.NonEmptyArray<ReviewRequests.ReviewRequestEvent>>(...events),
+                Array.make<Array.NonEmptyArray<Events.ReviewRequestEvent>>(...events),
                 events[0].reviewRequestId,
               ),
             ),
@@ -313,7 +314,7 @@ describe('decide', () => {
     expect(result).toStrictEqual(
       Result.succeed(
         Option.some(
-          new ReviewRequests.ReviewRequestForAPreprintWasRejected({
+          new Events.ReviewRequestForAPreprintWasRejected({
             rejectedAt: command.rejectedAt,
             reviewRequestId: command.reviewRequestId,
             reason: command.reason,

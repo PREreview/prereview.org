@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Option, Result } from 'effect'
-import type * as Events from '../../../../src/Domain/Events/Events.ts'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
 import * as _ from '../../../../src/Domain/ReviewRequests/Commands/WithdrawReviewRequest.ts'
 import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
@@ -17,19 +17,19 @@ const preprintId1 = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1101/12
 
 const now = Temporal.Now.instant()
 
-const started = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+const started = new Events.ReviewRequestForAPreprintWasStarted({
   startedAt: now.subtract({ hours: 2 }),
   preprintId: preprintId1,
   requesterId: OrcidId.OrcidId('0000-0002-1825-0097'),
   reviewRequestId: request1Id,
 })
 
-const published = new ReviewRequests.ReviewRequestForAPreprintWasPublished({
+const published = new Events.ReviewRequestForAPreprintWasPublished({
   publishedAt: now.subtract({ hours: 1 }),
   reviewRequestId: request1Id,
 })
 
-const received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+const received = new Events.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 2 }),
   receivedFrom: new URL('http://example.com'),
   preprintId: preprintId1,
@@ -37,25 +37,25 @@ const received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
   reviewRequestId: request1Id,
 })
 
-const accepted = new ReviewRequests.ReviewRequestForAPreprintWasAccepted({
+const accepted = new Events.ReviewRequestForAPreprintWasAccepted({
   acceptedAt: now.subtract({ hours: 1 }),
   reviewRequestId: request1Id,
 })
 
-const rejected = new ReviewRequests.ReviewRequestForAPreprintWasRejected({
+const rejected = new Events.ReviewRequestForAPreprintWasRejected({
   rejectedAt: now.subtract({ hours: 1 }),
   reviewRequestId: request1Id,
   reason: 'unknown-preprint',
 })
 
-const importedPrereviewer = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+const importedPrereviewer = new Events.ReviewRequestByAPrereviewerWasImported({
   publishedAt: now.subtract({ hours: 8 }),
   preprintId: preprintId1,
   requester: requester2,
   reviewRequestId: request1Id,
 })
 
-const importedPreprintServer = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
+const importedPreprintServer = new Events.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: now.subtract({ hours: 200 }),
   receivedFrom: new URL('http://example.com'),
   preprintId: preprintId1,
@@ -63,7 +63,7 @@ const importedPreprintServer = new ReviewRequests.ReviewRequestFromAPreprintServ
   reviewRequestId: request1Id,
 })
 
-const withdrawn = new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
+const withdrawn = new Events.ReviewRequestForAPreprintWasWithdrawn({
   withdrawnAt: now.subtract({ minutes: 10 }),
   reviewRequestId: request1Id,
   reason: 'preprint-withdrawn-from-preprint-server',
@@ -101,7 +101,7 @@ describe('review request has not been accepted (%s)', () => {
     expect(actual).toStrictEqual(
       Result.succeed(
         Option.some(
-          new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
+          new Events.ReviewRequestForAPreprintWasWithdrawn({
             withdrawnAt: input.withdrawnAt,
             reviewRequestId: input.reviewRequestId,
             reason: input.reason,
@@ -140,7 +140,7 @@ describe.each<[string, ReadonlyArray<Events.Event>]>([
     expect(actual).toStrictEqual(
       Result.succeed(
         Option.some(
-          new ReviewRequests.ReviewRequestForAPreprintWasWithdrawn({
+          new Events.ReviewRequestForAPreprintWasWithdrawn({
             withdrawnAt: input.withdrawnAt,
             reviewRequestId: input.reviewRequestId,
             reason: input.reason,

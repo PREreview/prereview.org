@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Option, Result } from 'effect'
-import type * as Events from '../../../../src/Domain/Events/Events.ts'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
 import * as _ from '../../../../src/Domain/ReviewRequests/Commands/StartReviewRequest.ts'
 import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
@@ -23,28 +23,28 @@ const commandPreprintId = new Preprints.BiorxivPreprintId({ value: Doi.Doi('10.1
 
 const now = Temporal.Now.instant()
 
-const started1 = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+const started1 = new Events.ReviewRequestForAPreprintWasStarted({
   startedAt: now,
   preprintId: preprintId1,
   reviewRequestId: requestId1,
   requesterId: commandRequester,
 })
 
-const started2 = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+const started2 = new Events.ReviewRequestForAPreprintWasStarted({
   startedAt: now,
   preprintId: commandPreprintId,
   reviewRequestId: requestId1,
   requesterId: requester1,
 })
 
-const started3 = new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+const started3 = new Events.ReviewRequestForAPreprintWasStarted({
   startedAt: now,
   preprintId: commandPreprintId,
   reviewRequestId: commandRequestId,
   requesterId: requester1,
 })
 
-const importedByPrereviewer1 = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+const importedByPrereviewer1 = new Events.ReviewRequestByAPrereviewerWasImported({
   publishedAt: now.subtract({ hours: 200 }),
   preprintId: preprintId1,
   requester: {
@@ -54,7 +54,7 @@ const importedByPrereviewer1 = new ReviewRequests.ReviewRequestByAPrereviewerWas
   reviewRequestId: requestId1,
 })
 
-const importedByPrereviewer2 = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+const importedByPrereviewer2 = new Events.ReviewRequestByAPrereviewerWasImported({
   publishedAt: now.subtract({ hours: 200 }),
   preprintId: commandPreprintId,
   requester: {
@@ -64,7 +64,7 @@ const importedByPrereviewer2 = new ReviewRequests.ReviewRequestByAPrereviewerWas
   reviewRequestId: requestId1,
 })
 
-const importedByPrereviewer3 = new ReviewRequests.ReviewRequestByAPrereviewerWasImported({
+const importedByPrereviewer3 = new Events.ReviewRequestByAPrereviewerWasImported({
   publishedAt: now.subtract({ hours: 200 }),
   preprintId: commandPreprintId,
   requester: {
@@ -74,7 +74,7 @@ const importedByPrereviewer3 = new ReviewRequests.ReviewRequestByAPrereviewerWas
   reviewRequestId: commandRequestId,
 })
 
-const importedFromPreprintServer = new ReviewRequests.ReviewRequestFromAPreprintServerWasImported({
+const importedFromPreprintServer = new Events.ReviewRequestFromAPreprintServerWasImported({
   publishedAt: now.subtract({ hours: 200 }),
   receivedFrom: new URL('http://example.com'),
   preprintId: preprintId1,
@@ -82,7 +82,7 @@ const importedFromPreprintServer = new ReviewRequests.ReviewRequestFromAPreprint
   reviewRequestId: commandRequestId,
 })
 
-const received = new ReviewRequests.ReviewRequestForAPreprintWasReceived({
+const received = new Events.ReviewRequestForAPreprintWasReceived({
   receivedAt: now.subtract({ hours: 2 }),
   receivedFrom: new URL('http://example.com'),
   preprintId: preprintId1,
@@ -114,7 +114,7 @@ describe.each<[string, ReadonlyArray<Events.Event>]>([
     expect(actual).toStrictEqual(
       Result.succeed(
         Option.some(
-          new ReviewRequests.ReviewRequestForAPreprintWasStarted({
+          new Events.ReviewRequestForAPreprintWasStarted({
             startedAt: now,
             preprintId: commandPreprintId,
             reviewRequestId: commandRequestId,
