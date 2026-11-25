@@ -29,8 +29,8 @@ export type FromOnDemandQuery<E extends AnyEvent, T> =
     ? (...input: Input) => Effect.Effect<Result, UnableToQuery | Error>
     : never
 
-export type FromStatefulQuery<T> =
-  T extends Pick<StatefulQuery<AnyEvent, infer Input extends QueryInput, infer Result, infer Error, never>, 'query'>
+export type FromStatefulQuery<E extends AnyEvent, T> =
+  T extends Pick<StatefulQuery<E, infer Input extends QueryInput, infer Result, infer Error, never>, 'query'>
     ? (...input: Input) => Effect.Effect<Result, Error | UnableToQuery>
     : never
 

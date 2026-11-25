@@ -17,7 +17,7 @@ export type Query<F extends (...args: never) => unknown, E = never> = GenericQue
 
 export type QueryInput = GenericQueries.QueryInput
 
-export type FromStatefulQuery<T> = GenericQueries.FromStatefulQuery<T>
+export type FromStatefulQuery<T> = GenericQueries.FromStatefulQuery<Event, T>
 
 export type FromOnDemandQuery<T> = GenericQueries.FromOnDemandQuery<Event, T>
 

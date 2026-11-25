@@ -2,13 +2,13 @@ import { Data, Effect, identity, Option, pipe, Predicate, Record, type Result, S
 import type { AnyEvent, EventFilter } from './EventFilter.ts'
 import type * as EventStore from './EventStore.ts'
 
-export type FromCommand<T> =
-  T extends Pick<Command<AnyEvent, infer Input extends CommandInput, never, infer Error>, 'decide'>
+export type FromCommand<E extends AnyEvent, T> =
+  T extends Pick<Command<E, infer Input extends CommandInput, never, infer Error>, 'decide'>
     ? (...input: Input) => Effect.Effect<void, Error | UnableToHandleCommand>
     : never
 
-export type FromStatelessCommand<T> =
-  T extends StatelessCommand<AnyEvent, infer Input extends CommandInput>
+export type FromStatelessCommand<E extends AnyEvent, T> =
+  T extends StatelessCommand<E, infer Input extends CommandInput>
     ? (...input: Input) => Effect.Effect<void, UnableToHandleCommand>
     : never
 

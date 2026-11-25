@@ -9,9 +9,9 @@ export type UnableToHandleCommand = GenericCommands.UnableToHandleCommand
 
 export type CommandInput = GenericCommands.CommandInput
 
-export type FromCommand<T> = GenericCommands.FromCommand<T>
+export type FromCommand<T> = GenericCommands.FromCommand<Event, T>
 
-export type FromStatelessCommand<T> = GenericCommands.FromStatelessCommand<T>
+export type FromStatelessCommand<T> = GenericCommands.FromStatelessCommand<Event, T>
 
 export type Command<
   Input extends CommandInput,
