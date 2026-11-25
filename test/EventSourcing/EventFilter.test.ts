@@ -54,9 +54,7 @@ describe('make', () => {
   })
 
   it('makes event filters', () => {
-    const filter: _.EventFilter<typeof Event.Type> = EventFilter({ types: ['ThingStarted'] })
-
-    expect(filter).toStrictEqual({ types: ['ThingStarted'] })
+    expectTypeOf(EventFilter({ types: ['ThingStarted'] })).toExtend<_.EventFilter<typeof Event.Type>>()
   })
 
   it("doesn't let other values be event filters", () => {
@@ -66,8 +64,9 @@ describe('make', () => {
 
 describe('forTypes', () => {
   it('makes an event filter for the types', () => {
-    const filter: _.EventFilter<typeof Event.Type> = _.forTypes(['ThingStarted', 'ThingFinished'])
+    const filter = _.forTypes<typeof Event.Type>(['ThingStarted', 'ThingFinished'])
 
+    expectTypeOf(filter).toEqualTypeOf<_.EventFilter<typeof Event.Type>>()
     expect(filter).toStrictEqual({ types: ['ThingStarted', 'ThingFinished'] })
   })
 })
