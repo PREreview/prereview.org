@@ -5,9 +5,9 @@ import type { Html } from '../../../html.ts'
 import type { Doi } from '../../../types/Doi.ts'
 import type { TopicId } from '../../../types/Topic.ts'
 import type { ClubName } from '../../Clubs/index.ts'
+import type * as Events from '../../Events/index.ts'
 import type { PreprintId } from '../../Preprints/index.ts'
 import type { Persona } from '../../Prereviewers/index.ts'
-import type { PreprintReviewImported, StructuredPrereviewSchema } from '../Events.ts'
 
 export class PublishedPreprintReview extends Data.TaggedClass('PublishedPreprintReview')<{
   addendum?: Html
@@ -16,10 +16,10 @@ export class PublishedPreprintReview extends Data.TaggedClass('PublishedPreprint
     anonymous: number
   }
   club?: ClubName
-  competingInterests: (typeof PreprintReviewImported.Type)['competingInterests']
+  competingInterests: (typeof Events.PreprintReviewImported.Type)['competingInterests']
   content:
     | { readonly _tag: 'Full'; readonly text: Html }
-    | { readonly _tag: 'Structured'; readonly questions: typeof StructuredPrereviewSchema.Type }
+    | { readonly _tag: 'Structured'; readonly questions: typeof Events.StructuredPrereviewSchema.Type }
   doi: Doi
   id: number
   language?: LanguageCode
@@ -34,7 +34,7 @@ export class PublishedPreprintReview extends Data.TaggedClass('PublishedPreprint
   live: boolean
   requested: boolean
   topics: ReadonlyArray<TopicId>
-  useOfAi: (typeof PreprintReviewImported.Type)['useOfAi']
+  useOfAi: (typeof Events.PreprintReviewImported.Type)['useOfAi']
 }> {}
 
 export class PrereviewIsNotFound extends Data.TaggedError('PrereviewIsNotFound') {}

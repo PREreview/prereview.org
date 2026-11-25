@@ -22,7 +22,7 @@ import sanitize from 'sanitize-html'
 import { match, P } from 'ts-pattern'
 import { DefaultClubs } from '../src/Domain/Clubs/ClubDetails.ts'
 import { GetClubByName } from '../src/Domain/Clubs/GetClubByName.ts'
-import { PreprintReviewImported, type StructuredPrereviewSchema } from '../src/Domain/PreprintReviews/Events.ts'
+import * as Events from '../src/Domain/Events/index.ts'
 import { fromUrl, parsePreprintDoi } from '../src/Domain/Preprints/index.ts'
 import { Html } from '../src/html.ts'
 import { SupportedLocales, translate, type SupportedLocale } from '../src/locales/index.ts'
@@ -70,7 +70,7 @@ type ZenodoRecord = typeof ZenodoRecordSchema.Type
 const InputFileSchema = Schema.fromJsonString(Schema.Struct({ record: ZenodoRecordSchema, html: Schema.String }))
 
 const PrereviewToImportSchema = Schema.Struct({
-  ...Struct.omit(PreprintReviewImported.fields, ['_tag']),
+  ...Struct.omit(Events.PreprintReviewImported.fields, ['_tag']),
   authors: Schema.NonEmptyArray(
     Schema.TaggedUnion({
       PublicPersona: { name: NameSchema, orcidId: OrcidId.OrcidIdSchema },
@@ -281,7 +281,7 @@ const questions = {
       'yes-as-is': textMatches(t => [t('readyForAttentionYes')()]),
     },
   },
-} satisfies Record<keyof typeof StructuredPrereviewSchema.fields, unknown>
+} satisfies Record<keyof typeof Events.StructuredPrereviewSchema.fields, unknown>
 
 const getStructuredContent = (body: ReadonlyArray<Node>) =>
   Effect.gen(function* () {
@@ -324,7 +324,7 @@ const getStructuredContent = (body: ReadonlyArray<Node>) =>
       return yield* new CannotConvertRecord({ reason: 'unexpected structured questions' })
     }
 
-    return { _tag: 'Structured' as const, ...(content as typeof StructuredPrereviewSchema.Type) }
+    return { _tag: 'Structured' as const, ...(content as typeof Events.StructuredPrereviewSchema.Type) }
   })
 
 export function sanitizeHtml(html: string, { allowBlockLevel = true, trusted = false } = {}) {
