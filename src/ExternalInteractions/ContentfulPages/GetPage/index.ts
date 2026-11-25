@@ -1,6 +1,6 @@
 import { Array, Effect, pipe } from 'effect'
 import type { Locale } from '../../../Context.ts'
-import { Queries } from '../../../EventSourcing/index.ts'
+import { Queries } from '../../../Domain/Events/index.ts'
 import {
   Contentful,
   ContentfulIsUnavailable,

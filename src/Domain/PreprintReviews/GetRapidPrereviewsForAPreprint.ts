@@ -1,7 +1,7 @@
 import { Array, flow, Result, Struct, type Option } from 'effect'
-import { Queries } from '../../EventSourcing/index.ts'
 import { Temporal, type NonEmptyString, type OrcidId, type Uuid } from '../../types/index.ts'
 import * as Events from '../Events/index.ts'
+import { Queries } from '../Events/index.ts'
 import type * as Preprints from '../Preprints/index.ts'
 
 export type Input = Preprints.IndeterminatePreprintId

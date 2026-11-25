@@ -1,6 +1,6 @@
 import { Context, Effect, HashSet, Layer, Option, pipe, Record } from 'effect'
 import type { Locale } from '../Context.ts'
-import { Queries } from '../EventSourcing/index.ts'
+import { Queries } from '../Domain/Events/index.ts'
 import { ContentfulPages } from '../ExternalInteractions/ContentfulPages/index.ts'
 import { GhostPage } from '../ExternalInteractions/index.ts'
 import * as FeatureFlags from '../FeatureFlags.ts'

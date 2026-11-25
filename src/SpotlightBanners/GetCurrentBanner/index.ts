@@ -1,6 +1,6 @@
 import { Array, Effect, Option, pipe, Schema } from 'effect'
 import type { Locale } from '../../Context.ts'
-import { Queries } from '../../EventSourcing/index.ts'
+import { Queries } from '../../Domain/Events/index.ts'
 import { Contentful } from '../../ExternalApis/Contentful/index.ts'
 import { EntryToSpotlightBanner } from '../EntryToSpotlightBanner.ts'
 import type { SpotlightBanner } from '../Types.ts'

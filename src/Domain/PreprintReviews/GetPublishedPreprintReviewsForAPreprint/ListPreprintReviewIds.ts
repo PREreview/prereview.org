@@ -1,7 +1,7 @@
 import { Array, flow, HashMap, Option, Order, Result, Schema, Tuple } from 'effect'
-import { Queries } from '../../../EventSourcing/index.ts'
 import { Temporal } from '../../../types/index.ts'
 import * as Events from '../../Events/index.ts'
+import { Queries } from '../../Events/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 
 export type Input = typeof Input.Type

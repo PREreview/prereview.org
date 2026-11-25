@@ -1,7 +1,7 @@
 import { Array, Data, Iterable, pipe, Result } from 'effect'
-import { Queries } from '../../EventSourcing/index.ts'
 import type { Pseudonym } from '../../types/Pseudonym.ts'
 import type * as Events from '../Events/index.ts'
+import { Queries } from '../Events/index.ts'
 
 export class NoPseudonymAvailable extends Data.TaggedError('NoPseudonymAvailable') {}
 

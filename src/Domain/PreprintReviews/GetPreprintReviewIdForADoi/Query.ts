@@ -1,7 +1,7 @@
 import { Array, HashMap, Result } from 'effect'
-import { Queries } from '../../../EventSourcing/index.ts'
 import { type Doi, DoiSchema } from '../../../types/Doi.ts'
 import * as Events from '../../Events/index.ts'
+import { Queries } from '../../Events/index.ts'
 import { PrereviewIsNotFound } from './Types.ts'
 
 export type Input = Doi

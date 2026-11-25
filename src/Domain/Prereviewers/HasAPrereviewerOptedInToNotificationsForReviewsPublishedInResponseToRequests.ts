@@ -1,7 +1,7 @@
 import { Array, Data, Match, Option, Result, type Types } from 'effect'
-import { Queries } from '../../EventSourcing/index.ts'
 import type { OrcidId } from '../../types/index.ts'
 import * as Events from '../Events/index.ts'
+import { Queries } from '../Events/index.ts'
 
 export type Input = OrcidId.OrcidId
 

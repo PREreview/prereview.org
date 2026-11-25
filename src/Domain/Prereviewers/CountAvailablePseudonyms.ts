@@ -1,8 +1,8 @@
 import { Array, flow, HashMap, Result } from 'effect'
-import { Queries } from '../../EventSourcing/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { Pseudonym } from '../../types/Pseudonym.ts'
 import * as Events from '../Events/index.ts'
+import { Queries } from '../Events/index.ts'
 
 export interface Result {
   readonly used: number

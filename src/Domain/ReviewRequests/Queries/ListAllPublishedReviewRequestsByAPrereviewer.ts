@@ -1,7 +1,7 @@
 import { Array, flow, HashMap, Order, Result, Schema, Struct } from 'effect'
-import { Queries } from '../../../EventSourcing/index.ts'
 import { OrcidId, Temporal } from '../../../types/index.ts'
 import { SubfieldIdSchema } from '../../../types/subfield.ts'
+import { Queries } from '../../Events/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import * as shared from './sharedLogic.ts'
 

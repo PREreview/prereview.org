@@ -1,5 +1,6 @@
 import { Array, Context, Effect, Option, pipe, Predicate, Schedule, Scope } from 'effect'
-import { Queries, type StatefulQueries } from '../../../EventSourcing/index.ts'
+import type { StatefulQueries } from '../../../EventSourcing/index.ts'
+import { Queries } from '../../Events/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import { Prereviewers } from '../../Prereviewers/index.ts'
 import { WasPrereviewRemoved } from '../WasPrereviewRemoved.ts'

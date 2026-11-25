@@ -13,8 +13,9 @@ import {
   Schema,
   Struct,
 } from 'effect'
-import type * as Events from '../Domain/Events/index.ts'
-import { EventStore } from '../Domain/Events/index.ts'
+// oxlint-disable module-boundaries/use-index
+import * as EventStore from '../Domain/Events/EventStore.ts'
+import type * as Events from '../Domain/Events/Events.ts'
 import * as StatefulQueries from './StatefulQueries.ts'
 
 /** @deprecated */

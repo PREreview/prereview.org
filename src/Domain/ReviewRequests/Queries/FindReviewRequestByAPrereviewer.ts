@@ -1,6 +1,6 @@
 import { Equal, flow, HashMap, Option, Result } from 'effect'
-import { Queries } from '../../../EventSourcing/index.ts'
 import type { OrcidId, Uuid } from '../../../types/index.ts'
+import { Queries } from '../../Events/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import * as shared from './sharedLogic.ts'
 

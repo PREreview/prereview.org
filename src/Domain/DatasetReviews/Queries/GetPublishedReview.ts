@@ -1,8 +1,8 @@
 import { Array, Filter, MutableHashMap, MutableHashSet, Option, pipe, Result, Struct, type Types } from 'effect'
-import { Queries } from '../../../EventSourcing/index.ts'
 import { Temporal, type Doi, type NonEmptyString, type OrcidId, type Uuid } from '../../../types/index.ts'
 import type * as Datasets from '../../Datasets/index.ts'
 import * as Events from '../../Events/index.ts'
+import { Queries } from '../../Events/index.ts'
 import * as Errors from '../Errors.ts'
 
 export interface PublishedReview {

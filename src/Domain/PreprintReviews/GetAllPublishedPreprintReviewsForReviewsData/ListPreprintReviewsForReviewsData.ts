@@ -1,10 +1,10 @@
 import { Array, Filter, flow, HashMap, Match, Option, Order, pipe, Result } from 'effect'
-import { Queries } from '../../../EventSourcing/index.ts'
 import type { Doi } from '../../../types/Doi.ts'
 import { Temporal } from '../../../types/index.ts'
 import type { OrcidId } from '../../../types/OrcidId.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
 import * as Events from '../../Events/index.ts'
+import { Queries } from '../../Events/index.ts'
 import type { IndeterminatePreprintId } from '../../Preprints/index.ts'
 
 export interface PreprintReviewForReviewsData {

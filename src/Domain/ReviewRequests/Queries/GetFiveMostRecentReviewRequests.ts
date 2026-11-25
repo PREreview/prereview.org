@@ -1,7 +1,7 @@
 import { Array, Equivalence, Filter, flow, HashMap, Option, pipe, Result, Struct } from 'effect'
-import { Queries } from '../../../EventSourcing/index.ts'
 import { Temporal, type Uuid } from '../../../types/index.ts'
 import type { TopicId } from '../../../types/Topic.ts'
+import { Queries } from '../../Events/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import * as shared from './sharedLogic.ts'
 

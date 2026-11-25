@@ -1,6 +1,6 @@
 import { Effect, Struct, UndefinedOr } from 'effect'
-import type { Queries } from '../../../EventSourcing/index.ts'
 import { Clubs } from '../../Clubs/index.ts'
+import type { Queries } from '../../Events/index.ts'
 import { Preprints } from '../../Preprints/index.ts'
 import { Prereviewers, type UnableToGetPersona } from '../../Prereviewers/index.ts'
 import type { PublishedPreprintReviewDetails } from './Query.ts'

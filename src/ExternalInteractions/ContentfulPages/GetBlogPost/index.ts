@@ -1,7 +1,7 @@
 import { Array, Effect, pipe } from 'effect'
 import type { BlogPost } from '../../../CmsContent/index.ts'
+import { Queries } from '../../../Domain/Events/index.ts'
 import type { Prereviews } from '../../../Domain/Prereviews/index.ts'
-import { Queries } from '../../../EventSourcing/index.ts'
 import {
   Contentful,
   ContentfulIsUnavailable,

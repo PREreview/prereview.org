@@ -1,11 +1,11 @@
 import { Array, Data, HashMap, Match, Order, pipe, Result, Schema, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import { Queries } from '../../../EventSourcing/index.ts'
 import { type FieldId, FieldIdSchema } from '../../../types/field.ts'
 import { Temporal, type Uuid } from '../../../types/index.ts'
 import { Iso6391Schema } from '../../../types/iso639.ts'
 import { getTopicField } from '../../../types/Topic.ts'
 import * as Events from '../../Events/index.ts'
+import { Queries } from '../../Events/index.ts'
 
 export type Input = typeof Input.Type
 

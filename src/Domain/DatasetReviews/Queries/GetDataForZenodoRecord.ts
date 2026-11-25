@@ -1,8 +1,8 @@
 import { Array, Filter, HashSet, Option, Result, Struct, type Types } from 'effect'
-import { Queries } from '../../../EventSourcing/index.ts'
 import type { OrcidId, Uuid } from '../../../types/index.ts'
 import type * as Datasets from '../../Datasets/index.ts'
 import * as Events from '../../Events/index.ts'
+import { Queries } from '../../Events/index.ts'
 import * as Errors from '../Errors.ts'
 
 export type Input = Uuid.Uuid

@@ -1,5 +1,5 @@
 import { Array, Effect, pipe } from 'effect'
-import { Queries } from '../../../EventSourcing/index.ts'
+import { Queries } from '../../../Domain/Events/index.ts'
 import { Contentful, LinkContext } from '../../../ExternalApis/Contentful/index.ts'
 import { PageNotFound } from '../Errors.ts'
 import type { ContentfulPageOfBlogPosts } from '../index.ts'

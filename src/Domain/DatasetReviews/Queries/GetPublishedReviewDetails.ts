@@ -1,6 +1,6 @@
 import { Array, Option, Result, Struct, type Types } from 'effect'
-import { Queries } from '../../../EventSourcing/index.ts'
 import type { Doi, Uuid } from '../../../types/index.ts'
+import { Queries } from '../../Events/index.ts'
 import * as Errors from '../Errors.ts'
 import type * as Events from '../Events.ts'
 

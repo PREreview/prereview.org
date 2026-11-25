@@ -1,10 +1,10 @@
 import { Array, HashMap, Match, Option, Order, pipe, Result } from 'effect'
-import { Queries } from '../../../EventSourcing/index.ts'
 import type { Html } from '../../../html.ts'
 import type { Doi } from '../../../types/Doi.ts'
 import { Temporal, type NonEmptyString, type Uuid } from '../../../types/index.ts'
 import type { OrcidId } from '../../../types/OrcidId.ts'
 import * as Events from '../../Events/index.ts'
+import { Queries } from '../../Events/index.ts'
 
 export interface PublishedComment {
   readonly authorId: OrcidId

@@ -1,9 +1,9 @@
 import { Array, flow, HashMap, Result, Schema } from 'effect'
-import { Queries } from '../../../EventSourcing/index.ts'
 import { DomainIdSchema } from '../../../types/domain.ts'
 import { FieldIdSchema } from '../../../types/field.ts'
 import { Iso639, Temporal, Uuid } from '../../../types/index.ts'
 import { SubfieldIdSchema } from '../../../types/subfield.ts'
+import { Queries } from '../../Events/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import * as shared from './sharedLogic.ts'
 

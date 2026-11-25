@@ -1,7 +1,7 @@
 import { Array, Equal, Option, pipe, Record, Result } from 'effect'
-import { Queries } from '../../EventSourcing/index.ts'
 import type { Uuid } from '../../types/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
+import { Queries } from '../Events/index.ts'
 import type { InputForCommentZenodoRecord } from './Context.ts'
 import * as Errors from './Errors.ts'
 import type { CommentEvent } from './Events.ts'

@@ -1,6 +1,7 @@
 import { Effect, pipe } from 'effect'
-import { Queries, type StatefulQueries } from '../../../EventSourcing/index.ts'
+import type { StatefulQueries } from '../../../EventSourcing/index.ts'
 import type { Doi } from '../../../types/Doi.ts'
+import { Queries } from '../../Events/index.ts'
 import { Query } from './Query.ts'
 import type { PrereviewIsNotFound } from './Types.ts'
 
