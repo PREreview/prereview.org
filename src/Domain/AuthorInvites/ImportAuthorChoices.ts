@@ -1,7 +1,7 @@
-import { Commands } from '../../EventSourcing/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { Instant } from '../../types/Temporal.ts'
 import * as Events from '../Events/index.ts'
+import { Commands } from '../Events/index.ts'
 
 export interface Input {
   readonly reviewId: number

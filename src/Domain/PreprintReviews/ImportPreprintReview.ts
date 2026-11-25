@@ -1,8 +1,8 @@
 import { Array, Data, Equal, type Equivalence, Match, Option, Result, Struct } from 'effect'
-import { Commands } from '../../EventSourcing/index.ts'
 import { SensitiveData } from '../../SensitiveData/index.ts'
 import { Temporal } from '../../types/index.ts'
 import * as Events from '../Events/index.ts'
+import { Commands } from '../Events/index.ts'
 import * as Preprints from '../Preprints/index.ts'
 
 export type Input = Omit<typeof Events.PreprintReviewImported.Type, '_tag'>

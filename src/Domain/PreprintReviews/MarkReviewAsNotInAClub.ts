@@ -1,6 +1,6 @@
 import { Effect, pipe } from 'effect'
-import { Commands } from '../../EventSourcing/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
+import { Commands } from '../Events/index.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 import * as Errors from './Errors.ts'
 import * as FormStore from './FormStore.ts'

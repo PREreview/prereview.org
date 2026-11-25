@@ -1,8 +1,8 @@
 import { Array, Data, Match, Option, Result, type Types } from 'effect'
-import { Commands } from '../../EventSourcing/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { Uuid } from '../../types/Uuid.ts'
 import * as Events from '../Events/index.ts'
+import { Commands } from '../Events/index.ts'
 
 export interface Input {
   readonly reviewId: Uuid

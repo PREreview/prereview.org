@@ -1,10 +1,9 @@
 import { Data, Effect, pipe } from 'effect'
 import * as AuthorInviteStore from '../../AuthorInviteStore.ts'
-import { Commands } from '../../EventSourcing/index.ts'
 import { Temporal } from '../../types/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { Uuid } from '../../types/Uuid.ts'
-import type { EventStore } from '../Events/index.ts'
+import { Commands, type EventStore } from '../Events/index.ts'
 import type { ContactEmailAddressHasAlreadyBeenVerified } from './Errors.ts'
 import { UseAuthorInviteEmailAddressFromLegacyInvite } from './UseAuthorInviteEmailAddressFromLegacyInvite.ts'
 

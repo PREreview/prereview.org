@@ -1,6 +1,7 @@
 import { Context, Data, Effect, identity, Option, pipe, Predicate, Record, type Result, Schema, Scope } from 'effect'
-import type * as Events from '../Domain/Events/index.ts'
-import { EventStore } from '../Domain/Events/index.ts'
+// oxlint-disable module-boundaries/use-index
+import * as EventStore from '../Domain/Events/EventStore.ts'
+import type * as Events from '../Domain/Events/Events.ts'
 
 export type FromCommand<T> =
   T extends Pick<Command<infer Input extends CommandInput, never, infer Error>, 'decide'>

@@ -1,10 +1,10 @@
 import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Match, Option, pipe, Result, type Types } from 'effect'
-import { Commands } from '../../EventSourcing/index.ts'
 import type { EmailAddress } from '../../types/EmailAddress.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { Uuid } from '../../types/Uuid.ts'
 import * as Events from '../Events/index.ts'
+import { Commands } from '../Events/index.ts'
 import { ContactEmailAddressHasAlreadyBeenVerified } from './Errors.ts'
 
 export interface Input {

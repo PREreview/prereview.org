@@ -1,7 +1,7 @@
 import { Effect, Equal, Match, pipe } from 'effect'
 import { Locale } from '../../../Context.ts'
 import * as Comments from '../../../Domain/Comments/index.ts'
-import { Commands } from '../../../EventSourcing/index.ts'
+import { Commands } from '../../../Domain/Events/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
 import { EnsureUserIsLoggedIn } from '../../../user.ts'

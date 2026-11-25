@@ -1,8 +1,8 @@
 import type { Temporal } from '@js-temporal/polyfill'
 import { Array, Data, flow, Match, Option, Result } from 'effect'
-import { Commands } from '../../../EventSourcing/index.ts'
 import type { OrcidId, Uuid } from '../../../types/index.ts'
 import * as Events from '../../Events/index.ts'
+import { Commands } from '../../Events/index.ts'
 import type * as Preprints from '../../Preprints/index.ts'
 import * as Errors from '../Errors.ts'
 

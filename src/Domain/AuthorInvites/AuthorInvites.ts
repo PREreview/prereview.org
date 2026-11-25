@@ -1,5 +1,6 @@
 import { Context, Effect, flow, Layer } from 'effect'
-import { Commands, Queries } from '../../EventSourcing/index.ts'
+import { Queries } from '../../EventSourcing/index.ts'
+import { Commands } from '../Events/index.ts'
 import { AcceptInvite } from './AcceptInvite.ts'
 import { ChoosePersona } from './ChoosePersona.ts'
 import { ConfirmAuthorChoices } from './ConfirmAuthorChoices.ts'
