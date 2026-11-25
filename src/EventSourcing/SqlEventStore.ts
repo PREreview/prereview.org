@@ -164,9 +164,7 @@ export const make: <E extends EventFilter.AnyEvent, RD, RE>(
               sql`payload @> ${isPgClient(sql) ? sql.json(encodedPredicates) : JSON.stringify(encodedPredicates)}`,
             ],
             orElse: () =>
-              Record.reduce(encodedPredicates, Array.empty<Statement.Fragment>(), (conditions, value, key) =>
-                typeof value === 'string' ? Array.append(conditions, sql`payload ->> ${key} = ${value}`) : conditions,
-              ),
+              Array.map(Record.toEntries(encodedPredicates), ([key, value]) => sql`payload ->> ${key} = ${value}`),
           }),
         ])
       }),

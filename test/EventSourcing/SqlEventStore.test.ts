@@ -280,6 +280,19 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
         new TestEvents.ThingMoved({ thingId, location: { x: 3, y: 4 } }),
       ],
     ],
+    [
+      'number predicates',
+      { types: ['ThingWeighed'], predicates: { weight: 10 } },
+      [
+        new TestEvents.ThingWeighed({ thingId, weight: 10 }),
+        new TestEvents.ThingWeighed({ thingId, weight: 20 }),
+        new TestEvents.ThingWeighed({ thingId: otherThingId, weight: 10 }),
+      ],
+      [
+        new TestEvents.ThingWeighed({ thingId, weight: 10 }),
+        new TestEvents.ThingWeighed({ thingId: otherThingId, weight: 10 }),
+      ],
+    ],
   ])(
     'find events (%s)',
     ([, filter, events, expected]) =>

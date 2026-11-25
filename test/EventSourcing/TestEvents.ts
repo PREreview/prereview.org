@@ -31,12 +31,17 @@ export class ThingMoved extends Schema.TaggedClass<ThingMoved>()('ThingMoved', {
   location: Schema.fromJsonString(Schema.Struct({ x: Schema.Number, y: Schema.Number })),
 }) {}
 
+export class ThingWeighed extends Schema.TaggedClass<ThingWeighed>()('ThingWeighed', {
+  thingId: Schema.String,
+  weight: Schema.Number,
+}) {}
+
 export class ThingNamed extends Schema.TaggedClass<ThingNamed>()('ThingNamed', {
   thingId: Schema.String,
   name: SensitiveData.SensitiveData(Schema.String),
 }) {}
 
-export const Event = Schema.Union([ThingStarted, ThingFinished, ThingRated, ThingReviewed, ThingMoved])
+export const Event = Schema.Union([ThingStarted, ThingFinished, ThingRated, ThingReviewed, ThingMoved, ThingWeighed])
 
 export type Event = typeof Event.Type
 
@@ -69,5 +74,8 @@ export const thingMoved = (): fc.Arbitrary<ThingMoved> =>
     .record({ thingId: fc.uuid(), location: fc.record({ x: fc.integer(), y: fc.integer() }) })
     .map(fields => new ThingMoved(fields))
 
+export const thingWeighed = (): fc.Arbitrary<ThingWeighed> =>
+  fc.record({ thingId: fc.uuid(), weight: fc.integer() }).map(fields => new ThingWeighed(fields))
+
 export const event = (): fc.Arbitrary<Event> =>
-  fc.oneof(thingStarted(), thingFinished(), thingRated(), thingReviewed(), thingMoved())
+  fc.oneof(thingStarted(), thingFinished(), thingRated(), thingReviewed(), thingMoved(), thingWeighed())
