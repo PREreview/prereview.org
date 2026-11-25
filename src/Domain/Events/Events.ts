@@ -6,16 +6,16 @@ import * as CommentEvents from '../Comments/Events.ts'
 import * as ContactEmailAddressesEvents from '../ContactEmailAddresses/Events.ts'
 import * as DatasetReviewEvents from '../DatasetReviews/Events.ts'
 import * as PreprintReviews from '../PreprintReviews/Events.ts'
-import * as PrereviewerEvents from '../Prereviewers/Events.ts'
 import * as ReviewRequestsEvents from '../ReviewRequests/Events.ts'
+import * as PrereviewerEvents from './Prereviewers.ts'
 
 export * from '../AuthorInvites/Events.ts'
 export * from '../Comments/Events.ts'
 export * from '../ContactEmailAddresses/Events.ts'
 export * from '../DatasetReviews/Events.ts'
 export * from '../PreprintReviews/Events.ts'
-export * from '../Prereviewers/Events.ts'
 export * from '../ReviewRequests/Events.ts'
+export * from './Prereviewers.ts'
 
 export type Event = typeof Event.Type
 
