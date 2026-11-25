@@ -1,5 +1,5 @@
+// oxlint-disable module-boundaries/use-index
 import { Array, Schema, type Types } from 'effect'
-// oxlint-disable  module-boundaries/use-index
 import { EventFilter as GenericEventFilter } from '../../EventSourcing/index.ts'
 import * as AuthorInviteEvents from '../AuthorInvites/Events.ts'
 import * as CommentEvents from '../Comments/Events.ts'
