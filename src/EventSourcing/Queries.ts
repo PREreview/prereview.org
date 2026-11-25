@@ -13,10 +13,8 @@ import {
   Schema,
   Struct,
 } from 'effect'
-// oxlint-disable module-boundaries/use-index
-import * as EventStore from '../Domain/Events/EventStore.ts'
-import type * as Events from '../Domain/Events/Events.ts'
-import * as StatefulQueries from './StatefulQueries.ts'
+import type { AnyEvent, EventFilter, EventsForFilter } from './EventFilter.ts'
+import type * as EventStore from './EventStore.ts'
 
 /** @deprecated */
 export type Query<F extends (...args: never) => unknown, E = never> = (
@@ -25,13 +23,13 @@ export type Query<F extends (...args: never) => unknown, E = never> = (
   ? Effect.Effect<R, UnableToQuery | Exclude<E | L, UnexpectedSequenceOfEvents>>
   : Effect.Effect<ReturnType<F>, UnableToQuery | Exclude<E, UnexpectedSequenceOfEvents>>
 
-export type FromOnDemandQuery<T> =
-  T extends OnDemandQuery<infer Input extends QueryInput, infer Result, infer Error>
+export type FromOnDemandQuery<E extends AnyEvent, T> =
+  T extends OnDemandQuery<E, infer Input extends QueryInput, infer Result, infer Error>
     ? (...input: Input) => Effect.Effect<Result, UnableToQuery | Error>
     : never
 
 export type FromStatefulQuery<T> =
-  T extends Pick<StatefulQuery<infer Input extends QueryInput, infer Result, infer Error, never>, 'query'>
+  T extends Pick<StatefulQuery<AnyEvent, infer Input extends QueryInput, infer Result, infer Error, never>, 'query'>
     ? (...input: Input) => Effect.Effect<Result, Error | UnableToQuery>
     : never
 
@@ -39,48 +37,45 @@ export class UnableToQuery extends Data.TaggedError('UnableToQuery')<{ cause?: u
 
 export class UnexpectedSequenceOfEvents extends Data.TaggedError('UnexpectedSequenceOfEvents')<{ cause?: unknown }> {}
 
-type QueryInput = readonly [] | readonly [input: unknown]
+export type QueryInput = readonly [] | readonly [input: unknown]
 
 type InputSchema<Input extends QueryInput> = Input extends readonly [infer I] ? Schema.Codec<I, unknown> : never
 
-export interface OnDemandQuery<Input extends QueryInput, Result, Error = never> {
+export interface OnDemandQuery<E extends AnyEvent, Input extends QueryInput, Result, Error = never> {
   name: string
   inputSchema?: InputSchema<Input>
-  createFilter: (...input: Input) => Events.EventFilter
-  query: (
-    events: ReadonlyArray<Events.Event>,
-    ...input: Input
-  ) => Result.Result<Result, Error | UnexpectedSequenceOfEvents>
+  createFilter: (...input: Input) => EventFilter<E>
+  query: (events: ReadonlyArray<E>, ...input: Input) => Result.Result<Result, Error | UnexpectedSequenceOfEvents>
 }
 
-export interface StatefulQuery<Input extends QueryInput, Result, Error = never, State = unknown> {
+export interface StatefulQuery<E extends AnyEvent, Input extends QueryInput, Result, Error = never, State = unknown> {
   name: string
   inputSchema?: InputSchema<Input>
   initialState: State
-  updateStateWithEvents: (state: State, events: Array.NonEmptyReadonlyArray<Events.Event>) => State
+  updateStateWithEvents: (state: State, events: Array.NonEmptyReadonlyArray<E>) => State
   query: (state: State, ...input: Input) => Result.Result<Result, Error>
 }
 
-export const OnDemandQuery: <Input extends QueryInput, Result, Error = never>(
-  query: OnDemandQuery<Input, Result, Error>,
-) => OnDemandQuery<Input, Result, Error> = identity
+export interface StatefulQueryRegistry<E extends AnyEvent> {
+  readonly register: (
+    subscriber: (events: Array.NonEmptyReadonlyArray<E>) => Effect.Effect<void>,
+  ) => Effect.Effect<void>
+}
 
-export const StatefulQuery: <Input extends QueryInput, Result, Error = never, State = unknown>(
-  query: StatefulQuery<Input, Result, Error, State>,
-) => StatefulQuery<Input, Result, Error, State> = identity
+export const OnDemandQuery: <E extends AnyEvent, Input extends QueryInput, Result, Error = never>(
+  query: OnDemandQuery<E, Input, Result, Error>,
+) => OnDemandQuery<E, Input, Result, Error> = identity
 
-export const makeOnDemandQuery = <Input extends QueryInput, Result, Error = never>({
-  name,
-  inputSchema,
-  createFilter,
-  query,
-}: OnDemandQuery<Input, Result, Error>): Effect.Effect<
-  (...input: Input) => Effect.Effect<Result, UnableToQuery | Error>,
-  never,
-  EventStore.EventStore
-> =>
+export const StatefulQuery: <E extends AnyEvent, Input extends QueryInput, Result, Error = never, State = unknown>(
+  query: StatefulQuery<E, Input, Result, Error, State>,
+) => StatefulQuery<E, Input, Result, Error, State> = identity
+
+export const makeOnDemandQuery = <E extends AnyEvent, R, Input extends QueryInput, Result, Error = never>(
+  eventStore: Effect.Effect<EventStore.EventStore<E>, never, R>,
+  { name, inputSchema, createFilter, query }: OnDemandQuery<E, Input, Result, Error>,
+): Effect.Effect<(...input: Input) => Effect.Effect<Result, UnableToQuery | Error>, never, R> =>
   Effect.gen(function* () {
-    const eventStore = yield* EventStore.EventStore
+    const store = yield* eventStore
 
     const annotateSpanWithInput = makeAnnotateSpanWithInput(inputSchema)
 
@@ -91,7 +86,7 @@ export const makeOnDemandQuery = <Input extends QueryInput, Result, Error = neve
         const filter = createFilter(...input)
 
         const events = yield* pipe(
-          eventStore.query(filter),
+          store.query(filter),
           Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
         )
 
@@ -104,24 +99,24 @@ export const makeOnDemandQuery = <Input extends QueryInput, Result, Error = neve
     )
   })
 
-export const makeStatefulQuery = <Input extends QueryInput, Result, Error = never, State = unknown>({
-  name,
-  inputSchema,
-  initialState,
-  updateStateWithEvents,
-  query,
-}: StatefulQuery<Input, Result, Error, State>): Effect.Effect<
-  (...input: Input) => Effect.Effect<Result, Error | UnableToQuery>,
-  never,
-  StatefulQueries.StatefulQueries
-> =>
+export const makeStatefulQuery = <
+  E extends AnyEvent,
+  R,
+  Input extends QueryInput,
+  Result,
+  Error = never,
+  State = unknown,
+>(
+  statefulQueries: Effect.Effect<StatefulQueryRegistry<E>, never, R>,
+  { name, inputSchema, initialState, updateStateWithEvents, query }: StatefulQuery<E, Input, Result, Error, State>,
+): Effect.Effect<(...input: Input) => Effect.Effect<Result, Error | UnableToQuery>, never, R> =>
   Effect.gen(function* () {
-    const statefulQueries = yield* StatefulQueries.StatefulQueries
+    const { register } = yield* statefulQueries
 
     const state = yield* Ref.make(initialState)
     const failure = yield* Ref.make(Option.none<unknown>())
 
-    yield* statefulQueries.register(events =>
+    yield* register(events =>
       pipe(
         Effect.forEach(
           Array.chunksOf(events, 100),
@@ -181,23 +176,24 @@ const toInputAttributes = (encoded: Schema.Json): Record<string, Schema.Json> =>
 const isJsonObject: (json: Schema.Json) => json is Schema.JsonObject = Schema.is(Schema.JsonObject)
 
 /** @deprecated */
-export const makeQuery = <Filter extends Events.EventFilter, Input, Result, Error>(
+export const makeQuery = <E extends AnyEvent, R, Filter extends EventFilter<E>, Input, Result, Error>(
+  eventStore: Effect.Effect<EventStore.EventStore<E>, never, R>,
   name: string,
   createFilter: (input: Input) => Filter,
   query: (
-    events: ReadonlyArray<Events.EventsForFilter<Filter>>,
+    events: ReadonlyArray<EventsForFilter<E, Filter>>,
     input: Input,
   ) => Result.Result<Result, UnexpectedSequenceOfEvents | Error>,
-): Effect.Effect<(input: Input) => Effect.Effect<Result, UnableToQuery | Error>, never, EventStore.EventStore> =>
+): Effect.Effect<(input: Input) => Effect.Effect<Result, UnableToQuery | Error>, never, R> =>
   Effect.gen(function* () {
-    const eventStore = yield* EventStore.EventStore
+    const store = yield* eventStore
 
     return Effect.fn(name)(
       function* (input) {
         const filter = createFilter(input)
 
         const events = yield* pipe(
-          eventStore.query(filter),
+          store.query(filter),
           Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
         )
 

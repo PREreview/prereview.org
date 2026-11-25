@@ -37,18 +37,18 @@ const Input = Schema.Struct({
 
 describe('makeOnDemandQuery', () => {
   const query = <I>(inputSchema?: Schema.Codec<I, unknown>) =>
-    _.OnDemandQuery({
+    _.OnDemandQuery<Events.Event, [I], string>({
       name: 'Test.onDemandQuery',
       ...(inputSchema === undefined ? {} : { inputSchema }),
       createFilter: (_input: I) => Events.EventFilter({ types: ['PreprintReviewImported'] }),
       query: () => Result.succeed('result'),
     })
 
-  const run = <I>(definition: _.OnDemandQuery<[I], string>, input: I) => {
+  const run = <I>(definition: _.OnDemandQuery<Events.Event, [I], string>, input: I) => {
     const { spans, tracer } = recordSpans()
 
     return pipe(
-      _.makeOnDemandQuery(definition),
+      _.makeOnDemandQuery(EventStore.EventStore, definition),
       Effect.flatMap(query => query(input)),
       Effect.provide(Layer.mock(EventStore.EventStore, { query: () => Effect.succeed(Option.none()) })),
       Effect.withTracer(tracer),
@@ -150,7 +150,7 @@ describe('makeStatefulQuery', () => {
       })
 
       yield* pipe(
-        _.makeStatefulQuery(definition),
+        _.makeStatefulQuery(StatefulQueries.StatefulQueries, definition),
         Effect.flatMap(query => query({ id: 123, tags: [], flag: false })),
         Effect.provide(Layer.mock(StatefulQueries.StatefulQueries, { register: () => Effect.void })),
         Effect.withTracer(tracer),
@@ -170,6 +170,7 @@ describe('makeStatefulQuery', () => {
 
       const query = yield* pipe(
         _.makeStatefulQuery(
+          StatefulQueries.StatefulQueries,
           _.StatefulQuery({
             name: 'Test.statefulQuery',
             initialState: 0,
@@ -201,6 +202,7 @@ describe('makeStatefulQuery', () => {
 
       yield* pipe(
         _.makeStatefulQuery(
+          StatefulQueries.StatefulQueries,
           _.StatefulQuery({
             name: 'Test.statefulQuery',
             initialState: 0,
