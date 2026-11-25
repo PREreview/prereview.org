@@ -670,7 +670,7 @@ const EventsTableSelect = Schema.Struct({
   ),
 )
 
-const isPgClient = (sql: SqlClient.SqlClient): sql is PgClient.PgClient => PgClient.TypeId in sql
+const isPgClient = (sql: SqlClient.SqlClient): sql is PgClient.PgClient & SqlClient.SqlClient => PgClient.TypeId in sql
 
 const LibsqlResults = Schema.Struct({ rowsAffected: Schema.Number })
 
