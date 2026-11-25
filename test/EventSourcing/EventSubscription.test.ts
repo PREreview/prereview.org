@@ -281,7 +281,9 @@ describe('EventSubscription', () => {
       const failed = yield* Deferred.make<undefined>()
 
       yield* Effect.gen(function* () {
-        const starting = yield* Effect.forkScoped(_.subscribe('test', { CommentWasStarted: () => Effect.void }))
+        const starting = yield* Effect.forkScoped(
+          _.subscribe(EventStore.EventStore, 'test', { CommentWasStarted: () => Effect.void }),
+        )
 
         yield* Deferred.await(failed)
         yield* TestClock.adjust('2 seconds')
@@ -312,8 +314,10 @@ describe('EventSubscription', () => {
   )
 })
 
-const start = <Handlers extends Types.NoExcessProperties<_.Handlers, Handlers>>(name: string, handlers: Handlers) =>
-  pipe(_.subscribe(name, handlers), Effect.andThen(Effect.forkScoped))
+const start = <Handlers extends Types.NoExcessProperties<_.Handlers<Events.Event>, Handlers>>(
+  name: string,
+  handlers: Handlers,
+) => pipe(_.subscribe(EventStore.EventStore, name, handlers), Effect.andThen(Effect.forkScoped))
 
 const TestLayer = pipe(
   SqlEventStore.layer,

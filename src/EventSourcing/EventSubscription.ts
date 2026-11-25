@@ -1,29 +1,29 @@
 import { Array, Data, Effect, Option, pipe, Record, Ref, Schedule, Stream, type Types } from 'effect'
 import { Singleton } from 'effect/cluster'
-// oxlint-disable module-boundaries/use-index
-import * as EventStore from '../Domain/Events/EventStore.ts'
-import type * as Events from '../Domain/Events/Events.ts'
 import { Temporal } from '../types/index.ts'
+import type { AnyEvent } from './EventFilter.ts'
+import type * as EventStore from './EventStore.ts'
 
-export type Handlers = {
-  readonly [Tag in Events.Event['_tag']]?: (
-    event: Types.ExtractTag<Events.Event, Tag>,
-  ) => Effect.Effect<unknown, unknown, unknown>
+export type Handlers<E extends AnyEvent> = {
+  readonly [Tag in E['_tag']]?: (event: Types.ExtractTag<E, Tag>) => Effect.Effect<unknown, unknown, unknown>
 }
 
-type HandlerServices<H extends Handlers> = Effect.Services<ReturnType<Extract<H[keyof H], (event: never) => unknown>>>
+type HandlerServices<H> = Effect.Services<ReturnType<Extract<H[keyof H], (event: never) => unknown>>>
 
 class HandlerDefect extends Data.TaggedError('HandlerDefect')<{ cause: unknown }> {}
 
 const backoff = Schedule.min([Schedule.exponential('2 seconds'), Schedule.spaced('5 minutes')])
 
-export const subscribe = Effect.fnUntraced(function* <H extends Types.NoExcessProperties<Handlers, H>>(
-  name: string,
-  handlers: H,
-) {
-  const handle = (event: Events.Event): Effect.Effect<void, unknown, HandlerServices<H>> => {
-    const handler = handlers[event._tag] as
-      ((event: Events.Event) => Effect.Effect<unknown, unknown, HandlerServices<H>>) | undefined
+export const subscribe = Effect.fnUntraced(function* <
+  E extends AnyEvent,
+  R,
+  H extends Types.NoExcessProperties<Handlers<E>, H>,
+>(eventStore: Effect.Effect<EventStore.EventStore<E>, never, R>, name: string, handlers: H) {
+  const store = yield* eventStore
+
+  const handle = (event: E): Effect.Effect<void, unknown, HandlerServices<H>> => {
+    const handler = handlers[event._tag as keyof H] as
+      ((event: E) => Effect.Effect<unknown, unknown, HandlerServices<H>>) | undefined
 
     if (handler === undefined) {
       return Effect.void
@@ -37,14 +37,14 @@ export const subscribe = Effect.fnUntraced(function* <H extends Types.NoExcessPr
   }
 
   const lastCursor = yield* pipe(
-    EventStore.loadCheckpoint(name),
+    store.loadCheckpoint(name),
     Effect.flatMap(
       Option.match({
         onSome: Effect.succeed,
         onNone: () =>
           pipe(
-            EventStore.latestCursor,
-            Effect.tap(cursor => EventStore.saveCheckpoint(name, cursor)),
+            store.latestCursor,
+            Effect.tap(cursor => store.saveCheckpoint(name, cursor)),
           ),
       }),
     ),
@@ -57,9 +57,9 @@ export const subscribe = Effect.fnUntraced(function* <H extends Types.NoExcessPr
   )
 
   const saveCursor = (cursor: EventStore.Cursor) =>
-    pipe(EventStore.saveCheckpoint(name, cursor), Effect.andThen(Ref.set(lastCursor, cursor)))
+    pipe(store.saveCheckpoint(name, cursor), Effect.andThen(Ref.set(lastCursor, cursor)))
 
-  const types = Record.keys(handlers) as Array<Events.Event['_tag']>
+  const types = Record.keys(handlers) as Array<Types.Tags<E>>
 
   const failures = yield* Ref.make<Option.Option<{ readonly since: Temporal.Instant; readonly attempts: number }>>(
     Option.none(),
@@ -100,7 +100,7 @@ export const subscribe = Effect.fnUntraced(function* <H extends Types.NoExcessPr
     })
   })
 
-  const handlePage = (page: EventStore.Page) =>
+  const handlePage = (page: EventStore.Page<E>) =>
     pipe(
       Effect.forEach(
         page,
@@ -130,7 +130,7 @@ export const subscribe = Effect.fnUntraced(function* <H extends Types.NoExcessPr
 
     const startCursor = yield* Ref.get(lastCursor)
 
-    yield* Stream.runForEach(EventStore.subscribe({ after: startCursor, filter: { types } }), handlePage)
+    yield* Stream.runForEach(store.subscribe({ after: startCursor, filter: { types } }), handlePage)
   })
 
   yield* Effect.logDebug('EventSubscription started').pipe(Effect.annotateLogs({ name }))
@@ -138,5 +138,8 @@ export const subscribe = Effect.fnUntraced(function* <H extends Types.NoExcessPr
   return pipe(handleNewEvents, Effect.tapError(recordFailure), Effect.retry({ schedule: backoff }))
 })
 
-export const make = <H extends Types.NoExcessProperties<Handlers, H>>(name: string, handlers: H) =>
-  Singleton.make(`EventSubscription/${name}`, Effect.flatten(subscribe(name, handlers)))
+export const make = <E extends AnyEvent, R, H extends Types.NoExcessProperties<Handlers<E>, H>>(
+  eventStore: Effect.Effect<EventStore.EventStore<E>, never, R>,
+  name: string,
+  handlers: H,
+) => Singleton.make(`EventSubscription/${name}`, Effect.flatten(subscribe(eventStore, name, handlers)))
