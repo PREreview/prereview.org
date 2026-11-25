@@ -43,6 +43,18 @@ describe('register', () => {
       expect(Exit.findDefect(actual)).toStrictEqual(Result.succeed(new _.RegisteredAfterReplay()))
     }).pipe(Effect.provide(TestLayer)),
   )
+
+  it.effect('is unaffected by replaying other stateful queries', () =>
+    Effect.gen(function* () {
+      const statefulQueries = yield* StatefulQueries
+
+      yield* other.replay
+
+      const actual = yield* Effect.exit(statefulQueries.register(() => Effect.void))
+
+      expect(actual).toStrictEqual(Exit.void)
+    }).pipe(Effect.provide(Layer.merge(other.layer, TestLayer))),
+  )
 })
 
 describe('worker', () => {
@@ -134,6 +146,8 @@ describe('worker', () => {
 const StatefulQueries = Context.Service<_.StatefulQueries<Events.Event>>('StatefulQueries')
 
 const { layer, replay, worker } = _.make(StatefulQueries, EventStore.EventStore)
+
+const other = _.make(Context.Service<_.StatefulQueries<Events.Event>>('OtherStatefulQueries'), EventStore.EventStore)
 
 const register = Effect.gen(function* () {
   const statefulQueries = yield* StatefulQueries

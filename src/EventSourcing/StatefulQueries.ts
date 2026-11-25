@@ -14,11 +14,11 @@ export const make = <E extends AnyEvent, R>(
   tag: Context.Service<StatefulQueries<E>, StatefulQueries<E>>,
   eventStore: Effect.Effect<EventStore.EventStore<E>, never, R>,
 ) => {
-  const LastCursor = Context.Service<Ref.Ref<Option.Option<EventStore.Cursor>>>('StatefulQueries/LastCursor')
+  const LastCursor = Context.Service<Ref.Ref<Option.Option<EventStore.Cursor>>>(`${tag.key}/LastCursor`)
 
-  const Subscribers = Context.Service<Ref.Ref<ReadonlyArray<Subscriber<E>>>>('StatefulQueries/Subscribers')
+  const Subscribers = Context.Service<Ref.Ref<ReadonlyArray<Subscriber<E>>>>(`${tag.key}/Subscribers`)
 
-  const HasReplayed = Context.Service<Ref.Ref<boolean>>('StatefulQueries/HasReplayed')
+  const HasReplayed = Context.Service<Ref.Ref<boolean>>(`${tag.key}/HasReplayed`)
 
   const layer = Layer.mergeAll(
     Layer.provideMerge(
