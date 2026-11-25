@@ -83,8 +83,8 @@ const ExternalApis = Layer.mergeAll(
   Layer.provide(Contentful.layer, CachingHttpClient.layer('10 seconds')),
   pipe(
     Crossref.layer,
-    Layer.provide(CachingHttpClient.layer('1 day', '10 seconds')),
     Layer.provide(Layer.fresh(RequestCollapsingHttpClient.layer)),
+    Layer.provide(CachingHttpClient.layer('1 day', '10 seconds')),
     Layer.provide(Crossref.layerRateLimitedHttpClient),
   ),
   Layer.provide(Datacite.layer, CachingHttpClient.layer('1 day')),
@@ -93,8 +93,8 @@ const ExternalApis = Layer.mergeAll(
   Layer.provide(OpenAlex.layer, CachingHttpClient.layer('10 minutes')),
   pipe(
     Orcid.layer,
-    Layer.provide(CachingHttpClient.layer('1 day', '10 seconds')),
     Layer.provide(Layer.fresh(RequestCollapsingHttpClient.layer)),
+    Layer.provide(CachingHttpClient.layer('1 day', '10 seconds')),
     Layer.provide(Orcid.layerRateLimitedHttpClient),
   ),
   Layer.provide(Philsci.layer, CachingHttpClient.layer('1 day')),
