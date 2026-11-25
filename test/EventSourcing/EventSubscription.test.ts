@@ -15,30 +15,27 @@ import {
 } from 'effect'
 import { TestClock } from 'effect/testing'
 import { sample } from 'fast-check'
-import type * as Events from '../../src/Domain/Events/Events.ts'
-import * as EventStore from '../../src/Domain/Events/EventStore.ts'
-import * as SqlEventStore from '../../src/Domain/Events/SqlEventStore.ts'
+import * as EventStore from '../../src/EventSourcing/EventStore.ts'
 import * as _ from '../../src/EventSourcing/EventSubscription.ts'
-import * as SensitiveDataStore from '../../src/EventSourcing/SensitiveDataStore.ts'
 import { Uuid } from '../../src/types/index.ts'
-import * as fc from '../fc.ts'
 import * as TestLibsqlClient from '../TestLibsqlClient.ts'
 import { describe, expect, it } from '../vitest.ts'
+import * as TestEvents from './TestEvents.ts'
 
 describe('EventSubscription', () => {
   it.effect('handles events appended after it starts', () =>
     Effect.gen(function* () {
-      const [startedEvent] = sample(fc.commentWasStarted(), 1)
-      const [publishedEvent] = sample(fc.commentWasPublished(), 1)
-      const handled = yield* Queue.unbounded<Events.Event>()
+      const [startedEvent] = sample(TestEvents.thingStarted(), 1)
+      const [publishedEvent] = sample(TestEvents.thingFinished(), 1)
+      const handled = yield* Queue.unbounded<TestEvents.Event>()
 
       yield* start('test', {
-        CommentWasStarted: event => Queue.offer(handled, event),
-        CommentWasPublished: event => Queue.offer(handled, event),
+        ThingStarted: event => Queue.offer(handled, event),
+        ThingFinished: event => Queue.offer(handled, event),
       })
 
-      yield* EventStore.append(startedEvent!)
-      yield* EventStore.append(publishedEvent!)
+      yield* TestEvents.append(startedEvent!)
+      yield* TestEvents.append(publishedEvent!)
 
       const actual = yield* Queue.takeN(handled, 2)
 
@@ -48,14 +45,14 @@ describe('EventSubscription', () => {
 
   it.effect('skips events without a handler', () =>
     Effect.gen(function* () {
-      const [publishedEvent] = sample(fc.commentWasPublished(), 1)
-      const [startedEvent] = sample(fc.commentWasStarted(), 1)
-      const handled = yield* Queue.unbounded<Events.Event>()
+      const [publishedEvent] = sample(TestEvents.thingFinished(), 1)
+      const [startedEvent] = sample(TestEvents.thingStarted(), 1)
+      const handled = yield* Queue.unbounded<TestEvents.Event>()
 
-      yield* start('test', { CommentWasStarted: event => Queue.offer(handled, event) })
+      yield* start('test', { ThingStarted: event => Queue.offer(handled, event) })
 
-      yield* EventStore.append(publishedEvent!)
-      yield* EventStore.append(startedEvent!)
+      yield* TestEvents.append(publishedEvent!)
+      yield* TestEvents.append(startedEvent!)
 
       const actual = yield* Queue.take(handled)
 
@@ -65,14 +62,14 @@ describe('EventSubscription', () => {
 
   it.effect('ignores events appended before it first starts', () =>
     Effect.gen(function* () {
-      const [earlierEvent, laterEvent] = sample(fc.commentWasStarted(), 2)
-      const handled = yield* Queue.unbounded<Events.Event>()
+      const [earlierEvent, laterEvent] = sample(TestEvents.thingStarted(), 2)
+      const handled = yield* Queue.unbounded<TestEvents.Event>()
 
-      yield* EventStore.append(earlierEvent!)
+      yield* TestEvents.append(earlierEvent!)
 
-      yield* start('test', { CommentWasStarted: event => Queue.offer(handled, event) })
+      yield* start('test', { ThingStarted: event => Queue.offer(handled, event) })
 
-      yield* EventStore.append(laterEvent!)
+      yield* TestEvents.append(laterEvent!)
 
       const actual = yield* Queue.take(handled)
 
@@ -82,18 +79,18 @@ describe('EventSubscription', () => {
 
   it.effect('resumes from where it stopped', () =>
     Effect.gen(function* () {
-      const [handledEvent, missedEvent] = sample(fc.commentWasStarted(), 2)
-      const handled = yield* Queue.unbounded<Events.Event>()
+      const [handledEvent, missedEvent] = sample(TestEvents.thingStarted(), 2)
+      const handled = yield* Queue.unbounded<TestEvents.Event>()
 
       const firstRun = yield* Scope.make()
-      yield* pipe(start('test', { CommentWasStarted: event => Queue.offer(handled, event) }), Scope.provide(firstRun))
-      yield* EventStore.append(handledEvent!)
+      yield* pipe(start('test', { ThingStarted: event => Queue.offer(handled, event) }), Scope.provide(firstRun))
+      yield* TestEvents.append(handledEvent!)
       const firstRunHandled = yield* Queue.take(handled)
       yield* Scope.close(firstRun, Exit.void)
 
-      yield* EventStore.append(missedEvent!)
+      yield* TestEvents.append(missedEvent!)
 
-      yield* start('test', { CommentWasStarted: event => Queue.offer(handled, event) })
+      yield* start('test', { ThingStarted: event => Queue.offer(handled, event) })
 
       const secondRunHandled = yield* Queue.take(handled)
 
@@ -103,16 +100,16 @@ describe('EventSubscription', () => {
 
   it.effect('resumes from where it first started when it stopped before handling anything', () =>
     Effect.gen(function* () {
-      const [missedEvent] = sample(fc.commentWasStarted(), 1)
-      const handled = yield* Queue.unbounded<Events.Event>()
+      const [missedEvent] = sample(TestEvents.thingStarted(), 1)
+      const handled = yield* Queue.unbounded<TestEvents.Event>()
 
       const firstRun = yield* Scope.make()
-      yield* pipe(start('test', { CommentWasStarted: event => Queue.offer(handled, event) }), Scope.provide(firstRun))
+      yield* pipe(start('test', { ThingStarted: event => Queue.offer(handled, event) }), Scope.provide(firstRun))
       yield* Scope.close(firstRun, Exit.void)
 
-      yield* EventStore.append(missedEvent!)
+      yield* TestEvents.append(missedEvent!)
 
-      yield* start('test', { CommentWasStarted: event => Queue.offer(handled, event) })
+      yield* start('test', { ThingStarted: event => Queue.offer(handled, event) })
 
       const actual = yield* Queue.take(handled)
 
@@ -122,13 +119,13 @@ describe('EventSubscription', () => {
 
   it.effect('retries an event that fails', () =>
     Effect.gen(function* () {
-      const [event] = sample(fc.commentWasStarted(), 1)
+      const [event] = sample(TestEvents.thingStarted(), 1)
       const attempts = yield* Ref.make(0)
       const failed = yield* Deferred.make<undefined>()
-      const handled = yield* Queue.unbounded<Events.Event>()
+      const handled = yield* Queue.unbounded<TestEvents.Event>()
 
       yield* start('test', {
-        CommentWasStarted: event =>
+        ThingStarted: event =>
           pipe(
             Ref.updateAndGet(attempts, attempt => attempt + 1),
             Effect.andThen(attempt =>
@@ -139,7 +136,7 @@ describe('EventSubscription', () => {
           ),
       })
 
-      yield* EventStore.append(event!)
+      yield* TestEvents.append(event!)
       yield* Deferred.await(failed)
       yield* TestClock.adjust('2 seconds')
 
@@ -152,31 +149,31 @@ describe('EventSubscription', () => {
 
   it.effect("doesn't repeat events it handled before one that fails", () =>
     Effect.gen(function* () {
-      const [triggerEvent, firstEvent, failingEvent, lastEvent] = sample(fc.commentWasStarted(), 4)
-      const attempted = yield* Queue.unbounded<Events.Event>()
+      const [triggerEvent, firstEvent, failingEvent, lastEvent] = sample(TestEvents.thingStarted(), 4)
+      const attempted = yield* Queue.unbounded<TestEvents.Event>()
       const release = yield* Deferred.make<undefined>()
       const failed = yield* Deferred.make<undefined>()
       const hasFailed = yield* Ref.make(false)
 
       yield* start('test', {
-        CommentWasStarted: event =>
+        ThingStarted: event =>
           Effect.gen(function* () {
             yield* Queue.offer(attempted, event)
 
-            if (event.commentId === triggerEvent!.commentId) {
+            if (event.thingId === triggerEvent!.thingId) {
               yield* Deferred.await(release)
             }
 
-            if (event.commentId === failingEvent!.commentId && !(yield* Ref.getAndSet(hasFailed, true))) {
+            if (event.thingId === failingEvent!.thingId && !(yield* Ref.getAndSet(hasFailed, true))) {
               yield* Deferred.succeed(failed, undefined)
               return yield* Effect.fail('failed')
             }
           }),
       })
 
-      yield* EventStore.append(triggerEvent!)
+      yield* TestEvents.append(triggerEvent!)
       yield* Queue.take(attempted)
-      yield* Effect.forEach([firstEvent!, failingEvent!, lastEvent!], EventStore.append)
+      yield* Effect.forEach([firstEvent!, failingEvent!, lastEvent!], TestEvents.append)
       yield* Deferred.succeed(release, undefined)
       yield* Deferred.await(failed)
       yield* TestClock.adjust('2 seconds')
@@ -189,13 +186,13 @@ describe('EventSubscription', () => {
 
   it.effect('retries an event whose handler throws', () =>
     Effect.gen(function* () {
-      const [event] = sample(fc.commentWasStarted(), 1)
+      const [event] = sample(TestEvents.thingStarted(), 1)
       const attempts = yield* Ref.make(0)
       const threw = yield* Deferred.make<undefined>()
-      const handled = yield* Queue.unbounded<Events.Event>()
+      const handled = yield* Queue.unbounded<TestEvents.Event>()
 
       yield* start('test', {
-        CommentWasStarted: event =>
+        ThingStarted: event =>
           pipe(
             Ref.updateAndGet(attempts, attempt => attempt + 1),
             Effect.andThen(attempt =>
@@ -213,7 +210,7 @@ describe('EventSubscription', () => {
           ),
       })
 
-      yield* EventStore.append(event!)
+      yield* TestEvents.append(event!)
       yield* Deferred.await(threw)
       yield* TestClock.adjust('2 seconds')
 
@@ -226,7 +223,7 @@ describe('EventSubscription', () => {
 
   it.effect('logs where it is stuck and when it recovers', () =>
     Effect.gen(function* () {
-      const [event] = sample(fc.commentWasStarted(), 1)
+      const [event] = sample(TestEvents.thingStarted(), 1)
       const attempts = yield* Ref.make(0)
       const failed = yield* Deferred.make<undefined>()
       const recovered = yield* Deferred.make<undefined>()
@@ -242,10 +239,10 @@ describe('EventSubscription', () => {
       })
 
       const [stuckCursor, recoveredCursor] = yield* Effect.gen(function* () {
-        const stuckCursor = yield* EventStore.latestCursor
+        const stuckCursor = yield* TestEvents.latestCursor
 
         yield* start('test', {
-          CommentWasStarted: () =>
+          ThingStarted: () =>
             pipe(
               Ref.updateAndGet(attempts, attempt => attempt + 1),
               Effect.andThen(attempt =>
@@ -256,12 +253,12 @@ describe('EventSubscription', () => {
             ),
         })
 
-        yield* EventStore.append(event!)
+        yield* TestEvents.append(event!)
         yield* Deferred.await(failed)
         yield* TestClock.adjust('2 seconds')
         yield* Deferred.await(recovered)
 
-        return [stuckCursor, yield* EventStore.latestCursor] as const
+        return [stuckCursor, yield* TestEvents.latestCursor] as const
       }).pipe(Effect.provide([TestLayer, Logger.layer([capturingLogger])]))
 
       expect(logs).toContainEqual({
@@ -282,7 +279,7 @@ describe('EventSubscription', () => {
 
       yield* Effect.gen(function* () {
         const starting = yield* Effect.forkScoped(
-          _.subscribe(EventStore.EventStore, 'test', { CommentWasStarted: () => Effect.void }),
+          _.subscribe(TestEvents.EventStore, 'test', { ThingStarted: () => Effect.void }),
         )
 
         yield* Deferred.await(failed)
@@ -294,7 +291,7 @@ describe('EventSubscription', () => {
         expect(yield* Ref.get(attempts)).toStrictEqual(2)
       }).pipe(
         Effect.provide([
-          Layer.mock(EventStore.EventStore, {
+          Layer.mock(TestEvents.EventStore, {
             loadCheckpoint: () =>
               pipe(
                 Ref.updateAndGet(attempts, attempt => attempt + 1),
@@ -314,14 +311,12 @@ describe('EventSubscription', () => {
   )
 })
 
-const start = <Handlers extends Types.NoExcessProperties<_.Handlers<Events.Event>, Handlers>>(
+const start = <Handlers extends Types.NoExcessProperties<_.Handlers<TestEvents.Event>, Handlers>>(
   name: string,
   handlers: Handlers,
-) => pipe(_.subscribe(EventStore.EventStore, name, handlers), Effect.andThen(Effect.forkScoped))
+) => pipe(_.subscribe(TestEvents.EventStore, name, handlers), Effect.andThen(Effect.forkScoped))
 
 const TestLayer = pipe(
-  SqlEventStore.layer,
-  Layer.provideMerge(
-    Layer.mergeAll(Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestLibsqlClient.layer),
-  ),
+  TestEvents.sqlEventStoreLayer,
+  Layer.provideMerge(Layer.mergeAll(Uuid.layer, TestLibsqlClient.layer)),
 )

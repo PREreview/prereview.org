@@ -1,23 +1,19 @@
 import { Context, Effect, Exit, Layer, pipe, Queue, Ref, Result } from 'effect'
 import { sample } from 'fast-check'
-import type * as Events from '../../src/Domain/Events/Events.ts'
-import * as EventStore from '../../src/Domain/Events/EventStore.ts'
-import * as SqlEventStore from '../../src/Domain/Events/SqlEventStore.ts'
-import * as SensitiveDataStore from '../../src/EventSourcing/SensitiveDataStore.ts'
 import * as _ from '../../src/EventSourcing/StatefulQueries.ts'
 import { Uuid } from '../../src/types/index.ts'
-import * as fc from '../fc.ts'
 import * as TestLibsqlClient from '../TestLibsqlClient.ts'
 import { describe, expect, it } from '../vitest.ts'
+import * as TestEvents from './TestEvents.ts'
 
 describe('replay', () => {
   it.effect('gives every stateful query the existing events', () =>
     Effect.gen(function* () {
-      const events = sample(fc.commentEvent(), 3)
+      const events = sample(TestEvents.event(), 3)
       const firstSubscriber = yield* register
       const secondSubscriber = yield* register
 
-      yield* Effect.forEach(events, EventStore.append)
+      yield* Effect.forEach(events, TestEvents.append)
 
       yield* replay
 
@@ -60,18 +56,18 @@ describe('register', () => {
 describe('worker', () => {
   it.effect('gives stateful queries events as they are appended after replaying', () =>
     Effect.gen(function* () {
-      const [existingEvent, firstNewEvent, secondNewEvent] = sample(fc.commentEvent(), 3)
+      const [existingEvent, firstNewEvent, secondNewEvent] = sample(TestEvents.event(), 3)
       const subscriber = yield* register
 
-      yield* EventStore.append(existingEvent!)
+      yield* TestEvents.append(existingEvent!)
       yield* replay
       yield* Queue.take(subscriber)
       yield* Layer.build(worker)
 
-      yield* EventStore.append(firstNewEvent!)
+      yield* TestEvents.append(firstNewEvent!)
       const firstReceived = yield* Queue.take(subscriber)
 
-      yield* EventStore.append(secondNewEvent!)
+      yield* TestEvents.append(secondNewEvent!)
       const secondReceived = yield* Queue.take(subscriber)
 
       expect([firstReceived, secondReceived]).toStrictEqual([firstNewEvent, secondNewEvent])
@@ -80,16 +76,16 @@ describe('worker', () => {
 
   it.effect("doesn't give stateful queries replayed events again", () =>
     Effect.gen(function* () {
-      const existingEvents = sample(fc.commentEvent(), 3)
-      const [newEvent] = sample(fc.commentEvent(), 1)
+      const existingEvents = sample(TestEvents.event(), 3)
+      const [newEvent] = sample(TestEvents.event(), 1)
       const subscriber = yield* register
 
-      yield* Effect.forEach(existingEvents, EventStore.append)
+      yield* Effect.forEach(existingEvents, TestEvents.append)
       yield* replay
       yield* Queue.takeN(subscriber, existingEvents.length)
       yield* Layer.build(worker)
 
-      yield* EventStore.append(newEvent!)
+      yield* TestEvents.append(newEvent!)
 
       const actual = yield* Queue.take(subscriber)
 
@@ -100,7 +96,7 @@ describe('worker', () => {
 
   it.effect('stops updating a stateful query that fails, but carries on with the others', () =>
     Effect.gen(function* () {
-      const [firstEvent, secondEvent] = sample(fc.commentEvent(), 2)
+      const [firstEvent, secondEvent] = sample(TestEvents.event(), 2)
       const statefulQueries = yield* StatefulQueries
       const failingSubscriberCalls = yield* Ref.make(0)
       const otherSubscriber = yield* register
@@ -115,10 +111,10 @@ describe('worker', () => {
       yield* replay
       yield* Layer.build(worker)
 
-      yield* EventStore.append(firstEvent!)
+      yield* TestEvents.append(firstEvent!)
       const firstReceived = yield* Queue.take(otherSubscriber)
 
-      yield* EventStore.append(secondEvent!)
+      yield* TestEvents.append(secondEvent!)
       const secondReceived = yield* Queue.take(otherSubscriber)
 
       expect([firstReceived, secondReceived]).toStrictEqual([firstEvent, secondEvent])
@@ -128,13 +124,13 @@ describe('worker', () => {
 
   it.effect('gives stateful queries events from the beginning when there was nothing to replay', () =>
     Effect.gen(function* () {
-      const events = sample(fc.commentEvent(), 3)
+      const events = sample(TestEvents.event(), 3)
       const subscriber = yield* register
 
       yield* replay
       yield* Layer.build(worker)
 
-      yield* Effect.forEach(events, EventStore.append)
+      yield* Effect.forEach(events, TestEvents.append)
 
       const actual = yield* Queue.takeN(subscriber, events.length)
 
@@ -143,15 +139,18 @@ describe('worker', () => {
   )
 })
 
-const StatefulQueries = Context.Service<_.StatefulQueries<Events.Event>>('StatefulQueries')
+const StatefulQueries = Context.Service<_.StatefulQueries<TestEvents.Event>>('StatefulQueries')
 
-const { layer, replay, worker } = _.make(StatefulQueries, EventStore.EventStore)
+const { layer, replay, worker } = _.make(StatefulQueries, TestEvents.EventStore)
 
-const other = _.make(Context.Service<_.StatefulQueries<Events.Event>>('OtherStatefulQueries'), EventStore.EventStore)
+const other = _.make(
+  Context.Service<_.StatefulQueries<TestEvents.Event>>('OtherStatefulQueries'),
+  TestEvents.EventStore,
+)
 
 const register = Effect.gen(function* () {
   const statefulQueries = yield* StatefulQueries
-  const received = yield* Queue.unbounded<Events.Event>()
+  const received = yield* Queue.unbounded<TestEvents.Event>()
 
   yield* statefulQueries.register(events => Queue.offerAll(received, events))
 
@@ -159,8 +158,6 @@ const register = Effect.gen(function* () {
 })
 
 const TestLayer = pipe(
-  Layer.mergeAll(layer, SqlEventStore.layer),
-  Layer.provideMerge(
-    Layer.mergeAll(Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestLibsqlClient.layer),
-  ),
+  Layer.mergeAll(layer, TestEvents.sqlEventStoreLayer),
+  Layer.provideMerge(Layer.mergeAll(Uuid.layer, TestLibsqlClient.layer)),
 )

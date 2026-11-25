@@ -1,10 +1,7 @@
 import { Effect, Layer, Option, pipe, Result, Schema, Tracer } from 'effect'
-import * as Events from '../../src/Domain/Events/Events.ts'
-import * as EventStore from '../../src/Domain/Events/EventStore.ts'
-import * as StatefulQueries from '../../src/Domain/Events/StatefulQueries.ts'
 import * as _ from '../../src/EventSourcing/Queries.ts'
-import { Temporal, Uuid } from '../../src/types/index.ts'
 import { describe, expect, it } from '../vitest.ts'
+import * as TestEvents from './TestEvents.ts'
 
 const recordSpans = () => {
   const spans: Array<Tracer.NativeSpan> = []
@@ -24,10 +21,7 @@ const attributesOf = (spans: ReadonlyArray<Tracer.NativeSpan>, name: string) =>
     Array.from(spans.find(span => span.name === name)?.attributes ?? []).filter(([key]) => key.startsWith('input')),
   )
 
-const event = new Events.ReviewRequestForAPreprintWasAccepted({
-  acceptedAt: Temporal.Instant.from('2026-11-10T14:00:00Z'),
-  reviewRequestId: Uuid.Uuid('475434b4-3c0d-4b70-a5f4-8af7baf55753'),
-})
+const event = new TestEvents.ThingStarted({ thingId: 'thing' })
 
 const Input = Schema.Struct({
   id: Schema.NumberFromString,
@@ -37,20 +31,20 @@ const Input = Schema.Struct({
 
 describe('makeOnDemandQuery', () => {
   const query = <I>(inputSchema?: Schema.Codec<I, unknown>) =>
-    _.OnDemandQuery<Events.Event, [I], string>({
+    _.OnDemandQuery<TestEvents.Event, [I], string>({
       name: 'Test.onDemandQuery',
       ...(inputSchema === undefined ? {} : { inputSchema }),
-      createFilter: (_input: I) => Events.EventFilter({ types: ['PreprintReviewImported'] }),
+      createFilter: (_input: I) => TestEvents.EventFilter({ types: ['ThingStarted'] }),
       query: () => Result.succeed('result'),
     })
 
-  const run = <I>(definition: _.OnDemandQuery<Events.Event, [I], string>, input: I) => {
+  const run = <I>(definition: _.OnDemandQuery<TestEvents.Event, [I], string>, input: I) => {
     const { spans, tracer } = recordSpans()
 
     return pipe(
-      _.makeOnDemandQuery(EventStore.EventStore, definition),
+      _.makeOnDemandQuery(TestEvents.EventStore, definition),
       Effect.flatMap(query => query(input)),
-      Effect.provide(Layer.mock(EventStore.EventStore, { query: () => Effect.succeed(Option.none()) })),
+      Effect.provide(Layer.mock(TestEvents.EventStore, { query: () => Effect.succeed(Option.none()) })),
       Effect.withTracer(tracer),
       Effect.as(spans),
     )
@@ -150,9 +144,9 @@ describe('makeStatefulQuery', () => {
       })
 
       yield* pipe(
-        _.makeStatefulQuery(StatefulQueries.StatefulQueries, definition),
+        _.makeStatefulQuery(TestEvents.StatefulQueries, definition),
         Effect.flatMap(query => query({ id: 123, tags: [], flag: false })),
-        Effect.provide(Layer.mock(StatefulQueries.StatefulQueries, { register: () => Effect.void })),
+        Effect.provide(Layer.mock(TestEvents.StatefulQueries, { register: () => Effect.void })),
         Effect.withTracer(tracer),
       )
 
@@ -166,11 +160,11 @@ describe('makeStatefulQuery', () => {
 
   it.effect('fails its queries once updating its state has failed', () =>
     Effect.gen(function* () {
-      const subscribers: Array<Parameters<(typeof StatefulQueries.StatefulQueries.Service)['register']>[0]> = []
+      const subscribers: Array<Parameters<(typeof TestEvents.StatefulQueries.Service)['register']>[0]> = []
 
       const query = yield* pipe(
         _.makeStatefulQuery(
-          StatefulQueries.StatefulQueries,
+          TestEvents.StatefulQueries,
           _.StatefulQuery({
             name: 'Test.statefulQuery',
             initialState: 0,
@@ -181,7 +175,7 @@ describe('makeStatefulQuery', () => {
           }),
         ),
         Effect.provide(
-          Layer.mock(StatefulQueries.StatefulQueries, {
+          Layer.mock(TestEvents.StatefulQueries, {
             register: subscriber => Effect.sync(() => subscribers.push(subscriber)),
           }),
         ),
@@ -198,11 +192,11 @@ describe('makeStatefulQuery', () => {
   it.effect('records updating its state on a span', () =>
     Effect.gen(function* () {
       const { spans, tracer } = recordSpans()
-      const subscribers: Array<Parameters<(typeof StatefulQueries.StatefulQueries.Service)['register']>[0]> = []
+      const subscribers: Array<Parameters<(typeof TestEvents.StatefulQueries.Service)['register']>[0]> = []
 
       yield* pipe(
         _.makeStatefulQuery(
-          StatefulQueries.StatefulQueries,
+          TestEvents.StatefulQueries,
           _.StatefulQuery({
             name: 'Test.statefulQuery',
             initialState: 0,
@@ -211,7 +205,7 @@ describe('makeStatefulQuery', () => {
           }),
         ),
         Effect.provide(
-          Layer.mock(StatefulQueries.StatefulQueries, {
+          Layer.mock(TestEvents.StatefulQueries, {
             register: subscriber => Effect.sync(() => subscribers.push(subscriber)),
           }),
         ),
