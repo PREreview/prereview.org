@@ -70,7 +70,7 @@ export const makeCommand = <
     const { name, inputSchema, createFilter, foldState, decide } = command
     const authorize = 'authorize' in command ? command.authorize : () => true
 
-    const { query, appendIf } = yield* eventStore
+    const store = yield* eventStore
 
     const annotateSpanWithInput = makeAnnotateSpanWithInput(inputSchema)
 
@@ -81,7 +81,7 @@ export const makeCommand = <
         const filter = createFilter(...input)
 
         const { events, lastKnownPosition } = yield* pipe(
-          query(filter),
+          store.query(filter),
           Effect.map(Option.getOrElse(() => ({ events: [], lastKnownPosition: undefined }))),
         )
 
@@ -95,7 +95,8 @@ export const makeCommand = <
 
         yield* Option.match(decision, {
           onNone: () => Effect.void,
-          onSome: event => appendIf(event, { filter, lastKnownPosition: Option.fromNullishOr(lastKnownPosition) }),
+          onSome: event =>
+            store.appendIf(event, { filter, lastKnownPosition: Option.fromNullishOr(lastKnownPosition) }),
         })
       },
       Effect.catchTag(
@@ -110,7 +111,7 @@ export const makeStatelessCommand = <E extends AnyEvent, R, Input extends Comman
   { name, inputSchema, decide }: StatelessCommand<E, Input>,
 ): Effect.Effect<(...input: Input) => Effect.Effect<void, UnableToHandleCommand>, never, R> =>
   Effect.gen(function* () {
-    const { append } = yield* eventStore
+    const store = yield* eventStore
 
     const annotateSpanWithInput = makeAnnotateSpanWithInput(inputSchema)
 
@@ -120,7 +121,7 @@ export const makeStatelessCommand = <E extends AnyEvent, R, Input extends Comman
 
         const event = decide(...input)
 
-        yield* append(event)
+        yield* store.append(event)
       },
       Effect.catchTag('FailedToCommitEvent', cause => new UnableToHandleCommand({ cause })),
     )
