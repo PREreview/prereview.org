@@ -1,17 +1,34 @@
-// oxlint-disable module-boundaries/use-index
 import { Context, Effect, Stream } from 'effect'
-import type * as GenericEventStore from '../../EventSourcing/EventStore.ts'
+import { EventStore as GenericEventStore } from '../../EventSourcing/index.ts'
 import type { Event, EventFilter } from './Events.ts'
 
-export {
-  Cursor,
-  FailedToCommitEvent,
-  FailedToGetEvents,
-  FailedToLoadCheckpoint,
-  FailedToSaveCheckpoint,
-  NewEventsFound,
-  Position,
-} from '../../EventSourcing/EventStore.ts'
+export const Cursor = GenericEventStore.Cursor
+
+export type Cursor = GenericEventStore.Cursor
+
+export const Position = GenericEventStore.Position
+
+export type Position = GenericEventStore.Position
+
+export const FailedToGetEvents = GenericEventStore.FailedToGetEvents
+
+export type FailedToGetEvents = GenericEventStore.FailedToGetEvents
+
+export const FailedToCommitEvent = GenericEventStore.FailedToCommitEvent
+
+export type FailedToCommitEvent = GenericEventStore.FailedToCommitEvent
+
+export const NewEventsFound = GenericEventStore.NewEventsFound
+
+export type NewEventsFound = GenericEventStore.NewEventsFound
+
+export const FailedToLoadCheckpoint = GenericEventStore.FailedToLoadCheckpoint
+
+export type FailedToLoadCheckpoint = GenericEventStore.FailedToLoadCheckpoint
+
+export const FailedToSaveCheckpoint = GenericEventStore.FailedToSaveCheckpoint
+
+export type FailedToSaveCheckpoint = GenericEventStore.FailedToSaveCheckpoint
 
 export type RecordedEvent = GenericEventStore.RecordedEvent<Event>
 

@@ -1,6 +1,6 @@
 import { Array, Schema, type Types } from 'effect'
 // oxlint-disable  module-boundaries/use-index
-import * as EventFilters from '../../EventSourcing/EventFilter.ts'
+import { EventFilter as EventFilters } from '../../EventSourcing/index.ts'
 import * as AuthorInviteEvents from '../AuthorInvites/Events.ts'
 import * as CommentEvents from '../Comments/Events.ts'
 import * as ContactEmailAddressesEvents from '../ContactEmailAddresses/Events.ts'

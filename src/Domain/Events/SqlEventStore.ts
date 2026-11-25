@@ -1,6 +1,5 @@
-// oxlint-disable module-boundaries/use-index
 import { Layer } from 'effect'
-import * as GenericSqlEventStore from '../../EventSourcing/SqlEventStore.ts'
+import { SqlEventStore as GenericSqlEventStore } from '../../EventSourcing/index.ts'
 import { EventStore } from './EventStore.ts'
 import { Event } from './Events.ts'
 

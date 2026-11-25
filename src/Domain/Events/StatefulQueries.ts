@@ -1,10 +1,11 @@
-// oxlint-disable module-boundaries/use-index
 import { Context } from 'effect'
-import * as GenericStatefulQueries from '../../EventSourcing/StatefulQueries.ts'
+import { StatefulQueries as GenericStatefulQueries } from '../../EventSourcing/index.ts'
 import { EventStore } from './EventStore.ts'
 import type { Event } from './Events.ts'
 
-export { RegisteredAfterReplay } from '../../EventSourcing/StatefulQueries.ts'
+export const RegisteredAfterReplay = GenericStatefulQueries.RegisteredAfterReplay
+
+export type RegisteredAfterReplay = GenericStatefulQueries.RegisteredAfterReplay
 
 export type Subscriber = GenericStatefulQueries.Subscriber<Event>
 

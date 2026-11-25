@@ -1,44 +1,38 @@
-// oxlint-disable module-boundaries/use-index
 import { identity } from 'effect'
-import * as GenericCommands from '../../EventSourcing/Commands.ts'
+import { Commands as GenericCommands } from '../../EventSourcing/index.ts'
 import { EventStore } from './EventStore.ts'
 import type { Event } from './Events.ts'
 
-export {
-  UnableToHandleCommand,
-  type CommandInput,
-  type FromCommand,
-  type FromStatelessCommand,
-} from '../../EventSourcing/Commands.ts'
+export const UnableToHandleCommand = GenericCommands.UnableToHandleCommand
+
+export type UnableToHandleCommand = GenericCommands.UnableToHandleCommand
+
+export type CommandInput = GenericCommands.CommandInput
+
+export type FromCommand<T> = GenericCommands.FromCommand<T>
+
+export type FromStatelessCommand<T> = GenericCommands.FromStatelessCommand<T>
 
 export type Command<
-  Input extends GenericCommands.CommandInput,
+  Input extends CommandInput,
   State,
   Error,
   Authorize extends boolean = false,
 > = GenericCommands.Command<Event, Input, State, Error, Authorize>
 
-export type StatelessCommand<Input extends GenericCommands.CommandInput> = GenericCommands.StatelessCommand<
-  Event,
-  Input
->
+export type StatelessCommand<Input extends CommandInput> = GenericCommands.StatelessCommand<Event, Input>
 
-export const Command: <Input extends GenericCommands.CommandInput, State, Error, Authorize extends boolean = false>(
+export const Command: <Input extends CommandInput, State, Error, Authorize extends boolean = false>(
   command: Command<Input, State, Error, Authorize>,
 ) => Command<Input, State, Error, Authorize> = identity
 
-export const StatelessCommand: <Input extends GenericCommands.CommandInput>(
+export const StatelessCommand: <Input extends CommandInput>(
   command: StatelessCommand<Input>,
 ) => StatelessCommand<Input> = identity
 
-export const makeCommand = <
-  Input extends GenericCommands.CommandInput,
-  State,
-  Error,
-  Authorize extends boolean = false,
->(
+export const makeCommand = <Input extends CommandInput, State, Error, Authorize extends boolean = false>(
   command: Command<Input, State, Error, Authorize>,
 ) => GenericCommands.makeCommand(EventStore, command)
 
-export const makeStatelessCommand = <Input extends GenericCommands.CommandInput>(command: StatelessCommand<Input>) =>
+export const makeStatelessCommand = <Input extends CommandInput>(command: StatelessCommand<Input>) =>
   GenericCommands.makeStatelessCommand(EventStore, command)

@@ -1,6 +1,5 @@
-// oxlint-disable module-boundaries/use-index
 import type { Types } from 'effect'
-import * as GenericEventSubscription from '../../EventSourcing/EventSubscription.ts'
+import { EventSubscription as GenericEventSubscription } from '../../EventSourcing/index.ts'
 import { EventStore } from './EventStore.ts'
 import type { Event } from './Events.ts'
 
