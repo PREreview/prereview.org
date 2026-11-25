@@ -1,7 +1,7 @@
 import { Array, Result, type Types } from 'effect'
+import type * as Events from '../../Events/index.ts'
 import { Queries } from '../../Events/index.ts'
 import * as Errors from '../Errors.ts'
-import type * as Events from '../Events.ts'
 
 export const CheckIfReviewIsBeingPublished = (
   events: ReadonlyArray<Events.DatasetReviewEvent>,

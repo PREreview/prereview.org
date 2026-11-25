@@ -1,5 +1,5 @@
 import { Array, Filter, Option, type Types } from 'effect'
-import type * as Events from '../Events.ts'
+import type * as Events from '../../Events/index.ts'
 
 export type NextExpectedCommand =
   | 'RateTheQuality'

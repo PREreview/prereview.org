@@ -1,7 +1,7 @@
 import { Array, flow, Option, Result, Struct, type Types } from 'effect'
 import type { OrcidId } from '../../../types/index.ts'
+import type * as Events from '../../Events/index.ts'
 import { Queries } from '../../Events/index.ts'
-import type * as Events from '../Events.ts'
 
 export const GetAuthor: (
   events: ReadonlyArray<Events.DatasetReviewEvent>,

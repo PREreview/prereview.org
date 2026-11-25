@@ -2,9 +2,9 @@ import { Array, Filter, HashSet, Option, Result, Struct, type Types } from 'effe
 import type { OrcidId } from '../../../types/index.ts'
 import type { NonEmptyString } from '../../../types/NonEmptyString.ts'
 import type * as Datasets from '../../Datasets/index.ts'
+import type * as Events from '../../Events/index.ts'
 import { Queries } from '../../Events/index.ts'
 import * as Errors from '../Errors.ts'
-import type * as Events from '../Events.ts'
 import { FindRequirementsToBePublished } from '../RequirementsToBePublished.ts'
 
 export interface DatasetReviewPreview {

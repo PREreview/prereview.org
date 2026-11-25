@@ -1,8 +1,8 @@
 import { Array, Option, Result, Struct, type Types } from 'effect'
 import type { Doi, Uuid } from '../../../types/index.ts'
+import type * as Events from '../../Events/index.ts'
 import { Queries } from '../../Events/index.ts'
 import * as Errors from '../Errors.ts'
-import type * as Events from '../Events.ts'
 
 export interface PublishedReviewDetails {
   doi: Doi.Doi

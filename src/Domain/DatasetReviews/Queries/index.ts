@@ -2,10 +2,10 @@ import { Array, Context, Effect, Layer, Scope } from 'effect'
 import type { Uuid } from '../../../types/index.ts'
 import type { Clubs } from '../../Clubs/index.ts'
 import type { Datasets } from '../../Datasets/index.ts'
+import * as Events from '../../Events/index.ts'
 import { EventStore, Queries, type StatefulQueries } from '../../Events/index.ts'
 import type { Prereviewers } from '../../Prereviewers/index.ts'
 import * as Errors from '../Errors.ts'
-import { DatasetReviewEventTypes } from '../Events.ts'
 import { AreThereMultipleAuthorsOnAReview } from './AreThereMultipleAuthorsOnAReview.ts'
 import { CheckIfReviewIsBeingPublished } from './CheckIfReviewIsBeingPublished.ts'
 import { CheckIfUserCanAddInvitationToAppearOnADatasetReviewToTheList } from './CheckIfUserCanAddInvitationToAppearOnADatasetReviewToTheList.ts'
@@ -332,7 +332,7 @@ const makeDatasetReviewQueries: Effect.Effect<
   return {
     checkIfReviewIsBeingPublished: yield* Queries.makeQuery(
       'DatasetReviewQueries.checkIfReviewIsBeingPublished',
-      (datasetReviewId: Uuid.Uuid) => ({ types: DatasetReviewEventTypes, predicates: { datasetReviewId } }),
+      (datasetReviewId: Uuid.Uuid) => ({ types: Events.DatasetReviewEventTypes, predicates: { datasetReviewId } }),
       CheckIfReviewIsBeingPublished,
     ),
     checkIfUserCanRateTheQuality: yield* Queries.makeQuery(
@@ -457,7 +457,7 @@ const makeDatasetReviewQueries: Effect.Effect<
       function* (datasetReviewId) {
         const { events } = yield* Effect.flatMap(
           EventStore.query({
-            types: DatasetReviewEventTypes,
+            types: Events.DatasetReviewEventTypes,
             predicates: { datasetReviewId },
           }),
           Effect.fromOption,
@@ -478,7 +478,7 @@ const makeDatasetReviewQueries: Effect.Effect<
       function* (datasetReviewId) {
         const { events } = yield* Effect.flatMap(
           EventStore.query({
-            types: DatasetReviewEventTypes,
+            types: Events.DatasetReviewEventTypes,
             predicates: { datasetReviewId },
           }),
           Effect.fromOption,
@@ -500,7 +500,7 @@ const makeDatasetReviewQueries: Effect.Effect<
       function* (datasetReviewId) {
         const { events } = yield* Effect.flatMap(
           EventStore.query({
-            types: DatasetReviewEventTypes,
+            types: Events.DatasetReviewEventTypes,
             predicates: { datasetReviewId },
           }),
           Effect.fromOption,
@@ -521,7 +521,7 @@ const makeDatasetReviewQueries: Effect.Effect<
       function* (datasetReviewId) {
         const { events } = yield* Effect.flatMap(
           EventStore.query({
-            types: DatasetReviewEventTypes,
+            types: Events.DatasetReviewEventTypes,
             predicates: { datasetReviewId },
           }),
           Effect.fromOption,
@@ -541,7 +541,7 @@ const makeDatasetReviewQueries: Effect.Effect<
       function* (datasetReviewId) {
         const { events } = yield* Effect.flatMap(
           EventStore.query({
-            types: DatasetReviewEventTypes,
+            types: Events.DatasetReviewEventTypes,
             predicates: { datasetReviewId },
           }),
           Effect.fromOption,
