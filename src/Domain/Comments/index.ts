@@ -40,10 +40,12 @@ export const makeHandleCommentCommand: Effect.Effect<
   return Effect.fn('Comments.handleCommentCommand')(
     function* (command) {
       const { events, lastKnownPosition } = yield* pipe(
-        EventStore.query({
-          types: Events.CommentEventTypes,
-          predicates: { commentId: command.commentId },
-        }),
+        EventStore.query(
+          Events.EventFilter({
+            types: Events.CommentEventTypes,
+            predicates: { commentId: command.commentId },
+          }),
+        ),
         Effect.map(Option.getOrElse(() => ({ events: [], lastKnownPosition: undefined }))),
       )
 
@@ -58,10 +60,10 @@ export const makeHandleCommentCommand: Effect.Effect<
             onNone: () => Effect.void,
             onSome: event =>
               EventStore.appendIf(event, {
-                filter: {
+                filter: Events.EventFilter({
                   types: Events.CommentEventTypes,
                   predicates: { commentId: command.commentId },
-                },
+                }),
                 lastKnownPosition: Option.fromNullishOr(lastKnownPosition),
               }),
           }),
@@ -83,7 +85,7 @@ export const makeGetComment: Effect.Effect<typeof GetComment.Service, never, Eve
     return Effect.fn('Comments.getComment')(
       function* (commentId) {
         const events = yield* pipe(
-          EventStore.query({ types: Events.CommentEventTypes, predicates: { commentId } }),
+          EventStore.query(Events.EventFilter({ types: Events.CommentEventTypes, predicates: { commentId } })),
           Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
         )
 
@@ -107,7 +109,7 @@ export const makeGetNextExpectedCommandForUser: Effect.Effect<
   return Effect.fn('Comments.getNextExpectedCommandForUser')(
     function* ({ authorId, prereviewId }) {
       const events = yield* pipe(
-        EventStore.query({ types: Events.CommentEventTypes }),
+        EventStore.query(Events.EventFilter({ types: Events.CommentEventTypes })),
         Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
       )
 
@@ -128,7 +130,7 @@ export const makeGetNextExpectedCommandForUserOnAComment: Effect.Effect<
   return Effect.fn('Comments.getNextExpectedCommandForUserOnAComment')(
     function* (commentId) {
       const events = yield* pipe(
-        EventStore.query({ types: Events.CommentEventTypes, predicates: { commentId } }),
+        EventStore.query(Events.EventFilter({ types: Events.CommentEventTypes, predicates: { commentId } })),
         Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
       )
 

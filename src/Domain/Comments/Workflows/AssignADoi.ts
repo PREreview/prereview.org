@@ -13,7 +13,7 @@ export const CreateRecordOnZenodo = Effect.fn('Comments.createRecordOnZenodo')(
     const createRecordOnZenodoForComment = yield* CreateRecordOnZenodoForComment
 
     const events = yield* Effect.map(
-      EventStore.query({ types: Events.CommentEventTypes, predicates: { commentId } }),
+      EventStore.query(Events.EventFilter({ types: Events.CommentEventTypes, predicates: { commentId } })),
       Option.match({ onNone: Array.empty, onSome: Struct.get('events') }),
     )
 
