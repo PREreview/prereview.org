@@ -1,6 +1,6 @@
 import { Array, Data, Equal, type Equivalence, Match, Option, Result, Struct } from 'effect'
-import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
+import { Commands } from '../../EventSourcing/index.ts'
 import { SensitiveData } from '../../SensitiveData/index.ts'
 import { Temporal } from '../../types/index.ts'
 import * as Preprints from '../Preprints/index.ts'

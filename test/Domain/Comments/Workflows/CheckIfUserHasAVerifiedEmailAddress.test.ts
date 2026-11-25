@@ -1,11 +1,11 @@
 import { Effect, Layer, Result } from 'effect'
-import { UnableToHandleCommand } from '../../../../src/Commands.ts'
 import * as Comments from '../../../../src/Domain/Comments/index.ts'
 import * as _ from '../../../../src/Domain/Comments/Workflows/CheckIfUserHasAVerifiedEmailAddress.ts'
 import {
   ContactEmailAddresses,
   ContactEmailAddressIsNotFound,
 } from '../../../../src/Domain/ContactEmailAddresses/index.ts'
+import { UnableToHandleCommand } from '../../../../src/EventSourcing/Commands.ts'
 import * as Queries from '../../../../src/Queries.ts'
 import * as fc from '../../../fc.ts'
 import { shouldNotBeCalled } from '../../../should-not-be-called.ts'

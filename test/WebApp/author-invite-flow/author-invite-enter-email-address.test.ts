@@ -2,12 +2,12 @@ import { Effect, Layer } from 'effect'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/lib/TaskEither.js'
 import type { GetAuthorInviteEnv } from '../../../src/author-invite.ts'
-import * as Commands from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
 import {
   ContactEmailAddresses,
   ContactEmailAddressIsNotFound,
 } from '../../../src/Domain/ContactEmailAddresses/index.ts'
+import * as Commands from '../../../src/EventSourcing/Commands.ts'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,

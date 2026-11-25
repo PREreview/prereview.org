@@ -1,6 +1,5 @@
 import { Context, Data, Effect, Layer, Match, pipe, type Option } from 'effect'
-import * as Commands from '../../Commands.ts'
-import { UnableToHandleCommand } from '../../Commands.ts'
+import { Commands } from '../../EventSourcing/index.ts'
 import { OrcidRecords } from '../../ExternalInteractions/index.ts'
 import * as Queries from '../../Queries.ts'
 import { Temporal, type EmailAddress, type Name, type OrcidId } from '../../types/index.ts'
@@ -24,7 +23,7 @@ export class UnableToGetPersona extends Data.TaggedError('UnableToGetPersona')<{
 export class Prereviewers extends Context.Service<
   Prereviewers,
   {
-    register: (orcidId: OrcidId.OrcidId) => Effect.Effect<void, UnableToHandleCommand>
+    register: (orcidId: OrcidId.OrcidId) => Effect.Effect<void, Commands.UnableToHandleCommand>
     isRegistered: Queries.FromOnDemandQuery<typeof IsRegistered>
     getPublicPersona: (orcidId: OrcidId.OrcidId) => Effect.Effect<PublicPersona, UnableToGetPersona>
     getPseudonymPersona: (orcidId: OrcidId.OrcidId) => Effect.Effect<PseudonymPersona, UnableToGetPersona>
@@ -191,7 +190,7 @@ export const layer = Layer.effect(
         },
         Effect.catchTag(
           ['MismatchWithExistingDataForOrcid', 'NoPseudonymAvailable', 'PseudonymAlreadyInUse', 'UnableToQuery'],
-          error => new UnableToHandleCommand({ cause: error }),
+          error => new Commands.UnableToHandleCommand({ cause: error }),
         ),
       ),
       isRegistered: yield* Queries.makeOnDemandQuery(IsRegistered),

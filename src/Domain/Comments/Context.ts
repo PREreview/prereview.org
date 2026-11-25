@@ -1,5 +1,5 @@
 import { Context, type Effect, type Option } from 'effect'
-import type { UnableToHandleCommand } from '../../Commands.ts'
+import type { Commands } from '../../EventSourcing/index.ts'
 import type { Html } from '../../html.ts'
 import type { UnableToQuery } from '../../Queries.ts'
 import type { Doi } from '../../types/Doi.ts'
@@ -31,7 +31,7 @@ export class GetComment extends Context.Service<
 
 export class HandleCommentCommand extends Context.Service<
   HandleCommentCommand,
-  (command: CommentCommand) => Effect.Effect<void, UnableToHandleCommand | CommentError>
+  (command: CommentCommand) => Effect.Effect<void, Commands.UnableToHandleCommand | CommentError>
 >()('HandleCommentCommand') {}
 
 export class CreateRecordOnZenodoForComment extends Context.Service<

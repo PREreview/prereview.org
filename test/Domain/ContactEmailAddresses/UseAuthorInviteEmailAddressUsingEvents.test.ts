@@ -1,12 +1,12 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Option, Result } from 'effect'
-import * as Commands from '../../../src/Commands.ts'
 import {
   AcceptedInvitationIsNotFound,
   ContactEmailAddressHasAlreadyBeenVerified,
 } from '../../../src/Domain/ContactEmailAddresses/Errors.ts'
 import * as _ from '../../../src/Domain/ContactEmailAddresses/UseAuthorInviteEmailAddressUsingEvents.ts'
 import * as Events from '../../../src/Events.ts'
+import * as Commands from '../../../src/EventSourcing/Commands.ts'
 import { EmailAddress } from '../../../src/types/EmailAddress.ts'
 import { Name } from '../../../src/types/Name.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'

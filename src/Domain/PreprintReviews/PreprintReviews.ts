@@ -1,7 +1,7 @@
 import { Array, Context, Effect, flow, Layer, Option, pipe, Redacted, Scope, Struct, type Result } from 'effect'
 import { FetchHttpClient } from 'effect/http'
-import * as Commands from '../../Commands.ts'
 import { MakeDeprecatedLoggerEnv } from '../../DeprecatedServices.ts'
+import { Commands } from '../../EventSourcing/index.ts'
 import { Zenodo } from '../../ExternalApis/index.ts'
 import { ZenodoRecords } from '../../ExternalInteractions/index.ts'
 import { FeatureFlags } from '../../FeatureFlags.ts'

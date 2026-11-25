@@ -1,8 +1,7 @@
 import { Array, Context, Effect, Layer, Option, pipe, Scope, Struct } from 'effect'
 import type { Sharding } from 'effect/cluster'
 import type { WorkflowEngine } from 'effect/workflow'
-import { UnableToHandleCommand } from '../../Commands.ts'
-import { EventStore, EventSubscription } from '../../EventSourcing/index.ts'
+import { Commands, EventStore, EventSubscription } from '../../EventSourcing/index.ts'
 import { UnableToQuery } from '../../Queries.ts'
 import type { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
 import { layer as commentsServiceLayer } from './Comments.ts'
@@ -73,7 +72,7 @@ export const makeHandleCommentCommand: Effect.Effect<
     },
     Effect.catchTag(
       ['FailedToCommitEvent', 'FailedToGetEvents', 'NewEventsFound'],
-      cause => new UnableToHandleCommand({ cause }),
+      cause => new Commands.UnableToHandleCommand({ cause }),
     ),
     Effect.provide(context),
   )

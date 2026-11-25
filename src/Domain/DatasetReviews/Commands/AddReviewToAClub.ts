@@ -1,6 +1,6 @@
 import { Array, Option, Result, Struct, type Types } from 'effect'
-import * as Commands from '../../../Commands.ts'
 import * as Events from '../../../Events.ts'
+import { Commands } from '../../../EventSourcing/index.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
 import { DatasetReviewHasAlreadyBeenAddedToAClub, UnknownClub, UnknownDatasetReview } from '../Errors.ts'
 

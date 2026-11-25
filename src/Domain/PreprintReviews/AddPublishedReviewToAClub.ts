@@ -1,6 +1,6 @@
 import { Array, Match, Option, Result, Schema } from 'effect'
-import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
+import { Commands } from '../../EventSourcing/index.ts'
 import { type Uuid, UuidSchema } from '../../types/Uuid.ts'
 import * as Errors from './Errors.ts'
 

@@ -1,7 +1,7 @@
 import { Effect, Layer, pipe, Result } from 'effect'
-import { UnableToHandleCommand } from '../../../../src/Commands.ts'
 import * as DatasetReviews from '../../../../src/Domain/DatasetReviews/index.ts'
 import * as _ from '../../../../src/Domain/DatasetReviews/Workflows/PublishRecordOnZenodo.ts'
+import { UnableToHandleCommand } from '../../../../src/EventSourcing/Commands.ts'
 import { ZenodoRecords } from '../../../../src/ExternalInteractions/index.ts'
 import * as Queries from '../../../../src/Queries.ts'
 import * as fc from '../../../fc.ts'

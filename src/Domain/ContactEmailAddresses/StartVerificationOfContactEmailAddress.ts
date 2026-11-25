@@ -1,7 +1,6 @@
 import { Effect, pipe } from 'effect'
-import * as Commands from '../../Commands.ts'
 import type { Locale } from '../../Context.ts'
-import type { EventStore } from '../../EventSourcing/index.ts'
+import { Commands, type EventStore } from '../../EventSourcing/index.ts'
 import { Email, OrcidRecords } from '../../ExternalInteractions/index.ts'
 import * as Queries from '../../Queries.ts'
 import type { EmailAddress } from '../../types/EmailAddress.ts'

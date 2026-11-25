@@ -1,7 +1,6 @@
 import { Effect, Layer, Option } from 'effect'
 import { UrlParams } from 'effect/http'
 import { format } from 'fp-ts-routing'
-import { UnableToHandleCommand } from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
 import {
   HasNotOptedIn,
@@ -10,6 +9,7 @@ import {
 } from '../../../src/Domain/Prereviewers/HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests.ts'
 import { Prereviewers } from '../../../src/Domain/Prereviewers/index.ts'
 import { UnknownPrereviewer } from '../../../src/Domain/Prereviewers/OptInToNotificationsForReviewsPublishedInResponseToRequests.ts'
+import { UnableToHandleCommand } from '../../../src/EventSourcing/Commands.ts'
 import { UnableToQuery } from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'

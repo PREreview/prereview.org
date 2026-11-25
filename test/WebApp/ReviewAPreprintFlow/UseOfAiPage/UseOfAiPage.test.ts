@@ -1,7 +1,6 @@
 import { Effect, Layer, Option, Result } from 'effect'
 import { UrlParams } from 'effect/http'
 import { format } from 'fp-ts-routing'
-import { UnableToHandleCommand } from '../../../../src/Commands.ts'
 import { Locale } from '../../../../src/Context.ts'
 import * as PreprintReviews from '../../../../src/Domain/PreprintReviews/index.ts'
 import {
@@ -11,6 +10,7 @@ import {
   Preprints,
   type PreprintTitle,
 } from '../../../../src/Domain/Preprints/index.ts'
+import { UnableToHandleCommand } from '../../../../src/EventSourcing/Commands.ts'
 import { html } from '../../../../src/html.ts'
 import { DefaultLocale } from '../../../../src/locales/index.ts'
 import { UnableToQuery } from '../../../../src/Queries.ts'

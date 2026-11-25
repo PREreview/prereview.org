@@ -1,7 +1,6 @@
 import { Data, Effect, pipe } from 'effect'
 import * as AuthorInviteStore from '../../AuthorInviteStore.ts'
-import * as Commands from '../../Commands.ts'
-import type { EventStore } from '../../EventSourcing/index.ts'
+import { Commands, type EventStore } from '../../EventSourcing/index.ts'
 import { Temporal } from '../../types/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { Uuid } from '../../types/Uuid.ts'

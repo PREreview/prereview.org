@@ -1,6 +1,6 @@
 import { Context, Data, Effect, identity, Option, pipe, Predicate, Record, type Result, Schema, Scope } from 'effect'
-import type * as Events from './Events.ts'
-import { EventStore } from './EventSourcing/index.ts'
+import type * as Events from '../Events.ts'
+import * as EventStore from './EventStore.ts'
 
 export type FromCommand<T> =
   T extends Pick<Command<infer Input extends CommandInput, never, infer Error>, 'decide'>

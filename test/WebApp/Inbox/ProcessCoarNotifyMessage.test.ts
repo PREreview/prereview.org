@@ -1,6 +1,6 @@
 import { Effect, Layer, pipe, Result } from 'effect'
-import { UnableToHandleCommand } from '../../../src/Commands.ts'
 import * as ReviewRequests from '../../../src/Domain/ReviewRequests/index.ts'
+import { UnableToHandleCommand } from '../../../src/EventSourcing/Commands.ts'
 import * as Inbox from '../../../src/WebApp/Inbox/index.ts'
 import * as _ from '../../../src/WebApp/Inbox/ProcessCoarNotifyMessage.ts'
 import * as fc from '../../fc.ts'

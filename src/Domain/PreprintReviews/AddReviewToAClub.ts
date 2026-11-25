@@ -1,5 +1,5 @@
 import { Array, Effect, pipe } from 'effect'
-import { UnableToHandleCommand } from '../../Commands.ts'
+import { Commands } from '../../EventSourcing/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { Uuid } from '../../types/Uuid.ts'
 import type { PreprintId } from '../Preprints/index.ts'
@@ -13,7 +13,7 @@ export interface Input {
   clubId: Uuid
 }
 
-export type Error = Errors.PreprintReviewNotFound | Errors.UnknownClub | UnableToHandleCommand
+export type Error = Errors.PreprintReviewNotFound | Errors.UnknownClub | Commands.UnableToHandleCommand
 
 export const AddReviewToAClub = (
   formStore: FormStorage,
@@ -29,7 +29,7 @@ export const AddReviewToAClub = (
       ),
       Effect.catchIf(
         error => error === 'form-unavailable',
-        () => new UnableToHandleCommand({}),
+        () => new Commands.UnableToHandleCommand({}),
       ),
     )
 
@@ -44,6 +44,6 @@ export const AddReviewToAClub = (
     yield* pipe(
       storeForm(input.orcidId, input.preprintId, updateForm(form)({ club: input.clubId })),
       Effect.provideService(FormStore.Store, formStore),
-      Effect.catch(() => new UnableToHandleCommand({})),
+      Effect.catch(() => new Commands.UnableToHandleCommand({})),
     )
   })

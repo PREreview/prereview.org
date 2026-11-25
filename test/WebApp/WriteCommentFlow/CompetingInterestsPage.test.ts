@@ -1,7 +1,7 @@
 import { Effect, Equal, Option, Result } from 'effect'
-import { UnableToHandleCommand } from '../../../src/Commands.ts'
 import { Locale } from '../../../src/Context.ts'
 import * as Comments from '../../../src/Domain/Comments/index.ts'
+import { UnableToHandleCommand } from '../../../src/EventSourcing/Commands.ts'
 import * as Queries from '../../../src/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'

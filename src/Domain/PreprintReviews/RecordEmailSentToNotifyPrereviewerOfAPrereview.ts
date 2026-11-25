@@ -1,5 +1,5 @@
-import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
+import { Commands } from '../../EventSourcing/index.ts'
 import type { OrcidId, Temporal } from '../../types/index.ts'
 
 export interface Input {

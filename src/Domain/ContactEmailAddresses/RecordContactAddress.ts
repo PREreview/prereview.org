@@ -1,6 +1,6 @@
 import { Array, Match, Option, Result } from 'effect'
-import * as Commands from '../../Commands.ts'
 import * as Events from '../../Events.ts'
+import { Commands } from '../../EventSourcing/index.ts'
 import { EmailAddressEquivalence, type EmailAddress } from '../../types/EmailAddress.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { Uuid } from '../../types/Uuid.ts'

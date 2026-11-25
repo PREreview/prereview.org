@@ -1,8 +1,8 @@
 import { Effect, Equal, Match, pipe } from 'effect'
-import { UnableToHandleCommand } from '../../../Commands.ts'
 import { Locale } from '../../../Context.ts'
 import * as Comments from '../../../Domain/Comments/index.ts'
 import * as Prereviewers from '../../../Domain/Prereviewers/index.ts'
+import { Commands } from '../../../EventSourcing/index.ts'
 import * as Routes from '../../../routes.ts'
 import type { Uuid } from '../../../types/index.ts'
 import { EnsureUserIsLoggedIn } from '../../../user.ts'
@@ -127,7 +127,7 @@ export const ChoosePersonaSubmission: (input: {
                 handleCommand(new Comments.ChoosePersona({ commentId, persona: form.persona })),
                 Effect.catchIf(
                   cause => cause._tag !== 'UnableToHandleCommand',
-                  cause => new UnableToHandleCommand({ cause }),
+                  cause => new Commands.UnableToHandleCommand({ cause }),
                 ),
               )
 
