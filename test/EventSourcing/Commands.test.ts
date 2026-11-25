@@ -36,7 +36,7 @@ const Input = Schema.Struct({
 
 describe('makeCommand', () => {
   const command = <I>(inputSchema?: Schema.Codec<I, unknown>) =>
-    _.Command({
+    _.Command<Events.Event, [I], undefined, never>({
       name: 'Test.command',
       ...(inputSchema === undefined ? {} : { inputSchema }),
       createFilter: (_input: I) => Events.EventFilter({ types: ['PreprintReviewImported'] }),
@@ -44,11 +44,11 @@ describe('makeCommand', () => {
       decide: () => Result.succeedNone,
     })
 
-  const run = <I>(definition: _.Command<[I], undefined, never>, input: I) => {
+  const run = <I>(definition: _.Command<Events.Event, [I], undefined, never>, input: I) => {
     const { spans, tracer } = recordSpans()
 
     return pipe(
-      _.makeCommand(definition),
+      _.makeCommand(EventStore.EventStore, definition),
       Effect.flatMap(command => command(input)),
       Effect.provide(Layer.mock(EventStore.EventStore, { query: () => Effect.succeed(Option.none()) })),
       Effect.withTracer(tracer),
@@ -137,7 +137,7 @@ describe('makeCommand', () => {
 
   it.effect('fails when not authorized', () =>
     Effect.gen(function* () {
-      const definition = _.Command<[], undefined, never, true>({
+      const definition = _.Command<Events.Event, [], undefined, never, true>({
         name: 'Test.command',
         createFilter: () => Events.EventFilter({ types: ['PreprintReviewImported'] }),
         foldState: () => undefined,
@@ -146,7 +146,7 @@ describe('makeCommand', () => {
       })
 
       const error = yield* pipe(
-        _.makeCommand(definition),
+        _.makeCommand(EventStore.EventStore, definition),
         Effect.flatMap(command => command()),
         Effect.flip,
         Effect.provide(Layer.mock(EventStore.EventStore, { query: () => Effect.succeed(Option.none()) })),
@@ -162,14 +162,14 @@ describe('makeStatelessCommand', () => {
     Effect.gen(function* () {
       const { spans, tracer } = recordSpans()
 
-      const definition = _.StatelessCommand({
+      const definition = _.StatelessCommand<Events.Event, [typeof Input.Type]>({
         name: 'Test.statelessCommand',
         inputSchema: Input,
         decide: (_input: typeof Input.Type) => event,
       })
 
       yield* pipe(
-        _.makeStatelessCommand(definition),
+        _.makeStatelessCommand(EventStore.EventStore, definition),
         Effect.flatMap(command => command({ id: 123, tags: [], flag: false })),
         Effect.provide(Layer.mock(EventStore.EventStore, { append: () => Effect.void })),
         Effect.withTracer(tracer),

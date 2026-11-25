@@ -1,25 +1,25 @@
-import { Context, Data, Effect, identity, Option, pipe, Predicate, Record, type Result, Schema, Scope } from 'effect'
-// oxlint-disable module-boundaries/use-index
-import * as EventStore from '../Domain/Events/EventStore.ts'
-import type * as Events from '../Domain/Events/Events.ts'
+import { Data, Effect, identity, Option, pipe, Predicate, Record, type Result, Schema } from 'effect'
+import type { AnyEvent, EventFilter } from './EventFilter.ts'
+import type * as EventStore from './EventStore.ts'
 
 export type FromCommand<T> =
-  T extends Pick<Command<infer Input extends CommandInput, never, infer Error>, 'decide'>
+  T extends Pick<Command<AnyEvent, infer Input extends CommandInput, never, infer Error>, 'decide'>
     ? (...input: Input) => Effect.Effect<void, Error | UnableToHandleCommand>
     : never
 
 export type FromStatelessCommand<T> =
-  T extends StatelessCommand<infer Input extends CommandInput>
+  T extends StatelessCommand<AnyEvent, infer Input extends CommandInput>
     ? (...input: Input) => Effect.Effect<void, UnableToHandleCommand>
     : never
 
 export class UnableToHandleCommand extends Data.TaggedError('UnableToHandleCommand')<{ cause?: unknown }> {}
 
-type CommandInput = readonly [] | readonly [input: unknown]
+export type CommandInput = readonly [] | readonly [input: unknown]
 
 type InputSchema<Input extends CommandInput> = Input extends readonly [infer I] ? Schema.Codec<I, unknown> : never
 
 export type Command<
+  E extends AnyEvent,
   Input extends CommandInput,
   State,
   Error,
@@ -28,45 +28,49 @@ export type Command<
   ? {
       name: string
       inputSchema?: InputSchema<Input>
-      createFilter: (...input: Input) => Events.EventFilter
-      foldState: (events: ReadonlyArray<Events.Event>, ...input: Input) => State
+      createFilter: (...input: Input) => EventFilter<E>
+      foldState: (events: ReadonlyArray<E>, ...input: Input) => State
       authorize: (state: State, ...input: Input) => boolean
-      decide: (state: State, ...input: Input) => Result.Result<Option.Option<Events.Event>, Error>
+      decide: (state: State, ...input: Input) => Result.Result<Option.Option<E>, Error>
     }
   : {
       name: string
       inputSchema?: InputSchema<Input>
-      createFilter: (...input: Input) => Events.EventFilter
-      foldState: (events: ReadonlyArray<Events.Event>, ...input: Input) => State
-      decide: (state: State, ...input: Input) => Result.Result<Option.Option<Events.Event>, Error>
+      createFilter: (...input: Input) => EventFilter<E>
+      foldState: (events: ReadonlyArray<E>, ...input: Input) => State
+      decide: (state: State, ...input: Input) => Result.Result<Option.Option<E>, Error>
     }
 
-export interface StatelessCommand<Input extends CommandInput> {
+export interface StatelessCommand<E extends AnyEvent, Input extends CommandInput> {
   name: string
   inputSchema?: InputSchema<Input>
-  decide: (...input: Input) => Events.Event
+  decide: (...input: Input) => E
 }
 
-export const Command: <Input extends CommandInput, State, Error, Authorize extends boolean = false>(
-  command: Command<Input, State, Error, Authorize>,
-) => Command<Input, State, Error, Authorize> = identity
+export const Command: <E extends AnyEvent, Input extends CommandInput, State, Error, Authorize extends boolean = false>(
+  command: Command<E, Input, State, Error, Authorize>,
+) => Command<E, Input, State, Error, Authorize> = identity
 
-export const StatelessCommand: <Input extends CommandInput>(
-  command: StatelessCommand<Input>,
-) => StatelessCommand<Input> = identity
+export const StatelessCommand: <E extends AnyEvent, Input extends CommandInput>(
+  command: StatelessCommand<E, Input>,
+) => StatelessCommand<E, Input> = identity
 
-export const makeCommand = <Input extends CommandInput, State, Error, Authorize extends boolean = false>(
-  command: Command<Input, State, Error, Authorize>,
-): Effect.Effect<
-  (...input: Input) => Effect.Effect<void, Error | UnableToHandleCommand>,
-  never,
-  EventStore.EventStore
-> =>
+export const makeCommand = <
+  E extends AnyEvent,
+  R,
+  Input extends CommandInput,
+  State,
+  Error,
+  Authorize extends boolean = false,
+>(
+  eventStore: Effect.Effect<EventStore.EventStore<E>, never, R>,
+  command: Command<E, Input, State, Error, Authorize>,
+): Effect.Effect<(...input: Input) => Effect.Effect<void, Error | UnableToHandleCommand>, never, R> =>
   Effect.gen(function* () {
     const { name, inputSchema, createFilter, foldState, decide } = command
     const authorize = 'authorize' in command ? command.authorize : () => true
 
-    const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
+    const { query, appendIf } = yield* eventStore
 
     const annotateSpanWithInput = makeAnnotateSpanWithInput(inputSchema)
 
@@ -77,7 +81,7 @@ export const makeCommand = <Input extends CommandInput, State, Error, Authorize 
         const filter = createFilter(...input)
 
         const { events, lastKnownPosition } = yield* pipe(
-          EventStore.query(filter),
+          query(filter),
           Effect.map(Option.getOrElse(() => ({ events: [], lastKnownPosition: undefined }))),
         )
 
@@ -91,29 +95,22 @@ export const makeCommand = <Input extends CommandInput, State, Error, Authorize 
 
         yield* Option.match(decision, {
           onNone: () => Effect.void,
-          onSome: event =>
-            EventStore.appendIf(event, { filter, lastKnownPosition: Option.fromNullishOr(lastKnownPosition) }),
+          onSome: event => appendIf(event, { filter, lastKnownPosition: Option.fromNullishOr(lastKnownPosition) }),
         })
       },
       Effect.catchTag(
         ['FailedToCommitEvent', 'FailedToGetEvents', 'NewEventsFound'],
         cause => new UnableToHandleCommand({ cause }),
       ),
-      Effect.provide(context),
     )
   })
 
-export const makeStatelessCommand = <Input extends CommandInput>({
-  name,
-  inputSchema,
-  decide,
-}: StatelessCommand<Input>): Effect.Effect<
-  (...input: Input) => Effect.Effect<void, UnableToHandleCommand>,
-  never,
-  EventStore.EventStore
-> =>
+export const makeStatelessCommand = <E extends AnyEvent, R, Input extends CommandInput>(
+  eventStore: Effect.Effect<EventStore.EventStore<E>, never, R>,
+  { name, inputSchema, decide }: StatelessCommand<E, Input>,
+): Effect.Effect<(...input: Input) => Effect.Effect<void, UnableToHandleCommand>, never, R> =>
   Effect.gen(function* () {
-    const context = yield* Effect.map(Effect.context<EventStore.EventStore>(), Context.omit(Scope.Scope))
+    const { append } = yield* eventStore
 
     const annotateSpanWithInput = makeAnnotateSpanWithInput(inputSchema)
 
@@ -123,10 +120,9 @@ export const makeStatelessCommand = <Input extends CommandInput>({
 
         const event = decide(...input)
 
-        yield* EventStore.append(event)
+        yield* append(event)
       },
       Effect.catchTag('FailedToCommitEvent', cause => new UnableToHandleCommand({ cause })),
-      Effect.provide(context),
     )
   })
 
