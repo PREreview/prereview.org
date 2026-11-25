@@ -1,4 +1,4 @@
-import { Duration, Effect, Layer, pipe, Tuple } from 'effect'
+import { Duration, Effect, Layer, pipe, Result } from 'effect'
 import { Headers, HttpClient, HttpClientRequest, UrlParams } from 'effect/http'
 
 export const loggingHttpClient: Effect.Effect<HttpClient.HttpClient, never, HttpClient.HttpClient> = Effect.gen(
@@ -22,17 +22,6 @@ export const loggingHttpClient: Effect.Effect<HttpClient.HttpClient, never, Http
           }),
         ),
       ),
-      HttpClient.tapError(error =>
-        Effect.logError('Error sending HTTP request').pipe(
-          Effect.annotateLogs({
-            reason: error.reason._tag,
-            error: error.reason.cause,
-            url: error.request.url,
-            urlParams: UrlParams.toString(error.request.urlParams),
-            method: error.request.method,
-          }),
-        ),
-      ),
     )
 
     return HttpClient.makeWith(
@@ -41,20 +30,35 @@ export const loggingHttpClient: Effect.Effect<HttpClient.HttpClient, never, Http
 
         return yield* pipe(
           loggingHttpClient.execute(request),
+          Effect.result,
           Effect.timed,
-          Effect.tap(([duration, response]) =>
-            Effect.logDebug('Received HTTP response').pipe(
-              Effect.annotateLogs({
-                status: response.status,
-                headers: response.headers,
-                url: response.request.url,
-                urlParams: UrlParams.toString(response.request.urlParams),
-                method: response.request.method,
-                durationMs: Duration.toMillis(duration),
-              }),
-            ),
+          Effect.tap(([duration, result]) =>
+            Result.match(result, {
+              onSuccess: response =>
+                Effect.logDebug('Received HTTP response').pipe(
+                  Effect.annotateLogs({
+                    status: response.status,
+                    headers: response.headers,
+                    url: response.request.url,
+                    urlParams: UrlParams.toString(response.request.urlParams),
+                    method: response.request.method,
+                    durationMs: Duration.toMillis(duration),
+                  }),
+                ),
+              onFailure: error =>
+                Effect.logError('Error sending HTTP request').pipe(
+                  Effect.annotateLogs({
+                    reason: error.reason._tag,
+                    error: error.reason.cause,
+                    url: error.request.url,
+                    urlParams: UrlParams.toString(error.request.urlParams),
+                    method: error.request.method,
+                    durationMs: Duration.toMillis(duration),
+                  }),
+                ),
+            }),
           ),
-          Effect.map(Tuple.get(1)),
+          Effect.flatMap(([, result]) => Effect.fromResult(result)),
           Effect.onInterrupt(interrupters =>
             pipe(
               Effect.logDebug('HTTP request interrupted'),
