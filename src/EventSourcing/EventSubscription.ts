@@ -1,7 +1,8 @@
 import { Array, Data, Effect, Option, pipe, Record, Ref, Schedule, Stream, type Types } from 'effect'
 import { Singleton } from 'effect/cluster'
-import type * as Events from '../Domain/Events/index.ts'
-import { EventStore } from '../Domain/Events/index.ts'
+// oxlint-disable module-boundaries/use-index
+import * as EventStore from '../Domain/Events/EventStore.ts'
+import type * as Events from '../Domain/Events/Events.ts'
 import { Temporal } from '../types/index.ts'
 
 export type Handlers = {

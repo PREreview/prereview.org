@@ -1,4 +1,4 @@
-import { EventSubscription } from '../../EventSourcing/index.ts'
+import { EventSubscription } from '../Events/index.ts'
 import * as Workflows from './Workflows/index.ts'
 
 export const reactionsWorker = EventSubscription.make('AuthorInvites/Reactions', {

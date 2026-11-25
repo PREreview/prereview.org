@@ -1,5 +1,5 @@
 import { Effect } from 'effect'
-import { EventSubscription } from '../../EventSourcing/index.ts'
+import { EventSubscription } from '../Events/index.ts'
 import * as Workflows from './Workflows/index.ts'
 
 export const reactionsWorker = EventSubscription.make('DatasetReviews/Reactions', {
