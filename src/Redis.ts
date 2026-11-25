@@ -2,11 +2,14 @@ import { Config, Context, Deferred, Duration, Effect, flow, Inspectable, Layer, 
 import { Redis } from 'effect/persistence'
 import { Redis as IoRedis } from 'ioredis'
 
-const makeRedis = Effect.fnUntraced(function* (url: Redacted.Redacted<URL>) {
+const makeRedis = Effect.fnUntraced(function* (
+  url: Redacted.Redacted<URL>,
+  { enableAutoPipelining = true }: { enableAutoPipelining?: boolean } = {},
+) {
   const runtime = yield* Effect.context()
   const redis = new IoRedis(Redacted.value(url).href, {
     commandTimeout: Duration.toMillis('2 seconds'),
-    enableAutoPipelining: true,
+    enableAutoPipelining,
   })
 
   const runSync = Effect.runSyncWith(runtime)
@@ -138,7 +141,7 @@ const layerHttpCache = ({
   pipe(
     Effect.all({
       primary: redisLifecycle(primaryUri),
-      readonlyFallback: redisLifecycle(readonlyFallbackUri),
+      readonlyFallback: redisLifecycle(readonlyFallbackUri, { enableAutoPipelining: false }),
     }),
     Layer.effect(HttpCacheRedis),
   )
