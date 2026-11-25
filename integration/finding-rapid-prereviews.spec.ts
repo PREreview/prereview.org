@@ -1,7 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Option } from 'effect'
 import { RecordsC } from 'zenodo-ts'
-import { RapidPrereviewImported } from '../src/Domain/Events/index.ts'
+import * as Events from '../src/Domain/Events/index.ts'
 import { BiorxivPreprintId } from '../src/Domain/Preprints/index.ts'
 import { Doi } from '../src/types/Doi.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
@@ -10,7 +10,7 @@ import { expect, seedEvents, test } from './base.ts'
 
 test.extend(
   seedEvents(
-    new RapidPrereviewImported({
+    new Events.RapidPrereviewImported({
       author: {
         persona: 'public',
         orcidId: OrcidId('0000-0002-1825-0097'),

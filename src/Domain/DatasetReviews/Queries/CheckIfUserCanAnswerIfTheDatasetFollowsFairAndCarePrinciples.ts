@@ -1,7 +1,6 @@
 import { Array, Equal, Option, Result, Struct, type Types } from 'effect'
 import type { OrcidId, Uuid } from '../../../types/index.ts'
 import * as Events from '../../Events/index.ts'
-import { EventFilter } from '../../Events/index.ts'
 import * as Errors from '../Errors.ts'
 
 export interface Input {
@@ -18,7 +17,7 @@ export type Result = Result.Result<
 >
 
 export const createFilter = ({ datasetReviewId }: Input) =>
-  EventFilter({
+  Events.EventFilter({
     types: [
       'DatasetReviewWasStarted',
       'AnsweredIfTheDatasetFollowsFairAndCarePrinciples',

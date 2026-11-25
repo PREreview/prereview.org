@@ -13,7 +13,7 @@ import {
   Struct,
 } from 'effect'
 import { Command } from 'effect/cli'
-import { PreprintReviewImported, StructuredPrereviewSchema } from '../Domain/Events/index.ts'
+import * as Events from '../Domain/Events/index.ts'
 import { PreprintReviews } from '../Domain/PreprintReviews/index.ts'
 import { Prereviewers } from '../Domain/Prereviewers/index.ts'
 import { Html, HtmlFromSelfSchema } from '../html.ts'
@@ -29,7 +29,7 @@ const NaiveHtmlSchema: Schema.Codec<Html, string> = Schema.String.pipe(
 )
 
 const PrereviewToImportSchema = Schema.Struct({
-  ...Struct.omit(PreprintReviewImported.fields, ['_tag']),
+  ...Struct.omit(Events.PreprintReviewImported.fields, ['_tag']),
   authors: Schema.NonEmptyArray(
     Schema.TaggedUnion({
       PublicPersona: { name: NameSchema, orcidId: OrcidId.OrcidIdSchema },
@@ -38,14 +38,14 @@ const PrereviewToImportSchema = Schema.Struct({
     }),
   ),
   content: Schema.TaggedUnion({
-    Structured: StructuredPrereviewSchema.fields,
+    Structured: Events.StructuredPrereviewSchema.fields,
     Full: { text: NaiveHtmlSchema },
   }),
 })
 
 type AuthorToImport = (typeof PrereviewToImportSchema.Type)['authors'][number]
 
-type ImportedAuthor = (typeof PreprintReviewImported.Type)['authors'][number]
+type ImportedAuthor = (typeof Events.PreprintReviewImported.Type)['authors'][number]
 
 const resolveAuthor = <E1, E2>(
   author: AuthorToImport,

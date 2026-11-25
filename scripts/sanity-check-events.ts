@@ -18,7 +18,7 @@ import {
 import type { NonEmptyReadonlyArray } from 'effect/Array'
 import { SqlClient } from 'effect/sql'
 import path from 'node:path'
-import { ContactAddressImported, Event, type EventTypes } from '../src/Domain/Events/index.ts'
+import * as Events from '../src/Domain/Events/index.ts'
 import { SensitiveDataStore } from '../src/EventSourcing/index.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
 import { Uuid } from '../src/types/Uuid.ts'
@@ -41,13 +41,13 @@ const EventRow = Schema.Struct({
     Schema.toType(
       Schema.Struct({
         position: Schema.Number,
-        event: Event,
+        event: Events.Event,
       }),
     ),
     {
       decode: SchemaGetter.transformEffect(({ type, payload, ...rest }) =>
         Effect.gen(function* () {
-          const event = yield* Schema.decodeUnknownEffect(Event)({ _tag: type, ...payload }).pipe(
+          const event = yield* Schema.decodeUnknownEffect(Events.Event)({ _tag: type, ...payload }).pipe(
             Effect.mapError(error => error.issue),
           )
           return { ...rest, event }
@@ -58,7 +58,7 @@ const EventRow = Schema.Struct({
   ),
 )
 
-type EventType = (typeof EventTypes)[number]
+type EventType = (typeof Events.EventTypes)[number]
 
 class NoPrecedingEvents extends Data.TaggedClass('NoPrecedingEvents') {}
 
@@ -83,14 +83,14 @@ interface Rule {
 interface Example {
   name?: string
   expectation: 'pass' | 'fail'
-  sequence: NonEmptyReadonlyArray<Event>
+  sequence: NonEmptyReadonlyArray<Events.Event>
 }
 
 const examples: ReadonlyArray<Example> = [
   {
     expectation: 'pass',
     sequence: [
-      new ContactAddressImported({
+      new Events.ContactAddressImported({
         contactAddressId: Uuid('0881ba38-af64-4ab9-920d-f7593c6abfb7'),
         emailAddress: Option.none(),
         orcidId: OrcidId('0000-0002-1825-0097'),
@@ -101,13 +101,13 @@ const examples: ReadonlyArray<Example> = [
   {
     expectation: 'fail',
     sequence: [
-      new ContactAddressImported({
+      new Events.ContactAddressImported({
         contactAddressId: Uuid('0881ba38-af64-4ab9-920d-f7593c6abfb7'),
         emailAddress: Option.none(),
         orcidId: OrcidId('0000-0002-1825-0097'),
         verificationStatus: 'verified',
       }),
-      new ContactAddressImported({
+      new Events.ContactAddressImported({
         contactAddressId: Uuid('0881ba38-af64-4ab9-920d-f7593c6abfb7'),
         emailAddress: Option.none(),
         orcidId: OrcidId('0000-0002-1825-0097'),
@@ -201,7 +201,7 @@ const allRules: Partial<Record<EventType, Rule | NonEmptyReadonlyArray<Rule>>> =
 }
 
 const getPertinentPrecedingEvents = (
-  event: Event,
+  event: Events.Event,
   rows: ReadonlyArray<typeof EventRow.Type>,
   filter: Rule['pertinentEventFilter'],
 ): ReadonlyArray<EventType> => {
