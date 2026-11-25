@@ -1,6 +1,7 @@
 import { Array, Context, Layer, Schema } from 'effect'
 import * as EventFilters from '../../src/EventSourcing/EventFilter.ts'
 import type * as GenericEventStore from '../../src/EventSourcing/EventStore.ts'
+import * as SensitiveData from '../../src/EventSourcing/SensitiveData.ts'
 import * as SqlEventStore from '../../src/EventSourcing/SqlEventStore.ts'
 import type * as GenericStatefulQueries from '../../src/EventSourcing/StatefulQueries.ts'
 import * as fc from '../fc.ts'
@@ -28,6 +29,11 @@ export class ThingReviewed extends Schema.TaggedClass<ThingReviewed>()('ThingRev
 export class ThingMoved extends Schema.TaggedClass<ThingMoved>()('ThingMoved', {
   thingId: Schema.String,
   location: Schema.fromJsonString(Schema.Struct({ x: Schema.Number, y: Schema.Number })),
+}) {}
+
+export class ThingNamed extends Schema.TaggedClass<ThingNamed>()('ThingNamed', {
+  thingId: Schema.String,
+  name: SensitiveData.SensitiveData(Schema.String),
 }) {}
 
 export const Event = Schema.Union([ThingStarted, ThingFinished, ThingRated, ThingReviewed, ThingMoved])

@@ -19,8 +19,10 @@ import { SqlClient } from 'effect/sql'
 import { TestClock } from 'effect/testing'
 import { sample } from 'fast-check'
 import type * as EventFilter from '../../src/EventSourcing/EventFilter.ts'
+import type { AnyEvent } from '../../src/EventSourcing/EventFilter.ts'
 import * as EventStore from '../../src/EventSourcing/EventStore.ts'
 import * as _ from '../../src/EventSourcing/SqlEventStore.ts'
+import * as SqlSensitiveDataStore from '../../src/EventSourcing/SqlSensitiveDataStore.ts'
 import { Uuid } from '../../src/types/index.ts'
 import * as fc from '../fc.ts'
 import * as TestLibsqlClient from '../TestLibsqlClient.ts'
@@ -712,6 +714,52 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       { fastCheck: { numRuns: 10 }, timeout: Duration.toMillis('60 seconds') },
     )
   })
+
+  describe('with sensitive data', () => {
+    const event = new TestEvents.ThingNamed({ thingId: 'thing', name: Option.some('Josiah Carberry') })
+
+    it.effect('reads it back without needing the sensitive data store', () =>
+      Effect.gen(function* () {
+        const eventStore = yield* Effect.provide(
+          _.make(Schema.Union([TestEvents.ThingNamed])),
+          SqlSensitiveDataStore.layer,
+        )
+        const cursor = yield* eventStore.latestCursor
+
+        yield* eventStore.append(event)
+
+        const queried = yield* eventStore.query({ types: ['ThingNamed'] })
+        const all = yield* Stream.runCollect(eventStore.all)
+        const subscribed = yield* Queue.take(yield* receive(eventStore.subscribe({ after: cursor })))
+
+        expect(queried).toStrictEqual(Option.some({ events: [event], lastKnownPosition: expect.anything() }))
+        expect(eventsIn(all)).toStrictEqual([event])
+        expect(subscribed).toStrictEqual(event)
+      }).pipe(Effect.provide([Uuid.layer, TestSqlClient])),
+    )
+
+    it.effect("doesn't store it in the event", () =>
+      Effect.gen(function* () {
+        const sql = yield* SqlClient.SqlClient
+        const eventStore = yield* Effect.provide(
+          _.make(Schema.Union([TestEvents.ThingNamed])),
+          SqlSensitiveDataStore.layer,
+        )
+
+        yield* eventStore.append(event)
+
+        const rows = yield* sql`
+          SELECT
+            payload
+          FROM
+            events
+        `
+
+        expect(rows).toHaveLength(1)
+        expect(JSON.stringify(rows)).not.toContain('Josiah Carberry')
+      }).pipe(Effect.provide([Uuid.layer, TestSqlClient])),
+    )
+  })
 })
 
 describe('on Postgres', () => {
@@ -1054,8 +1102,8 @@ const RealPgClient = Layer.unwrap(
 const allEvents = (eventStore: EventStore.EventStore<TestEvents.Event>) =>
   Effect.map(Stream.runCollect(eventStore.all), eventsIn)
 
-const receive = Effect.fnUntraced(function* <E, R>(pages: Stream.Stream<EventStore.Page<TestEvents.Event>, E, R>) {
-  const received = yield* Queue.unbounded<TestEvents.Event>()
+const receive = Effect.fnUntraced(function* <A extends AnyEvent, E, R>(pages: Stream.Stream<EventStore.Page<A>, E, R>) {
+  const received = yield* Queue.unbounded<A>()
 
   yield* Effect.forkChild(
     Stream.runForEach(pages, page => Queue.offerAll(received, Array.map(page, Struct.get('event')))),
@@ -1064,5 +1112,5 @@ const receive = Effect.fnUntraced(function* <E, R>(pages: Stream.Stream<EventSto
   return received
 })
 
-const eventsIn = (pages: ReadonlyArray<EventStore.Page<TestEvents.Event>>) =>
+const eventsIn = <A extends AnyEvent>(pages: ReadonlyArray<EventStore.Page<A>>) =>
   Array.flatMap(pages, Array.map(Struct.get('event')))
