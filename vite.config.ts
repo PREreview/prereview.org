@@ -64,7 +64,6 @@ export default defineConfig(({ mode }) => ({
           rtlPrefix: ':where([dir="rtl"])',
           runOnExit: true,
         }),
-        // oxlint-disable-next-line no-comments/disallowComments
         // @ts-expect-error https://github.com/FullHuman/purgecss/issues/1263
         postcssPurgecss({
           content: ['assets/**/*.ts', 'src/**/*.ts'],

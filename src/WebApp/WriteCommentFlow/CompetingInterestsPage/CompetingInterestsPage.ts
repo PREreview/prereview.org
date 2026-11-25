@@ -91,7 +91,6 @@ export const CompetingInterestsPage = ({
 
               <details>
                 ${
-                  // oxlint-disable-next-line no-comments/disallowComments
                   // prettier-ignore
                   html`<summary>${translate(locale, 'write-comment-flow', 'examplesCompetingInterests')()}</summary>`
                 }

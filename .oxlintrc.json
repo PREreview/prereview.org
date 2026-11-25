@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": ["typescript", "import", "unicorn"],
-  "jsPlugins": ["eslint-plugin-wc", "eslint-plugin-no-comments", "./.dev/comments.mjs", "./.dev/module-boundaries.mjs"],
+  "jsPlugins": ["eslint-plugin-wc", "./.dev/comments.mjs", "./.dev/module-boundaries.mjs"],
   "categories": {
     "correctness": "error",
     "suspicious": "error",
@@ -85,12 +85,6 @@
       }
     ],
     "comments/no-commented-out-code": "error",
-    "no-comments/disallowComments": [
-      "error",
-      {
-        "allow": ["\\* @deprecated", "\\[sic\\]", "oxlint", "https://", "Do", "Unfortunately", "Refs", "represents"]
-      }
-    ],
     "object-shorthand": "error",
     "typescript/ban-ts-comment": ["error", { "minimumDescriptionLength": 10 }],
     "typescript/ban-types": "error",
@@ -203,7 +197,6 @@
     {
       "files": ["integration/**/*.ts", "test/**/*.ts", "visual-regression/**/*.ts"],
       "rules": {
-        "no-comments/disallowComments": "off",
         "typescript/no-base-to-string": "off"
       }
     },

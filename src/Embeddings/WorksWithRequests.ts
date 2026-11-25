@@ -1,4 +1,3 @@
-// oxlint-disable no-comments/disallowComments
 import type { OpenRouterClient } from '@effect/ai-openrouter'
 import type { Tokenizer } from '@huggingface/tokenizers'
 import { Temporal } from '@js-temporal/polyfill'

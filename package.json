@@ -72,7 +72,6 @@
     "@types/sanitize-html": "^2.16.2",
     "@types/turndown": "^5.0.6",
     "@typescript/analyze-trace": "^0.11.1",
-    "eslint-plugin-no-comments": "^1.2.1",
     "eslint-plugin-wc": "^3.1.0",
     "fast-check": "^3.23.2",
     "fetch-mock": "^12.6.0",
