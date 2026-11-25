@@ -121,7 +121,7 @@ pipe(
   ]),
   Layer.provide([
     NodeHttpServer.layerConfig(() => createServer(), { port: Config.succeed(3000) }),
-    NodeHttpClient.layerNodeHttp,
+    NodeHttpClient.layerNodeHttpOptions({ keepAlive: true }),
     CachingHttpClient.layerPersistedToRedis,
     Layer.provide(
       Layer.mergeAll(
