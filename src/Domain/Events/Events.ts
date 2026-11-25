@@ -1,6 +1,6 @@
 import { Array, Schema, type Types } from 'effect'
 // oxlint-disable  module-boundaries/use-index
-import { EventFilter as EventFilters } from '../../EventSourcing/index.ts'
+import { EventFilter as GenericEventFilter } from '../../EventSourcing/index.ts'
 import * as AuthorInviteEvents from '../AuthorInvites/Events.ts'
 import * as CommentEvents from '../Comments/Events.ts'
 import * as ContactEmailAddressesEvents from '../ContactEmailAddresses/Events.ts'
@@ -36,11 +36,11 @@ export const Event = Schema.Union([
   ...PrereviewerEvents.PrereviewerEvent.members,
 ])
 
-export type EventFilter = EventFilters.EventFilter<Event>
+export type EventFilter = GenericEventFilter.EventFilter<Event>
 
-export const EventFilter = EventFilters.make<Event>()
+export const EventFilter = GenericEventFilter.make<Event>()
 
-export const matches = EventFilters.matches(Event)
+export const matches = GenericEventFilter.matches(Event)
 
 export const EventTypes = Array.map(Event.members, member => member.identifier as Event['_tag'])
 
@@ -51,10 +51,10 @@ const CommentEventTypes = Array.map(
 
 export const isCommentEvent: (event: Event) => event is CommentEvents.CommentEvent = isA(...CommentEventTypes)
 
-export type EventsForFilter<F extends EventFilter> = EventFilters.EventsForFilter<Event, F>
+export type EventsForFilter<F extends EventFilter> = GenericEventFilter.EventsForFilter<Event, F>
 
 export type EventSubset<SubsetTags extends Types.Tags<Event> | ReadonlyArray<Types.Tags<Event>>> =
-  EventFilters.EventSubset<Event, SubsetTags>
+  GenericEventFilter.EventSubset<Event, SubsetTags>
 
 function isA<Tag extends Types.Tags<Event>>(...tags: ReadonlyArray<Tag>) {
   return (event: Event): event is EventSubset<Tag> => Array.contains(tags, event._tag)
