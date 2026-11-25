@@ -227,21 +227,49 @@ export const make: <E extends EventFilter.AnyEvent, RD, RE>(
 
       yield* Effect.annotateCurrentSpan({ after: after.position })
 
-      const rows = yield* sql`
-        SELECT
-          id,
-          type,
-          payload,
-          position
-        FROM
-          events
-        WHERE
-          ${sql.and([sql`position > ${after.position}`, ...matching(filter)])}
-        ORDER BY
-          position ASC
-        LIMIT
-          ${pageSize}
-      `
+      const rows = yield* sql.onDialectOrElse({
+        pg: () => sql`
+          SELECT
+            id,
+            type,
+            payload,
+            position,
+            transaction_id::TEXT
+          FROM
+            events
+          WHERE
+            ${sql.and([
+              sql`
+                (transaction_id, position) > (
+                  ${after.transactionId.toString()}::XID8,
+                  ${after.position}
+                )
+              `,
+              sql`transaction_id < pg_snapshot_xmin(pg_current_snapshot())`,
+              ...matching(filter),
+            ])}
+          ORDER BY
+            events.transaction_id ASC,
+            events.position ASC
+          LIMIT
+            ${pageSize}
+        `,
+        orElse: () => sql`
+          SELECT
+            id,
+            type,
+            payload,
+            position
+          FROM
+            events
+          WHERE
+            ${sql.and([sql`position > ${after.position}`, ...matching(filter)])}
+          ORDER BY
+            position ASC
+          LIMIT
+            ${pageSize}
+        `,
+      })
 
       if (!Array.isReadonlyArrayNonEmpty(rows)) {
         return Option.none()
@@ -281,48 +309,7 @@ export const make: <E extends EventFilter.AnyEvent, RD, RE>(
     cursor: EventStore.Cursor,
     filter?: EventFilter.EventFilter<E>,
   ): Stream.Stream<EventStore.Page<E>, EventStore.FailedToGetEvents> =>
-    sql.onDialectOrElse({
-      pg: () =>
-        pipe(
-          readCursor(cursor),
-          Effect.map(
-            after => sql`
-              SELECT
-                id,
-                type,
-                payload,
-                position,
-                transaction_id::TEXT
-              FROM
-                events
-              WHERE
-                ${sql.and([
-                  sql`
-                    (transaction_id, position) > (
-                      ${after.transactionId.toString()}::XID8,
-                      ${after.position}
-                    )
-                  `,
-                  sql`transaction_id < pg_snapshot_xmin(pg_current_snapshot())`,
-                  ...matching(filter),
-                ])}
-              ORDER BY
-                events.transaction_id ASC,
-                events.position ASC
-            `.stream,
-          ),
-          Stream.unwrap,
-          Stream.grouped(pageSize),
-          Stream.mapEffect(decodePage),
-          Stream.tapError(error =>
-            Effect.annotateLogs(Effect.logError('Unable to get events'), {
-              error,
-            }),
-          ),
-          Stream.mapError(error => new EventStore.FailedToGetEvents({ cause: error })),
-        ),
-      orElse: () => Stream.paginate(cursor, cursor => getNextPageAfter(cursor, filter)),
-    })
+    Stream.paginate(cursor, cursor => getNextPageAfter(cursor, filter))
 
   const all: EventStore.EventStore<E>['all'] = streamAfter(beginning)
 
