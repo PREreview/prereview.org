@@ -37,7 +37,7 @@ export const Event = Schema.Union([
 
 export type EventFilter = GenericEventFilter.EventFilter<Event>
 
-export const EventFilter = GenericEventFilter.make<Event>()
+export const EventFilter = GenericEventFilter.make(Event)
 
 export const matches = GenericEventFilter.matches(Event)
 

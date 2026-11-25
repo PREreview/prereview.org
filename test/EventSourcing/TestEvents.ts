@@ -42,7 +42,7 @@ export type Event = typeof Event.Type
 
 export const EventTypes = Array.map(Event.members, member => member.identifier as Event['_tag'])
 
-export const EventFilter = EventFilters.make<Event>()
+export const EventFilter = EventFilters.make(Event)
 
 export const EventStore = Context.Service<GenericEventStore.EventStore<Event>>('EventStore')
 

@@ -11,11 +11,18 @@ class ThingFinished extends Schema.TaggedClass<ThingFinished>()('ThingFinished',
   thingId: Schema.String,
 }) {}
 
-const Event = Schema.Union([ThingStarted, ThingFinished])
+class ThingMeasured extends Schema.TaggedClass<ThingMeasured>()('ThingMeasured', {
+  thingId: Schema.String,
+  size: Schema.Number,
+  weight: Schema.NumberFromString,
+  note: Schema.optionalKey(Schema.String),
+  dimensions: Schema.Struct({ width: Schema.Number, height: Schema.Number }),
+  tags: Schema.Array(Schema.String),
+}) {}
 
-type Event = typeof Event.Type
+const Event = Schema.Union([ThingStarted, ThingFinished, ThingMeasured])
 
-const EventFilter = _.make<Event>()
+const EventFilter = _.make(Event)
 
 const matches = _.matches(Event)
 
@@ -28,6 +35,22 @@ describe('make', () => {
     const actual = EventFilter(filter)
 
     expect(actual).toBe(filter)
+  })
+
+  it('accepts predicates on fields encoded as scalars', () => {
+    EventFilter({ types: ['ThingMeasured'], predicates: { thingId: 'thing', size: 10, weight: 10, note: 'note' } })
+  })
+
+  it('rejects predicates on fields not encoded as scalars', () => {
+    // @ts-expect-error dimensions is encoded as an object
+    EventFilter({ types: ['ThingMeasured'], predicates: { dimensions: { width: 1, height: 2 } } })
+    // @ts-expect-error tags is encoded as an array
+    EventFilter({ types: ['ThingMeasured'], predicates: { tags: ['tag'] } })
+    EventFilter([
+      { types: ['ThingStarted'], predicates: { thingId: 'thing' } },
+      // @ts-expect-error dimensions is encoded as an object
+      { types: ['ThingMeasured'], predicates: { dimensions: { width: 1, height: 2 } } },
+    ])
   })
 })
 

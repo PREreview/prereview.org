@@ -11,12 +11,14 @@ export interface EventSchema<E extends AnyEvent> {
 
 export type EventFilter<E extends AnyEvent> = ClauseInput<E> | Array.NonEmptyReadonlyArray<ClauseInput<E>>
 
-export interface MakeEventFilter<E extends AnyEvent> {
-  <const C extends ClauseInput<E>>(filter: C & ValidateClause<E, C>): C
-  <const C extends Array.NonEmptyReadonlyArray<ClauseInput<E>>>(filter: C & ValidateClauses<E, C>): C
+export interface MakeEventFilter<E extends AnyEvent, I extends AnyEvent> {
+  <const C extends ClauseInput<E>>(filter: C & ValidateClause<E, I, C>): C
+  <const C extends Array.NonEmptyReadonlyArray<ClauseInput<E>>>(filter: C & ValidateClauses<E, I, C>): C
 }
 
-export const make = <E extends AnyEvent>(): MakeEventFilter<E> => identity
+export const make: <E extends AnyEvent, I extends AnyEvent>(
+  schema: Schema.Codec<E, I, unknown, unknown>,
+) => MakeEventFilter<E, I> = () => identity
 
 export interface Matches<E extends AnyEvent> {
   <F extends EventFilter<E>>(event: E, filter: F): event is EventsForFilter<E, F>
@@ -72,24 +74,29 @@ interface ClauseInput<E extends AnyEvent> {
   readonly predicates?: Readonly<Record<string, unknown>>
 }
 
-type PredicatesFor<E extends AnyEvent, T extends Types.Tags<E>> = Partial<
-  Types.UnionToIntersection<Omit<EventSubset<E, T>, '_tag'>>
+type PredicatesFor<E extends AnyEvent, I extends AnyEvent, T extends Types.Tags<E>> = Omit<
+  Partial<Types.UnionToIntersection<Omit<EventSubset<E, T>, '_tag'>>>,
+  KeysNotEncodedAsScalars<Types.ExtractTag<I, T>>
 >
 
-type ValidatePredicates<E extends AnyEvent, P, T extends Types.Tags<E>> =
-  P extends PredicatesFor<E, T> ? Types.NoExcessProperties<PredicatesFor<E, T>, P> : never
+type KeysNotEncodedAsScalars<I> = I extends unknown
+  ? { [K in keyof I]-?: Exclude<I[K], undefined> extends string | number ? never : K }[Exclude<keyof I, '_tag'>]
+  : never
 
-type ValidateClause<E extends AnyEvent, C> = C extends {
+type ValidatePredicates<E extends AnyEvent, I extends AnyEvent, P, T extends Types.Tags<E>> =
+  P extends PredicatesFor<E, I, T> ? Types.NoExcessProperties<PredicatesFor<E, I, T>, P> : never
+
+type ValidateClause<E extends AnyEvent, I extends AnyEvent, C> = C extends {
   readonly types: infer TTypes extends Array.NonEmptyReadonlyArray<Types.Tags<E>>
 }
   ? Omit<C, 'predicates'> &
       (C extends { readonly predicates: infer P }
-        ? { readonly predicates: ValidatePredicates<E, P, TTypes[number]> }
+        ? { readonly predicates: ValidatePredicates<E, I, P, TTypes[number]> }
         : { readonly predicates?: undefined })
   : never
 
-type ValidateClauses<E extends AnyEvent, T extends Array.NonEmptyReadonlyArray<ClauseInput<E>>> = {
-  readonly [K in keyof T]: ValidateClause<E, T[K]>
+type ValidateClauses<E extends AnyEvent, I extends AnyEvent, T extends Array.NonEmptyReadonlyArray<ClauseInput<E>>> = {
+  readonly [K in keyof T]: ValidateClause<E, I, T[K]>
 }
 
 type TagsFromFilter<E extends AnyEvent, F> =
