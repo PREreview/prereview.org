@@ -2,7 +2,7 @@ import { LibsqlClient } from '@effect/sql-libsql'
 import { Array, Effect, pipe, Result, Stream, Struct } from 'effect'
 import * as AuthorInviteStore from '../../../src/AuthorInviteStore.ts'
 import * as _ from '../../../src/Domain/ContactEmailAddresses/UseAuthorInviteEmailAddress.ts'
-import type { Event } from '../../../src/Events.ts'
+import { Event } from '../../../src/Events.ts'
 import { EventStore } from '../../../src/EventSourcing/EventStore.ts'
 import { make as makeSqlEventStore } from '../../../src/EventSourcing/SqlEventStore.ts'
 import { layer as sqlSensitiveDataStoreLayer } from '../../../src/SensitiveData/SqlSensitiveDataStore.ts'
@@ -58,7 +58,7 @@ it.effect.each<[string, _.Input, Result.Result<void, _.Error>, ReadonlyArray<Eve
   ],
 ])('%s', ([, input, expectedReturn, expectedEvents]) =>
   Effect.gen(function* () {
-    const eventStore = yield* makeSqlEventStore
+    const eventStore = yield* makeSqlEventStore(Event)
 
     yield* AuthorInviteStore.save(openInvitationId, {
       status: 'open',

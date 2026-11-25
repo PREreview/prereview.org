@@ -11,6 +11,7 @@ import * as PreprintReviews from './Domain/PreprintReviews/index.ts'
 import * as Prereviewers from './Domain/Prereviewers/index.ts'
 import * as Prereviews from './Domain/Prereviews/index.ts'
 import * as ReviewRequests from './Domain/ReviewRequests/index.ts'
+import * as Events from './Events.ts'
 import { SqlEventStore, StatefulQueries } from './EventSourcing/index.ts'
 import { Contentful } from './ExternalApis/Contentful/index.ts'
 import {
@@ -105,7 +106,7 @@ const ExternalApis = Layer.mergeAll(
 
 const Infrastructure = pipe(
   Layer.mergeAll(FetchHttpClient.layer, RequestCollapsingHttpClient.layer),
-  Layer.provideMerge(Layer.mergeAll(SqlEventStore.layer, LoggingHttpClient.layer)),
+  Layer.provideMerge(Layer.mergeAll(SqlEventStore.layer(Events.Event), LoggingHttpClient.layer)),
   Layer.provideMerge(SqlSensitiveDataStore.layer),
   Layer.provideMerge(
     Layer.mergeAll(

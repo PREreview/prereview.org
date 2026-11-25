@@ -11,6 +11,7 @@ import * as PreprintReviews from './Domain/PreprintReviews/index.ts'
 import * as Prereviewers from './Domain/Prereviewers/index.ts'
 import * as ReviewRequest from './Domain/ReviewRequests/index.ts'
 import { embeddingsLayer } from './Embeddings/index.ts'
+import * as Events from './Events.ts'
 import { SqlEventStore, StatefulQueries } from './EventSourcing/index.ts'
 import { Crossref, Datacite, JapanLinkCenter, OpenAlex, Orcid, Philsci, Zenodo } from './ExternalApis/index.ts'
 import { Email, LanguageDetection, OpenAlexWorks, OrcidRecords, PreprintData } from './ExternalInteractions/index.ts'
@@ -69,7 +70,7 @@ pipe(
       ]),
       Layer.provideMerge(
         Layer.mergeAll(
-          SqlEventStore.layer,
+          SqlEventStore.layer(Events.Event),
           Redis.layerDataStoreConfig(Config.URL('REDIS_URI').pipe(Config.map(Redacted.make))),
         ),
       ),

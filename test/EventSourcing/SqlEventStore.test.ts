@@ -60,7 +60,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
     ],
     ([filter]) =>
       Effect.gen(function* () {
-        const eventStore = yield* _.make
+        const eventStore = yield* _.make(Events.Event)
 
         const actual = yield* eventStore.query(filter)
         const all = yield* allEvents(eventStore)
@@ -104,7 +104,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       ],
       ([event, filter, otherEvents]) =>
         Effect.gen(function* () {
-          const eventStore = yield* _.make
+          const eventStore = yield* _.make(Events.Event)
 
           yield* Effect.forEach(otherEvents, eventStore.append)
 
@@ -130,7 +130,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       [fc.nonEmptyArray(fc.commentEvent()), fc.commentEvent()],
       ([existingEvents, event]) =>
         Effect.gen(function* () {
-          const eventStore = yield* _.make
+          const eventStore = yield* _.make(Events.Event)
 
           yield* Effect.forEach(existingEvents, eventStore.append)
 
@@ -162,7 +162,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       [fc.array(fc.commentEvent()), fc.commentEvent(), fc.uuid()],
       ([existingEvents, event]) =>
         Effect.gen(function* () {
-          const eventStore = yield* _.make
+          const eventStore = yield* _.make(Events.Event)
 
           yield* Effect.forEach(existingEvents, eventStore.append)
 
@@ -420,7 +420,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
     'find events (%s)',
     ([, filter, events, expected]) =>
       Effect.gen(function* () {
-        const eventStore = yield* _.make
+        const eventStore = yield* _.make(Events.Event)
 
         yield* Effect.forEach(events, eventStore.append)
 
@@ -438,7 +438,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
   describe('all', () => {
     it.effect('streams nothing when there are no events', () =>
       Effect.gen(function* () {
-        const eventStore = yield* _.make
+        const eventStore = yield* _.make(Events.Event)
 
         const actual = yield* Stream.runCollect(eventStore.all)
 
@@ -455,7 +455,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       [fc.nonEmptyArray(fc.commentEvent())],
       ([events]) =>
         Effect.gen(function* () {
-          const eventStore = yield* _.make
+          const eventStore = yield* _.make(Events.Event)
 
           yield* Effect.forEach(events, eventStore.append)
 
@@ -475,7 +475,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       [fc.array(fc.commentEvent(), { minLength: 7, maxLength: 9 })],
       ([events]) =>
         Effect.gen(function* () {
-          const eventStore = yield* _.make
+          const eventStore = yield* _.make(Events.Event)
 
           yield* Effect.forEach(events, eventStore.append)
 
@@ -505,7 +505,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       [fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent())],
       ([existingEvents, newEvents]) =>
         Effect.gen(function* () {
-          const eventStore = yield* _.make
+          const eventStore = yield* _.make(Events.Event)
 
           yield* Effect.forEach(existingEvents, eventStore.append)
 
@@ -532,7 +532,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       ],
       ([existingEvents, newEvents]) =>
         Effect.gen(function* () {
-          const eventStore = yield* _.make
+          const eventStore = yield* _.make(Events.Event)
 
           yield* Effect.forEach(existingEvents, eventStore.append)
 
@@ -557,7 +557,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
     it.effect("fails with a cursor it can't read", () =>
       Effect.gen(function* () {
-        const eventStore = yield* _.make
+        const eventStore = yield* _.make(Events.Event)
 
         const actual = yield* Effect.flip(Stream.runCollect(eventStore.since(EventStore.Cursor.make('not a cursor'))))
 
@@ -572,7 +572,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       [fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent())],
       ([existingEvents, newEvents]) =>
         Effect.gen(function* () {
-          const eventStore = yield* _.make
+          const eventStore = yield* _.make(Events.Event)
           const cursor = yield* eventStore.latestCursor
 
           yield* Effect.forEach(existingEvents, eventStore.append)
@@ -594,7 +594,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       [fc.nonEmptyArray(fc.commentEvent()), fc.commentEvent()],
       ([existingEvents, newEvent]) =>
         Effect.gen(function* () {
-          const eventStore = yield* _.make
+          const eventStore = yield* _.make(Events.Event)
           const cursor = yield* eventStore.latestCursor
 
           yield* Effect.forEach(existingEvents, eventStore.append)
@@ -620,7 +620,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
         [fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent())],
         ([existingEvents, newEvents]) =>
           Effect.gen(function* () {
-            const eventStore = yield* _.make
+            const eventStore = yield* _.make(Events.Event)
             const cursor = yield* eventStore.latestCursor
             const received = yield* Queue.unbounded<Events.Event>()
             const handling = yield* Deferred.make<undefined>()
@@ -655,7 +655,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       [fc.nonEmptyArray(fc.commentEvent())],
       ([events]) =>
         Effect.gen(function* () {
-          const eventStore = yield* _.make
+          const eventStore = yield* _.make(Events.Event)
 
           yield* Effect.forEach(events, eventStore.append)
 
@@ -672,8 +672,8 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       [fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent())],
       ([existingEvents, newEvents]) =>
         Effect.gen(function* () {
-          const eventStore = yield* _.make
-          const otherEventStore = yield* _.make
+          const eventStore = yield* _.make(Events.Event)
+          const otherEventStore = yield* _.make(Events.Event)
           const cursor = yield* eventStore.latestCursor
 
           yield* Effect.forEach(existingEvents, eventStore.append)
@@ -696,7 +696,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       [fc.nonEmptyArray(fc.oneof(fc.commentWasStarted(), fc.commentWasPublished())), fc.commentWasStarted()],
       ([events, lastEvent]) =>
         Effect.gen(function* () {
-          const eventStore = yield* _.make
+          const eventStore = yield* _.make(Events.Event)
           const cursor = yield* eventStore.latestCursor
           const expected = [...Array.filter(events, event => event._tag === 'CommentWasStarted'), lastEvent]
 
@@ -719,7 +719,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       [fc.nonEmptyArray(fc.commentEvent())],
       ([events]) =>
         Effect.gen(function* () {
-          const eventStore = yield* _.make
+          const eventStore = yield* _.make(Events.Event)
 
           const cursor = yield* eventStore.latestCursor
 
@@ -737,7 +737,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       [fc.nonEmptyArray(fc.commentEvent())],
       ([events]) =>
         Effect.gen(function* () {
-          const eventStore = yield* _.make
+          const eventStore = yield* _.make(Events.Event)
 
           yield* Effect.forEach(events, eventStore.append)
 
@@ -759,7 +759,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       [fc.string()],
       ([name]) =>
         Effect.gen(function* () {
-          const eventStore = yield* _.make
+          const eventStore = yield* _.make(Events.Event)
 
           const actual = yield* eventStore.loadCheckpoint(name)
 
@@ -779,7 +779,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       [fc.string(), fc.nonEmptyArray(fc.commentEvent())],
       ([name, events]) =>
         Effect.gen(function* () {
-          const eventStore = yield* _.make
+          const eventStore = yield* _.make(Events.Event)
 
           yield* Effect.forEach(events, eventStore.append)
 
@@ -799,7 +799,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       [fc.string(), fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent())],
       ([name, existingEvents, newEvents]) =>
         Effect.gen(function* () {
-          const eventStore = yield* _.make
+          const eventStore = yield* _.make(Events.Event)
 
           yield* Effect.forEach(existingEvents, eventStore.append)
 
@@ -823,7 +823,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       [fc.string(), fc.nonEmptyArray(fc.commentEvent()), fc.nonEmptyArray(fc.commentEvent())],
       ([name, existingEvents, newEvents]) =>
         Effect.gen(function* () {
-          const eventStore = yield* _.make
+          const eventStore = yield* _.make(Events.Event)
 
           yield* Effect.forEach(existingEvents, eventStore.append)
 
@@ -848,7 +848,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       [fc.uniqueArray(fc.string(), { minLength: 2, maxLength: 2 }), fc.nonEmptyArray(fc.commentEvent())],
       ([[name, otherName], events]) =>
         Effect.gen(function* () {
-          const eventStore = yield* _.make
+          const eventStore = yield* _.make(Events.Event)
 
           yield* Effect.forEach(events, eventStore.append)
 
@@ -866,7 +866,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       [fc.string()],
       ([name]) =>
         Effect.gen(function* () {
-          const eventStore = yield* _.make
+          const eventStore = yield* _.make(Events.Event)
 
           const actual = yield* Effect.flip(eventStore.saveCheckpoint(name, EventStore.Cursor.make('not a cursor')))
 
@@ -888,7 +888,7 @@ describe('on Postgres', () => {
     Effect.gen(function* () {
       const [laterEvent, earlierEvent] = sample(fc.commentWasStarted(), 2)
       const sql = yield* SqlClient.SqlClient
-      const eventStore = yield* _.make
+      const eventStore = yield* _.make(Events.Event)
 
       yield* Effect.forEach(
         [
@@ -922,7 +922,7 @@ describe('on Postgres', () => {
     Effect.gen(function* () {
       const [laterEvent, earlierEvent] = sample(fc.commentWasStarted(), 2)
       const sql = yield* SqlClient.SqlClient
-      const eventStore = yield* _.make
+      const eventStore = yield* _.make(Events.Event)
 
       yield* Effect.forEach(
         [
@@ -983,7 +983,7 @@ describe('on Postgres', () => {
           )
       `
 
-      const eventStore = yield* _.make
+      const eventStore = yield* _.make(Events.Event)
 
       yield* eventStore.append(newEvent!)
 
@@ -1002,7 +1002,7 @@ describe('on a real Postgres', { skip: process.env['SKIP_CONTAINER_TESTS'] === '
         const [committedEvent, slowEvent] = sample(fc.commentWasStarted(), 2)
         const [fastEvent] = sample(fc.commentWasPublished(), 1)
         const sql = yield* SqlClient.SqlClient
-        const eventStore = yield* _.make
+        const eventStore = yield* _.make(Events.Event)
         const slowEventAppended = yield* Deferred.make<undefined>()
         const commitSlowEvent = yield* Deferred.make<undefined>()
 
@@ -1040,7 +1040,7 @@ describe('on a real Postgres', { skip: process.env['SKIP_CONTAINER_TESTS'] === '
         const [committedEvent, slowEvent] = sample(fc.commentWasStarted(), 2)
         const [fastEvent] = sample(fc.commentWasPublished(), 1)
         const sql = yield* SqlClient.SqlClient
-        const eventStore = yield* _.make
+        const eventStore = yield* _.make(Events.Event)
         const slowEventAppended = yield* Deferred.make<undefined>()
         const commitSlowEvent = yield* Deferred.make<undefined>()
 
@@ -1082,7 +1082,7 @@ describe('on a real Postgres', { skip: process.env['SKIP_CONTAINER_TESTS'] === '
       Effect.gen(function* () {
         const [firstEvent, secondEvent] = sample(fc.commentWasStarted(), 2)
         const sql = yield* SqlClient.SqlClient
-        const eventStore = yield* _.make
+        const eventStore = yield* _.make(Events.Event)
         const firstEventAppended = yield* Deferred.make<undefined>()
         const commitFirstEvent = yield* Deferred.make<undefined>()
 
@@ -1132,7 +1132,7 @@ describe('on a real Postgres', { skip: process.env['SKIP_CONTAINER_TESTS'] === '
     () =>
       Effect.gen(function* () {
         const [existingEvent, newEvent] = sample(fc.commentWasStarted(), 2)
-        const eventStore = yield* _.make
+        const eventStore = yield* _.make(Events.Event)
         const cursor = yield* eventStore.latestCursor
         const received = yield* Queue.unbounded<Events.Event>()
         const handling = yield* Deferred.make<undefined>()
@@ -1168,8 +1168,8 @@ describe('on a real Postgres', { skip: process.env['SKIP_CONTAINER_TESTS'] === '
         const [committedEvent, slowEvent] = sample(fc.commentWasStarted(), 2)
         const [fastEvent] = sample(fc.commentWasPublished(), 1)
         const sql = yield* SqlClient.SqlClient
-        const eventStore = yield* _.make
-        const otherEventStore = yield* _.make
+        const eventStore = yield* _.make(Events.Event)
+        const otherEventStore = yield* _.make(Events.Event)
         const cursor = yield* eventStore.latestCursor
         const slowEventAppended = yield* Deferred.make<undefined>()
         const commitSlowEvent = yield* Deferred.make<undefined>()

@@ -32,17 +32,21 @@ class UnexpectedEventFound extends Data.TaggedError('UnexpectedEventFound') {}
 
 export const PageSize = Context.Reference<number>('SqlEventStore/PageSize', { defaultValue: () => 5000 })
 
-export const make: Effect.Effect<
+export const make: (
+  schema: typeof Events.Event,
+) => Effect.Effect<
   EventStore.EventStore,
   SqlError.SqlError,
   SqlClient.SqlClient | Uuid.GenerateUuid | SensitiveDataStore.SensitiveDataStore | Scope.Scope
-> = Effect.gen(function* () {
+> = Effect.fnUntraced(function* (schema) {
   const context = yield* Effect.map(Effect.context<SensitiveDataStore.SensitiveDataStore>(), Context.omit(Scope.Scope))
 
   const sql = yield* SqlClient.SqlClient
   const pageSize = yield* PageSize
   const generateUuid = (yield* Uuid.GenerateUuid).v4()
   const version = yield* SubscriptionRef.make(0)
+  const eventsTableInsert = EventsTableInsert(schema)
+  const eventsTableSelect = EventsTableSelect(schema)
 
   yield* sql.onDialectOrElse({
     pg: () => sql`
@@ -139,7 +143,7 @@ export const make: Effect.Effect<
         const predicateEncoder = Schema.Struct<Schema.Struct.Fields>(
           Struct.pick(
             Option.getOrThrow(
-              Array.findFirst(Events.Event.members, member => Array.contains(filter.types, member.identifier)),
+              Array.findFirst(schema.members, member => Array.contains(filter.types, member.identifier)),
             ).fields as never,
             Record.keys(filter.predicates) as never,
           ),
@@ -179,7 +183,7 @@ export const make: Effect.Effect<
         ORDER BY
           position ASC
       `,
-      Effect.andThen(Schema.decodeUnknownEffect(Schema.Array(EventsTableSelect), { concurrency: 'unbounded' })),
+      Effect.andThen(Schema.decodeUnknownEffect(Schema.Array(eventsTableSelect), { concurrency: 'unbounded' })),
       Effect.filterOrElse(
         Array.every(
           (
@@ -197,7 +201,7 @@ export const make: Effect.Effect<
     )
 
   const decodePage = Effect.fn('SqlEventStore.decodePage')(function* (rows: Array.NonEmptyReadonlyArray<unknown>) {
-    const decoded = yield* Schema.decodeUnknownEffect(Schema.NonEmptyArray(EventsTableSelect), {
+    const decoded = yield* Schema.decodeUnknownEffect(Schema.NonEmptyArray(eventsTableSelect), {
       concurrency: 'unbounded',
     })(rows)
     const cursors = yield* Schema.decodeUnknownEffect(Schema.NonEmptyArray(CursorRow))(rows)
@@ -469,7 +473,7 @@ export const make: Effect.Effect<
     function* (event) {
       const id = yield* generateUuid
 
-      const encoded = yield* Schema.encodeEffect(EventsTableInsert)({
+      const encoded = yield* Schema.encodeEffect(eventsTableInsert)({
         id,
         event,
       })
@@ -499,7 +503,7 @@ export const make: Effect.Effect<
     function* (event, appendCondition) {
       const id = yield* generateUuid
 
-      const encoded = yield* Schema.encodeEffect(EventsTableInsert)({
+      const encoded = yield* Schema.encodeEffect(eventsTableInsert)({
         id,
         event,
       })
@@ -598,77 +602,79 @@ export const make: Effect.Effect<
   return { all, since, subscribe, latestCursor, loadCheckpoint, saveCheckpoint, query, append, appendIf }
 })
 
-export const layer = Layer.effect(EventStore.EventStore, make)
+export const layer = (schema: typeof Events.Event) => Layer.effect(EventStore.EventStore, make(schema))
 
-const EventsTableInsert = Schema.Struct({
-  id: Uuid.UuidSchema,
-  type: Schema.String,
-  payload: Schema.Union([
-    Schema.Record(Schema.String, Schema.Unknown),
-    Schema.fromJsonString(Schema.Record(Schema.String, Schema.Unknown)),
-  ]),
-}).pipe(
-  Schema.decodeTo(
-    Schema.toType(
-      Schema.Struct({
-        id: Uuid.UuidSchema,
-        event: Events.Event,
-      }),
-    ),
-    {
-      decode: SchemaGetter.transformEffect(value =>
-        Effect.fail(
-          new SchemaIssue.Forbidden({ message: 'Not allowed to decode when using Insert statements' }, value),
-        ),
-      ),
-      encode: SchemaGetter.transformEffect(({ event, ...rest }) =>
-        Effect.gen(function* () {
-          const { _tag, ...payload } = yield* Schema.encodeUnknownEffect(Events.Event)(event).pipe(
-            Effect.mapError(error => error.issue),
-          )
-
-          return { ...rest, type: _tag, payload }
+const EventsTableInsert = (schema: typeof Events.Event) =>
+  Schema.Struct({
+    id: Uuid.UuidSchema,
+    type: Schema.String,
+    payload: Schema.Union([
+      Schema.Record(Schema.String, Schema.Unknown),
+      Schema.fromJsonString(Schema.Record(Schema.String, Schema.Unknown)),
+    ]),
+  }).pipe(
+    Schema.decodeTo(
+      Schema.toType(
+        Schema.Struct({
+          id: Uuid.UuidSchema,
+          event: schema,
         }),
       ),
-    },
-  ),
-)
+      {
+        decode: SchemaGetter.transformEffect(value =>
+          Effect.fail(
+            new SchemaIssue.Forbidden({ message: 'Not allowed to decode when using Insert statements' }, value),
+          ),
+        ),
+        encode: SchemaGetter.transformEffect(({ event, ...rest }) =>
+          Effect.gen(function* () {
+            const { _tag, ...payload } = yield* Schema.encodeUnknownEffect(schema)(event).pipe(
+              Effect.mapError(error => error.issue),
+            )
 
-const EventsTableSelect = Schema.Struct({
-  id: Uuid.UuidSchema,
-  position: EventStore.Position,
-  type: Schema.String,
-  payload: Schema.Union([
-    Schema.Record(Schema.String, Schema.Unknown),
-    Schema.fromJsonString(Schema.Record(Schema.String, Schema.Unknown)),
-  ]),
-}).pipe(
-  Schema.decodeTo(
-    Schema.toType(
-      Schema.Struct({
-        id: Uuid.UuidSchema,
-        position: EventStore.Position,
-        event: Events.Event,
-      }),
+            return { ...rest, type: _tag, payload }
+          }),
+        ),
+      },
     ),
-    {
-      decode: SchemaGetter.transformEffect(({ type, payload, ...rest }) =>
-        Effect.gen(function* () {
-          const event = yield* Schema.decodeUnknownEffect(Events.Event)({ _tag: type, ...payload }).pipe(
-            Effect.mapError(error => error.issue),
-          )
+  )
 
-          return { ...rest, event }
+const EventsTableSelect = (schema: typeof Events.Event) =>
+  Schema.Struct({
+    id: Uuid.UuidSchema,
+    position: EventStore.Position,
+    type: Schema.String,
+    payload: Schema.Union([
+      Schema.Record(Schema.String, Schema.Unknown),
+      Schema.fromJsonString(Schema.Record(Schema.String, Schema.Unknown)),
+    ]),
+  }).pipe(
+    Schema.decodeTo(
+      Schema.toType(
+        Schema.Struct({
+          id: Uuid.UuidSchema,
+          position: EventStore.Position,
+          event: schema,
         }),
       ),
-      encode: SchemaGetter.transformEffect(value =>
-        Effect.fail(
-          new SchemaIssue.Forbidden({ message: 'Not allowed to encode when using Select statements' }, value),
+      {
+        decode: SchemaGetter.transformEffect(({ type, payload, ...rest }) =>
+          Effect.gen(function* () {
+            const event = yield* Schema.decodeUnknownEffect(schema)({ _tag: type, ...payload }).pipe(
+              Effect.mapError(error => error.issue),
+            )
+
+            return { ...rest, event }
+          }),
         ),
-      ),
-    },
-  ),
-)
+        encode: SchemaGetter.transformEffect(value =>
+          Effect.fail(
+            new SchemaIssue.Forbidden({ message: 'Not allowed to encode when using Select statements' }, value),
+          ),
+        ),
+      },
+    ),
+  )
 
 const isPgClient = (sql: SqlClient.SqlClient): sql is PgClient.PgClient & SqlClient.SqlClient => PgClient.TypeId in sql
 

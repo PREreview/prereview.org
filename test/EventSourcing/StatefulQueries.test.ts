@@ -1,6 +1,6 @@
 import { Effect, Exit, Layer, pipe, Queue, Ref, Result } from 'effect'
 import { sample } from 'fast-check'
-import type * as Events from '../../src/Events.ts'
+import * as Events from '../../src/Events.ts'
 import * as EventStore from '../../src/EventSourcing/EventStore.ts'
 import * as SqlEventStore from '../../src/EventSourcing/SqlEventStore.ts'
 import * as _ from '../../src/EventSourcing/StatefulQueries.ts'
@@ -141,7 +141,7 @@ const register = Effect.gen(function* () {
 })
 
 const TestLayer = pipe(
-  Layer.mergeAll(_.layer, SqlEventStore.layer),
+  Layer.mergeAll(_.layer, SqlEventStore.layer(Events.Event)),
   Layer.provideMerge(
     Layer.mergeAll(Uuid.layer, Layer.mock(SensitiveDataStore.SensitiveDataStore, {}), TestLibsqlClient.layer),
   ),
