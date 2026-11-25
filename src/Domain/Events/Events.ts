@@ -2,19 +2,19 @@
 import { Array, Schema, type Types } from 'effect'
 import { EventFilter as GenericEventFilter } from '../../EventSourcing/index.ts'
 import * as AuthorInviteEvents from '../AuthorInvites/Events.ts'
-import * as ContactEmailAddressesEvents from '../ContactEmailAddresses/Events.ts'
 import * as DatasetReviewEvents from '../DatasetReviews/Events.ts'
 import * as PreprintReviews from '../PreprintReviews/Events.ts'
 import * as ReviewRequestsEvents from '../ReviewRequests/Events.ts'
 import * as CommentEvents from './Comments.ts'
+import * as ContactEmailAddressesEvents from './ContactEmailAddresses.ts'
 import * as PrereviewerEvents from './Prereviewers.ts'
 
 export * from '../AuthorInvites/Events.ts'
-export * from '../ContactEmailAddresses/Events.ts'
 export * from '../DatasetReviews/Events.ts'
 export * from '../PreprintReviews/Events.ts'
 export * from '../ReviewRequests/Events.ts'
 export * from './Comments.ts'
+export * from './ContactEmailAddresses.ts'
 export * from './Prereviewers.ts'
 
 export type Event = typeof Event.Type
