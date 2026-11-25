@@ -1,6 +1,6 @@
 import { Schema } from 'effect'
+import { SensitiveData } from '../../EventSourcing/index.ts'
 import { HtmlSchema } from '../../html.ts'
-import { SensitiveData } from '../../SensitiveData/index.ts'
 import { DoiSchema } from '../../types/Doi.ts'
 import { NonEmptyString, OrcidId, Temporal, Uuid } from '../../types/index.ts'
 import { Iso6391Schema } from '../../types/iso639.ts'

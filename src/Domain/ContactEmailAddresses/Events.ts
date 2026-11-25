@@ -1,5 +1,5 @@
 import { Schema } from 'effect'
-import { SensitiveData } from '../../SensitiveData/index.ts'
+import { SensitiveData } from '../../EventSourcing/index.ts'
 import { EmailAddressSchema } from '../../types/EmailAddress.ts'
 import { OrcidIdSchema } from '../../types/OrcidId.ts'
 import { InstantSchema } from '../../types/Temporal.ts'

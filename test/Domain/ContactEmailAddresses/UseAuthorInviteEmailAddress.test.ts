@@ -5,7 +5,7 @@ import * as _ from '../../../src/Domain/ContactEmailAddresses/UseAuthorInviteEma
 import { Event } from '../../../src/Domain/Events/Events.ts'
 import { EventStore } from '../../../src/Domain/Events/EventStore.ts'
 import { make as makeSqlEventStore } from '../../../src/EventSourcing/SqlEventStore.ts'
-import { layer as sqlSensitiveDataStoreLayer } from '../../../src/SensitiveData/SqlSensitiveDataStore.ts'
+import { layer as sqlSensitiveDataStoreLayer } from '../../../src/EventSourcing/SqlSensitiveDataStore.ts'
 import { EmailAddress } from '../../../src/types/EmailAddress.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Uuid, layer as uuidLayer } from '../../../src/types/Uuid.ts'

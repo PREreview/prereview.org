@@ -1,5 +1,5 @@
 import { Array, Schema } from 'effect'
-import { SensitiveData } from '../../SensitiveData/index.ts'
+import { SensitiveData } from '../../EventSourcing/index.ts'
 import { Doi, EmailAddress, Name, NonEmptyString, OrcidId, Temporal, Uuid } from '../../types/index.ts'
 import * as Datasets from '../Datasets/index.ts'
 

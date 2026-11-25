@@ -1,5 +1,5 @@
 import { Array, Data, Equal, type Equivalence, Match, Option, Result, Struct } from 'effect'
-import { SensitiveData } from '../../SensitiveData/index.ts'
+import { SensitiveData } from '../../EventSourcing/index.ts'
 import { Temporal } from '../../types/index.ts'
 import * as Events from '../Events/index.ts'
 import { Commands } from '../Events/index.ts'

@@ -1,5 +1,5 @@
 import { Effect, Option } from 'effect'
-import * as _ from '../../src/SensitiveData/SqlSensitiveDataStore.ts'
+import * as _ from '../../src/EventSourcing/SqlSensitiveDataStore.ts'
 import { Uuid } from '../../src/types/index.ts'
 import * as fc from '../fc.ts'
 import * as TestLibsqlClient from '../TestLibsqlClient.ts'

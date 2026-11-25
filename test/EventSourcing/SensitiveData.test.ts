@@ -1,6 +1,6 @@
 import { Effect, Layer, Option, Result, Schema } from 'effect'
-import * as _ from '../../src/SensitiveData/SensitiveData.ts'
-import { SensitiveDataStore } from '../../src/SensitiveData/SensitiveDataStore.ts'
+import * as _ from '../../src/EventSourcing/SensitiveData.ts'
+import { SensitiveDataStore } from '../../src/EventSourcing/SensitiveDataStore.ts'
 import * as fc from '../fc.ts'
 import { describe, expect, it } from '../vitest.ts'
 

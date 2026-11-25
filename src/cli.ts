@@ -12,12 +12,12 @@ import * as PreprintReviews from './Domain/PreprintReviews/index.ts'
 import * as Prereviewers from './Domain/Prereviewers/index.ts'
 import * as ReviewRequest from './Domain/ReviewRequests/index.ts'
 import { embeddingsLayer } from './Embeddings/index.ts'
+import { SqlSensitiveDataStore } from './EventSourcing/index.ts'
 import { Crossref, Datacite, JapanLinkCenter, OpenAlex, Orcid, Philsci, Zenodo } from './ExternalApis/index.ts'
 import { Email, LanguageDetection, OpenAlexWorks, OrcidRecords, PreprintData } from './ExternalInteractions/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import * as Redis from './Redis.ts'
-import { SqlSensitiveDataStore } from './SensitiveData/index.ts'
 import { Uuid } from './types/index.ts'
 
 pipe(
