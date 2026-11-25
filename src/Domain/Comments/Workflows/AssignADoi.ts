@@ -1,11 +1,11 @@
 import { Array, Effect, Option, Struct } from 'effect'
 import type { Doi } from '../../../types/Doi.ts'
 import type { Uuid } from '../../../types/index.ts'
+import * as Events from '../../Events/index.ts'
 import { EventStore } from '../../Events/index.ts'
 import { MarkDoiAsAssigned } from '../Commands.ts'
 import { CreateRecordOnZenodoForComment, HandleCommentCommand } from '../Context.ts'
 import * as Errors from '../Errors.ts'
-import { CommentEventTypes } from '../Events.ts'
 import * as Queries from '../Queries.ts'
 
 export const CreateRecordOnZenodo = Effect.fn('Comments.createRecordOnZenodo')(
@@ -13,7 +13,7 @@ export const CreateRecordOnZenodo = Effect.fn('Comments.createRecordOnZenodo')(
     const createRecordOnZenodoForComment = yield* CreateRecordOnZenodoForComment
 
     const events = yield* Effect.map(
-      EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
+      EventStore.query({ types: Events.CommentEventTypes, predicates: { commentId } }),
       Option.match({ onNone: Array.empty, onSome: Struct.get('events') }),
     )
 

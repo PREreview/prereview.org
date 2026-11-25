@@ -1,16 +1,16 @@
 import { Array, Equal, Option, pipe, Record, Result } from 'effect'
 import type { Uuid } from '../../types/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
+import type * as Events from '../Events/index.ts'
 import { Queries } from '../Events/index.ts'
 import type { InputForCommentZenodoRecord } from './Context.ts'
 import * as Errors from './Errors.ts'
-import type { CommentEvent } from './Events.ts'
 import { EvolveComment } from './Evolve.ts'
 import * as ExpectedCommand from './ExpectedCommand.ts'
 import { CommentNotStarted, type CommentState } from './State.ts'
 
 export const GetNextExpectedCommandForUser =
-  (events: ReadonlyArray<CommentEvent>) =>
+  (events: ReadonlyArray<Events.CommentEvent>) =>
   ({
     authorId,
     prereviewId,
@@ -19,7 +19,7 @@ export const GetNextExpectedCommandForUser =
     readonly prereviewId: number
   }): ExpectedCommand.ExpectedCommandForUser => {
     const [commentId, comment] = pipe(
-      Array.reduce(events, Record.empty<Uuid.Uuid, ReadonlyArray<CommentEvent>>(), (candidates, event) =>
+      Array.reduce(events, Record.empty<Uuid.Uuid, ReadonlyArray<Events.CommentEvent>>(), (candidates, event) =>
         pipe(
           Record.modify(candidates, event.commentId, Array.append(event)),
           Option.getOrElse(() => {
@@ -70,7 +70,7 @@ export const GetNextExpectedCommandForUser =
   }
 
 export const GetNextExpectedCommandForUserOnAComment =
-  (events: ReadonlyArray<CommentEvent>) =>
+  (events: ReadonlyArray<Events.CommentEvent>) =>
   (
     commentId: Uuid.Uuid,
   ): Result.Result<
@@ -117,7 +117,7 @@ export const GetNextExpectedCommandForUserOnAComment =
   }
 
 export const buildInputForCommentZenodoRecord = (
-  events: ReadonlyArray<CommentEvent>,
+  events: ReadonlyArray<Events.CommentEvent>,
 ): Result.Result<InputForCommentZenodoRecord, Queries.UnexpectedSequenceOfEvents> => {
   const authorId = pipe(
     events,

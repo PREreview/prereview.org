@@ -1,6 +1,7 @@
 import { Effect, Layer, Option, pipe, Result } from 'effect'
 import * as Comments from '../../../../src/Domain/Comments/index.ts'
 import * as _ from '../../../../src/Domain/Comments/Workflows/AssignADoi.ts'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import * as EventStore from '../../../../src/Domain/Events/EventStore.ts'
 import * as Queries from '../../../../src/EventSourcing/Queries.ts'
 import { html } from '../../../../src/html.ts'
@@ -14,12 +15,12 @@ const commentId = Uuid.Uuid('20d4a551-54fe-48e0-890b-3e08a98f54a2')
 const authorId = OrcidId('0000-0002-1825-0097')
 const prereviewId = 123
 const events = [
-  new Comments.CommentWasStarted({ commentId, authorId, prereviewId }),
-  new Comments.CommentWasEntered({ commentId, comment: html`Some comment` }),
-  new Comments.PersonaForCommentWasChosen({ commentId, persona: 'public' }),
-  new Comments.CompetingInterestsForCommentWereDeclared({ commentId, competingInterests: Option.none() }),
-  new Comments.CodeOfConductForCommentWasAgreed({ commentId }),
-  new Comments.PublicationOfCommentWasRequested({ commentId }),
+  new Events.CommentWasStarted({ commentId, authorId, prereviewId }),
+  new Events.CommentWasEntered({ commentId, comment: html`Some comment` }),
+  new Events.PersonaForCommentWasChosen({ commentId, persona: 'public' }),
+  new Events.CompetingInterestsForCommentWereDeclared({ commentId, competingInterests: Option.none() }),
+  new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+  new Events.PublicationOfCommentWasRequested({ commentId }),
 ] as const
 const inputForCommentZenodoRecord: Comments.InputForCommentZenodoRecord = {
   authorId,

@@ -1,6 +1,7 @@
 import { Option, Result } from 'effect'
 import * as _ from '../../../src/Domain/Comments/Queries.ts'
 import * as Comments from '../../../src/Domain/Comments/index.ts'
+import * as Events from '../../../src/Domain/Events/Events.ts'
 import * as Queries from '../../../src/EventSourcing/Queries.ts'
 import { html } from '../../../src/html.ts'
 import { Doi } from '../../../src/types/Doi.ts'
@@ -13,21 +14,21 @@ describe('GetNextExpectedCommandForUser', () => {
   const authorId = OrcidId('0000-0002-1825-0097')
   const prereviewId = 123
   const resourceId = Uuid.Uuid('358f7fc0-9725-4192-8673-d7c64f398401')
-  const commentWasStarted = new Comments.CommentWasStarted({ commentId: resourceId, authorId, prereviewId })
-  const commentWasEntered = new Comments.CommentWasEntered({ commentId: resourceId, comment: html`Some comment` })
-  const personaForCommentWasChosen = new Comments.PersonaForCommentWasChosen({
+  const commentWasStarted = new Events.CommentWasStarted({ commentId: resourceId, authorId, prereviewId })
+  const commentWasEntered = new Events.CommentWasEntered({ commentId: resourceId, comment: html`Some comment` })
+  const personaForCommentWasChosen = new Events.PersonaForCommentWasChosen({
     commentId: resourceId,
     persona: 'public',
   })
-  const competingInterestsForCommentWereDeclared = new Comments.CompetingInterestsForCommentWereDeclared({
+  const competingInterestsForCommentWereDeclared = new Events.CompetingInterestsForCommentWereDeclared({
     commentId: resourceId,
     competingInterests: Option.none(),
   })
-  const codeOfConductForCommentWasAgreed = new Comments.CodeOfConductForCommentWasAgreed({
+  const codeOfConductForCommentWasAgreed = new Events.CodeOfConductForCommentWasAgreed({
     commentId: resourceId,
   })
   const existenceOfVerifiedEmailAddressForCommentWasConfirmed =
-    new Comments.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId: resourceId })
+    new Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId: resourceId })
 
   describe('when at least one comment needs further user input', () => {
     test.each([
@@ -110,7 +111,7 @@ describe('GetNextExpectedCommandForUser', () => {
     [fc.orcidId(), fc.integer(), fc.uuid()],
     ([authorId, prereviewId, resourceId]) => {
       const events = [
-        new Comments.CommentWasStarted({
+        new Events.CommentWasStarted({
           commentId: resourceId,
           prereviewId,
           authorId: OrcidId('0000-0002-1825-0097'),
@@ -126,7 +127,7 @@ describe('GetNextExpectedCommandForUser', () => {
     'when in progress comments are for other PREreviews, starts a new comment',
     [fc.orcidId(), fc.integer(), fc.uuid()],
     ([authorId, prereviewId, resourceId]) => {
-      const events = [new Comments.CommentWasStarted({ commentId: resourceId, prereviewId: 123, authorId })]
+      const events = [new Events.CommentWasStarted({ commentId: resourceId, prereviewId: 123, authorId })]
       const actual = _.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
 
       expect(actual).toStrictEqual(new Comments.ExpectedToStartAComment())
@@ -137,7 +138,7 @@ describe('GetNextExpectedCommandForUser', () => {
     'when no user input is needed for a comment, starts a new comment',
     [fc.orcidId(), fc.integer(), fc.uuid()],
     ([authorId, prereviewId, resourceId]) => {
-      const events = [new Comments.PublicationOfCommentWasRequested({ commentId: resourceId })]
+      const events = [new Events.PublicationOfCommentWasRequested({ commentId: resourceId })]
       const actual = _.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
 
       expect(actual).toStrictEqual(new Comments.ExpectedToStartAComment())
@@ -149,26 +150,26 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
   const authorId = OrcidId('0000-0002-1825-0097')
   const prereviewId = 123
   const resourceId = Uuid.Uuid('358f7fc0-9725-4192-8673-d7c64f398401')
-  const commentWasStarted = new Comments.CommentWasStarted({ commentId: resourceId, authorId, prereviewId })
-  const commentWasEntered = new Comments.CommentWasEntered({ commentId: resourceId, comment: html`Some comment` })
-  const personaForCommentWasChosen = new Comments.PersonaForCommentWasChosen({
+  const commentWasStarted = new Events.CommentWasStarted({ commentId: resourceId, authorId, prereviewId })
+  const commentWasEntered = new Events.CommentWasEntered({ commentId: resourceId, comment: html`Some comment` })
+  const personaForCommentWasChosen = new Events.PersonaForCommentWasChosen({
     commentId: resourceId,
     persona: 'public',
   })
-  const competingInterestsForCommentWereDeclared = new Comments.CompetingInterestsForCommentWereDeclared({
+  const competingInterestsForCommentWereDeclared = new Events.CompetingInterestsForCommentWereDeclared({
     commentId: resourceId,
     competingInterests: Option.none(),
   })
-  const codeOfConductForCommentWasAgreed = new Comments.CodeOfConductForCommentWasAgreed({ commentId: resourceId })
+  const codeOfConductForCommentWasAgreed = new Events.CodeOfConductForCommentWasAgreed({ commentId: resourceId })
   const existenceOfVerifiedEmailAddressForCommentWasConfirmed =
-    new Comments.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId: resourceId })
-  const publicationOfCommentWasRequested = new Comments.PublicationOfCommentWasRequested({ commentId: resourceId })
-  const commentWasAssignedADoi = new Comments.CommentWasAssignedADoi({
+    new Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId: resourceId })
+  const publicationOfCommentWasRequested = new Events.PublicationOfCommentWasRequested({ commentId: resourceId })
+  const commentWasAssignedADoi = new Events.CommentWasAssignedADoi({
     commentId: resourceId,
     id: 107286,
     doi: Doi('10.5072/zenodo.107286'),
   })
-  const commentWasPublished = new Comments.CommentWasPublished({ commentId: resourceId })
+  const commentWasPublished = new Events.CommentWasPublished({ commentId: resourceId })
 
   describe('when the comment needs further user input', () => {
     test.each([
@@ -283,15 +284,15 @@ describe('buildInputForCommentZenodoRecord', () => {
   const commentId = Uuid.Uuid('20d4a551-54fe-48e0-890b-3e08a98f54a2')
   const authorId = OrcidId('0000-0002-1825-0097')
   const prereviewId = 123
-  const commentWasStarted = new Comments.CommentWasStarted({ commentId, authorId, prereviewId })
-  const commentWasEntered = new Comments.CommentWasEntered({ commentId, comment: html`Some comment` })
-  const personaForCommentWasChosen = new Comments.PersonaForCommentWasChosen({ commentId, persona: 'public' })
-  const competingInterestsForCommentWereDeclared = new Comments.CompetingInterestsForCommentWereDeclared({
+  const commentWasStarted = new Events.CommentWasStarted({ commentId, authorId, prereviewId })
+  const commentWasEntered = new Events.CommentWasEntered({ commentId, comment: html`Some comment` })
+  const personaForCommentWasChosen = new Events.PersonaForCommentWasChosen({ commentId, persona: 'public' })
+  const competingInterestsForCommentWereDeclared = new Events.CompetingInterestsForCommentWereDeclared({
     commentId,
     competingInterests: Option.none(),
   })
-  const codeOfConductForCommentWasAgreed = new Comments.CodeOfConductForCommentWasAgreed({ commentId })
-  const publicationOfCommentWasRequested = new Comments.PublicationOfCommentWasRequested({ commentId })
+  const codeOfConductForCommentWasAgreed = new Events.CodeOfConductForCommentWasAgreed({ commentId })
+  const publicationOfCommentWasRequested = new Events.PublicationOfCommentWasRequested({ commentId })
 
   test('builds input', () => {
     const events = [

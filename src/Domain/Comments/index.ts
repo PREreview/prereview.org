@@ -2,6 +2,7 @@ import { Array, Context, Effect, Layer, Option, pipe, Scope, Struct } from 'effe
 import type { Sharding } from 'effect/cluster'
 import type { WorkflowEngine } from 'effect/workflow'
 import type { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
+import * as Events from '../Events/index.ts'
 import { Commands, EventStore, EventSubscription, Queries } from '../Events/index.ts'
 import { layer as commentsServiceLayer } from './Comments.ts'
 import {
@@ -13,7 +14,6 @@ import {
   type PublishCommentOnZenodo,
 } from './Context.ts'
 import { DecideComment } from './Decide.ts'
-import { CommentEventTypes } from './Events.ts'
 import { EvolveComment } from './Evolve.ts'
 import * as CommentQueries from './Queries.ts'
 import { CommentNotStarted, type CommentState } from './State.ts'
@@ -25,7 +25,6 @@ export { Comments } from './Comments.ts'
 export * from './Context.ts'
 export * from './Decide.ts'
 export * from './Errors.ts'
-export * from './Events.ts'
 export * from './Evolve.ts'
 export * from './ExpectedCommand.ts'
 export { CommentsAreUnavailable, type PublishedCommentWithAuthor } from './GetPublishedCommentsForAPrereview/index.ts'
@@ -42,7 +41,7 @@ export const makeHandleCommentCommand: Effect.Effect<
     function* (command) {
       const { events, lastKnownPosition } = yield* pipe(
         EventStore.query({
-          types: CommentEventTypes,
+          types: Events.CommentEventTypes,
           predicates: { commentId: command.commentId },
         }),
         Effect.map(Option.getOrElse(() => ({ events: [], lastKnownPosition: undefined }))),
@@ -60,7 +59,7 @@ export const makeHandleCommentCommand: Effect.Effect<
             onSome: event =>
               EventStore.appendIf(event, {
                 filter: {
-                  types: CommentEventTypes,
+                  types: Events.CommentEventTypes,
                   predicates: { commentId: command.commentId },
                 },
                 lastKnownPosition: Option.fromNullishOr(lastKnownPosition),
@@ -84,7 +83,7 @@ export const makeGetComment: Effect.Effect<typeof GetComment.Service, never, Eve
     return Effect.fn('Comments.getComment')(
       function* (commentId) {
         const events = yield* pipe(
-          EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
+          EventStore.query({ types: Events.CommentEventTypes, predicates: { commentId } }),
           Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
         )
 
@@ -108,7 +107,7 @@ export const makeGetNextExpectedCommandForUser: Effect.Effect<
   return Effect.fn('Comments.getNextExpectedCommandForUser')(
     function* ({ authorId, prereviewId }) {
       const events = yield* pipe(
-        EventStore.query({ types: CommentEventTypes }),
+        EventStore.query({ types: Events.CommentEventTypes }),
         Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
       )
 
@@ -129,7 +128,7 @@ export const makeGetNextExpectedCommandForUserOnAComment: Effect.Effect<
   return Effect.fn('Comments.getNextExpectedCommandForUserOnAComment')(
     function* (commentId) {
       const events = yield* pipe(
-        EventStore.query({ types: CommentEventTypes, predicates: { commentId } }),
+        EventStore.query({ types: Events.CommentEventTypes, predicates: { commentId } }),
         Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
       )
 
