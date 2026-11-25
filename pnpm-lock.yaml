@@ -157,8 +157,8 @@ importers:
         specifier: ^2.5.0
         version: 2.5.0
       '@ibm/plex-sans':
-        specifier: ^1.1.0
-        version: 1.1.0
+        specifier: ^2.0.0
+        version: 2.0.0
       '@ibm/plex-sans-arabic':
         specifier: ^1.1.0
         version: 1.1.0
@@ -1001,8 +1001,8 @@ packages:
   '@ibm/plex-sans-arabic@1.1.0':
     resolution: {integrity: sha512-u8wIS6szLAOFvlBjCFZmtpKIqbhuIuniG2N0J+sio8vV6INH58hP0t0QNYrSl9SZtCv2Fwb4oQGuZJY3kJ4+QA==}
 
-  '@ibm/plex-sans@1.1.0':
-    resolution: {integrity: sha512-WPgvO6Yfj2w5YbhyAr1tv95RUz4LRJlqN+CmYvBglabXteufP1D1E9BABMde+ZIKdRbFJDoKF5eQzfhpnbgZcQ==}
+  '@ibm/plex-sans@2.0.0':
+    resolution: {integrity: sha512-iGvuyYd1nBw5ojlspC+uMKvQNd1rlbPR4LX9bzn6KsnXULPemANYmHyZPlrDGDBWaJb84crU/A4rNoH5dl3/Wg==}
 
   '@ibm/telemetry-js@1.11.0':
     resolution: {integrity: sha512-RO/9j+URJnSfseWg9ZkEX9p+a3Ousd33DBU7rOafoZB08RqdzxFVYJ2/iM50dkBuD0o7WX7GYt1sLbNgCoE+pA==}
@@ -5285,7 +5285,7 @@ snapshots:
     dependencies:
       '@ibm/telemetry-js': 1.11.0
 
-  '@ibm/plex-sans@1.1.0':
+  '@ibm/plex-sans@2.0.0':
     dependencies:
       '@ibm/telemetry-js': 1.11.0
 

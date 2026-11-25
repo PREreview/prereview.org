@@ -55,7 +55,7 @@
     "@effect/vitest": "^4.1.5",
     "@fullhuman/postcss-purgecss": "^9.1.0",
     "@ibm/plex-mono": "^2.5.0",
-    "@ibm/plex-sans": "^1.1.0",
+    "@ibm/plex-sans": "^2.0.0",
     "@ibm/plex-sans-arabic": "^1.1.0",
     "@playwright/test": "^1.58.2",
     "@prettier/plugin-xml": "^3.4.2",
