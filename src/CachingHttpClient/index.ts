@@ -57,20 +57,22 @@ export const CachingHttpClient: (
         return yield* httpClient.execute(req)
       }
 
-      const response = yield* pipe(
-        cache.get(req),
-        Effect.map(Option.getOrUndefined),
-        Effect.tapErrorTag('InternalHttpCacheFailure', error =>
-          Effect.logError('Failed to read from the HttpCache').pipe(Effect.annotateLogs({ error })),
-        ),
-        Effect.orElseSucceed(Function.constUndefined),
-      )
-
       const logAnnotations = {
         url: req.url,
         urlParams: UrlParams.toString(req.urlParams),
         method: req.method,
       }
+
+      const response = yield* pipe(
+        cache.get(req),
+        Effect.map(Option.getOrUndefined),
+        Effect.tapErrorTag('InternalHttpCacheFailure', error =>
+          Effect.logWarning('Failed to read from the HttpCache').pipe(
+            Effect.annotateLogs({ ...logAnnotations, error }),
+          ),
+        ),
+        Effect.orElseSucceed(Function.constUndefined),
+      )
 
       if (response) {
         if (DateTime.isLessThan(timestamp, response.staleAt)) {

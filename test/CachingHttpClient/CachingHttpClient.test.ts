@@ -1,4 +1,4 @@
-import { Duration, Effect, Fiber, Layer, pipe, Queue, Result } from 'effect'
+import { Duration, Effect, Fiber, Layer, Logger, type LogLevel, pipe, Queue, References, Result } from 'effect'
 import { HttpClient, type HttpClientError, HttpClientRequest, HttpClientResponse } from 'effect/http'
 import { TestClock } from 'effect/testing'
 import * as _ from '../../src/CachingHttpClient/index.ts'
@@ -507,6 +507,43 @@ describe('getting from the cache fails', () => {
         const actualResponse = yield* client.execute(response.request)
 
         expect(actualResponse).toStrictEqual(response)
+      }).pipe(Effect.provide(emptyQueue)),
+  )
+
+  it.effect.prop(
+    'logs a warning with the URL',
+    [fc.httpClientResponse({ request: fc.httpClientRequest({ method: fc.constant('GET') }) }), fc.anything()],
+    ([response, error]) =>
+      Effect.gen(function* () {
+        const logs: Array<{
+          logLevel: LogLevel.LogLevel
+          message: unknown
+          annotations: Readonly<Record<string, unknown>>
+        }> = []
+        const capturingLogger = Logger.make(({ logLevel, message, fiber }) => {
+          logs.push({ logLevel, message, annotations: fiber.getRef(References.CurrentLogAnnotations) })
+        })
+
+        const client = yield* pipe(
+          _.CachingHttpClient('1 day'),
+          Effect.provideService(HttpClient.HttpClient, stubbedClient(response)),
+          Effect.provide(
+            Layer.mock(_.HttpCache, {
+              get: () => new InternalHttpCacheFailure({ cause: error }),
+              set: () => Effect.void,
+            }),
+          ),
+        )
+        yield* client.execute(response.request).pipe(Effect.provide(Logger.layer([capturingLogger])))
+
+        expect(logs).toContainEqual({
+          logLevel: 'Warn',
+          message: ['Failed to read from the HttpCache'],
+          annotations: expect.objectContaining({
+            url: response.request.url,
+            error: new InternalHttpCacheFailure({ cause: error }),
+          }),
+        })
       }).pipe(Effect.provide(emptyQueue)),
   )
 })
