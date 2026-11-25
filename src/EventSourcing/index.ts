@@ -1,4 +1,5 @@
 export * as Commands from './Commands.ts'
+export * as EventFilter from './EventFilter.ts'
 export * as EventStore from './EventStore.ts'
 export * as EventSubscription from './EventSubscription.ts'
 export * as Queries from './Queries.ts'

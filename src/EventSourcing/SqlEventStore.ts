@@ -23,9 +23,10 @@ import {
   UndefinedOr,
 } from 'effect'
 import { SqlClient, type SqlError, type Statement } from 'effect/sql'
-import * as Events from '../Events.ts'
+import type * as Events from '../Events.ts'
 import type { SensitiveDataStore } from '../SensitiveData/index.ts'
 import { Uuid } from '../types/index.ts'
+import * as EventFilter from './EventFilter.ts'
 import * as EventStore from './EventStore.ts'
 
 class UnexpectedEventFound extends Data.TaggedError('UnexpectedEventFound') {}
@@ -47,6 +48,7 @@ export const make: (
   const version = yield* SubscriptionRef.make(0)
   const eventsTableInsert = EventsTableInsert(schema)
   const eventsTableSelect = EventsTableSelect(schema)
+  const matches = EventFilter.matches(schema)
 
   yield* sql.onDialectOrElse({
     pg: () => sql`
@@ -192,7 +194,7 @@ export const make: (
             readonly id: Uuid.Uuid
             readonly position: EventStore.Position
             readonly event: Events.EventsForFilter<F>
-          } => Events.matches(result.event, filter),
+          } => matches(result.event, filter),
         ),
         () => new UnexpectedEventFound(),
       ),
