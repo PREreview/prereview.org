@@ -4,7 +4,7 @@ import { TestClock, TestConsole } from 'effect/testing'
 import * as fc from 'fast-check'
 import type { TestContext } from 'vitest'
 
-export { afterAll, beforeEach, describe, expect, test, vi } from '@effect/vitest'
+export { afterAll, beforeEach, describe, expect, expectTypeOf, test, vi } from '@effect/vitest'
 
 type Arbitraries = ReadonlyArray<fc.Arbitrary<unknown>> | Readonly<Record<string, fc.Arbitrary<unknown>>>
 

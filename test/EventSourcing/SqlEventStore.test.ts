@@ -18,8 +18,8 @@ import {
 import { SqlClient } from 'effect/sql'
 import { TestClock } from 'effect/testing'
 import { sample } from 'fast-check'
-import type * as EventFilter from '../../src/EventSourcing/EventFilter.ts'
 import type { AnyEvent } from '../../src/EventSourcing/EventFilter.ts'
+import * as EventFilter from '../../src/EventSourcing/EventFilter.ts'
 import * as EventStore from '../../src/EventSourcing/EventStore.ts'
 import * as _ from '../../src/EventSourcing/SqlEventStore.ts'
 import * as SqlSensitiveDataStore from '../../src/EventSourcing/SqlSensitiveDataStore.ts'
@@ -30,6 +30,9 @@ import * as TestPgClient from '../TestPgClient.ts'
 import { describe, expect, it } from '../vitest.ts'
 import * as TestEvents from './TestEvents.ts'
 
+// Random predicates can't be checked by types
+const unsafeEventFilter = (filter: unknown) => filter as EventFilter.EventFilter<TestEvents.Event>
+
 describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
   ['LibSQL', TestLibsqlClient.layer],
   ['Postgres (PGlite)', TestPgClient.layer],
@@ -37,15 +40,8 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
   it.effect.prop(
     'starts empty',
     [
-      fc.oneof(
-        fc.record(
-          {
-            types: fc.nonEmptyArray(fc.constantFrom(...TestEvents.EventTypes)),
-            predicate: fc.dictionary(fc.string(), fc.string()),
-          },
-          { requiredKeys: ['types'] },
-        ),
-        fc.nonEmptyArray(
+      fc
+        .oneof(
           fc.record(
             {
               types: fc.nonEmptyArray(fc.constantFrom(...TestEvents.EventTypes)),
@@ -53,8 +49,17 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
             },
             { requiredKeys: ['types'] },
           ),
-        ),
-      ),
+          fc.nonEmptyArray(
+            fc.record(
+              {
+                types: fc.nonEmptyArray(fc.constantFrom(...TestEvents.EventTypes)),
+                predicate: fc.dictionary(fc.string(), fc.string()),
+              },
+              { requiredKeys: ['types'] },
+            ),
+          ),
+        )
+        .map(unsafeEventFilter),
     ],
     ([filter]) =>
       Effect.gen(function* () {
@@ -74,15 +79,8 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
       'appends the event',
       [
         fc.oneof(TestEvents.thingStarted(), TestEvents.thingFinished()),
-        fc.oneof(
-          fc.record(
-            {
-              types: fc.nonEmptyArray(fc.constantFrom('ThingStarted', 'ThingFinished')),
-              predicate: fc.dictionary(fc.string(), fc.string()),
-            },
-            { requiredKeys: ['types'] },
-          ),
-          fc.nonEmptyArray(
+        fc
+          .oneof(
             fc.record(
               {
                 types: fc.nonEmptyArray(fc.constantFrom('ThingStarted', 'ThingFinished')),
@@ -90,8 +88,17 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
               },
               { requiredKeys: ['types'] },
             ),
-          ),
-        ),
+            fc.nonEmptyArray(
+              fc.record(
+                {
+                  types: fc.nonEmptyArray(fc.constantFrom('ThingStarted', 'ThingFinished')),
+                  predicate: fc.dictionary(fc.string(), fc.string()),
+                },
+                { requiredKeys: ['types'] },
+              ),
+            ),
+          )
+          .map(unsafeEventFilter),
         fc.array(fc.oneof(TestEvents.thingRated(), TestEvents.thingReviewed(), TestEvents.thingMoved())),
       ],
       ([event, filter, otherEvents]) =>
@@ -102,7 +109,9 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
           yield* eventStore.appendIf(event, { filter, lastKnownPosition: Option.none() })
 
-          const actual = yield* eventStore.query({ types: [event._tag], predicates: { thingId: event.thingId } })
+          const actual = yield* eventStore.query(
+            TestEvents.EventFilter({ types: [event._tag], predicates: { thingId: event.thingId } }),
+          )
           const all = yield* allEvents(eventStore)
 
           expect(actual).toStrictEqual(Option.some({ events: [event], lastKnownPosition: expect.anything() }))
@@ -123,12 +132,12 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           yield* Effect.forEach(existingEvents, eventStore.append)
 
           const { lastKnownPosition } = yield* Effect.flatMap(
-            eventStore.query({ types: TestEvents.EventTypes }),
+            eventStore.query(TestEvents.EventFilter({ types: TestEvents.EventTypes })),
             Effect.fromOption,
           )
 
           yield* eventStore.appendIf(event, {
-            filter: { types: TestEvents.EventTypes },
+            filter: TestEvents.EventFilter({ types: TestEvents.EventTypes }),
             lastKnownPosition: Option.some(lastKnownPosition),
           })
 
@@ -152,7 +161,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
           const error = yield* Effect.flip(
             eventStore.appendIf(event, {
-              filter: { types: TestEvents.EventTypes },
+              filter: TestEvents.EventFilter({ types: TestEvents.EventTypes }),
               lastKnownPosition: Option.some(EventStore.Position.make(existingEvents.length - 1)),
             }),
           )
@@ -180,7 +189,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
   >([
     [
       'one type',
-      { types: ['ThingStarted'] },
+      TestEvents.EventFilter({ types: ['ThingStarted'] }),
       [
         new TestEvents.ThingStarted({ thingId }),
         new TestEvents.ThingStarted({ thingId }),
@@ -194,7 +203,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
     ],
     [
       'multiple types',
-      { types: ['ThingStarted', 'ThingFinished'] },
+      TestEvents.EventFilter({ types: ['ThingStarted', 'ThingFinished'] }),
       [
         new TestEvents.ThingStarted({ thingId }),
         new TestEvents.ThingFinished({ thingId }),
@@ -208,7 +217,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
     ],
     [
       'other types',
-      { types: ['ThingStarted'] },
+      TestEvents.EventFilter({ types: ['ThingStarted'] }),
       [
         new TestEvents.ThingStarted({ thingId }),
         new TestEvents.ThingFinished({ thingId }),
@@ -218,7 +227,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
     ],
     [
       'one predicate',
-      { types: ['ThingStarted', 'ThingFinished'], predicates: { thingId } },
+      TestEvents.EventFilter({ types: ['ThingStarted', 'ThingFinished'], predicates: { thingId } }),
       [
         new TestEvents.ThingStarted({ thingId }),
         new TestEvents.ThingFinished({ thingId }),
@@ -228,7 +237,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
     ],
     [
       'two types and two predicates',
-      { types: ['ThingRated', 'ThingReviewed'], predicates: { thingId, rating: 'good' } },
+      TestEvents.EventFilter({ types: ['ThingRated', 'ThingReviewed'], predicates: { thingId, rating: 'good' } }),
       [
         new TestEvents.ThingRated({ thingId, rating: 'good' }),
         new TestEvents.ThingRated({ thingId, rating: 'bad' }),
@@ -245,10 +254,10 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
     ],
     [
       'multiple filters',
-      [
+      TestEvents.EventFilter([
         { types: ['ThingRated', 'ThingReviewed'], predicates: { thingId, rating: 'good' } },
         { types: ['ThingReviewed'], predicates: { thingId, rating: 'bad' } },
-      ],
+      ]),
       [
         new TestEvents.ThingRated({ thingId, rating: 'good' }),
         new TestEvents.ThingRated({ thingId, rating: 'bad' }),
@@ -266,10 +275,10 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
     ],
     [
       'predicates stored as strings',
-      [
+      TestEvents.EventFilter([
         { types: ['ThingMoved'], predicates: { location: { x: 1, y: 2 } } },
         { types: ['ThingMoved'], predicates: { location: { x: 3, y: 4 } } },
-      ],
+      ]),
       [
         new TestEvents.ThingMoved({ thingId, location: { x: 1, y: 2 } }),
         new TestEvents.ThingMoved({ thingId, location: { x: 3, y: 4 } }),
@@ -282,7 +291,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
     ],
     [
       'number predicates',
-      { types: ['ThingWeighed'], predicates: { weight: 10 } },
+      TestEvents.EventFilter({ types: ['ThingWeighed'], predicates: { weight: 10 } }),
       [
         new TestEvents.ThingWeighed({ thingId, weight: 10 }),
         new TestEvents.ThingWeighed({ thingId, weight: 20 }),
@@ -400,7 +409,9 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
           yield* Effect.forEach(newEvents, eventStore.append)
 
-          const actual = yield* Stream.runCollect(eventStore.since(cursor, { types: ['ThingStarted'] }))
+          const actual = yield* Stream.runCollect(
+            eventStore.since(cursor, TestEvents.EventFilter({ types: ['ThingStarted'] })),
+          )
 
           expect(actual).toStrictEqual(
             Array.match(
@@ -463,7 +474,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           yield* Queue.takeN(received, existingEvents.length)
 
           yield* eventStore.appendIf(newEvent, {
-            filter: { types: [newEvent._tag], predicates: { thingId: newEvent.thingId } },
+            filter: TestEvents.EventFilter({ types: [newEvent._tag], predicates: { thingId: newEvent.thingId } }),
             lastKnownPosition: Option.none(),
           })
 
@@ -562,7 +573,9 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
           yield* Effect.forEach([...events, lastEvent], eventStore.append)
 
-          const received = yield* receive(eventStore.subscribe({ after: cursor, filter: { types: ['ThingStarted'] } }))
+          const received = yield* receive(
+            eventStore.subscribe({ after: cursor, filter: TestEvents.EventFilter({ types: ['ThingStarted'] }) }),
+          )
           const actual = yield* Queue.takeN(received, expected.length)
 
           expect(actual).toStrictEqual(expected)
@@ -741,7 +754,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
 
         yield* eventStore.append(event)
 
-        const queried = yield* eventStore.query({ types: ['ThingNamed'] })
+        const queried = yield* eventStore.query(EventFilter.forTypes<TestEvents.ThingNamed>(['ThingNamed']))
         const all = yield* Stream.runCollect(eventStore.all)
         const subscribed = yield* Queue.take(yield* receive(eventStore.subscribe({ after: cursor })))
 
@@ -965,7 +978,10 @@ describe('on a real Postgres', { skip: process.env['SKIP_CONTAINER_TESTS'] === '
     [
       'appendIf',
       (eventStore: EventStore.EventStore<TestEvents.Event>, event: TestEvents.Event) =>
-        eventStore.appendIf(event, { filter: { types: ['ThingStarted'] }, lastKnownPosition: Option.none() }),
+        eventStore.appendIf(event, {
+          filter: TestEvents.EventFilter({ types: ['ThingStarted'] }),
+          lastKnownPosition: Option.none(),
+        }),
     ],
     [
       'append',
@@ -993,7 +1009,7 @@ describe('on a real Postgres', { skip: process.env['SKIP_CONTAINER_TESTS'] === '
 
         const secondAppend = yield* Effect.forkScoped(
           eventStore.appendIf(secondEvent!, {
-            filter: { types: ['ThingStarted'] },
+            filter: TestEvents.EventFilter({ types: ['ThingStarted'] }),
             lastKnownPosition: Option.none(),
           }),
         )

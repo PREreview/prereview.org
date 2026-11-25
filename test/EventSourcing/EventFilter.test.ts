@@ -1,6 +1,6 @@
 import { Schema } from 'effect'
 import * as _ from '../../src/EventSourcing/EventFilter.ts'
-import { describe, expect, it } from '../vitest.ts'
+import { describe, expect, expectTypeOf, it } from '../vitest.ts'
 
 class ThingStarted extends Schema.TaggedClass<ThingStarted>()('ThingStarted', {
   thingId: Schema.String,
@@ -51,6 +51,24 @@ describe('make', () => {
       // @ts-expect-error dimensions is encoded as an object
       { types: ['ThingMeasured'], predicates: { dimensions: { width: 1, height: 2 } } },
     ])
+  })
+
+  it('makes event filters', () => {
+    const filter: _.EventFilter<typeof Event.Type> = EventFilter({ types: ['ThingStarted'] })
+
+    expect(filter).toStrictEqual({ types: ['ThingStarted'] })
+  })
+
+  it("doesn't let other values be event filters", () => {
+    expectTypeOf({ types: ['ThingStarted'] } as const).not.toExtend<_.EventFilter<typeof Event.Type>>()
+  })
+})
+
+describe('forTypes', () => {
+  it('makes an event filter for the types', () => {
+    const filter: _.EventFilter<typeof Event.Type> = _.forTypes(['ThingStarted', 'ThingFinished'])
+
+    expect(filter).toStrictEqual({ types: ['ThingStarted', 'ThingFinished'] })
   })
 })
 

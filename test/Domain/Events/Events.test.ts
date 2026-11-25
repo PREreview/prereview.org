@@ -26,7 +26,7 @@ const reviewRequestForAPreprintWasStarted = new _.ReviewRequestForAPreprintWasSt
 describe('matches', () => {
   it.prop(
     'when the event matches the filter',
-    [fc.event().map(event => Tuple.make<[_.Event, _.EventFilter]>(event, { types: [event._tag] }))],
+    [fc.event().map(event => Tuple.make<[_.Event, _.EventFilter]>(event, _.EventFilter({ types: [event._tag] })))],
     ([[event, filter]]) => {
       const result = _.matches(event, filter)
 
@@ -97,7 +97,9 @@ describe('matches', () => {
       fc
         .tuple(fc.event(), fc.event())
         .filter(([event1, event2]) => event1._tag !== event2._tag)
-        .map(([event1, event2]) => Tuple.make<[_.Event, _.EventFilter]>(event1, { types: [event2._tag] })),
+        .map(([event1, event2]) =>
+          Tuple.make<[_.Event, _.EventFilter]>(event1, _.EventFilter({ types: [event2._tag] })),
+        ),
     ],
     ([[event, filter]]) => {
       const result = _.matches(event, filter)

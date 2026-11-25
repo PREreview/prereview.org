@@ -1,4 +1,4 @@
-import { Array, Equal, identity, Option, Record, Schema, Struct, type Types } from 'effect'
+import { Array, type Brand, Equal, identity, Option, Record, Schema, Struct, type Types } from 'effect'
 
 export interface AnyEvent {
   readonly _tag: string
@@ -9,16 +9,22 @@ export interface EventSchema<E extends AnyEvent> {
   readonly members: ReadonlyArray<{ readonly identifier: string; readonly fields: Schema.Struct.Fields }>
 }
 
-export type EventFilter<E extends AnyEvent> = ClauseInput<E> | Array.NonEmptyReadonlyArray<ClauseInput<E>>
+export type EventFilter<E extends AnyEvent> = (ClauseInput<E> | ReadonlyArray<ClauseInput<E>>) &
+  Brand.Brand<'EventFilter'>
 
 export interface MakeEventFilter<E extends AnyEvent, I extends AnyEvent> {
-  <const C extends ClauseInput<E>>(filter: C & ValidateClause<E, I, C>): C
-  <const C extends Array.NonEmptyReadonlyArray<ClauseInput<E>>>(filter: C & ValidateClauses<E, I, C>): C
+  <const C extends ClauseInput<E>>(filter: C & ValidateClause<E, I, C>): C & Brand.Brand<'EventFilter'>
+  <const C extends Array.NonEmptyReadonlyArray<ClauseInput<E>>>(
+    filter: C & ValidateClauses<E, I, C>,
+  ): C & Brand.Brand<'EventFilter'>
 }
 
 export const make: <E extends AnyEvent, I extends AnyEvent>(
   schema: Schema.Codec<E, I, unknown, unknown>,
 ) => MakeEventFilter<E, I> = () => identity
+
+export const forTypes = <E extends AnyEvent>(types: Array.NonEmptyReadonlyArray<Types.Tags<E>>): EventFilter<E> =>
+  ({ types }) as EventFilter<E>
 
 export interface Matches<E extends AnyEvent> {
   <F extends EventFilter<E>>(event: E, filter: F): event is EventsForFilter<E, F>

@@ -1,7 +1,7 @@
 import { Array, Data, Effect, Option, pipe, Record, Ref, Schedule, Stream, type Types } from 'effect'
 import { Singleton } from 'effect/cluster'
 import { Temporal } from '../types/index.ts'
-import type { AnyEvent } from './EventFilter.ts'
+import { type AnyEvent, forTypes } from './EventFilter.ts'
 import type * as EventStore from './EventStore.ts'
 
 export type Handlers<E extends AnyEvent> = {
@@ -130,7 +130,7 @@ export const subscribe = Effect.fnUntraced(function* <
 
     const startCursor = yield* Ref.get(lastCursor)
 
-    yield* Stream.runForEach(store.subscribe({ after: startCursor, filter: { types } }), handlePage)
+    yield* Stream.runForEach(store.subscribe({ after: startCursor, filter: forTypes(types) }), handlePage)
   })
 
   yield* Effect.logDebug('EventSubscription started').pipe(Effect.annotateLogs({ name }))
