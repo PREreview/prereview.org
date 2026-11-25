@@ -45,7 +45,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
           fc.record(
             {
               types: fc.nonEmptyArray(fc.constantFrom(...TestEvents.EventTypes)),
-              predicate: fc.dictionary(fc.string(), fc.string()),
+              predicates: fc.record({ thingId: fc.string() }),
             },
             { requiredKeys: ['types'] },
           ),
@@ -53,7 +53,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
             fc.record(
               {
                 types: fc.nonEmptyArray(fc.constantFrom(...TestEvents.EventTypes)),
-                predicate: fc.dictionary(fc.string(), fc.string()),
+                predicates: fc.record({ thingId: fc.string() }),
               },
               { requiredKeys: ['types'] },
             ),
@@ -84,7 +84,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
             fc.record(
               {
                 types: fc.nonEmptyArray(fc.constantFrom('ThingStarted', 'ThingFinished')),
-                predicate: fc.dictionary(fc.string(), fc.string()),
+                predicates: fc.record({ thingId: fc.string() }),
               },
               { requiredKeys: ['types'] },
             ),
@@ -92,7 +92,7 @@ describe.each<[string, Layer.Layer<SqlClient.SqlClient, unknown>]>([
               fc.record(
                 {
                   types: fc.nonEmptyArray(fc.constantFrom('ThingStarted', 'ThingFinished')),
-                  predicate: fc.dictionary(fc.string(), fc.string()),
+                  predicates: fc.record({ thingId: fc.string() }),
                 },
                 { requiredKeys: ['types'] },
               ),
