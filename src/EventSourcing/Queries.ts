@@ -14,7 +14,7 @@ import {
   Struct,
 } from 'effect'
 import type * as Events from '../Domain/Events/index.ts'
-import * as EventStore from './EventStore.ts'
+import { EventStore } from '../Domain/Events/index.ts'
 import * as StatefulQueries from './StatefulQueries.ts'
 
 /** @deprecated */

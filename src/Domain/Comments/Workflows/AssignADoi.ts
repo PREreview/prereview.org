@@ -1,7 +1,7 @@
 import { Array, Effect, Option, Struct } from 'effect'
-import { EventStore } from '../../../EventSourcing/index.ts'
 import type { Doi } from '../../../types/Doi.ts'
 import type { Uuid } from '../../../types/index.ts'
+import { EventStore } from '../../Events/index.ts'
 import { MarkDoiAsAssigned } from '../Commands.ts'
 import { CreateRecordOnZenodoForComment, HandleCommentCommand } from '../Context.ts'
 import * as Errors from '../Errors.ts'

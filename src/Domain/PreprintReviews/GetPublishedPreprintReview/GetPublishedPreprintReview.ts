@@ -1,6 +1,7 @@
 import { Context, Effect, pipe, Scope } from 'effect'
-import { type EventStore, Queries, type StatefulQueries } from '../../../EventSourcing/index.ts'
+import { Queries, type StatefulQueries } from '../../../EventSourcing/index.ts'
 import type { Clubs } from '../../Clubs/index.ts'
+import type { EventStore } from '../../Events/index.ts'
 import type { Preprints } from '../../Preprints/index.ts'
 import type { Prereviewers } from '../../Prereviewers/index.ts'
 import { WasPrereviewRemoved } from '../WasPrereviewRemoved.ts'

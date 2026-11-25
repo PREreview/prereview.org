@@ -1,8 +1,9 @@
 import { Array, Context, Effect, Layer, Option, pipe, Scope, Struct } from 'effect'
 import type { Sharding } from 'effect/cluster'
 import type { WorkflowEngine } from 'effect/workflow'
-import { Commands, EventStore, EventSubscription, Queries } from '../../EventSourcing/index.ts'
+import { Commands, EventSubscription, Queries } from '../../EventSourcing/index.ts'
 import type { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
+import { EventStore } from '../Events/index.ts'
 import { layer as commentsServiceLayer } from './Comments.ts'
 import {
   GetComment,

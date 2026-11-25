@@ -1,7 +1,7 @@
 import { Effect, Layer, Option, pipe, Result } from 'effect'
 import * as Comments from '../../../../src/Domain/Comments/index.ts'
 import * as _ from '../../../../src/Domain/Comments/Workflows/AssignADoi.ts'
-import * as EventStore from '../../../../src/EventSourcing/EventStore.ts'
+import * as EventStore from '../../../../src/Domain/Events/EventStore.ts'
 import * as Queries from '../../../../src/EventSourcing/Queries.ts'
 import { html } from '../../../../src/html.ts'
 import { Doi } from '../../../../src/types/Doi.ts'

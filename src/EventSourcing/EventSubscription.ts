@@ -1,8 +1,8 @@
 import { Array, Data, Effect, Option, pipe, Record, Ref, Schedule, Stream, type Types } from 'effect'
 import { Singleton } from 'effect/cluster'
 import type * as Events from '../Domain/Events/index.ts'
+import { EventStore } from '../Domain/Events/index.ts'
 import { Temporal } from '../types/index.ts'
-import * as EventStore from './EventStore.ts'
 
 export type Handlers = {
   readonly [Tag in Events.Event['_tag']]?: (
