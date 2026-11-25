@@ -1,7 +1,7 @@
 import { Array, flow, Option, Result } from 'effect'
-import * as Events from '../../../Events.ts'
 import { Queries } from '../../../EventSourcing/index.ts'
 import type { Uuid } from '../../../types/index.ts'
+import * as Events from '../../Events/index.ts'
 
 export type Input = Uuid.Uuid
 

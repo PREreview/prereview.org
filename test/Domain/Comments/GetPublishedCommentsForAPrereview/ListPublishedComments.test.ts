@@ -1,7 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Option, Result } from 'effect'
 import * as _ from '../../../../src/Domain/Comments/GetPublishedCommentsForAPrereview/ListPublishedComments.ts'
-import * as Events from '../../../../src/Events.ts'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import * as Queries from '../../../../src/EventSourcing/Queries.ts'
 import { html } from '../../../../src/html.ts'
 import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../../src/types/index.ts'

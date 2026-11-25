@@ -1,7 +1,7 @@
 import { Array, flow, HashMap, Match, Result, Struct, type Order } from 'effect'
-import * as Events from '../../Events.ts'
 import { Queries } from '../../EventSourcing/index.ts'
 import { Temporal, type OrcidId } from '../../types/index.ts'
+import * as Events from '../Events/index.ts'
 
 export interface PrereviewerForStats {
   orcidId: OrcidId.OrcidId

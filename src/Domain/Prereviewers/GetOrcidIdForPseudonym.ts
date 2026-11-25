@@ -1,8 +1,8 @@
 import { Array, Data, Equal, flow, HashMap, Option, pipe, Result } from 'effect'
-import type * as Events from '../../Events.ts'
 import { Queries } from '../../EventSourcing/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { Pseudonym } from '../../types/Pseudonym.ts'
+import type * as Events from '../Events/index.ts'
 
 export class PseudonymNotInUse extends Data.TaggedError('PseudonymNotInUse') {}
 

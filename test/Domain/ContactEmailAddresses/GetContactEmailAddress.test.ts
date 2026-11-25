@@ -7,7 +7,7 @@ import {
 } from '../../../src/Domain/ContactEmailAddresses/ContactEmailAddress.ts'
 import { ContactEmailAddressIsNotFound } from '../../../src/Domain/ContactEmailAddresses/Errors.ts'
 import * as _ from '../../../src/Domain/ContactEmailAddresses/GetContactEmailAddress.ts'
-import * as Events from '../../../src/Events.ts'
+import * as Events from '../../../src/Domain/Events/Events.ts'
 import { EmailAddress } from '../../../src/types/EmailAddress.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Uuid } from '../../../src/types/Uuid.ts'

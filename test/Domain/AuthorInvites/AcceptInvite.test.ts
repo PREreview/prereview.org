@@ -1,7 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Option, Result } from 'effect'
 import * as _ from '../../../src/Domain/AuthorInvites/AcceptInvite.ts'
-import * as Events from '../../../src/Events.ts'
+import * as Events from '../../../src/Domain/Events/Events.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
 import { Uuid } from '../../../src/types/Uuid.ts'
 import { expect, test } from '../../vitest.ts'

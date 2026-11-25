@@ -1,7 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { URL } from 'node:url'
 import { RecordC, RecordsC } from 'zenodo-ts'
-import * as Events from '../src/Events.ts'
+import * as Events from '../src/Domain/Events/index.ts'
 import { Doi } from '../src/types/Doi.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
 import { Pseudonym } from '../src/types/Pseudonym.ts'

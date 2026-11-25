@@ -1,7 +1,7 @@
 import { Array, Boolean, Data, Equal, Filter, HashSet, Match, Option, Result, Struct, type Types } from 'effect'
-import * as Events from '../../../Events.ts'
 import { Commands } from '../../../EventSourcing/index.ts'
 import { EmailAddress, type Name, type OrcidId, type Uuid } from '../../../types/index.ts'
+import * as Events from '../../Events/index.ts'
 import * as Errors from '../Errors.ts'
 
 export interface Input {

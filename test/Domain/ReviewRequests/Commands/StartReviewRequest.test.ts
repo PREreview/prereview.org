@@ -1,9 +1,9 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Option, Result } from 'effect'
+import type * as Events from '../../../../src/Domain/Events/Events.ts'
 import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
 import * as _ from '../../../../src/Domain/ReviewRequests/Commands/StartReviewRequest.ts'
 import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
-import type * as Events from '../../../../src/Events.ts'
 import { Doi, Name, OrcidId, Uuid } from '../../../../src/types/index.ts'
 import { describe, expect, it } from '../../../vitest.ts'
 

@@ -1,7 +1,7 @@
 import { Context, Effect, flow, Layer, Option, pipe, Result, Scope } from 'effect'
-import type * as Events from '../../../Events.ts'
 import { Commands, EventStore } from '../../../EventSourcing/index.ts'
 import type { Uuid } from '../../../types/index.ts'
+import type * as Events from '../../Events/index.ts'
 import * as AcceptReviewRequest from './AcceptReviewRequest.ts'
 import * as CategorizeReviewRequest from './CategorizeReviewRequest.ts'
 import { ChoosePersona } from './ChoosePersona.ts'

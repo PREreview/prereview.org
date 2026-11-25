@@ -1,9 +1,9 @@
 import { Array, Data, Option, Result } from 'effect'
-import * as Events from '../../Events.ts'
 import { Commands } from '../../EventSourcing/index.ts'
 import type { Temporal } from '../../types/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { Uuid } from '../../types/Uuid.ts'
+import * as Events from '../Events/index.ts'
 import {
   ContactEmailAddressHasAlreadyBeenVerified,
   ContactEmailAddressIsNotFound,

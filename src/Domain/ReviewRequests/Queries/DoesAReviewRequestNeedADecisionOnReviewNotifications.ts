@@ -1,8 +1,8 @@
 import { Array, HashMap, HashSet, Match, Result, Schema } from 'effect'
-import * as Events from '../../../Events.ts'
 import { Queries } from '../../../EventSourcing/index.ts'
 import type { OrcidId } from '../../../types/OrcidId.ts'
 import type { Uuid } from '../../../types/Uuid.ts'
+import * as Events from '../../Events/index.ts'
 import { type IndeterminatePreprintId, IndeterminatePreprintIdFromStringSchema } from '../../Preprints/index.ts'
 import * as Errors from '../Errors.ts'
 

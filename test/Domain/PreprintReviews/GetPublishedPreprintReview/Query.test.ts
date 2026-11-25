@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Option, Result } from 'effect'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import * as _ from '../../../../src/Domain/PreprintReviews/GetPublishedPreprintReview/Query.ts'
 import {
   PrereviewIsNotFound,
@@ -7,7 +8,6 @@ import {
   PrereviewWasRemoved,
 } from '../../../../src/Domain/PreprintReviews/index.ts'
 import { BiorxivOrMedrxivPreprintId } from '../../../../src/Domain/Preprints/index.ts'
-import * as Events from '../../../../src/Events.ts'
 import { html } from '../../../../src/html.ts'
 import { Doi } from '../../../../src/types/Doi.ts'
 import { Name } from '../../../../src/types/Name.ts'

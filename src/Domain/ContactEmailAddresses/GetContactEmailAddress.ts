@@ -1,9 +1,9 @@
 import { Array, Match, Option, Result, Struct } from 'effect'
-import * as Events from '../../Events.ts'
 import { Queries } from '../../EventSourcing/index.ts'
 import type { EmailAddress } from '../../types/EmailAddress.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { Uuid } from '../../types/Uuid.ts'
+import * as Events from '../Events/index.ts'
 import {
   UnverifiedContactEmailAddress,
   VerifiedContactEmailAddress,

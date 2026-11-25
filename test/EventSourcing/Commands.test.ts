@@ -1,5 +1,5 @@
 import { Effect, Layer, Option, pipe, Result, Schema, Tracer } from 'effect'
-import * as Events from '../../src/Events.ts'
+import * as Events from '../../src/Domain/Events/Events.ts'
 import * as _ from '../../src/EventSourcing/Commands.ts'
 import * as EventStore from '../../src/EventSourcing/EventStore.ts'
 import { Temporal, Uuid } from '../../src/types/index.ts'

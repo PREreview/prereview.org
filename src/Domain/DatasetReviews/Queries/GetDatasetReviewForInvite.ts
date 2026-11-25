@@ -1,8 +1,8 @@
 import { Array, HashMap, Match, MutableHashSet, Option, pipe, Result } from 'effect'
-import type * as Events from '../../../Events.ts'
 import { Queries } from '../../../EventSourcing/index.ts'
 import { type Doi, type OrcidId, Temporal, type Uuid } from '../../../types/index.ts'
 import type { DatasetId } from '../../Datasets/index.ts'
+import type * as Events from '../../Events/index.ts'
 import * as Errors from '../Errors.ts'
 
 export type Input = Uuid.Uuid

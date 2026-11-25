@@ -1,5 +1,5 @@
-import * as Events from '../../../Events.ts'
 import type { Temporal, Uuid } from '../../../types/index.ts'
+import * as Events from '../../Events/index.ts'
 
 export interface Command {
   readonly reviewRequestId: Uuid.Uuid

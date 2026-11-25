@@ -13,9 +13,9 @@ import {
   Struct,
 } from 'effect'
 import { Command } from 'effect/cli'
+import { PreprintReviewImported, StructuredPrereviewSchema } from '../Domain/Events/index.ts'
 import { PreprintReviews } from '../Domain/PreprintReviews/index.ts'
 import { Prereviewers } from '../Domain/Prereviewers/index.ts'
-import { PreprintReviewImported, StructuredPrereviewSchema } from '../Events.ts'
 import { Html, HtmlFromSelfSchema } from '../html.ts'
 import { NameSchema } from '../types/Name.ts'
 import * as OrcidId from '../types/OrcidId.ts'

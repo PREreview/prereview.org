@@ -1,6 +1,6 @@
 import { Array, Boolean, Data, Equal, Function, Match, Option, Result, type Types } from 'effect'
-import * as Events from '../../../Events.ts'
 import type { NonEmptyString, OrcidId, Uuid } from '../../../types/index.ts'
+import * as Events from '../../Events/index.ts'
 import * as Errors from '../Errors.ts'
 
 export interface Command {

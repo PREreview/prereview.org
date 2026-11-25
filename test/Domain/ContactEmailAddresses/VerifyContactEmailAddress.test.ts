@@ -6,7 +6,7 @@ import {
   OnlyCurrentContactAddressCanBeVerified,
 } from '../../../src/Domain/ContactEmailAddresses/Errors.ts'
 import * as _ from '../../../src/Domain/ContactEmailAddresses/VerifyContactEmailAddress.ts'
-import * as Events from '../../../src/Events.ts'
+import * as Events from '../../../src/Domain/Events/Events.ts'
 import * as Commands from '../../../src/EventSourcing/Commands.ts'
 import { EmailAddress } from '../../../src/types/EmailAddress.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'

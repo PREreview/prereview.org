@@ -1,7 +1,7 @@
 import { Option, Result } from 'effect'
 import type * as DatasetReviews from '../../../../src/Domain/DatasetReviews/index.ts'
 import * as _ from '../../../../src/Domain/DatasetReviews/Queries/GetPreviousCommandForAUserOnADatasetReview.ts'
-import * as Events from '../../../../src/Events.ts'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import { Uuid } from '../../../../src/types/Uuid.ts'
 import { expect, test } from '../../../vitest.ts'
 

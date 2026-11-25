@@ -1,8 +1,8 @@
 import { Array, Data, Match, Option, Result } from 'effect'
-import * as Events from '../../Events.ts'
 import { Commands } from '../../EventSourcing/index.ts'
 import type { Pseudonym, Temporal } from '../../types/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
+import * as Events from '../Events/index.ts'
 
 export interface Input {
   readonly orcidId: OrcidId

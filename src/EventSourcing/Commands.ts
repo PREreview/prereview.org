@@ -1,5 +1,5 @@
 import { Context, Data, Effect, identity, Option, pipe, Predicate, Record, type Result, Schema, Scope } from 'effect'
-import type * as Events from '../Events.ts'
+import type * as Events from '../Domain/Events/index.ts'
 import * as EventStore from './EventStore.ts'
 
 export type FromCommand<T> =

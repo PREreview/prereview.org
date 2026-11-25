@@ -1,6 +1,6 @@
 import { Array, Data, Effect, Option, pipe, Record, Ref, Schedule, Stream, type Types } from 'effect'
 import { Singleton } from 'effect/cluster'
-import type * as Events from '../Events.ts'
+import type * as Events from '../Domain/Events/index.ts'
 import { Temporal } from '../types/index.ts'
 import * as EventStore from './EventStore.ts'
 

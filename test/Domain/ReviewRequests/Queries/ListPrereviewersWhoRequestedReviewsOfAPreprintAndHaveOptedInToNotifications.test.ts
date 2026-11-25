@@ -1,8 +1,8 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, HashSet, Result } from 'effect'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
 import * as _ from '../../../../src/Domain/ReviewRequests/Queries/ListPrereviewersWhoRequestedReviewsOfAPreprintAndHaveOptedInToNotifications.ts'
-import * as Events from '../../../../src/Events.ts'
 import { Doi, OrcidId, Uuid } from '../../../../src/types/index.ts'
 import { expect, test } from '../../../vitest.ts'
 

@@ -1,6 +1,6 @@
 import { Effect, Exit, Layer, pipe, Queue, Ref, Result } from 'effect'
 import { sample } from 'fast-check'
-import * as Events from '../../src/Events.ts'
+import * as Events from '../../src/Domain/Events/Events.ts'
 import * as EventStore from '../../src/EventSourcing/EventStore.ts'
 import * as SqlEventStore from '../../src/EventSourcing/SqlEventStore.ts'
 import * as _ from '../../src/EventSourcing/StatefulQueries.ts'

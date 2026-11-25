@@ -1,7 +1,7 @@
 import { Array, Option, Result, type Types } from 'effect'
-import * as Events from '../../../Events.ts'
 import { Queries } from '../../../EventSourcing/index.ts'
 import type { EmailAddress, Name, Uuid } from '../../../types/index.ts'
+import * as Events from '../../Events/index.ts'
 import type * as Preprints from '../../Preprints/index.ts'
 import * as Errors from '../Errors.ts'
 

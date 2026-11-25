@@ -1,7 +1,7 @@
 import { Array, Equal, Result, type Types } from 'effect'
-import * as Events from '../../../Events.ts'
-import { EventFilter } from '../../../Events.ts'
 import type { OrcidId, Uuid } from '../../../types/index.ts'
+import * as Events from '../../Events/index.ts'
+import { EventFilter } from '../../Events/index.ts'
 import * as Errors from '../Errors.ts'
 
 export interface Input {

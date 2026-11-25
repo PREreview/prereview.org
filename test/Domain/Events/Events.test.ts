@@ -1,11 +1,11 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Tuple } from 'effect'
-import * as Datasets from '../src/Domain/Datasets/index.ts'
-import * as Preprints from '../src/Domain/Preprints/index.ts'
-import * as _ from '../src/Events.ts'
-import { Doi, OrcidId, Uuid } from '../src/types/index.ts'
-import * as fc from './fc.ts'
-import { describe, expect, it } from './vitest.ts'
+import * as Datasets from '../../../src/Domain/Datasets/index.ts'
+import * as _ from '../../../src/Domain/Events/Events.ts'
+import * as Preprints from '../../../src/Domain/Preprints/index.ts'
+import { Doi, OrcidId, Uuid } from '../../../src/types/index.ts'
+import * as fc from '../../fc.ts'
+import { describe, expect, it } from '../../vitest.ts'
 
 const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
 const authorId = OrcidId.OrcidId('0000-0002-1825-0097')

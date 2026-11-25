@@ -45,6 +45,7 @@ import {
 } from '../src/Domain/ContactEmailAddresses/index.ts'
 import type * as DatasetReviews from '../src/Domain/DatasetReviews/index.ts'
 import * as Datasets from '../src/Domain/Datasets/index.ts'
+import * as Events from '../src/Domain/Events/Events.ts'
 import { Prereview } from '../src/Domain/PreprintReviews/index.ts'
 import {
   AdvancePreprintId,
@@ -106,7 +107,6 @@ import type {
 } from '../src/Domain/Prereviewers/index.ts'
 import * as Prereviewers from '../src/Domain/Prereviewers/index.ts'
 import * as ReviewRequests from '../src/Domain/ReviewRequests/index.ts'
-import * as Events from '../src/Events.ts'
 import { type ContentfulConfig, ContentfulId } from '../src/ExternalApis/Contentful/index.ts'
 import { type CoarNotify, type Nodemailer, type OpenAlex, Slack } from '../src/ExternalApis/index.ts'
 import type { GhostPage } from '../src/ExternalInteractions/index.ts'

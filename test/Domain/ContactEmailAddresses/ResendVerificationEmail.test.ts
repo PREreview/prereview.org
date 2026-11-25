@@ -6,7 +6,7 @@ import {
   ContactEmailAddressIsNotFound,
 } from '../../../src/Domain/ContactEmailAddresses/index.ts'
 import * as _ from '../../../src/Domain/ContactEmailAddresses/ResendVerificationEmail.ts'
-import { ContactAddressImported, Event } from '../../../src/Events.ts'
+import { ContactAddressImported, Event } from '../../../src/Domain/Events/Events.ts'
 import { EventStore } from '../../../src/EventSourcing/EventStore.ts'
 import { make as makeSqlEventStore } from '../../../src/EventSourcing/SqlEventStore.ts'
 import { Email, OrcidRecords } from '../../../src/ExternalInteractions/index.ts'

@@ -23,7 +23,7 @@ import {
   UndefinedOr,
 } from 'effect'
 import { SqlClient, type SqlError, type Statement } from 'effect/sql'
-import type * as Events from '../Events.ts'
+import type * as Events from '../Domain/Events/index.ts'
 import type { SensitiveDataStore } from '../SensitiveData/index.ts'
 import { Uuid } from '../types/index.ts'
 import * as EventFilter from './EventFilter.ts'

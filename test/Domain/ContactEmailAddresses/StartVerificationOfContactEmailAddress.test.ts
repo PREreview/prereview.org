@@ -3,7 +3,7 @@ import { Array, Effect, Layer, Option, pipe, Result, Stream, Struct } from 'effe
 import { Locale } from '../../../src/Context.ts'
 import { ContactEmailAddressHasAlreadyBeenVerified } from '../../../src/Domain/ContactEmailAddresses/index.ts'
 import * as _ from '../../../src/Domain/ContactEmailAddresses/StartVerificationOfContactEmailAddress.ts'
-import { ContactAddressImported, Event } from '../../../src/Events.ts'
+import { ContactAddressImported, Event } from '../../../src/Domain/Events/Events.ts'
 import { EventStore } from '../../../src/EventSourcing/EventStore.ts'
 import { make as makeSqlEventStore } from '../../../src/EventSourcing/SqlEventStore.ts'
 import { Email, OrcidRecords } from '../../../src/ExternalInteractions/index.ts'

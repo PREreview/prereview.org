@@ -1,7 +1,7 @@
 import { Array, Match, Option, Result, Schema } from 'effect'
-import * as Events from '../../Events.ts'
 import { Commands } from '../../EventSourcing/index.ts'
 import { type Uuid, UuidSchema } from '../../types/Uuid.ts'
+import * as Events from '../Events/index.ts'
 import * as Errors from './Errors.ts'
 
 export type Input = typeof Input.Type

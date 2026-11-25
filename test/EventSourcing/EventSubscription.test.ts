@@ -15,7 +15,7 @@ import {
 } from 'effect'
 import { TestClock } from 'effect/testing'
 import { sample } from 'fast-check'
-import * as Events from '../../src/Events.ts'
+import * as Events from '../../src/Domain/Events/Events.ts'
 import * as EventStore from '../../src/EventSourcing/EventStore.ts'
 import * as _ from '../../src/EventSourcing/EventSubscription.ts'
 import * as SqlEventStore from '../../src/EventSourcing/SqlEventStore.ts'

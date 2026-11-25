@@ -13,7 +13,7 @@ import {
   Schema,
   Struct,
 } from 'effect'
-import type * as Events from '../Events.ts'
+import type * as Events from '../Domain/Events/index.ts'
 import * as EventStore from './EventStore.ts'
 import * as StatefulQueries from './StatefulQueries.ts'
 

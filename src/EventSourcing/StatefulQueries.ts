@@ -1,5 +1,5 @@
 import { Array, Context, Data, Effect, Layer, Option, pipe, Ref, Schedule, Stream, Struct } from 'effect'
-import type * as Events from '../Events.ts'
+import type * as Events from '../Domain/Events/index.ts'
 import * as EventStore from './EventStore.ts'
 
 type Subscriber = (events: Array.NonEmptyReadonlyArray<Events.Event>) => Effect.Effect<void>

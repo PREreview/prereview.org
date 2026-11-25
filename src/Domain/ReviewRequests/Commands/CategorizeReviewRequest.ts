@@ -1,8 +1,8 @@
 import { Array, Boolean, Data, Equal, Function, Match, Option, Result } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import * as Events from '../../../Events.ts'
 import type { Uuid } from '../../../types/index.ts'
 import type { TopicId } from '../../../types/Topic.ts'
+import * as Events from '../../Events/index.ts'
 import type * as Errors from '../Errors.ts'
 
 export interface Command {
