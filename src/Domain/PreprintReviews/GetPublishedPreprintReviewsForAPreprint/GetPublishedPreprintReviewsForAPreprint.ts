@@ -1,6 +1,5 @@
 import { Effect, pipe, Schema } from 'effect'
-import type { StatefulQueries } from '../../../EventSourcing/index.ts'
-import { Queries } from '../../Events/index.ts'
+import { Queries, type StatefulQueries } from '../../Events/index.ts'
 import { type IndeterminatePreprintId, IndeterminatePreprintIdFromStringSchema } from '../../Preprints/index.ts'
 import type { GetPublishedPreprintReview, PublishedPreprintReview } from '../GetPublishedPreprintReview/index.ts'
 import { WasPrereviewRemoved } from '../WasPrereviewRemoved.ts'

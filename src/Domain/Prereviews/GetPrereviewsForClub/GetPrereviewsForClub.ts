@@ -1,10 +1,9 @@
 import { Array, Context, Effect, flow, Option, pipe, Scope, Struct } from 'effect'
-import type { StatefulQueries } from '../../../EventSourcing/index.ts'
 import type { Uuid } from '../../../types/index.ts'
 import { getTopicField, getTopicSubfield } from '../../../types/Topic.ts'
 import { DatasetReviewQueries } from '../../DatasetReviews/index.ts'
 import * as Datasets from '../../Datasets/index.ts'
-import { Queries } from '../../Events/index.ts'
+import { Queries, type StatefulQueries } from '../../Events/index.ts'
 import {
   getPreprintReview,
   type PreprintReviews,

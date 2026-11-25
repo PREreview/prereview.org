@@ -1,9 +1,9 @@
 // oxlint-disable module-boundaries/use-index
 import { identity, type Result } from 'effect'
 import * as GenericQueries from '../../EventSourcing/Queries.ts'
-import * as StatefulQueries from '../../EventSourcing/StatefulQueries.ts'
 import { EventStore } from './EventStore.ts'
 import type { Event, EventFilter, EventsForFilter } from './Events.ts'
+import * as StatefulQueries from './StatefulQueries.ts'
 
 export {
   UnableToQuery,

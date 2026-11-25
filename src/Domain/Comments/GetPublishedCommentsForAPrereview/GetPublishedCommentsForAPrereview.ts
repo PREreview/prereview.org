@@ -1,7 +1,6 @@
 import { Context, Effect, pipe, Scope } from 'effect'
-import type { StatefulQueries } from '../../../EventSourcing/index.ts'
 import type { LanguageDetection } from '../../../ExternalInteractions/index.ts'
-import { Queries } from '../../Events/index.ts'
+import { Queries, type StatefulQueries } from '../../Events/index.ts'
 import type { Prereviewers } from '../../Prereviewers/index.ts'
 import { Enrich } from './Enrich.ts'
 import { ListPublishedComments } from './ListPublishedComments.ts'
