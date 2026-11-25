@@ -1,7 +1,7 @@
 import { Option, Result } from 'effect'
 import * as _ from '../../../src/Domain/Comments/Queries.ts'
 import * as Comments from '../../../src/Domain/Comments/index.ts'
-import * as Queries from '../../../src/Queries.ts'
+import * as Queries from '../../../src/EventSourcing/Queries.ts'
 import { html } from '../../../src/html.ts'
 import { Doi } from '../../../src/types/Doi.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'

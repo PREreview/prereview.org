@@ -13,7 +13,7 @@ import {
   HasOptedOut,
 } from '../../../src/Domain/Prereviewers/HasAPrereviewerOptedInToNotificationsForReviewsPublishedInResponseToRequests.ts'
 import { Prereviewers } from '../../../src/Domain/Prereviewers/index.ts'
-import * as Queries from '../../../src/Queries.ts'
+import * as Queries from '../../../src/EventSourcing/Queries.ts'
 import { EffectToFpts } from '../../../src/RefactoringUtilities/index.ts'
 import { myDetailsMatch } from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'

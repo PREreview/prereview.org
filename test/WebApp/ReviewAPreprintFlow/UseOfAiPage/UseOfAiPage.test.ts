@@ -11,9 +11,9 @@ import {
   type PreprintTitle,
 } from '../../../../src/Domain/Preprints/index.ts'
 import { UnableToHandleCommand } from '../../../../src/EventSourcing/Commands.ts'
+import { UnableToQuery } from '../../../../src/EventSourcing/Queries.ts'
 import { html } from '../../../../src/html.ts'
 import { DefaultLocale } from '../../../../src/locales/index.ts'
-import { UnableToQuery } from '../../../../src/Queries.ts'
 import * as Routes from '../../../../src/routes.ts'
 import { Doi } from '../../../../src/types/Doi.ts'
 import { OrcidId } from '../../../../src/types/OrcidId.ts'

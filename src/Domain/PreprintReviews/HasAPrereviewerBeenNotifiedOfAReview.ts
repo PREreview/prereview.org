@@ -1,6 +1,6 @@
 import { Array, Result, flow } from 'effect'
 import * as Events from '../../Events.ts'
-import * as Queries from '../../Queries.ts'
+import { Queries } from '../../EventSourcing/index.ts'
 import type { OrcidId } from '../../types/index.ts'
 
 export interface Input {

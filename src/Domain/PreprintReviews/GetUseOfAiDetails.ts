@@ -1,5 +1,5 @@
 import { Effect, Option, pipe, type Result } from 'effect'
-import { UnableToQuery } from '../../Queries.ts'
+import { Queries } from '../../EventSourcing/index.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { PreprintId } from '../Preprints/index.ts'
@@ -21,7 +21,7 @@ export type UseOfAiDetails = {
   | { _tag: 'NotAnswered' }
 )
 
-export type Result = Result.Result<UseOfAiDetails, Errors.PreprintReviewNotFound | UnableToQuery>
+export type Result = Result.Result<UseOfAiDetails, Errors.PreprintReviewNotFound | Queries.UnableToQuery>
 
 export const GetUseOfAiDetails = (
   formStore: FormStorage,
@@ -36,7 +36,7 @@ export const GetUseOfAiDetails = (
       ),
       Effect.catchIf(
         error => error === 'form-unavailable',
-        () => new UnableToQuery({}),
+        () => new Queries.UnableToQuery({}),
       ),
     )
 

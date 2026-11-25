@@ -1,5 +1,5 @@
 import { Array, Filter, HashSet, Option, Result, Struct, type Types } from 'effect'
-import * as Queries from '../../../Queries.ts'
+import { Queries } from '../../../EventSourcing/index.ts'
 import type { OrcidId } from '../../../types/index.ts'
 import type { NonEmptyString } from '../../../types/NonEmptyString.ts'
 import type * as Datasets from '../../Datasets/index.ts'

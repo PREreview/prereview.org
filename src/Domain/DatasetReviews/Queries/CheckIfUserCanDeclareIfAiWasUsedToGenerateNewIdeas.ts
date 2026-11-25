@@ -1,6 +1,6 @@
 import { Array, Equal, Option, Result, type Types } from 'effect'
 import * as Events from '../../../Events.ts'
-import * as Queries from '../../../Queries.ts'
+import { Queries } from '../../../EventSourcing/index.ts'
 import type { NonEmptyString, OrcidId, Uuid } from '../../../types/index.ts'
 import * as Errors from '../Errors.ts'
 

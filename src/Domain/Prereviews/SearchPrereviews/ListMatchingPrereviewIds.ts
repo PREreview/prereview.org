@@ -1,7 +1,7 @@
 import { Array, Data, HashMap, Match, Order, pipe, Result, Schema, Struct } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import * as Events from '../../../Events.ts'
-import * as Queries from '../../../Queries.ts'
+import { Queries } from '../../../EventSourcing/index.ts'
 import { type FieldId, FieldIdSchema } from '../../../types/field.ts'
 import { Temporal, type Uuid } from '../../../types/index.ts'
 import { Iso6391Schema } from '../../../types/iso639.ts'

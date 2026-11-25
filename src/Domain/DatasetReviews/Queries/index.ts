@@ -1,6 +1,5 @@
 import { Array, Context, Effect, Layer, Scope } from 'effect'
-import { EventStore, type StatefulQueries } from '../../../EventSourcing/index.ts'
-import * as Queries from '../../../Queries.ts'
+import { EventStore, Queries, type StatefulQueries } from '../../../EventSourcing/index.ts'
 import type { Uuid } from '../../../types/index.ts'
 import type { Clubs } from '../../Clubs/index.ts'
 import type { Datasets } from '../../Datasets/index.ts'

@@ -7,7 +7,7 @@ import {
   ContactEmailAddressIsNotFound,
 } from '../../../src/Domain/ContactEmailAddresses/index.ts'
 import * as Commands from '../../../src/EventSourcing/Commands.ts'
-import * as Queries from '../../../src/Queries.ts'
+import * as Queries from '../../../src/EventSourcing/Queries.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import * as _ from '../../../src/WebApp/my-details-page/change-contact-email-address.ts'
 import { changeContactEmailAddressMatch, myDetailsMatch } from '../../../src/routes.ts'

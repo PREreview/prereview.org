@@ -1,32 +1,34 @@
 import { Context, type Effect, type Option } from 'effect'
-import type { Commands } from '../../EventSourcing/index.ts'
+import type { Commands, Queries } from '../../EventSourcing/index.ts'
 import type { Html } from '../../html.ts'
-import type { UnableToQuery } from '../../Queries.ts'
 import type { Doi } from '../../types/Doi.ts'
 import type { NonEmptyString, Uuid } from '../../types/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { CommentCommand } from './Commands.ts'
 import type { CommentError, UnableToAssignADoi, UnableToPublishComment } from './Errors.ts'
-import type * as Queries from './Queries.ts'
+import type * as CommentQueries from './Queries.ts'
 import type { CommentState } from './State.ts'
 
 export class GetNextExpectedCommandForUserOnAComment extends Context.Service<
   GetNextExpectedCommandForUserOnAComment,
   (
-    ...params: Parameters<ReturnType<typeof Queries.GetNextExpectedCommandForUserOnAComment>>
-  ) => Effect.Effect<ReturnType<ReturnType<typeof Queries.GetNextExpectedCommandForUserOnAComment>>, UnableToQuery>
+    ...params: Parameters<ReturnType<typeof CommentQueries.GetNextExpectedCommandForUserOnAComment>>
+  ) => Effect.Effect<
+    ReturnType<ReturnType<typeof CommentQueries.GetNextExpectedCommandForUserOnAComment>>,
+    Queries.UnableToQuery
+  >
 >()('GetNextExpectedCommandForUserOnAComment') {}
 
 export class GetNextExpectedCommandForUser extends Context.Service<
   GetNextExpectedCommandForUser,
   (
-    ...params: Parameters<ReturnType<typeof Queries.GetNextExpectedCommandForUser>>
-  ) => Effect.Effect<ReturnType<ReturnType<typeof Queries.GetNextExpectedCommandForUser>>, UnableToQuery>
+    ...params: Parameters<ReturnType<typeof CommentQueries.GetNextExpectedCommandForUser>>
+  ) => Effect.Effect<ReturnType<ReturnType<typeof CommentQueries.GetNextExpectedCommandForUser>>, Queries.UnableToQuery>
 >()('GetNextExpectedCommandForUser') {}
 
 export class GetComment extends Context.Service<
   GetComment,
-  (commentId: Uuid.Uuid) => Effect.Effect<CommentState, UnableToQuery>
+  (commentId: Uuid.Uuid) => Effect.Effect<CommentState, Queries.UnableToQuery>
 >()('GetComment') {}
 
 export class HandleCommentCommand extends Context.Service<

@@ -1,5 +1,5 @@
 import { Array, flow, HashMap, Result, Schema } from 'effect'
-import * as Queries from '../../../Queries.ts'
+import { Queries } from '../../../EventSourcing/index.ts'
 import { DomainIdSchema } from '../../../types/domain.ts'
 import { FieldIdSchema } from '../../../types/field.ts'
 import { Iso639, Temporal, Uuid } from '../../../types/index.ts'

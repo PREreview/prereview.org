@@ -1,6 +1,6 @@
 import { Array, flow, HashMap, pipe, Result, Struct } from 'effect'
 import * as Events from '../../../Events.ts'
-import * as Queries from '../../../Queries.ts'
+import { Queries } from '../../../EventSourcing/index.ts'
 import { Temporal, type Uuid } from '../../../types/index.ts'
 
 export type Result = ReadonlyArray<{ id: Uuid.Uuid; publishedAt: Temporal.Instant }>

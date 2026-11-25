@@ -1,6 +1,5 @@
 import { Context, Effect, pipe, Scope } from 'effect'
-import type { EventStore } from '../../../../EventSourcing/index.ts'
-import * as Queries from '../../../../Queries.ts'
+import { type EventStore, Queries } from '../../../../EventSourcing/index.ts'
 import type { Uuid } from '../../../../types/index.ts'
 import type { Clubs } from '../../../Clubs/index.ts'
 import type { Datasets } from '../../../Datasets/index.ts'

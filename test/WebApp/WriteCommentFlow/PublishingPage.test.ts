@@ -1,7 +1,7 @@
 import { Effect, Equal } from 'effect'
 import { Locale } from '../../../src/Context.ts'
 import * as Comments from '../../../src/Domain/Comments/index.ts'
-import * as Queries from '../../../src/Queries.ts'
+import * as Queries from '../../../src/EventSourcing/Queries.ts'
 import * as Routes from '../../../src/routes.ts'
 import * as StatusCodes from '../../../src/StatusCodes.ts'
 import { LoggedInUser } from '../../../src/user.ts'

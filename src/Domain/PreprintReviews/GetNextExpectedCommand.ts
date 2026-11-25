@@ -1,5 +1,5 @@
 import { Effect, pipe, type Result } from 'effect'
-import { UnableToQuery } from '../../Queries.ts'
+import { Queries } from '../../EventSourcing/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { PreprintId } from '../Preprints/index.ts'
 import * as Errors from './Errors.ts'
@@ -12,7 +12,7 @@ export interface Input {
   orcidId: OrcidId
 }
 
-export type Result = Result.Result<NextExpectedCommand, Errors.PreprintReviewNotFound | UnableToQuery>
+export type Result = Result.Result<NextExpectedCommand, Errors.PreprintReviewNotFound | Queries.UnableToQuery>
 
 export const GetNextExpectedCommand = (
   formStore: FormStorage,
@@ -27,7 +27,7 @@ export const GetNextExpectedCommand = (
       ),
       Effect.catchIf(
         error => error === 'form-unavailable',
-        () => new UnableToQuery({}),
+        () => new Queries.UnableToQuery({}),
       ),
     )
 

@@ -1,6 +1,6 @@
 import { Array, Data, flow, HashMap, Match, Option, Order, pipe, Result, Struct } from 'effect'
 import * as Events from '../../../Events.ts'
-import * as Queries from '../../../Queries.ts'
+import { Queries } from '../../../EventSourcing/index.ts'
 import { Temporal, Uuid } from '../../../types/index.ts'
 
 export type Input = typeof Input.Type

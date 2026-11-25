@@ -1,8 +1,7 @@
 import { Array, Context, Effect, Layer, Option, pipe, Scope, Struct } from 'effect'
 import type { Sharding } from 'effect/cluster'
 import type { WorkflowEngine } from 'effect/workflow'
-import { Commands, EventStore, EventSubscription } from '../../EventSourcing/index.ts'
-import { UnableToQuery } from '../../Queries.ts'
+import { Commands, EventStore, EventSubscription, Queries } from '../../EventSourcing/index.ts'
 import type { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
 import { layer as commentsServiceLayer } from './Comments.ts'
 import {
@@ -16,7 +15,7 @@ import {
 import { DecideComment } from './Decide.ts'
 import { CommentEventTypes } from './Events.ts'
 import { EvolveComment } from './Evolve.ts'
-import * as Queries from './Queries.ts'
+import * as CommentQueries from './Queries.ts'
 import { CommentNotStarted, type CommentState } from './State.ts'
 import * as Workflows from './Workflows/index.ts'
 import { layerZenodo } from './Zenodo.ts'
@@ -93,7 +92,7 @@ export const makeGetComment: Effect.Effect<typeof GetComment.Service, never, Eve
           EvolveComment(state)(event),
         )
       },
-      Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+      Effect.catchTag('FailedToGetEvents', cause => new Queries.UnableToQuery({ cause })),
       Effect.provide(context),
     )
   },
@@ -113,9 +112,9 @@ export const makeGetNextExpectedCommandForUser: Effect.Effect<
         Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
       )
 
-      return Queries.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
+      return CommentQueries.GetNextExpectedCommandForUser(events)({ authorId, prereviewId })
     },
-    Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+    Effect.catchTag('FailedToGetEvents', cause => new Queries.UnableToQuery({ cause })),
     Effect.provide(context),
   )
 })
@@ -134,9 +133,9 @@ export const makeGetNextExpectedCommandForUserOnAComment: Effect.Effect<
         Effect.map(Option.match({ onNone: Array.empty, onSome: Struct.get('events') })),
       )
 
-      return Queries.GetNextExpectedCommandForUserOnAComment(events)(commentId)
+      return CommentQueries.GetNextExpectedCommandForUserOnAComment(events)(commentId)
     },
-    Effect.catchTag('FailedToGetEvents', cause => new UnableToQuery({ cause })),
+    Effect.catchTag('FailedToGetEvents', cause => new Queries.UnableToQuery({ cause })),
     Effect.provide(context),
   )
 })

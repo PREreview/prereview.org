@@ -1,13 +1,13 @@
 import { Array, Effect, Option, pipe, Schema } from 'effect'
 import type { Locale } from '../../Context.ts'
+import { Queries } from '../../EventSourcing/index.ts'
 import { Contentful } from '../../ExternalApis/Contentful/index.ts'
-import { UnableToQuery } from '../../Queries.ts'
 import { EntryToSpotlightBanner } from '../EntryToSpotlightBanner.ts'
 import type { SpotlightBanner } from '../Types.ts'
 
 export const GetCurrentBanner: Effect.Effect<
   Option.Option<SpotlightBanner>,
-  UnableToQuery,
+  Queries.UnableToQuery,
   Contentful | Locale
 > = Effect.gen(function* () {
   const contentful = yield* Contentful
@@ -28,7 +28,7 @@ export const GetCurrentBanner: Effect.Effect<
     pipe(
       Effect.logError('Unable to get current banner'),
       Effect.annotateLogs({ error }),
-      Effect.andThen(new UnableToQuery({ cause: error })),
+      Effect.andThen(new Queries.UnableToQuery({ cause: error })),
     ),
   ),
 )

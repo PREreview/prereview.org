@@ -1,5 +1,5 @@
 import { Array, Equivalence, Filter, flow, HashMap, Option, pipe, Result, Struct } from 'effect'
-import * as Queries from '../../../Queries.ts'
+import { Queries } from '../../../EventSourcing/index.ts'
 import { Temporal, type Uuid } from '../../../types/index.ts'
 import type { TopicId } from '../../../types/Topic.ts'
 import * as Preprints from '../../Preprints/index.ts'

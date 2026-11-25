@@ -1,6 +1,6 @@
 import { Array, Effect, pipe } from 'effect'
+import { Queries } from '../../../EventSourcing/index.ts'
 import { Contentful, LinkContext } from '../../../ExternalApis/Contentful/index.ts'
-import { UnableToQuery } from '../../../Queries.ts'
 import { PageNotFound } from '../Errors.ts'
 import type { ContentfulPageOfBlogPosts } from '../index.ts'
 import { EntryToContentfulBlogPostTitle } from './EntryToContentfulBlogPostTitle.ts'
@@ -8,7 +8,7 @@ import { EntryToContentfulBlogPostTitle } from './EntryToContentfulBlogPostTitle
 export const GetPageOfBlogPosts: (
   channel: 'blog' | 'newsletter' | 'weeknote',
   page: number,
-) => Effect.Effect<ContentfulPageOfBlogPosts, UnableToQuery | PageNotFound, Contentful> = Effect.fn(
+) => Effect.Effect<ContentfulPageOfBlogPosts, Queries.UnableToQuery | PageNotFound, Contentful> = Effect.fn(
   'ContentfulPages.getPageOfBlogPosts',
 )(
   function* (channel, page) {
@@ -51,7 +51,7 @@ export const GetPageOfBlogPosts: (
     pipe(
       Effect.logError('Unable to get page of blog posts'),
       Effect.annotateLogs({ error }),
-      Effect.andThen(new UnableToQuery({ cause: error })),
+      Effect.andThen(new Queries.UnableToQuery({ cause: error })),
     ),
   ),
 )

@@ -1,6 +1,6 @@
 import { Array, Equal, Filter, HashSet, Option, Result, Struct, type Types } from 'effect'
 import * as Events from '../../../Events.ts'
-import * as Queries from '../../../Queries.ts'
+import { Queries } from '../../../EventSourcing/index.ts'
 import type { EmailAddress, Name, Uuid } from '../../../types/index.ts'
 import * as Errors from '../Errors.ts'
 

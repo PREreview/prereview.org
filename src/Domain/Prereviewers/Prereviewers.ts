@@ -1,7 +1,6 @@
 import { Context, Data, Effect, Layer, Match, pipe, type Option } from 'effect'
-import { Commands } from '../../EventSourcing/index.ts'
+import { Commands, Queries } from '../../EventSourcing/index.ts'
 import { OrcidRecords } from '../../ExternalInteractions/index.ts'
-import * as Queries from '../../Queries.ts'
 import { Temporal, type EmailAddress, type Name, type OrcidId } from '../../types/index.ts'
 import { possiblePseudonyms } from '../../types/Pseudonym.ts'
 import { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'

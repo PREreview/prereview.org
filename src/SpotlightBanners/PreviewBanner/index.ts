@@ -1,13 +1,13 @@
 import { Array, Effect, Option, pipe, Schema } from 'effect'
 import type { Locale } from '../../Context.ts'
+import { Queries } from '../../EventSourcing/index.ts'
 import { Contentful, UsePreviewApi } from '../../ExternalApis/Contentful/index.ts'
-import { UnableToQuery } from '../../Queries.ts'
 import { EntryToSpotlightBanner } from '../EntryToSpotlightBanner.ts'
 import type { SpotlightBanner } from '../Types.ts'
 
 export const PreviewBanner: (
   id: string,
-) => Effect.Effect<Option.Option<SpotlightBanner>, UnableToQuery, Contentful | Locale> = Effect.fnUntraced(
+) => Effect.Effect<Option.Option<SpotlightBanner>, Queries.UnableToQuery, Contentful | Locale> = Effect.fnUntraced(
   function* (id) {
     const contentful = yield* Contentful
 
@@ -24,7 +24,7 @@ export const PreviewBanner: (
     pipe(
       Effect.logError('Unable to preview banner'),
       Effect.annotateLogs({ error }),
-      Effect.andThen(new UnableToQuery({ cause: error })),
+      Effect.andThen(new Queries.UnableToQuery({ cause: error })),
     ),
   ),
 )

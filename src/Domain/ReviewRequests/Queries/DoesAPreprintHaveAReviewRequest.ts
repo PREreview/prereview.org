@@ -1,5 +1,5 @@
 import { flow, HashMap, Result } from 'effect'
-import * as Queries from '../../../Queries.ts'
+import { Queries } from '../../../EventSourcing/index.ts'
 import * as Preprints from '../../Preprints/index.ts'
 import * as shared from './sharedLogic.ts'
 

@@ -13,8 +13,9 @@ import {
   Schema,
   Struct,
 } from 'effect'
-import type * as Events from './Events.ts'
-import { EventStore, StatefulQueries } from './EventSourcing/index.ts'
+import type * as Events from '../Events.ts'
+import * as EventStore from './EventStore.ts'
+import * as StatefulQueries from './StatefulQueries.ts'
 
 /** @deprecated */
 export type Query<F extends (...args: never) => unknown, E = never> = (

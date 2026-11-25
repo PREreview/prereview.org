@@ -1,5 +1,5 @@
 import { Array, Option, Result, type Types } from 'effect'
-import * as Queries from '../../../Queries.ts'
+import { Queries } from '../../../EventSourcing/index.ts'
 import * as Errors from '../Errors.ts'
 import type * as Events from '../Events.ts'
 

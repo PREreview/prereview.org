@@ -4,7 +4,7 @@ import * as Preprints from '../../../../src/Domain/Preprints/index.ts'
 import * as ReviewRequests from '../../../../src/Domain/ReviewRequests/index.ts'
 import * as _ from '../../../../src/Domain/ReviewRequests/Workflows/ProcessReceivedReviewRequest.ts'
 import { UnableToHandleCommand } from '../../../../src/EventSourcing/Commands.ts'
-import * as Queries from '../../../../src/Queries.ts'
+import * as Queries from '../../../../src/EventSourcing/Queries.ts'
 import * as fc from '../../../fc.ts'
 import { describe, expect, it, vi } from '../../../vitest.ts'
 

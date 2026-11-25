@@ -6,7 +6,7 @@ import {
   ContactEmailAddressIsNotFound,
 } from '../../../../src/Domain/ContactEmailAddresses/index.ts'
 import { UnableToHandleCommand } from '../../../../src/EventSourcing/Commands.ts'
-import * as Queries from '../../../../src/Queries.ts'
+import * as Queries from '../../../../src/EventSourcing/Queries.ts'
 import * as fc from '../../../fc.ts'
 import { shouldNotBeCalled } from '../../../should-not-be-called.ts'
 import { describe, expect, it, vi } from '../../../vitest.ts'

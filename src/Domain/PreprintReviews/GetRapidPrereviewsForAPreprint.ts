@@ -1,6 +1,6 @@
 import { Array, flow, Result, Struct, type Option } from 'effect'
 import * as Events from '../../Events.ts'
-import * as Queries from '../../Queries.ts'
+import { Queries } from '../../EventSourcing/index.ts'
 import { Temporal, type NonEmptyString, type OrcidId, type Uuid } from '../../types/index.ts'
 import type * as Preprints from '../Preprints/index.ts'
 

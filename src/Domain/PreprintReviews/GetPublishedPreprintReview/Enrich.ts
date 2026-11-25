@@ -1,5 +1,5 @@
 import { Effect, Struct, UndefinedOr } from 'effect'
-import type * as Queries from '../../../Queries.ts'
+import type { Queries } from '../../../EventSourcing/index.ts'
 import { Clubs } from '../../Clubs/index.ts'
 import { Preprints } from '../../Preprints/index.ts'
 import { Prereviewers, type UnableToGetPersona } from '../../Prereviewers/index.ts'

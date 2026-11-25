@@ -1,20 +1,20 @@
 import { Array, Effect, pipe } from 'effect'
 import type { BlogPost } from '../../../CmsContent/index.ts'
 import type { Prereviews } from '../../../Domain/Prereviews/index.ts'
+import { Queries } from '../../../EventSourcing/index.ts'
 import {
   Contentful,
   ContentfulIsUnavailable,
   LinkContext,
   UsePreviewApi,
 } from '../../../ExternalApis/Contentful/index.ts'
-import { UnableToQuery } from '../../../Queries.ts'
 import type { Slug } from '../../../types/Slug.ts'
 import { EntryToContentfulBlogPost } from './EntryToContentfulBlogPost.ts'
 
 export const GetBlogPost: (
   slug: Slug,
   preview?: boolean,
-) => Effect.Effect<BlogPost, UnableToQuery, Contentful | Prereviews> = Effect.fn('ContentfulPages.getBlogPost')(
+) => Effect.Effect<BlogPost, Queries.UnableToQuery, Contentful | Prereviews> = Effect.fn('ContentfulPages.getBlogPost')(
   function* (slug) {
     yield* Effect.annotateCurrentSpan({ slug })
 
@@ -39,7 +39,7 @@ export const GetBlogPost: (
       pipe(
         Effect.logError('Unable to get blog post'),
         Effect.annotateLogs({ error }),
-        Effect.andThen(new UnableToQuery({ cause: error })),
+        Effect.andThen(new Queries.UnableToQuery({ cause: error })),
       ),
   ),
 )

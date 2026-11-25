@@ -4,9 +4,9 @@ import * as _ from '../../../../src/Domain/DatasetReviews/Workflows/CreateRecord
 import * as Datasets from '../../../../src/Domain/Datasets/index.ts'
 import * as Prereviewers from '../../../../src/Domain/Prereviewers/index.ts'
 import { UnableToHandleCommand } from '../../../../src/EventSourcing/Commands.ts'
+import * as Queries from '../../../../src/EventSourcing/Queries.ts'
 import { ZenodoRecords } from '../../../../src/ExternalInteractions/index.ts'
 import { PublicUrl } from '../../../../src/public-url.ts'
-import * as Queries from '../../../../src/Queries.ts'
 import * as fc from '../../../fc.ts'
 import { describe, expect, it } from '../../../vitest.ts'
 

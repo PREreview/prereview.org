@@ -1,5 +1,5 @@
 import { Effect, Option, pipe, type Result } from 'effect'
-import { UnableToQuery } from '../../Queries.ts'
+import { Queries } from '../../EventSourcing/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { Uuid } from '../../types/Uuid.ts'
 import type { PreprintId } from '../Preprints/index.ts'
@@ -12,7 +12,7 @@ export interface Input {
   orcidId: OrcidId
 }
 
-export type Result = Result.Result<Option.Option<Uuid | null>, Errors.PreprintReviewNotFound | UnableToQuery>
+export type Result = Result.Result<Option.Option<Uuid | null>, Errors.PreprintReviewNotFound | Queries.UnableToQuery>
 
 export const CheckIfUserCanAddToAClub = (
   formStore: FormStorage,
@@ -27,7 +27,7 @@ export const CheckIfUserCanAddToAClub = (
       ),
       Effect.catchIf(
         error => error === 'form-unavailable',
-        () => new UnableToQuery({}),
+        () => new Queries.UnableToQuery({}),
       ),
     )
 

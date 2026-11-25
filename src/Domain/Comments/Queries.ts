@@ -1,5 +1,5 @@
 import { Array, Equal, Option, pipe, Record, Result } from 'effect'
-import * as Queries from '../../Queries.ts'
+import { Queries } from '../../EventSourcing/index.ts'
 import type { Uuid } from '../../types/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type { InputForCommentZenodoRecord } from './Context.ts'
