@@ -1,8 +1,8 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Array, Result, Tuple } from 'effect'
 import * as _ from '../../../../src/Domain/DatasetReviews/Queries/GetAuthor.ts'
-import * as DatasetReviews from '../../../../src/Domain/DatasetReviews/index.ts'
 import * as Datasets from '../../../../src/Domain/Datasets/index.ts'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import * as Queries from '../../../../src/EventSourcing/Queries.ts'
 import { Doi, OrcidId, Uuid } from '../../../../src/types/index.ts'
 import * as fc from '../../../fc.ts'
@@ -12,16 +12,16 @@ const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
 const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
 const authorId2 = OrcidId.OrcidId('0000-0002-6109-0367')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
-const datasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
-const datasetReviewWasStarted2 = new DatasetReviews.DatasetReviewWasStarted({
+const datasetReviewWasStarted = new Events.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
+const datasetReviewWasStarted2 = new Events.DatasetReviewWasStarted({
   authorId: authorId2,
   datasetId,
   datasetReviewId,
 })
-const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
+const publicationOfDatasetReviewWasRequested = new Events.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
-const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
+const datasetReviewWasPublished = new Events.DatasetReviewWasPublished({
   datasetReviewId,
   publicationDate: Temporal.PlainDate.from('2025-01-01'),
 })

@@ -43,7 +43,7 @@ const answeredNo = new Events.AnsweredIfOthersNeedToBeListedOnTheReview({
   answer: 'no',
   datasetReviewId: input.datasetReviewId,
 })
-const invited = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
+const invited = new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
   datasetReviewId: input.datasetReviewId,
   invitationId: input.invitationId,
   contactDetails: Option.some({
@@ -51,12 +51,12 @@ const invited = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheL
     emailAddress: EmailAddress.EmailAddress('jcarberry@example.com'),
   }),
 })
-const invitedNoContactDetails = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
+const invitedNoContactDetails = new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
   datasetReviewId: input.datasetReviewId,
   invitationId: input.invitationId,
   contactDetails: Option.none(),
 })
-const removed = new DatasetReviews.InvitationToAppearOnADatasetReviewRemovedFromTheList({
+const removed = new Events.InvitationToAppearOnADatasetReviewRemovedFromTheList({
   datasetReviewId: input.datasetReviewId,
   invitationId: input.invitationId,
 })

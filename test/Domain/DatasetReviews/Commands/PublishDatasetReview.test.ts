@@ -3,6 +3,7 @@ import { Array, identity, Option, Predicate, Result, Tuple } from 'effect'
 import * as _ from '../../../../src/Domain/DatasetReviews/Commands/PublishDatasetReview.ts'
 import * as DatasetReviews from '../../../../src/Domain/DatasetReviews/index.ts'
 import * as Datasets from '../../../../src/Domain/Datasets/index.ts'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../../src/types/index.ts'
 import * as fc from '../../../fc.ts'
 import { describe, expect, it, test } from '../../../vitest.ts'
@@ -11,97 +12,92 @@ const datasetReviewId = Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d')
 const requestedAt = Temporal.Now.instant()
 const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
-const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
-const ratedTheQualityOfTheDataset = new DatasetReviews.RatedTheQualityOfTheDataset({
+const started = new Events.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
+const ratedTheQualityOfTheDataset = new Events.RatedTheQualityOfTheDataset({
   rating: 'poor',
   detail: Option.none(),
   datasetReviewId,
 })
-const answeredIfTheDatasetFollowsFairAndCarePrinciples =
-  new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
-    answer: 'no',
-    detail: Option.none(),
-    datasetReviewId,
-  })
-const answeredIfTheDatasetHasEnoughMetadata = new DatasetReviews.AnsweredIfTheDatasetHasEnoughMetadata({
-  answer: 'yes',
-  detail: Option.none(),
-  datasetReviewId,
-})
-const answeredIfTheDatasetHasTrackedChanges = new DatasetReviews.AnsweredIfTheDatasetHasTrackedChanges({
+const answeredIfTheDatasetFollowsFairAndCarePrinciples = new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
   answer: 'no',
   detail: Option.none(),
   datasetReviewId,
 })
-const answeredIfTheDatasetHasDataCensoredOrDeleted = new DatasetReviews.AnsweredIfTheDatasetHasDataCensoredOrDeleted({
+const answeredIfTheDatasetHasEnoughMetadata = new Events.AnsweredIfTheDatasetHasEnoughMetadata({
+  answer: 'yes',
+  detail: Option.none(),
+  datasetReviewId,
+})
+const answeredIfTheDatasetHasTrackedChanges = new Events.AnsweredIfTheDatasetHasTrackedChanges({
+  answer: 'no',
+  detail: Option.none(),
+  datasetReviewId,
+})
+const answeredIfTheDatasetHasDataCensoredOrDeleted = new Events.AnsweredIfTheDatasetHasDataCensoredOrDeleted({
   answer: 'partly',
   detail: Option.none(),
   datasetReviewId,
 })
 const answeredIfTheDatasetIsAppropriateForThisKindOfResearch =
-  new DatasetReviews.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch({
+  new Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch({
     answer: 'no',
     detail: NonEmptyString.fromString('Some detail about no'),
     datasetReviewId,
   })
-const answeredIfTheDatasetSupportsRelatedConclusions =
-  new DatasetReviews.AnsweredIfTheDatasetSupportsRelatedConclusions({
-    answer: 'yes',
-    detail: NonEmptyString.fromString('Some detail about yes'),
-    datasetReviewId,
-  })
-const answeredIfTheDatasetIsDetailedEnough = new DatasetReviews.AnsweredIfTheDatasetIsDetailedEnough({
+const answeredIfTheDatasetSupportsRelatedConclusions = new Events.AnsweredIfTheDatasetSupportsRelatedConclusions({
   answer: 'yes',
   detail: NonEmptyString.fromString('Some detail about yes'),
   datasetReviewId,
 })
-const answeredIfTheDatasetIsErrorFree = new DatasetReviews.AnsweredIfTheDatasetIsErrorFree({
+const answeredIfTheDatasetIsDetailedEnough = new Events.AnsweredIfTheDatasetIsDetailedEnough({
+  answer: 'yes',
+  detail: NonEmptyString.fromString('Some detail about yes'),
+  datasetReviewId,
+})
+const answeredIfTheDatasetIsErrorFree = new Events.AnsweredIfTheDatasetIsErrorFree({
   answer: 'no',
   detail: Option.none(),
   datasetReviewId,
 })
-const answeredIfTheDatasetMattersToItsAudience = new DatasetReviews.AnsweredIfTheDatasetMattersToItsAudience({
+const answeredIfTheDatasetMattersToItsAudience = new Events.AnsweredIfTheDatasetMattersToItsAudience({
   answer: 'unsure',
   detail: Option.none(),
   datasetReviewId,
 })
-const answeredIfTheDatasetIsReadyToBeShared = new DatasetReviews.AnsweredIfTheDatasetIsReadyToBeShared({
+const answeredIfTheDatasetIsReadyToBeShared = new Events.AnsweredIfTheDatasetIsReadyToBeShared({
   answer: 'no',
   detail: NonEmptyString.fromString('Some detail about no'),
   datasetReviewId,
 })
-const answeredIfTheDatasetIsMissingAnything = new DatasetReviews.AnsweredIfTheDatasetIsMissingAnything({
+const answeredIfTheDatasetIsMissingAnything = new Events.AnsweredIfTheDatasetIsMissingAnything({
   answer: NonEmptyString.fromString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
   datasetReviewId,
 })
-const personaForDatasetReviewWasChosen = new DatasetReviews.PersonaForDatasetReviewWasChosen({
+const personaForDatasetReviewWasChosen = new Events.PersonaForDatasetReviewWasChosen({
   persona: 'public',
   datasetReviewId,
 })
-const answeredIfOthersNeedToBeListedOnTheReview = new DatasetReviews.AnsweredIfOthersNeedToBeListedOnTheReview({
+const answeredIfOthersNeedToBeListedOnTheReview = new Events.AnsweredIfOthersNeedToBeListedOnTheReview({
   answer: 'no',
   datasetReviewId,
 })
-const declaredIfAiWasUsedToGenerateNewIdeas = new DatasetReviews.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview(
-  {
-    generativeAiIdeas: { answer: 'no' },
-    datasetReviewId,
-  },
-)
-const competingInterestsForADatasetReviewWereDeclared =
-  new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
-    competingInterests: Option.none(),
-    datasetReviewId,
-  })
+const declaredIfAiWasUsedToGenerateNewIdeas = new Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
+  generativeAiIdeas: { answer: 'no' },
+  datasetReviewId,
+})
+const competingInterestsForADatasetReviewWereDeclared = new Events.CompetingInterestsForADatasetReviewWereDeclared({
+  competingInterests: Option.none(),
+  datasetReviewId,
+})
 const declaredThatTheCodeOfConductWasFollowedForADatasetReview =
-  new DatasetReviews.DeclaredThatTheCodeOfConductWasFollowedForADatasetReview({
+  new Events.DeclaredThatTheCodeOfConductWasFollowedForADatasetReview({
     timestamp: Temporal.Now.instant(),
     datasetReviewId,
   })
-const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
+const publicationOfDatasetReviewWasRequested = new Events.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
-const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
+const datasetReviewWasPublished = new Events.DatasetReviewWasPublished({
   datasetReviewId,
   publicationDate: Temporal.PlainDate.from('2025-01-01'),
 })
@@ -131,28 +127,25 @@ describe('foldState', () => {
       fc
         .datasetReviewWasStarted()
         .map(event =>
-          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.NotReady['missing']]>(
-            Array.of(event),
-            [
-              'RatedTheQualityOfTheDataset',
-              'AnsweredIfTheDatasetFollowsFairAndCarePrinciples',
-              'AnsweredIfTheDatasetHasEnoughMetadata',
-              'AnsweredIfTheDatasetHasTrackedChanges',
-              'AnsweredIfTheDatasetHasDataCensoredOrDeleted',
-              'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch',
-              'AnsweredIfTheDatasetSupportsRelatedConclusions',
-              'AnsweredIfTheDatasetIsDetailedEnough',
-              'AnsweredIfTheDatasetMattersToItsAudience',
-              'AnsweredIfTheDatasetIsErrorFree',
-              'AnsweredIfTheDatasetIsReadyToBeShared',
-              'AnsweredIfTheDatasetIsMissingAnything',
-              'PersonaForDatasetReviewWasChosen',
-              'AnsweredIfOthersNeedToBeListedOnTheReview',
-              'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview',
-              'CompetingInterestsForADatasetReviewWereDeclared',
-              'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',
-            ],
-          ),
+          Tuple.make<[Array.NonEmptyReadonlyArray<Events.DatasetReviewEvent>, _.NotReady['missing']]>(Array.of(event), [
+            'RatedTheQualityOfTheDataset',
+            'AnsweredIfTheDatasetFollowsFairAndCarePrinciples',
+            'AnsweredIfTheDatasetHasEnoughMetadata',
+            'AnsweredIfTheDatasetHasTrackedChanges',
+            'AnsweredIfTheDatasetHasDataCensoredOrDeleted',
+            'AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch',
+            'AnsweredIfTheDatasetSupportsRelatedConclusions',
+            'AnsweredIfTheDatasetIsDetailedEnough',
+            'AnsweredIfTheDatasetMattersToItsAudience',
+            'AnsweredIfTheDatasetIsErrorFree',
+            'AnsweredIfTheDatasetIsReadyToBeShared',
+            'AnsweredIfTheDatasetIsMissingAnything',
+            'PersonaForDatasetReviewWasChosen',
+            'AnsweredIfOthersNeedToBeListedOnTheReview',
+            'DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview',
+            'CompetingInterestsForADatasetReviewWereDeclared',
+            'DeclaredThatTheCodeOfConductWasFollowedForADatasetReview',
+          ]),
         ),
     ],
     ([[events, expected]]) => {
@@ -264,7 +257,7 @@ describe('foldState', () => {
           fc.competingInterestsForADatasetReviewWereDeclared(),
           fc.declaredThatTheCodeOfConductWasFollowedForADatasetReview(),
         )
-        .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
+        .map(identity<Array.NonEmptyReadonlyArray<Events.DatasetReviewEvent>>),
     ],
     ([events]) => {
       const state = _.foldState(events)
@@ -328,7 +321,7 @@ describe('foldState', () => {
     [
       fc
         .tuple(fc.datasetReviewWasStarted(), fc.publicationOfDatasetReviewWasRequested())
-        .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
+        .map(identity<Array.NonEmptyReadonlyArray<Events.DatasetReviewEvent>>),
     ],
     ([events]) => {
       const state = _.foldState(events)
@@ -351,7 +344,7 @@ describe('foldState', () => {
     [
       fc
         .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())
-        .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
+        .map(identity<Array.NonEmptyReadonlyArray<Events.DatasetReviewEvent>>),
     ],
     ([events]) => {
       const state = _.foldState(events)
@@ -398,9 +391,7 @@ describe('decide', () => {
     const result = _.decide(new _.IsReady(), { datasetReviewId, requestedAt })
 
     expect(result).toStrictEqual(
-      Result.succeed(
-        Option.some(new DatasetReviews.PublicationOfDatasetReviewWasRequested({ datasetReviewId, requestedAt })),
-      ),
+      Result.succeed(Option.some(new Events.PublicationOfDatasetReviewWasRequested({ datasetReviewId, requestedAt }))),
     )
   })
 

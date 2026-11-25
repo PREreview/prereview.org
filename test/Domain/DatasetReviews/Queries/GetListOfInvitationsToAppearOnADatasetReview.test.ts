@@ -28,7 +28,7 @@ const answeredNo = new Events.AnsweredIfOthersNeedToBeListedOnTheReview({
   answer: 'no',
   datasetReviewId: input.datasetReviewId,
 })
-const invited1 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
+const invited1 = new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
   datasetReviewId: input.datasetReviewId,
   invitationId: Uuid.Uuid('c4342f49-62f7-496f-9ce9-2c18e32a5cef'),
   contactDetails: Option.some({
@@ -36,7 +36,7 @@ const invited1 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToThe
     emailAddress: EmailAddress.EmailAddress('jcarberry@example.com'),
   }),
 })
-const invited2 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
+const invited2 = new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
   datasetReviewId: input.datasetReviewId,
   invitationId: Uuid.Uuid('e9aaf38b-2d3b-4703-a16a-6c1408762ab7'),
   contactDetails: Option.some({
@@ -44,12 +44,12 @@ const invited2 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToThe
     emailAddress: EmailAddress.EmailAddress('asaknussemm@example.com'),
   }),
 })
-const invited3 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
+const invited3 = new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
   datasetReviewId: input.datasetReviewId,
   invitationId: Uuid.Uuid('bf962433-30c0-415f-ae8f-faeca117b9e1'),
   contactDetails: Option.none(),
 })
-const removed = new DatasetReviews.InvitationToAppearOnADatasetReviewRemovedFromTheList({
+const removed = new Events.InvitationToAppearOnADatasetReviewRemovedFromTheList({
   datasetReviewId: input.datasetReviewId,
   invitationId: Uuid.Uuid('c4342f49-62f7-496f-9ce9-2c18e32a5cef'),
 })

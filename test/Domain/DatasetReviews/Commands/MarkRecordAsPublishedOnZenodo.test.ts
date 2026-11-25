@@ -3,6 +3,7 @@ import { Array, identity, Option, Predicate, Result, Tuple } from 'effect'
 import * as _ from '../../../../src/Domain/DatasetReviews/Commands/MarkRecordAsPublishedOnZenodo.ts'
 import * as DatasetReviews from '../../../../src/Domain/DatasetReviews/index.ts'
 import * as Datasets from '../../../../src/Domain/Datasets/index.ts'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import { Doi, OrcidId, Uuid } from '../../../../src/types/index.ts'
 import * as fc from '../../../fc.ts'
 import { describe, expect, it, test } from '../../../vitest.ts'
@@ -10,26 +11,26 @@ import { describe, expect, it, test } from '../../../vitest.ts'
 const datasetReviewId = Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d')
 const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
-const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
-const answered = new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+const started = new Events.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
+const answered = new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
   answer: 'no',
   detail: Option.none(),
   datasetReviewId,
 })
-const recordCreated1 = new DatasetReviews.ZenodoRecordForDatasetReviewWasCreated({ recordId: 123, datasetReviewId })
-const recordCreated2 = new DatasetReviews.ZenodoRecordForDatasetReviewWasCreated({ recordId: 456, datasetReviewId })
-const doiWasAssigned = new DatasetReviews.DatasetReviewWasAssignedADoi({
+const recordCreated1 = new Events.ZenodoRecordForDatasetReviewWasCreated({ recordId: 123, datasetReviewId })
+const recordCreated2 = new Events.ZenodoRecordForDatasetReviewWasCreated({ recordId: 456, datasetReviewId })
+const doiWasAssigned = new Events.DatasetReviewWasAssignedADoi({
   doi: Doi.Doi('10.5072/zenodo.112360'),
   datasetReviewId,
 })
-const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
+const publicationOfDatasetReviewWasRequested = new Events.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
-const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
+const datasetReviewWasPublished = new Events.DatasetReviewWasPublished({
   datasetReviewId,
   publicationDate: Temporal.PlainDate.from('2025-01-01'),
 })
-const recordWasPublished = new DatasetReviews.ZenodoRecordForDatasetReviewWasPublished({ datasetReviewId })
+const recordWasPublished = new Events.ZenodoRecordForDatasetReviewWasPublished({ datasetReviewId })
 
 describe('foldState', () => {
   it.prop(
@@ -52,7 +53,7 @@ describe('foldState', () => {
 
   it.prop(
     'not published',
-    [fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)],
+    [fc.datasetReviewWasStarted().map(Array.of<Events.DatasetReviewEvent>)],
     ([events]) => {
       const state = _.foldState(events)
 
@@ -76,7 +77,7 @@ describe('foldState', () => {
     [
       fc
         .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())
-        .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
+        .map(identity<Array.NonEmptyReadonlyArray<Events.DatasetReviewEvent>>),
     ],
     ([events]) => {
       const state = _.foldState(events)
@@ -175,7 +176,7 @@ describe('decide', () => {
     const result = _.decide(new _.HasAnUnpublishedRecord({ recordId }), { datasetReviewId })
 
     expect(result).toStrictEqual(
-      Result.succeed(Option.some(new DatasetReviews.ZenodoRecordForDatasetReviewWasPublished({ datasetReviewId }))),
+      Result.succeed(Option.some(new Events.ZenodoRecordForDatasetReviewWasPublished({ datasetReviewId }))),
     )
   })
 

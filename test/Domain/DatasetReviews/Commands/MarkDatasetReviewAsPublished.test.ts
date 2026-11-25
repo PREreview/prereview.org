@@ -3,6 +3,7 @@ import { Array, identity, Option, Predicate, Result } from 'effect'
 import * as _ from '../../../../src/Domain/DatasetReviews/Commands/MarkDatasetReviewAsPublished.ts'
 import * as DatasetReviews from '../../../../src/Domain/DatasetReviews/index.ts'
 import * as Datasets from '../../../../src/Domain/Datasets/index.ts'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import { Doi, OrcidId, Uuid } from '../../../../src/types/index.ts'
 import * as fc from '../../../fc.ts'
 import { describe, expect, it } from '../../../vitest.ts'
@@ -10,20 +11,20 @@ import { describe, expect, it } from '../../../vitest.ts'
 const datasetReviewId = Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d')
 const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
-const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
-const answered = new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+const started = new Events.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
+const answered = new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
   answer: 'no',
   detail: Option.none(),
   datasetReviewId,
 })
-const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
+const publicationOfDatasetReviewWasRequested = new Events.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
-const datasetReviewWasAssignedADoi = new DatasetReviews.DatasetReviewWasAssignedADoi({
+const datasetReviewWasAssignedADoi = new Events.DatasetReviewWasAssignedADoi({
   doi: Doi.Doi('10.1101/12345'),
   datasetReviewId,
 })
-const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
+const datasetReviewWasPublished = new Events.DatasetReviewWasPublished({
   datasetReviewId,
   publicationDate: Temporal.PlainDate.from('2025-01-01'),
 })
@@ -49,7 +50,7 @@ describe('foldState', () => {
 
   it.prop(
     'publication has not been requested',
-    [fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)],
+    [fc.datasetReviewWasStarted().map(Array.of<Events.DatasetReviewEvent>)],
     ([events]) => {
       const state = _.foldState(events)
 
@@ -70,7 +71,7 @@ describe('foldState', () => {
     [
       fc
         .tuple(fc.datasetReviewWasStarted(), fc.publicationOfDatasetReviewWasRequested())
-        .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
+        .map(identity<Array.NonEmptyReadonlyArray<Events.DatasetReviewEvent>>),
     ],
     ([events]) => {
       const state = _.foldState(events)
@@ -97,7 +98,7 @@ describe('foldState', () => {
           fc.publicationOfDatasetReviewWasRequested(),
           fc.datasetReviewWasAssignedADoi(),
         )
-        .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
+        .map(identity<Array.NonEmptyReadonlyArray<Events.DatasetReviewEvent>>),
     ],
     ([events]) => {
       const state = _.foldState(events)
@@ -120,7 +121,7 @@ describe('foldState', () => {
     [
       fc
         .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())
-        .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
+        .map(identity<Array.NonEmptyReadonlyArray<Events.DatasetReviewEvent>>),
     ],
     ([events]) => {
       const state = _.foldState(events)
@@ -176,7 +177,7 @@ describe('decide', () => {
     const result = _.decide(new _.IsReady(), { datasetReviewId, publicationDate })
 
     expect(result).toStrictEqual(
-      Result.succeed(Option.some(new DatasetReviews.DatasetReviewWasPublished({ datasetReviewId, publicationDate }))),
+      Result.succeed(Option.some(new Events.DatasetReviewWasPublished({ datasetReviewId, publicationDate }))),
     )
   })
 

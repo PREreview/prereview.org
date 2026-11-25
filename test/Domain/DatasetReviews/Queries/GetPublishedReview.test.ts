@@ -12,168 +12,160 @@ import { describe, expect, it } from '../../../vitest.ts'
 const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
 const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
-const datasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
-const ratedTheQualityOfTheDataset1 = new DatasetReviews.RatedTheQualityOfTheDataset({
+const datasetReviewWasStarted = new Events.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
+const ratedTheQualityOfTheDataset1 = new Events.RatedTheQualityOfTheDataset({
   rating: 'fair',
   detail: Option.none(),
   datasetReviewId,
 })
-const ratedTheQualityOfTheDataset2 = new DatasetReviews.RatedTheQualityOfTheDataset({
+const ratedTheQualityOfTheDataset2 = new Events.RatedTheQualityOfTheDataset({
   rating: 'excellent',
   detail: NonEmptyString.fromString('some detail'),
   datasetReviewId,
 })
-const answeredIfTheDatasetFollowsFairAndCarePrinciples1 =
-  new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
-    answer: 'no',
-    detail: Option.none(),
-    datasetReviewId,
-  })
-const answeredIfTheDatasetFollowsFairAndCarePrinciples2 =
-  new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
-    answer: 'yes',
-    detail: NonEmptyString.fromString('Some detail about yes'),
-    datasetReviewId,
-  })
-const answeredIfTheDatasetHasEnoughMetadata1 = new DatasetReviews.AnsweredIfTheDatasetHasEnoughMetadata({
+const answeredIfTheDatasetFollowsFairAndCarePrinciples1 = new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
   answer: 'no',
   detail: Option.none(),
   datasetReviewId,
 })
-const answeredIfTheDatasetHasEnoughMetadata2 = new DatasetReviews.AnsweredIfTheDatasetHasEnoughMetadata({
+const answeredIfTheDatasetFollowsFairAndCarePrinciples2 = new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
   answer: 'yes',
   detail: NonEmptyString.fromString('Some detail about yes'),
   datasetReviewId,
 })
-const answeredIfTheDatasetHasTrackedChanges1 = new DatasetReviews.AnsweredIfTheDatasetHasTrackedChanges({
+const answeredIfTheDatasetHasEnoughMetadata1 = new Events.AnsweredIfTheDatasetHasEnoughMetadata({
+  answer: 'no',
+  detail: Option.none(),
+  datasetReviewId,
+})
+const answeredIfTheDatasetHasEnoughMetadata2 = new Events.AnsweredIfTheDatasetHasEnoughMetadata({
+  answer: 'yes',
+  detail: NonEmptyString.fromString('Some detail about yes'),
+  datasetReviewId,
+})
+const answeredIfTheDatasetHasTrackedChanges1 = new Events.AnsweredIfTheDatasetHasTrackedChanges({
   answer: 'partly',
   detail: Option.none(),
   datasetReviewId,
 })
-const answeredIfTheDatasetHasTrackedChanges2 = new DatasetReviews.AnsweredIfTheDatasetHasTrackedChanges({
+const answeredIfTheDatasetHasTrackedChanges2 = new Events.AnsweredIfTheDatasetHasTrackedChanges({
   answer: 'unsure',
   detail: NonEmptyString.fromString('Some detail about unsure'),
   datasetReviewId,
 })
-const answeredIfTheDatasetHasDataCensoredOrDeleted1 = new DatasetReviews.AnsweredIfTheDatasetHasDataCensoredOrDeleted({
+const answeredIfTheDatasetHasDataCensoredOrDeleted1 = new Events.AnsweredIfTheDatasetHasDataCensoredOrDeleted({
   answer: 'unsure',
   detail: Option.none(),
   datasetReviewId,
 })
-const answeredIfTheDatasetHasDataCensoredOrDeleted2 = new DatasetReviews.AnsweredIfTheDatasetHasDataCensoredOrDeleted({
+const answeredIfTheDatasetHasDataCensoredOrDeleted2 = new Events.AnsweredIfTheDatasetHasDataCensoredOrDeleted({
   answer: 'no',
   detail: NonEmptyString.fromString('Some detail about no'),
   datasetReviewId,
 })
 const answeredIfTheDatasetIsAppropriateForThisKindOfResearch1 =
-  new DatasetReviews.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch({
+  new Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch({
     answer: 'yes',
     detail: Option.none(),
     datasetReviewId,
   })
 const answeredIfTheDatasetIsAppropriateForThisKindOfResearch2 =
-  new DatasetReviews.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch({
+  new Events.AnsweredIfTheDatasetIsAppropriateForThisKindOfResearch({
     answer: 'partly',
     detail: NonEmptyString.fromString('Some detail about partly'),
     datasetReviewId,
   })
-const answeredIfTheDatasetSupportsRelatedConclusion1 =
-  new DatasetReviews.AnsweredIfTheDatasetSupportsRelatedConclusions({
-    answer: 'no',
-    detail: Option.none(),
-    datasetReviewId,
-  })
-const answeredIfTheDatasetSupportsRelatedConclusion2 =
-  new DatasetReviews.AnsweredIfTheDatasetSupportsRelatedConclusions({
-    answer: 'yes',
-    detail: NonEmptyString.fromString('Some detail about yes'),
-    datasetReviewId,
-  })
-const answeredIfTheDatasetIsDetailedEnough1 = new DatasetReviews.AnsweredIfTheDatasetIsDetailedEnough({
+const answeredIfTheDatasetSupportsRelatedConclusion1 = new Events.AnsweredIfTheDatasetSupportsRelatedConclusions({
+  answer: 'no',
+  detail: Option.none(),
+  datasetReviewId,
+})
+const answeredIfTheDatasetSupportsRelatedConclusion2 = new Events.AnsweredIfTheDatasetSupportsRelatedConclusions({
+  answer: 'yes',
+  detail: NonEmptyString.fromString('Some detail about yes'),
+  datasetReviewId,
+})
+const answeredIfTheDatasetIsDetailedEnough1 = new Events.AnsweredIfTheDatasetIsDetailedEnough({
   answer: 'partly',
   detail: Option.none(),
   datasetReviewId,
 })
-const answeredIfTheDatasetIsDetailedEnough2 = new DatasetReviews.AnsweredIfTheDatasetIsDetailedEnough({
+const answeredIfTheDatasetIsDetailedEnough2 = new Events.AnsweredIfTheDatasetIsDetailedEnough({
   answer: 'unsure',
   detail: NonEmptyString.fromString('Some detail about unsure'),
   datasetReviewId,
 })
-const answeredIfTheDatasetIsErrorFree1 = new DatasetReviews.AnsweredIfTheDatasetIsErrorFree({
+const answeredIfTheDatasetIsErrorFree1 = new Events.AnsweredIfTheDatasetIsErrorFree({
   answer: 'yes',
   detail: Option.none(),
   datasetReviewId,
 })
-const answeredIfTheDatasetIsErrorFree2 = new DatasetReviews.AnsweredIfTheDatasetIsErrorFree({
+const answeredIfTheDatasetIsErrorFree2 = new Events.AnsweredIfTheDatasetIsErrorFree({
   answer: 'no',
   detail: NonEmptyString.fromString('Some detail about no'),
   datasetReviewId,
 })
-const answeredIfTheDatasetMattersToItsAudience1 = new DatasetReviews.AnsweredIfTheDatasetMattersToItsAudience({
+const answeredIfTheDatasetMattersToItsAudience1 = new Events.AnsweredIfTheDatasetMattersToItsAudience({
   answer: 'not-consequential',
   detail: Option.none(),
   datasetReviewId,
 })
-const answeredIfTheDatasetMattersToItsAudience2 = new DatasetReviews.AnsweredIfTheDatasetMattersToItsAudience({
+const answeredIfTheDatasetMattersToItsAudience2 = new Events.AnsweredIfTheDatasetMattersToItsAudience({
   answer: 'very-consequential',
   detail: NonEmptyString.fromString('Some detail about very-consequential'),
   datasetReviewId,
 })
-const answeredIfTheDatasetIsReadyToBeShared1 = new DatasetReviews.AnsweredIfTheDatasetIsReadyToBeShared({
+const answeredIfTheDatasetIsReadyToBeShared1 = new Events.AnsweredIfTheDatasetIsReadyToBeShared({
   answer: 'no',
   detail: Option.none(),
   datasetReviewId,
 })
-const answeredIfTheDatasetIsReadyToBeShared2 = new DatasetReviews.AnsweredIfTheDatasetIsReadyToBeShared({
+const answeredIfTheDatasetIsReadyToBeShared2 = new Events.AnsweredIfTheDatasetIsReadyToBeShared({
   answer: 'unsure',
   detail: NonEmptyString.fromString('Some detail about unsure'),
   datasetReviewId,
 })
-const answeredIfTheDatasetIsMissingAnything1 = new DatasetReviews.AnsweredIfTheDatasetIsMissingAnything({
+const answeredIfTheDatasetIsMissingAnything1 = new Events.AnsweredIfTheDatasetIsMissingAnything({
   answer: Option.none(),
   datasetReviewId,
 })
-const answeredIfTheDatasetIsMissingAnything2 = new DatasetReviews.AnsweredIfTheDatasetIsMissingAnything({
+const answeredIfTheDatasetIsMissingAnything2 = new Events.AnsweredIfTheDatasetIsMissingAnything({
   answer: NonEmptyString.fromString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
   datasetReviewId,
 })
-const personaForDatasetReviewWasChosen1 = new DatasetReviews.PersonaForDatasetReviewWasChosen({
+const personaForDatasetReviewWasChosen1 = new Events.PersonaForDatasetReviewWasChosen({
   persona: 'public',
   datasetReviewId,
 })
-const personaForDatasetReviewWasChosen2 = new DatasetReviews.PersonaForDatasetReviewWasChosen({
+const personaForDatasetReviewWasChosen2 = new Events.PersonaForDatasetReviewWasChosen({
   persona: 'pseudonym',
   datasetReviewId,
 })
-const competingInterestsForADatasetReviewWereDeclared1 =
-  new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
-    competingInterests: Option.none(),
-    datasetReviewId,
-  })
-const competingInterestsForADatasetReviewWereDeclared2 =
-  new DatasetReviews.CompetingInterestsForADatasetReviewWereDeclared({
-    competingInterests: NonEmptyString.fromString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
-    datasetReviewId,
-  })
-const declaredIfAiWasUsedToGenerateNewIdeasYes =
-  new DatasetReviews.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
-    generativeAiIdeas: { answer: 'yes', detail: NonEmptyString.fromString('Some detail about yes') },
-    datasetReviewId,
-  })
-const declaredIfAiWasUsedToGenerateNewIdeasNo =
-  new DatasetReviews.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
-    generativeAiIdeas: { answer: 'no' },
-    datasetReviewId,
-  })
-const answeredNo = new DatasetReviews.AnsweredIfOthersNeedToBeListedOnTheReview({
+const competingInterestsForADatasetReviewWereDeclared1 = new Events.CompetingInterestsForADatasetReviewWereDeclared({
+  competingInterests: Option.none(),
+  datasetReviewId,
+})
+const competingInterestsForADatasetReviewWereDeclared2 = new Events.CompetingInterestsForADatasetReviewWereDeclared({
+  competingInterests: NonEmptyString.fromString('Lorem ipsum dolor sit amet, consectetur adipiscing elit.'),
+  datasetReviewId,
+})
+const declaredIfAiWasUsedToGenerateNewIdeasYes = new Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
+  generativeAiIdeas: { answer: 'yes', detail: NonEmptyString.fromString('Some detail about yes') },
+  datasetReviewId,
+})
+const declaredIfAiWasUsedToGenerateNewIdeasNo = new Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
+  generativeAiIdeas: { answer: 'no' },
+  datasetReviewId,
+})
+const answeredNo = new Events.AnsweredIfOthersNeedToBeListedOnTheReview({
   datasetReviewId,
   answer: 'no',
 })
-const answeredYes = new DatasetReviews.AnsweredIfOthersNeedToBeListedOnTheReview({
+const answeredYes = new Events.AnsweredIfOthersNeedToBeListedOnTheReview({
   datasetReviewId,
   answer: 'yes',
 })
-const invited1 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
+const invited1 = new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
   datasetReviewId,
   invitationId: Uuid.Uuid('c4342f49-62f7-496f-9ce9-2c18e32a5cef'),
   contactDetails: Option.some({
@@ -181,7 +173,7 @@ const invited1 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToThe
     emailAddress: EmailAddress.EmailAddress('jcarberry@example.com'),
   }),
 })
-const invited2 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
+const invited2 = new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
   datasetReviewId,
   invitationId: Uuid.Uuid('e9aaf38b-2d3b-4703-a16a-6c1408762ab7'),
   contactDetails: Option.some({
@@ -189,27 +181,27 @@ const invited2 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToThe
     emailAddress: EmailAddress.EmailAddress('asaknussemm@example.com'),
   }),
 })
-const invited3 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
+const invited3 = new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
   datasetReviewId,
   invitationId: Uuid.Uuid('bf962433-30c0-415f-ae8f-faeca117b9e1'),
   contactDetails: Option.none(),
 })
-const invited4 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
+const invited4 = new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
   datasetReviewId,
   invitationId: Uuid.Uuid('9314efeb-0295-4aa7-a073-fe7129de5c1b'),
   contactDetails: Option.none(),
 })
-const invited5 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
+const invited5 = new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
   datasetReviewId,
   invitationId: Uuid.Uuid('4cb6872f-12e3-4c6f-a85a-c59dacb908f4'),
   contactDetails: Option.none(),
 })
-const invited6 = new DatasetReviews.InvitationToAppearOnADatasetReviewAddedToTheList({
+const invited6 = new Events.InvitationToAppearOnADatasetReviewAddedToTheList({
   datasetReviewId,
   invitationId: Uuid.Uuid('d9f79761-3212-4640-8965-7d4b1ea9bb72'),
   contactDetails: Option.none(),
 })
-const invited1Removed = new DatasetReviews.InvitationToAppearOnADatasetReviewRemovedFromTheList({
+const invited1Removed = new Events.InvitationToAppearOnADatasetReviewRemovedFromTheList({
   datasetReviewId,
   invitationId: invited1.invitationId,
 })
@@ -257,26 +249,26 @@ const invited5Persona = new Events.PersonaForAReviewChosen({
   orcidId: invited5Accepted.orcidId,
   persona: 'public',
 })
-const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
+const publicationOfDatasetReviewWasRequested = new Events.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
-const datasetReviewWasAssignedADoi1 = new DatasetReviews.DatasetReviewWasAssignedADoi({
+const datasetReviewWasAssignedADoi1 = new Events.DatasetReviewWasAssignedADoi({
   doi: Doi.Doi('10.1000/12345'),
   datasetReviewId,
 })
-const datasetReviewWasAssignedADoi2 = new DatasetReviews.DatasetReviewWasAssignedADoi({
+const datasetReviewWasAssignedADoi2 = new Events.DatasetReviewWasAssignedADoi({
   doi: Doi.Doi('10.1000/67890'),
   datasetReviewId,
 })
-const datasetReviewWasAddedToAClub = new DatasetReviews.DatasetReviewWasAddedToAClub({
+const datasetReviewWasAddedToAClub = new Events.DatasetReviewWasAddedToAClub({
   datasetReviewId,
   clubId: Uuid.Uuid('07f0572c-aaee-4b93-b6ab-8bdc78644991'),
 })
-const datasetReviewWasPublished1 = new DatasetReviews.DatasetReviewWasPublished({
+const datasetReviewWasPublished1 = new Events.DatasetReviewWasPublished({
   datasetReviewId,
   publicationDate: Temporal.PlainDate.from('2025-01-01'),
 })
-const datasetReviewWasPublished2 = new DatasetReviews.DatasetReviewWasPublished({
+const datasetReviewWasPublished2 = new Events.DatasetReviewWasPublished({
   datasetReviewId,
   publicationDate: Temporal.PlainDate.from('2025-02-03'),
 })
@@ -835,7 +827,7 @@ describe('GetPublishedReview', () => {
               fc.answeredIfTheDatasetFollowsFairAndCarePrinciples({ datasetReviewId: fc.constant(datasetReviewId) }),
               fc.datasetReviewWasPublished({ datasetReviewId: fc.constant(datasetReviewId) }),
             )
-            .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
+            .map(identity<Array.NonEmptyReadonlyArray<Events.DatasetReviewEvent>>),
         ],
         ([events]) => {
           const { query } = _.GetPublishedReview

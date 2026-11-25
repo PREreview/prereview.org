@@ -1,8 +1,8 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Equal, identity, Tuple } from 'effect'
 import * as _ from '../../../../src/Domain/DatasetReviews/Queries/FindPublishedReviewsForADataset.ts'
-import * as DatasetReviews from '../../../../src/Domain/DatasetReviews/index.ts'
 import * as Datasets from '../../../../src/Domain/Datasets/index.ts'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import { Doi, OrcidId, Uuid } from '../../../../src/types/index.ts'
 import * as fc from '../../../fc.ts'
 import { describe, expect, it } from '../../../vitest.ts'
@@ -15,35 +15,35 @@ const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
 const otherDatasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.9ghx3ffhb') })
 
-const datasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
-const datasetReviewWasStarted2 = new DatasetReviews.DatasetReviewWasStarted({
+const datasetReviewWasStarted = new Events.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
+const datasetReviewWasStarted2 = new Events.DatasetReviewWasStarted({
   authorId,
   datasetId,
   datasetReviewId: datasetReviewId2,
 })
-const datasetReviewWasStarted3 = new DatasetReviews.DatasetReviewWasStarted({
+const datasetReviewWasStarted3 = new Events.DatasetReviewWasStarted({
   authorId,
   datasetId,
   datasetReviewId: datasetReviewId3,
 })
-const otherDatasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({
+const otherDatasetReviewWasStarted = new Events.DatasetReviewWasStarted({
   authorId,
   datasetId: otherDatasetId,
   datasetReviewId: otherDatasetReviewId,
 })
-const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
+const datasetReviewWasPublished = new Events.DatasetReviewWasPublished({
   datasetReviewId,
   publicationDate: Temporal.PlainDate.from('2025-01-01'),
 })
-const datasetReviewWasPublished2 = new DatasetReviews.DatasetReviewWasPublished({
+const datasetReviewWasPublished2 = new Events.DatasetReviewWasPublished({
   datasetReviewId: datasetReviewId2,
   publicationDate: Temporal.PlainDate.from('2025-01-02'),
 })
-const datasetReviewWasPublished3 = new DatasetReviews.DatasetReviewWasPublished({
+const datasetReviewWasPublished3 = new Events.DatasetReviewWasPublished({
   datasetReviewId: datasetReviewId3,
   publicationDate: Temporal.Instant.from('2025-01-02T06:00:00Z'),
 })
-const otherDatasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
+const otherDatasetReviewWasPublished = new Events.DatasetReviewWasPublished({
   datasetReviewId: otherDatasetReviewId,
   publicationDate: Temporal.PlainDate.from('2025-03-01'),
 })
@@ -116,9 +116,7 @@ describe('FindPublishedReviewsForADataset', () => {
         fc.datasetId(),
         fc
           .array(fc.datasetReviewWasStarted())
-          .map(
-            identity<ReadonlyArray<DatasetReviews.DatasetReviewWasStarted | DatasetReviews.DatasetReviewWasPublished>>,
-          ),
+          .map(identity<ReadonlyArray<Events.DatasetReviewWasStarted | Events.DatasetReviewWasPublished>>),
       ],
       ([datasetId, events]) => {
         const actual = _.FindPublishedReviewsForADataset(events)(datasetId)

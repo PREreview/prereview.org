@@ -3,6 +3,7 @@ import { Array, identity, Option, Predicate, Result, Tuple } from 'effect'
 import * as _ from '../../../../src/Domain/DatasetReviews/Queries/GetPublishedReviewDetails.ts'
 import * as DatasetReviews from '../../../../src/Domain/DatasetReviews/index.ts'
 import * as Datasets from '../../../../src/Domain/Datasets/index.ts'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import * as Queries from '../../../../src/EventSourcing/Queries.ts'
 import { Doi, OrcidId, Uuid } from '../../../../src/types/index.ts'
 import * as fc from '../../../fc.ts'
@@ -11,33 +12,32 @@ import { describe, expect, it } from '../../../vitest.ts'
 const datasetReviewId = Uuid.Uuid('fd6b7b4b-a560-4a32-b83b-d3847161003a')
 const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
-const datasetReviewWasStarted = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
-const answeredIfTheDatasetFollowsFairAndCarePrinciples =
-  new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
-    answer: 'no',
-    detail: Option.none(),
-    datasetReviewId,
-  })
-const answeredNo = new DatasetReviews.AnsweredIfOthersNeedToBeListedOnTheReview({
+const datasetReviewWasStarted = new Events.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
+const answeredIfTheDatasetFollowsFairAndCarePrinciples = new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+  answer: 'no',
+  detail: Option.none(),
+  datasetReviewId,
+})
+const answeredNo = new Events.AnsweredIfOthersNeedToBeListedOnTheReview({
   datasetReviewId,
   answer: 'no',
 })
-const answeredYes = new DatasetReviews.AnsweredIfOthersNeedToBeListedOnTheReview({
+const answeredYes = new Events.AnsweredIfOthersNeedToBeListedOnTheReview({
   datasetReviewId,
   answer: 'yes',
 })
-const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
+const publicationOfDatasetReviewWasRequested = new Events.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
-const datasetReviewWasAssignedADoi1 = new DatasetReviews.DatasetReviewWasAssignedADoi({
+const datasetReviewWasAssignedADoi1 = new Events.DatasetReviewWasAssignedADoi({
   doi: Doi.Doi('10.1000/12345'),
   datasetReviewId,
 })
-const datasetReviewWasAssignedADoi2 = new DatasetReviews.DatasetReviewWasAssignedADoi({
+const datasetReviewWasAssignedADoi2 = new Events.DatasetReviewWasAssignedADoi({
   doi: Doi.Doi('10.1000/67890'),
   datasetReviewId,
 })
-const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
+const datasetReviewWasPublished = new Events.DatasetReviewWasPublished({
   datasetReviewId,
   publicationDate: Temporal.PlainDate.from('2025-01-01'),
 })
@@ -56,14 +56,11 @@ describe('GetPublishedReviewDetails', () => {
               fc.datasetReviewWasPublished(),
             )
             .map(events =>
-              Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, _.PublishedReviewDetails]>(
-                events,
-                {
-                  doi: events[2].doi,
-                  id: events[2].datasetReviewId,
-                  persona: events[1].persona,
-                },
-              ),
+              Tuple.make<[Array.NonEmptyReadonlyArray<Events.DatasetReviewEvent>, _.PublishedReviewDetails]>(events, {
+                doi: events[2].doi,
+                id: events[2].datasetReviewId,
+                persona: events[1].persona,
+              }),
             ),
         ],
         ([[events, expected]]) => {
@@ -166,7 +163,7 @@ describe('GetPublishedReviewDetails', () => {
         [
           fc
             .tuple(fc.datasetReviewWasStarted(), fc.datasetReviewWasPublished())
-            .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
+            .map(identity<Array.NonEmptyReadonlyArray<Events.DatasetReviewEvent>>),
         ],
         ([events]) => {
           const actual = _.GetPublishedReviewDetails(events)
@@ -192,7 +189,7 @@ describe('GetPublishedReviewDetails', () => {
       [
         fc
           .tuple(fc.datasetReviewWasStarted(), fc.publicationOfDatasetReviewWasRequested())
-          .map(identity<Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>>),
+          .map(identity<Array.NonEmptyReadonlyArray<Events.DatasetReviewEvent>>),
       ],
       ([events]) => {
         const actual = _.GetPublishedReviewDetails(events)
@@ -227,7 +224,7 @@ describe('GetPublishedReviewDetails', () => {
   describe('when it is in progress', () => {
     it.prop(
       'returns an error',
-      [fc.datasetReviewWasStarted().map(Array.of<DatasetReviews.DatasetReviewEvent>)],
+      [fc.datasetReviewWasStarted().map(Array.of<Events.DatasetReviewEvent>)],
       ([events]) => {
         const actual = _.GetPublishedReviewDetails(events)
 

@@ -3,6 +3,7 @@ import { Array, Equal, Option, Predicate, Result, Tuple } from 'effect'
 import * as _ from '../../../../src/Domain/DatasetReviews/Commands/AnswerIfTheDatasetFollowsFairAndCarePrinciples.ts'
 import * as DatasetReviews from '../../../../src/Domain/DatasetReviews/index.ts'
 import * as Datasets from '../../../../src/Domain/Datasets/index.ts'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import { Doi, NonEmptyString, OrcidId, Uuid } from '../../../../src/types/index.ts'
 import * as fc from '../../../fc.ts'
 import { describe, expect, it } from '../../../vitest.ts'
@@ -11,21 +12,21 @@ const datasetReviewId = Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d')
 const datasetReviewId2 = Uuid.Uuid('f7b3a56e-d320-484c-8452-83a609357931')
 const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
-const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
-const answered1 = new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+const started = new Events.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
+const answered1 = new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
   answer: 'no',
   detail: Option.none(),
   datasetReviewId,
 })
-const answered2 = new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+const answered2 = new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
   answer: 'yes',
   detail: NonEmptyString.fromString('Some detail'),
   datasetReviewId,
 })
-const publicationOfDatasetReviewWasRequested = new DatasetReviews.PublicationOfDatasetReviewWasRequested({
+const publicationOfDatasetReviewWasRequested = new Events.PublicationOfDatasetReviewWasRequested({
   datasetReviewId,
 })
-const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
+const datasetReviewWasPublished = new Events.DatasetReviewWasPublished({
   datasetReviewId,
   publicationDate: Temporal.PlainDate.from('2025-01-01'),
 })
@@ -128,7 +129,7 @@ describe('foldState', () => {
           ),
         )
         .map(events =>
-          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, Uuid.Uuid, OrcidId.OrcidId]>(
+          Tuple.make<[Array.NonEmptyReadonlyArray<Events.DatasetReviewEvent>, Uuid.Uuid, OrcidId.OrcidId]>(
             events,
             events[0].datasetReviewId,
             events[0].authorId,
@@ -163,7 +164,7 @@ describe('foldState', () => {
           ),
         )
         .map(events =>
-          Tuple.make<[Array.NonEmptyReadonlyArray<DatasetReviews.DatasetReviewEvent>, Uuid.Uuid, OrcidId.OrcidId]>(
+          Tuple.make<[Array.NonEmptyReadonlyArray<Events.DatasetReviewEvent>, Uuid.Uuid, OrcidId.OrcidId]>(
             events,
             events[0].datasetReviewId,
             events[0].authorId,
@@ -278,7 +279,7 @@ describe('decide', () => {
     expect(result).toStrictEqual(
       Result.succeed(
         Option.some(
-          new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+          new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
             answer: command.answer,
             detail: command.detail,
             datasetReviewId: command.datasetReviewId,
@@ -303,7 +304,7 @@ describe('decide', () => {
         expect(result).toStrictEqual(
           Result.succeed(
             Option.some(
-              new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+              new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
                 answer: command.answer,
                 detail: command.detail,
                 datasetReviewId: command.datasetReviewId,
@@ -328,7 +329,7 @@ describe('decide', () => {
         expect(result).toStrictEqual(
           Result.succeed(
             Option.some(
-              new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+              new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
                 answer: command.answer,
                 detail: command.detail,
                 datasetReviewId: command.datasetReviewId,

@@ -3,6 +3,7 @@ import { Option, Predicate, Result } from 'effect'
 import * as _ from '../../../../src/Domain/DatasetReviews/Commands/StartDatasetReview.ts'
 import * as DatasetReviews from '../../../../src/Domain/DatasetReviews/index.ts'
 import * as Datasets from '../../../../src/Domain/Datasets/index.ts'
+import * as Events from '../../../../src/Domain/Events/Events.ts'
 import { Doi, OrcidId, Uuid } from '../../../../src/types/index.ts'
 import * as fc from '../../../fc.ts'
 import { describe, expect, it, test } from '../../../vitest.ts'
@@ -10,14 +11,13 @@ import { describe, expect, it, test } from '../../../vitest.ts'
 const datasetReviewId = Uuid.Uuid('73b481b8-f33f-43f2-a29e-5be10401c09d')
 const authorId = OrcidId.OrcidId('0000-0002-1825-0097')
 const datasetId = new Datasets.DryadDatasetId({ value: Doi.Doi('10.5061/dryad.wstqjq2n3') })
-const started = new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
-const answeredIfTheDatasetFollowsFairAndCarePrinciples =
-  new DatasetReviews.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
-    answer: 'no',
-    detail: Option.none(),
-    datasetReviewId,
-  })
-const datasetReviewWasPublished = new DatasetReviews.DatasetReviewWasPublished({
+const started = new Events.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId })
+const answeredIfTheDatasetFollowsFairAndCarePrinciples = new Events.AnsweredIfTheDatasetFollowsFairAndCarePrinciples({
+  answer: 'no',
+  detail: Option.none(),
+  datasetReviewId,
+})
+const datasetReviewWasPublished = new Events.DatasetReviewWasPublished({
   datasetReviewId,
   publicationDate: Temporal.PlainDate.from('2025-01-01'),
 })
@@ -55,7 +55,7 @@ describe('decide', () => {
     const result = _.decide(new _.NotStarted(), { authorId, datasetId, datasetReviewId })
 
     expect(result).toStrictEqual(
-      Result.succeed(Option.some(new DatasetReviews.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId }))),
+      Result.succeed(Option.some(new Events.DatasetReviewWasStarted({ authorId, datasetId, datasetReviewId }))),
     )
   })
 

@@ -62,18 +62,18 @@ const incompleteAcceptedAuthorPersona = new Events.PersonaForAReviewChosen({
   persona: 'public',
 })
 
-const started = new DatasetReviews.DatasetReviewWasStarted({
+const started = new Events.DatasetReviewWasStarted({
   datasetReviewId,
   authorId: OrcidId('0000-0002-1825-0097'),
   datasetId: new DryadDatasetId({ value: Doi('10.5061/dryad.12345') }),
 })
 
-const persona = new DatasetReviews.PersonaForDatasetReviewWasChosen({
+const persona = new Events.PersonaForDatasetReviewWasChosen({
   datasetReviewId,
   persona: 'public',
 })
 
-const doi = new DatasetReviews.DatasetReviewWasAssignedADoi({
+const doi = new Events.DatasetReviewWasAssignedADoi({
   doi: Doi('10.1000/12345'),
   datasetReviewId,
 })
@@ -83,12 +83,12 @@ const publication = new Events.DatasetReviewWasPublished({
   publicationDate: Temporal.Now.plainDateISO(),
 })
 
-const declaredAiWasUsed = new DatasetReviews.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
+const declaredAiWasUsed = new Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
   datasetReviewId,
   generativeAiIdeas: { answer: 'yes', detail: Option.none() },
 })
 
-const declaredAiWasNotUsed = new DatasetReviews.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
+const declaredAiWasNotUsed = new Events.DeclaredIfAiWasUsedToGenerateNewIdeasForADatasetReview({
   datasetReviewId,
   generativeAiIdeas: { answer: 'no' },
 })
