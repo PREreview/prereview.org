@@ -15,7 +15,6 @@ import * as Workflows from './Workflows/index.ts'
 
 export * from './Commands/index.ts'
 export * from './Errors.ts'
-export * from './Events.ts'
 export * from './Queries/index.ts'
 export * from './Reactions.ts'
 export * from './Workflows/index.ts'
