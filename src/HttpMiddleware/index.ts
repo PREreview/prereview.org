@@ -24,7 +24,7 @@ import { Uuid } from '../types/index.ts'
 import { UserOnboardingService } from '../user-onboarding.ts'
 import { EnsureUserIsLoggedIn, LoggedInUser, SessionId, UserSchema } from '../user.ts'
 import * as UserOnboardingStore from '../UserOnboardingStore.ts'
-import { FlashMessageSchema } from '../WebApp/Response/index.ts'
+import { FlashMessageSchema } from '../WebApp/Response/index.ts' // oxlint-disable-line module-boundaries/use-index
 import { detectLocale } from './DetectLocale.ts'
 import { forceLogIn } from './ForceLogIn.ts'
 import * as LocaleCookie from './LocaleCookie.ts'

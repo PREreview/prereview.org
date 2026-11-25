@@ -21,18 +21,25 @@ const contains = (directory, file) => {
   return relative !== '' && !relative.startsWith('..') && !path.isAbsolute(relative)
 }
 
-const moduleBoundaryCrossedBy = (importer, target) => {
+const moduleBoundaryCrossedBy = (importer, target, groups) => {
+  let crossed
   let directory = path.dirname(target)
 
   while (contains(root, directory)) {
-    if (isModuleDirectory(directory) && !contains(directory, importer)) {
-      return directory
+    const isGroup = groups.has(path.relative(root, directory))
+
+    if (
+      isModuleDirectory(directory) &&
+      !contains(directory, importer) &&
+      (!isGroup || directory === path.dirname(target))
+    ) {
+      crossed = directory
     }
 
     directory = path.dirname(directory)
   }
 
-  return undefined
+  return crossed
 }
 
 export default {
@@ -43,13 +50,17 @@ export default {
         schema: [
           {
             type: 'object',
-            properties: { allow: { type: 'array', items: { type: 'string' } } },
+            properties: {
+              allow: { type: 'array', items: { type: 'string' } },
+              groups: { type: 'array', items: { type: 'string' } },
+            },
             additionalProperties: false,
           },
         ],
       },
       create(context) {
         const allow = new Set(context.options[0]?.allow ?? [])
+        const groups = new Set(context.options[0]?.groups ?? [])
         const importer = context.filename
 
         const check = node => {
@@ -60,7 +71,7 @@ export default {
           }
 
           const target = path.resolve(path.dirname(importer), specifier)
-          const module = moduleBoundaryCrossedBy(importer, target)
+          const module = moduleBoundaryCrossedBy(importer, target, groups)
 
           if (module === undefined || target === path.join(module, 'index.ts')) {
             return

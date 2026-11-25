@@ -81,8 +81,8 @@ import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import { OrcidId } from '../../types/OrcidId.ts'
 import type { Pseudonym } from '../../types/Pseudonym.ts'
 import { SubfieldIdFromOpenAlexUrlSchema } from '../../types/subfield.ts'
-import type { Prereview as ReviewsDataPrereview } from '../../WebApp/reviews-data/index.ts'
-import type { Prereview as ScietyPrereview } from '../../WebApp/sciety-list/index.ts'
+import type { Prereview as ReviewsDataPrereview } from '../../WebApp/reviews-data/index.ts' // oxlint-disable-line module-boundaries/use-index
+import type { Prereview as ScietyPrereview } from '../../WebApp/sciety-list/index.ts' // oxlint-disable-line module-boundaries/use-index
 
 export interface WasPrereviewRemovedEnv {
   wasPrereviewRemoved: (id: number) => boolean

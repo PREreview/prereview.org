@@ -13,7 +13,7 @@ import * as SlackOauth from './SlackOauth.ts'
 import { NonEmptyString, OrcidId } from './types/index.ts'
 import { isPrereviewTeam, type User } from './user.ts'
 import * as WebApp from './WebApp/index.ts'
-import { IsUserBlocked } from './WebApp/log-in/index.ts'
+import { IsUserBlocked } from './WebApp/log-in/index.ts' // oxlint-disable-line module-boundaries/use-index
 
 export const layer = Layer.mergeAll(
   Layer.effect(AllowSiteCrawlers, Config.withDefault(Config.Boolean('ALLOW_SITE_CRAWLERS'), false)),

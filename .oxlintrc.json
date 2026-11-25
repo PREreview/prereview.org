@@ -55,7 +55,10 @@
     "wc/require-listener-teardown": "error",
     "import/no-cycle": "error",
     "import/extensions": ["error", "ignorePackages", { "js": "never", "checkTypeImports": true }],
-    "module-boundaries/use-index": ["error", { "allow": ["src/types"] }],
+    "module-boundaries/use-index": [
+      "error",
+      { "allow": ["src/types"], "groups": ["src/ExternalApis", "src/ExternalInteractions"] }
+    ],
     "no-restricted-imports": [
       "error",
       {

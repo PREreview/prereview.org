@@ -2,7 +2,7 @@ import { Context, type Effect, type HashSet, type Option, type Redacted } from '
 import type { KeyValueStore } from 'effect/persistence'
 import type { SupportedLocale, UserSelectableLocale } from './locales/index.ts'
 import type { NonEmptyString } from './types/index.ts'
-import type { FlashMessageSchema } from './WebApp/Response/index.ts'
+import type { FlashMessageSchema } from './WebApp/Response/index.ts' // oxlint-disable-line module-boundaries/use-index
 
 export class AllowSiteCrawlers extends Context.Service<AllowSiteCrawlers, boolean>()('AllowSiteCrawlers') {}
 
