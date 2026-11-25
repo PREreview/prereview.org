@@ -8,11 +8,12 @@ import * as Comments from './Domain/Comments/index.ts'
 import * as ContactEmailAddresses from './Domain/ContactEmailAddresses/index.ts'
 import * as DatasetReviews from './Domain/DatasetReviews/index.ts'
 import * as Events from './Domain/Events/index.ts'
+import { SqlEventStore } from './Domain/Events/index.ts'
 import * as PreprintReviews from './Domain/PreprintReviews/index.ts'
 import * as Prereviewers from './Domain/Prereviewers/index.ts'
 import * as Prereviews from './Domain/Prereviews/index.ts'
 import * as ReviewRequests from './Domain/ReviewRequests/index.ts'
-import { SqlEventStore, StatefulQueries } from './EventSourcing/index.ts'
+import { StatefulQueries } from './EventSourcing/index.ts'
 import { Contentful } from './ExternalApis/Contentful/index.ts'
 import {
   Cloudinary,
