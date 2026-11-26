@@ -8,13 +8,7 @@ import { NotifyCommunitySlack as executeNotifyCommunitySlackOfDatasetReview } fr
 import { PublishRecordOnZenodo as executePublishDatasetReviewRecordOnZenodo } from './PublishRecordOnZenodo.ts'
 import { UseZenodoRecordDoi as executeUseZenodoRecordDoiForDatasetReview } from './UseZenodoRecordDoi.ts'
 
-export const PublishDatasetReview = Workflow.make('PublishDatasetReview', {
-  error: Errors.FailedToPublishDatasetReview,
-  payload: {
-    datasetReviewId: Uuid.UuidSchema,
-  },
-  idempotencyKey: Struct.get('datasetReviewId'),
-})
+export { PublishDatasetReview } from './PublishDatasetReview/index.ts'
 
 export const CreateRecordForDatasetReviewOnZenodo = Workflow.make('CreateRecordForDatasetReviewOnZenodo', {
   error: Errors.FailedToCreateRecordOnZenodo,
