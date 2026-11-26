@@ -17,6 +17,7 @@ import * as Prereviewers from './Domain/Prereviewers/index.ts'
 import { embeddingsLayer } from './Embeddings/index.ts'
 import { Nodemailer } from './ExternalApis/index.ts'
 import { html } from './html.ts'
+import * as LoggingWorkflowEngine from './LoggingWorkflowEngine.ts'
 import * as OrcidTokens from './OrcidTokens.ts'
 import { Program } from './Program.ts'
 import * as Redis from './Redis.ts'
@@ -140,7 +141,7 @@ pipe(
       ),
       Redis.layerPersistenceFromDataStore,
     ),
-    ClusterWorkflowEngine.layer,
+    Layer.provide(LoggingWorkflowEngine.layer, ClusterWorkflowEngine.layer),
   ]),
   Layer.provide(ClusterLayer),
   Layer.provide([

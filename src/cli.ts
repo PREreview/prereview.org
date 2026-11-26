@@ -18,6 +18,7 @@ import { Crossref, Datacite, JapanLinkCenter, OpenAlex, Orcid, Philsci, Zenodo }
 import { Email, LanguageDetection, OpenAlexWorks, OrcidRecords, PreprintData } from './ExternalInteractions/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
+import * as LoggingWorkflowEngine from './LoggingWorkflowEngine.ts'
 import * as Redis from './Redis.ts'
 import { Uuid } from './types/index.ts'
 
@@ -54,7 +55,7 @@ pipe(
           ReviewRequest.queriesLayer,
           ReviewRequest.commandsLayer,
           embeddingsLayer,
-          ClusterWorkflowEngine.layer,
+          Layer.provide(LoggingWorkflowEngine.layer, ClusterWorkflowEngine.layer),
         ),
       ),
       Layer.provide([ContactEmailAddresses.layer, ClusterLayer]),
