@@ -1,7 +1,8 @@
 import { OpenRouterClient } from '@effect/ai-openrouter'
-import { NodeHttpClient, NodeRuntime, NodeServices } from '@effect/platform-node'
+import { NodeClusterSocket, NodeHttpClient, NodeRuntime, NodeServices } from '@effect/platform-node'
 import { PgClient } from '@effect/sql-pg'
-import { Array, Config, Effect, Layer, pipe, Redacted, Schema } from 'effect'
+import { Array, Config, Effect, Layer, Option, pipe, Redacted, Schema } from 'effect'
+import { ClusterWorkflowEngine, RunnerAddress } from 'effect/cluster'
 import * as AuthorInviteStore from './AuthorInviteStore.ts'
 import { Cli } from './Cli/index.ts'
 import * as Clubs from './Domain/Clubs/index.ts'
@@ -20,6 +21,24 @@ import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import * as Redis from './Redis.ts'
 import { Uuid } from './types/index.ts'
 
+const ClusterLayer = Layer.unwrap(
+  Effect.map(
+    Config.withDefault(
+      Config.all({ runnerIp: Config.String('FLY_PRIVATE_IP'), listenHost: Config.succeed('fly-local-6pn') }),
+      { runnerIp: 'localhost', listenHost: 'localhost' },
+    ),
+    ({ runnerIp, listenHost }) =>
+      NodeClusterSocket.layer({
+        clientOnly: true,
+        shardingConfig: {
+          runnerAddress: Option.some(RunnerAddress.make(runnerIp, 34431)),
+          runnerListenAddress: Option.some(RunnerAddress.make(listenHost, 34431)),
+          shardLockDisableAdvisory: true,
+        },
+      }),
+  ),
+)
+
 pipe(
   Cli(process.argv.slice(2)),
   Effect.provide(
@@ -35,9 +54,10 @@ pipe(
           ReviewRequest.queriesLayer,
           ReviewRequest.commandsLayer,
           embeddingsLayer,
+          ClusterWorkflowEngine.layer,
         ),
       ),
-      Layer.provide(ContactEmailAddresses.layer),
+      Layer.provide([ContactEmailAddresses.layer, ClusterLayer]),
       Layer.provideMerge(Clubs.layer),
       Layer.provide([
         Clubs.layerDefaultClubs,
