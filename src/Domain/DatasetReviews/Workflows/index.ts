@@ -5,6 +5,7 @@ import * as Errors from '../Errors.ts'
 import { CreateRecordOnZenodo as executeCreateRecordForDatasetReviewOnZenodo } from './CreateRecordOnZenodo.ts'
 import { MarkDatasetReviewAsPublished as executeMarkDatasetReviewAsPublished } from './MarkDatasetReviewAsPublished.ts'
 import { NotifyCommunitySlack as executeNotifyCommunitySlackOfDatasetReview } from './NotifyCommunitySlack.ts'
+import * as PublishDatasetReview from './PublishDatasetReview/index.ts'
 import { PublishRecordOnZenodo as executePublishDatasetReviewRecordOnZenodo } from './PublishRecordOnZenodo.ts'
 import { UseZenodoRecordDoi as executeUseZenodoRecordDoiForDatasetReview } from './UseZenodoRecordDoi.ts'
 
@@ -52,6 +53,7 @@ export const UseZenodoRecordDoiForDatasetReview = Workflow.make('UseZenodoRecord
 })
 
 export const workflowsLayer = Layer.mergeAll(
+  PublishDatasetReview.layer,
   CreateRecordForDatasetReviewOnZenodo.toLayer(({ datasetReviewId }) =>
     Activity.make({
       name: CreateRecordForDatasetReviewOnZenodo._tag,
