@@ -6,7 +6,7 @@ import { UuidSchema } from '../../../../types/Uuid.ts'
 import { Temporal } from '../../../../types/index.ts'
 import * as Commands from '../../Commands/index.ts'
 import * as Errors from '../../Errors.ts'
-import { CreateRecordOnZenodo } from '../CreateRecordOnZenodo.ts'
+import { CreateRecordOnZenodo } from './CreateRecordOnZenodo.ts'
 
 export const PublishDatasetReview = Workflow.make('PublishDatasetReview', {
   error: Errors.FailedToPublishDatasetReview,
