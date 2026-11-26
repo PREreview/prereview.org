@@ -3,6 +3,8 @@ import { Activity, Workflow } from 'effect/workflow'
 import { UuidSchema } from '../../../../types/Uuid.ts'
 import * as Errors from '../../Errors.ts'
 import { CreateRecordOnZenodo } from '../CreateRecordOnZenodo.ts'
+import { MarkDatasetReviewAsPublished } from '../MarkDatasetReviewAsPublished.ts'
+import { PublishRecordOnZenodo } from '../PublishRecordOnZenodo.ts'
 import { UseZenodoRecordDoi } from '../UseZenodoRecordDoi.ts'
 
 export const PublishDatasetReview = Workflow.make('PublishDatasetReview', {
@@ -31,7 +33,17 @@ export const layer = PublishDatasetReview.toLayer(
         execute: UseZenodoRecordDoi(datasetReviewId, recordId),
       })
 
-      return yield* new Errors.FailedToPublishDatasetReview({ cause: 'incomplete' })
+      yield* Activity.make({
+        name: 'MarkAsPublished',
+        error: Errors.FailedToMarkDatasetReviewAsPublished,
+        execute: MarkDatasetReviewAsPublished(datasetReviewId),
+      })
+
+      yield* Activity.make({
+        name: 'PublishRecordOnZenodo',
+        error: Errors.FailedToPublishRecordOnZenodo,
+        execute: PublishRecordOnZenodo(datasetReviewId),
+      })
     },
     Effect.tapError(error => Effect.logError('Failed to publish dataset review').pipe(Effect.annotateLogs({ error }))),
     Effect.mapError(error => new Errors.FailedToPublishDatasetReview({ cause: error })),
