@@ -1,12 +1,12 @@
 import { Effect, Schema, Struct } from 'effect'
 import { Activity, Workflow } from 'effect/workflow'
+import { ZenodoRecords } from '../../../../ExternalInteractions/index.ts'
 import { DoiSchema } from '../../../../types/Doi.ts'
 import { UuidSchema } from '../../../../types/Uuid.ts'
+import { Temporal } from '../../../../types/index.ts'
 import * as Commands from '../../Commands/index.ts'
 import * as Errors from '../../Errors.ts'
 import { CreateRecordOnZenodo } from '../CreateRecordOnZenodo.ts'
-import { MarkDatasetReviewAsPublished } from '../MarkDatasetReviewAsPublished.ts'
-import { PublishRecordOnZenodo } from './PublishRecordOnZenodo.ts'
 
 export const PublishDatasetReview = Workflow.make('PublishDatasetReview', {
   error: Errors.FailedToPublishDatasetReview,
@@ -28,23 +28,20 @@ export const layer = PublishDatasetReview.toLayer(
         execute: CreateRecordOnZenodo(datasetReviewId),
       })
 
-      yield* Activity.make({
-        name: 'UseZenodoRecordDoi',
-        error: Schema.ErrorInstance(),
-        execute: Commands.markDoiAsAssigned({ doi, datasetReviewId }),
-      })
+      yield* Commands.markDoiAsAssigned({ doi, datasetReviewId })
 
-      yield* Activity.make({
-        name: 'MarkAsPublished',
-        error: Errors.FailedToMarkDatasetReviewAsPublished,
-        execute: MarkDatasetReviewAsPublished(datasetReviewId),
-      })
+      const publicationDate = yield* Temporal.currentInstant
+      yield* Commands.markDatasetReviewAsPublished({ datasetReviewId, publicationDate })
 
       yield* Activity.make({
         name: 'PublishRecordOnZenodo',
-        error: Errors.FailedToPublishRecordOnZenodo,
-        execute: PublishRecordOnZenodo(datasetReviewId, recordId),
+        error: Schema.ErrorInstance(),
+        execute: ZenodoRecords.publishRecord(recordId),
       })
+
+      yield* Commands.markRecordAsPublishedOnZenodo({ datasetReviewId })
+
+      yield* Commands.markDoiAsActivated({ datasetReviewId })
     },
     Effect.tapError(error => Effect.logError('Failed to publish dataset review').pipe(Effect.annotateLogs({ error }))),
     Effect.mapError(error => new Errors.FailedToPublishDatasetReview({ cause: error })),
