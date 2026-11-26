@@ -59,6 +59,11 @@ export class DatasetReviewDoesNotHaveAZenodoRecord extends Data.TaggedError('Dat
   cause?: unknown
 }> {}
 
+export class FailedToPublishDatasetReview extends Schema.TaggedError<FailedToPublishDatasetReview>()(
+  'FailedToPublishDatasetReview',
+  { cause: Schema.optional(Schema.Unknown) },
+) {}
+
 export class FailedToCreateRecordOnZenodo extends Schema.TaggedError<FailedToCreateRecordOnZenodo>()(
   'FailedToCreateRecordOnZenodo',
   { cause: Schema.optional(Schema.Unknown) },
