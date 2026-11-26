@@ -2,11 +2,11 @@ import { Effect, Schema, Struct } from 'effect'
 import { Activity, Workflow } from 'effect/workflow'
 import { DoiSchema } from '../../../../types/Doi.ts'
 import { UuidSchema } from '../../../../types/Uuid.ts'
+import * as Commands from '../../Commands/index.ts'
 import * as Errors from '../../Errors.ts'
 import { CreateRecordOnZenodo } from '../CreateRecordOnZenodo.ts'
 import { MarkDatasetReviewAsPublished } from '../MarkDatasetReviewAsPublished.ts'
 import { PublishRecordOnZenodo } from './PublishRecordOnZenodo.ts'
-import { UseZenodoRecordDoi } from './UseZenodoRecordDoi.ts'
 
 export const PublishDatasetReview = Workflow.make('PublishDatasetReview', {
   error: Errors.FailedToPublishDatasetReview,
@@ -30,8 +30,8 @@ export const layer = PublishDatasetReview.toLayer(
 
       yield* Activity.make({
         name: 'UseZenodoRecordDoi',
-        error: Errors.FailedToUseZenodoDoi,
-        execute: UseZenodoRecordDoi(datasetReviewId, doi),
+        error: Schema.ErrorInstance(),
+        execute: Commands.markDoiAsAssigned({ doi, datasetReviewId }),
       })
 
       yield* Activity.make({
