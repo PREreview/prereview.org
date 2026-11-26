@@ -10,7 +10,7 @@ export const PublishDatasetReview = Workflow.make('PublishDatasetReview', {
     datasetReviewId: UuidSchema,
   },
   idempotencyKey: Struct.get('datasetReviewId'),
-})
+}).annotate(Workflow.SuspendOnFailure, true)
 
 export const layer = PublishDatasetReview.toLayer(
   Effect.fn('PublishDatasetReview')(
