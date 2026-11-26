@@ -5,8 +5,8 @@ import { UuidSchema } from '../../../../types/Uuid.ts'
 import * as Errors from '../../Errors.ts'
 import { CreateRecordOnZenodo } from '../CreateRecordOnZenodo.ts'
 import { MarkDatasetReviewAsPublished } from '../MarkDatasetReviewAsPublished.ts'
-import { UseZenodoRecordDoi } from '../UseZenodoRecordDoi.ts'
 import { PublishRecordOnZenodo } from './PublishRecordOnZenodo.ts'
+import { UseZenodoRecordDoi } from './UseZenodoRecordDoi.ts'
 
 export const PublishDatasetReview = Workflow.make('PublishDatasetReview', {
   error: Errors.FailedToPublishDatasetReview,
@@ -21,7 +21,7 @@ export const layer = PublishDatasetReview.toLayer(
     function* ({ datasetReviewId }) {
       yield* Effect.annotateLogsScoped({ datasetReviewId })
 
-      const { recordId } = yield* Activity.make({
+      const { recordId, doi } = yield* Activity.make({
         name: 'CreateRecordOnZenodo',
         error: Errors.FailedToCreateRecordOnZenodo,
         success: Schema.Struct({ recordId: Schema.Int, doi: DoiSchema }),
@@ -31,7 +31,7 @@ export const layer = PublishDatasetReview.toLayer(
       yield* Activity.make({
         name: 'UseZenodoRecordDoi',
         error: Errors.FailedToUseZenodoDoi,
-        execute: UseZenodoRecordDoi(datasetReviewId, recordId),
+        execute: UseZenodoRecordDoi(datasetReviewId, doi),
       })
 
       yield* Activity.make({
