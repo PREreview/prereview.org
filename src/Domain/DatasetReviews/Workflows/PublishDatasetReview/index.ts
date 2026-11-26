@@ -1,7 +1,8 @@
 import { Effect, Struct } from 'effect'
-import { Workflow } from 'effect/workflow'
+import { Activity, Workflow } from 'effect/workflow'
 import { UuidSchema } from '../../../../types/Uuid.ts'
 import * as Errors from '../../Errors.ts'
+import { CreateRecordOnZenodo } from '../CreateRecordOnZenodo.ts'
 
 export const PublishDatasetReview = Workflow.make('PublishDatasetReview', {
   error: Errors.FailedToPublishDatasetReview,
@@ -12,7 +13,16 @@ export const PublishDatasetReview = Workflow.make('PublishDatasetReview', {
 })
 
 export const layer = PublishDatasetReview.toLayer(
-  Effect.fn('PublishDatasetReview')(function* () {
-    return yield* new Errors.FailedToPublishDatasetReview({ cause: 'not implemented' })
-  }),
+  Effect.fn('PublishDatasetReview')(
+    function* ({ datasetReviewId }) {
+      yield* Activity.make({
+        name: 'CreateRecordOnZenodo',
+        error: Errors.FailedToCreateRecordOnZenodo,
+        execute: CreateRecordOnZenodo(datasetReviewId),
+      })
+
+      return yield* new Errors.FailedToPublishDatasetReview({ cause: 'incomplete' })
+    },
+    Effect.catchTag('FailedToCreateRecordOnZenodo', error => new Errors.FailedToPublishDatasetReview({ cause: error })),
+  ),
 )
