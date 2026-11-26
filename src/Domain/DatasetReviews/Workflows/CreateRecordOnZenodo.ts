@@ -25,7 +25,7 @@ export const CreateRecordOnZenodo = Effect.fn('DatasetReviews.createRecordOnZeno
       { concurrency: 'unbounded' },
     )
 
-    const recordId = yield* ZenodoRecords.createRecordForDatasetReview({
+    const { recordId, doi } = yield* ZenodoRecords.createRecordForDatasetReview({
       ...datasetReview,
       author,
       otherAuthors,
@@ -36,7 +36,7 @@ export const CreateRecordOnZenodo = Effect.fn('DatasetReviews.createRecordOnZeno
 
     yield* Commands.markRecordCreatedOnZenodo({ recordId, datasetReviewId })
 
-    return recordId
+    return { recordId, doi }
   },
   Effect.catch(error => new Errors.FailedToCreateRecordOnZenodo({ cause: error })),
 )

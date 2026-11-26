@@ -27,7 +27,7 @@ export const CreateRecordForDatasetReview = Effect.fn('ZenodoRecords.createRecor
 
     yield* Zenodo.uploadFile(deposition, { content: depositMetadata.description.toString(), name: 'review.html' })
 
-    return deposition.id
+    return { recordId: deposition.id, doi: deposition.metadata.prereserveDoi.doi }
   },
   Effect.catch(error => new FailedToCreateRecordForDatasetReview({ cause: error })),
 )

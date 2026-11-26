@@ -1,5 +1,6 @@
 import { Effect, Schema, Struct } from 'effect'
 import { Activity, Workflow } from 'effect/workflow'
+import { DoiSchema } from '../../../../types/Doi.ts'
 import { UuidSchema } from '../../../../types/Uuid.ts'
 import * as Errors from '../../Errors.ts'
 import { CreateRecordOnZenodo } from '../CreateRecordOnZenodo.ts'
@@ -20,10 +21,10 @@ export const layer = PublishDatasetReview.toLayer(
     function* ({ datasetReviewId }) {
       yield* Effect.annotateLogsScoped({ datasetReviewId })
 
-      const recordId = yield* Activity.make({
+      const { recordId } = yield* Activity.make({
         name: 'CreateRecordOnZenodo',
         error: Errors.FailedToCreateRecordOnZenodo,
-        success: Schema.Int,
+        success: Schema.Struct({ recordId: Schema.Int, doi: DoiSchema }),
         execute: CreateRecordOnZenodo(datasetReviewId),
       })
 
