@@ -15,6 +15,8 @@ export const PublishDatasetReview = Workflow.make('PublishDatasetReview', {
 export const layer = PublishDatasetReview.toLayer(
   Effect.fn('PublishDatasetReview')(
     function* ({ datasetReviewId }) {
+      yield* Effect.annotateLogsScoped({ datasetReviewId })
+
       yield* Activity.make({
         name: 'CreateRecordOnZenodo',
         error: Errors.FailedToCreateRecordOnZenodo,
@@ -23,6 +25,7 @@ export const layer = PublishDatasetReview.toLayer(
 
       return yield* new Errors.FailedToPublishDatasetReview({ cause: 'incomplete' })
     },
+    Effect.tapError(error => Effect.logError('Failed to publish dataset review').pipe(Effect.annotateLogs({ error }))),
     Effect.catchTag('FailedToCreateRecordOnZenodo', error => new Errors.FailedToPublishDatasetReview({ cause: error })),
   ),
 )
