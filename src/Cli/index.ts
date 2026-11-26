@@ -6,6 +6,7 @@ import { CategorizeReviewRequest } from './CategorizeReviewRequest.ts'
 import { ImportPreprintReviews } from './ImportPreprintReviews.ts'
 import { PopulateRequestEmbeddings } from './PopulateRequestEmbeddings.ts'
 import { PrintStatus } from './PrintStatus.ts'
+import { RetryPublishDatasetReview } from './RetryPublishDatasetReview.ts'
 import { WithdrawReviewRequest } from './WithdrawReviewRequest.ts'
 
 const app = pipe(
@@ -18,6 +19,7 @@ const app = pipe(
     AddPreprintReviewToClub,
     PopulateRequestEmbeddings,
     ImportPreprintReviews,
+    RetryPublishDatasetReview,
   ]),
 )
 
