@@ -1,4 +1,5 @@
 import { Context, Effect, pipe, Scope } from 'effect'
+import type { LanguageDetection } from '../../../ExternalInteractions/index.ts'
 import type { PublicUrl } from '../../../public-url.ts'
 import type { Uuid } from '../../../types/index.ts'
 import { type EventStore, Queries } from '../../Events/index.ts'
@@ -23,10 +24,10 @@ export type GetDataForZenodoRecord = (
 export const GetDataForZenodoRecord: Effect.Effect<
   GetDataForZenodoRecord,
   never,
-  EventStore.EventStore | PreprintReviews | Prereviewers | PublicUrl
+  EventStore.EventStore | LanguageDetection.LanguageDetection | PreprintReviews | Prereviewers | PublicUrl
 > = Effect.gen(function* () {
   const context = yield* Effect.map(
-    Effect.context<PreprintReviews | Prereviewers | PublicUrl>(),
+    Effect.context<LanguageDetection.LanguageDetection | PreprintReviews | Prereviewers | PublicUrl>(),
     Context.omit(Scope.Scope),
   )
 

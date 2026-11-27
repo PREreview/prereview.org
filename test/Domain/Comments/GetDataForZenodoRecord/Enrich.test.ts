@@ -8,6 +8,7 @@ import {
   PrereviewWasRemoved,
 } from '../../../../src/Domain/PreprintReviews/index.ts'
 import { Prereviewers, UnableToGetPersona } from '../../../../src/Domain/Prereviewers/index.ts'
+import { LanguageDetection } from '../../../../src/ExternalInteractions/index.ts'
 import { html } from '../../../../src/html.ts'
 import { PublicUrl } from '../../../../src/public-url.ts'
 import { NonEmptyString, OrcidId } from '../../../../src/types/index.ts'
@@ -28,11 +29,15 @@ it.effect.prop('enriches the details', [fc.publicPersona(), fc.prereview()], ([p
     const getPreprintReview = vi.fn<(typeof PreprintReviews.Service)['getPreprintReview']>(() =>
       Effect.succeed(prereview),
     )
+    const detectLanguageFrom = vi.fn<(typeof LanguageDetection.LanguageDetection.Service)['detectLanguageFrom']>(() =>
+      Effect.succeed('es'),
+    )
 
     const actual = yield* _.Enrich(details).pipe(
       Effect.provide([
         Layer.mock(Prereviewers, { getPublicPersona }),
         Layer.mock(PreprintReviews, { getPreprintReview }),
+        Layer.mock(LanguageDetection.LanguageDetection, { detectLanguageFrom }),
         Layer.succeed(PublicUrl, new URL('http://example.com')),
       ]),
     )
@@ -41,6 +46,7 @@ it.effect.prop('enriches the details', [fc.publicPersona(), fc.prereview()], ([p
       author: persona,
       comment: details.comment,
       competingInterests: details.competingInterests,
+      language: Option.some('es'),
       prereview: {
         doi: prereview.doi,
         url: new URL(`http://example.com/reviews/${prereview.id}`),
@@ -49,6 +55,12 @@ it.effect.prop('enriches the details', [fc.publicPersona(), fc.prereview()], ([p
     })
     expect(getPublicPersona).toHaveBeenCalledWith(details.authorId)
     expect(getPreprintReview).toHaveBeenCalledWith(details.prereviewId)
+    expect(detectLanguageFrom).toHaveBeenCalledWith(
+      expect.toSatisfy(
+        (languages: ReadonlyArray<string>) => [...languages].sort().join() === ['ar', 'en', 'es', 'fr', 'pt'].join(),
+      ),
+      details.comment,
+    )
   }),
 )
 
@@ -60,6 +72,7 @@ it.effect.prop("when the persona can't be found", [fc.prereview()], ([prereview]
       Effect.provide([
         Layer.mock(Prereviewers, { getPublicPersona: () => Effect.fail(error) }),
         Layer.mock(PreprintReviews, { getPreprintReview: () => Effect.succeed(prereview) }),
+        Layer.mock(LanguageDetection.LanguageDetection, { detectLanguageFrom: () => Effect.succeed('en') }),
         Layer.succeed(PublicUrl, new URL('http://example.com')),
       ]),
     )
@@ -80,10 +93,33 @@ it.effect.prop(
         Effect.provide([
           Layer.mock(Prereviewers, { getPublicPersona: () => Effect.succeed(persona) }),
           Layer.mock(PreprintReviews, { getPreprintReview: () => Effect.fail(error) }),
+          Layer.mock(LanguageDetection.LanguageDetection, { detectLanguageFrom: () => Effect.succeed('en') }),
           Layer.succeed(PublicUrl, new URL('http://example.com')),
         ]),
       )
 
       expect(actual).toStrictEqual(error)
+    }),
+)
+
+it.effect.prop(
+  "when the language isn't one we support",
+  [
+    fc.publicPersona(),
+    fc.prereview(),
+    fc.constantFrom(Effect.succeed('de' as const), Effect.fail(new LanguageDetection.UnableToDetectLanguage({}))),
+  ],
+  ([persona, prereview, detected]) =>
+    Effect.gen(function* () {
+      const actual = yield* _.Enrich(details).pipe(
+        Effect.provide([
+          Layer.mock(Prereviewers, { getPublicPersona: () => Effect.succeed(persona) }),
+          Layer.mock(PreprintReviews, { getPreprintReview: () => Effect.succeed(prereview) }),
+          Layer.mock(LanguageDetection.LanguageDetection, { detectLanguageFrom: () => detected }),
+          Layer.succeed(PublicUrl, new URL('http://example.com')),
+        ]),
+      )
+
+      expect(actual.language).toStrictEqual(Option.none())
     }),
 )
