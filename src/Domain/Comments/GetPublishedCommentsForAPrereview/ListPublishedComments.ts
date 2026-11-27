@@ -29,6 +29,7 @@ const filter = Events.EventFilter({
     'CommentWasAssignedADoi',
     'CommentWasPublished',
     'PublicationDateForCommentWasImported',
+    'CommentWasWithdrawn',
   ],
 })
 
@@ -42,6 +43,7 @@ interface CommentDetails {
   readonly id?: number
   readonly published: boolean
   readonly publishedAt?: Temporal.Instant
+  readonly withdrawn: boolean
 }
 
 type State = HashMap.HashMap<Uuid.Uuid, CommentDetails>
@@ -54,7 +56,10 @@ const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray
       return currentState
     }
 
-    const details = Option.getOrElse(HashMap.get(currentState, event.commentId), () => ({ published: false }))
+    const details = Option.getOrElse(HashMap.get(currentState, event.commentId), () => ({
+      published: false,
+      withdrawn: false,
+    }))
 
     return HashMap.set(
       currentState,
@@ -71,6 +76,7 @@ const updateStateWithEvents = (state: State, events: Array.NonEmptyReadonlyArray
           ...(publishedAt !== undefined ? { publishedAt } : {}),
         }),
         PublicationDateForCommentWasImported: ({ publishedAt }) => ({ ...details, publishedAt }),
+        CommentWasWithdrawn: () => ({ ...details, withdrawn: true }),
       }),
     )
   })
@@ -117,7 +123,7 @@ const byPublishedAt: Order.Order<PublishedComment> = Order.mapInput(
 const query = (state: State, prereviewId: number): Result =>
   pipe(
     Array.fromIterable(state),
-    Array.filter(([, details]) => details.published && details.prereviewId === prereviewId),
+    Array.filter(([, details]) => details.published && !details.withdrawn && details.prereviewId === prereviewId),
     Array.map(([commentId, details]) => toPublishedComment(commentId, details)),
     Result.all,
     Result.map(Array.sort(byPublishedAt)),

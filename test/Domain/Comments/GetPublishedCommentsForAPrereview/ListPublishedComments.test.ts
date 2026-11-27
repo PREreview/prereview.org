@@ -115,9 +115,45 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
     Result.succeed([]),
   ],
   [
+    'one withdrawn',
+    [
+      ...writtenComment({ commentId: commentId1, id: 1 }),
+      ...writtenComment({ commentId: commentId2, id: 2 }),
+      new Events.CommentWasPublished({
+        commentId: commentId1,
+        publishedAt: Temporal.Instant.from('2026-11-01T09:00:00Z'),
+      }),
+      new Events.CommentWasPublished({
+        commentId: commentId2,
+        publishedAt: Temporal.Instant.from('2026-11-02T09:00:00Z'),
+      }),
+      new Events.CommentWasWithdrawn({
+        commentId: commentId2,
+        withdrawnAt: Temporal.Instant.from('2026-11-03T09:00:00Z'),
+        reason: 'spam',
+      }),
+    ],
+    Result.succeed([
+      expected({ commentId: commentId1, id: 1, publishedAt: Temporal.Instant.from('2026-11-01T09:00:00Z') }),
+    ]),
+  ],
+  [
     'published without a known date',
     [...writtenComment({ commentId: commentId1, id: 1 }), new Events.CommentWasPublished({ commentId: commentId1 })],
     Result.fail(new Queries.UnexpectedSequenceOfEvents({ cause: 'no publication date' })),
+  ],
+  [
+    'withdrawn without a known date',
+    [
+      ...writtenComment({ commentId: commentId1, id: 1 }),
+      new Events.CommentWasPublished({ commentId: commentId1 }),
+      new Events.CommentWasWithdrawn({
+        commentId: commentId1,
+        withdrawnAt: Temporal.Instant.from('2026-11-03T09:00:00Z'),
+        reason: 'spam',
+      }),
+    ],
+    Result.succeed([]),
   ],
 ])('%s', (_name, events, expected) => {
   const { initialState, updateStateWithEvents, query } = _.ListPublishedComments
