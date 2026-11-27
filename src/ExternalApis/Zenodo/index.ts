@@ -4,6 +4,7 @@ import { AddRecordToCommunity } from './AddRecordToCommunity/index.ts'
 import { CommitDraftFile } from './CommitDraftFile/index.ts'
 import { CreateDeposition } from './CreateDeposition/index.ts'
 import { CreateDraft } from './CreateDraft/index.ts'
+import { DeleteDraft } from './DeleteDraft/index.ts'
 import { EditRecord } from './EditRecord/index.ts'
 import { GetDeposition } from './GetDeposition/index.ts'
 import { GetDraft } from './GetDraft/index.ts'
@@ -49,6 +50,9 @@ export class Zenodo extends Context.Service<
     createDraft: (
       ...args: Parameters<typeof CreateDraft>
     ) => Effect.Effect<Effect.Success<ReturnType<typeof CreateDraft>>, Effect.Error<ReturnType<typeof CreateDraft>>>
+    deleteDraft: (
+      ...args: Parameters<typeof DeleteDraft>
+    ) => Effect.Effect<Effect.Success<ReturnType<typeof DeleteDraft>>, Effect.Error<ReturnType<typeof DeleteDraft>>>
     editRecord: (
       ...args: Parameters<typeof EditRecord>
     ) => Effect.Effect<Effect.Success<ReturnType<typeof EditRecord>>, Effect.Error<ReturnType<typeof EditRecord>>>
@@ -112,6 +116,9 @@ export const createDeposition = (...args: Parameters<(typeof Zenodo.Service)['cr
 export const createDraft = (...args: Parameters<(typeof Zenodo.Service)['createDraft']>) =>
   Zenodo.use(service => service.createDraft(...args))
 
+export const deleteDraft = (...args: Parameters<(typeof Zenodo.Service)['deleteDraft']>) =>
+  Zenodo.use(service => service.deleteDraft(...args))
+
 export const editRecord = (...args: Parameters<(typeof Zenodo.Service)['editRecord']>) =>
   Zenodo.use(service => service.editRecord(...args))
 
@@ -156,6 +163,7 @@ const make: Effect.Effect<typeof Zenodo.Service, never, HttpClient.HttpClient | 
     commitDraftFile: flow(CommitDraftFile, Effect.provide(context)),
     createDeposition: flow(CreateDeposition, Effect.provide(context)),
     createDraft: flow(CreateDraft, Effect.provide(context)),
+    deleteDraft: flow(DeleteDraft, Effect.provide(context)),
     editRecord: flow(EditRecord, Effect.provide(context)),
     getDeposition: flow(GetDeposition, Effect.provide(context)),
     getDraft: flow(GetDraft, Effect.provide(context)),
