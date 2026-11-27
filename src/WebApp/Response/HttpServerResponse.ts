@@ -59,6 +59,13 @@ export const toHttpServerResponse = (
       return HttpServerResponse.redirect(response.location, { status: response.status })
     }
 
+    if (response._tag === 'PartialHtmlResponse') {
+      return pipe(
+        HttpServerResponse.html(response.html.toString()),
+        HttpServerResponse.setHeader('X-Robots-Tag', 'none, noarchive'),
+      )
+    }
+
     if (response._tag === 'FlashMessageResponse') {
       return HttpServerResponse.redirect(response.location, {
         status: StatusCodes.SeeOther,

@@ -7,14 +7,19 @@ import { LoggedInUser } from '../../../user.ts'
 import { HavingProblemsPage } from '../../HavingProblemsPage/index.ts'
 import { PageNotFound } from '../../PageNotFound/index.ts'
 import * as Response from '../../Response/index.ts'
-import { ReviewBeingPublishedPage as MakeResponse } from './ReviewBeingPublishedPage.ts'
+import {
+  ReviewBeingPublishedPage as MakeResponse,
+  ReviewBeingPublishedPartial,
+  ReviewPublishedPartial,
+} from './ReviewBeingPublishedPage.ts'
 
 export const ReviewBeingPublishedPage: (input: {
   datasetReviewId: Uuid.Uuid
+  partial?: boolean
 }) => Effect.Effect<Response.Response, never, DatasetReviews.DatasetReviewQueries | Locale | LoggedInUser> = Effect.fn(
   'ReviewADatasetFlow.ReviewBeingPublishedPage',
 )(
-  function* ({ datasetReviewId }) {
+  function* ({ datasetReviewId, partial = false }) {
     const user = yield* LoggedInUser
     const locale = yield* Locale
     const author = yield* DatasetReviews.getAuthor(datasetReviewId)
@@ -25,14 +30,20 @@ export const ReviewBeingPublishedPage: (input: {
 
     yield* DatasetReviews.checkIfReviewIsBeingPublished(datasetReviewId)
 
+    if (partial) {
+      return ReviewBeingPublishedPartial({ locale })
+    }
+
     return MakeResponse({ datasetReviewId, locale })
   },
-  (effect, { datasetReviewId }) =>
+  (effect, { datasetReviewId, partial = false }) =>
     Effect.catchTags(effect, {
       DatasetReviewHasBeenPublished: () =>
-        Effect.succeed(
-          Response.RedirectResponse({ location: Routes.ReviewADatasetReviewPublished.href({ datasetReviewId }) }),
-        ),
+        partial
+          ? Effect.map(Locale, locale => ReviewPublishedPartial({ datasetReviewId, locale }))
+          : Effect.succeed(
+              Response.RedirectResponse({ location: Routes.ReviewADatasetReviewPublished.href({ datasetReviewId }) }),
+            ),
       DatasetReviewIsInProgress: () => PageNotFound,
       UnableToQuery: () => HavingProblemsPage,
       UnknownDatasetReview: () => PageNotFound,

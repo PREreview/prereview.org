@@ -25,7 +25,7 @@ describe('ReviewBeingPublishedPage', () => {
             title: expect.anything(),
             main: expect.anything(),
             skipToLabel: 'main',
-            js: ['poll-redirect.js'],
+            js: ['poll-partial.js'],
           })
         }).pipe(
           Effect.provide(
@@ -50,6 +50,52 @@ describe('ReviewBeingPublishedPage', () => {
             _tag: 'RedirectResponse',
             status: StatusCodes.SeeOther,
             location: Routes.ReviewADatasetReviewPublished.href({ datasetReviewId }),
+          })
+        }).pipe(
+          Effect.provide(
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
+              checkIfReviewIsBeingPublished: () => new DatasetReviews.DatasetReviewHasBeenPublished(),
+              getAuthor: () => Effect.succeed(user.orcid),
+            }),
+          ),
+          Effect.provideService(Locale, locale),
+          Effect.provideService(LoggedInUser, user),
+        ),
+    )
+
+    it.effect.prop(
+      'when the dataset review is being published and a partial is requested',
+      [fc.uuid(), fc.supportedLocale(), fc.user()],
+      ([datasetReviewId, locale, user]) =>
+        Effect.gen(function* () {
+          const actual = yield* _.ReviewBeingPublishedPage({ datasetReviewId, partial: true })
+
+          expect(actual).toStrictEqual({
+            _tag: 'PartialHtmlResponse',
+            html: expect.anything(),
+          })
+        }).pipe(
+          Effect.provide(
+            Layer.mock(DatasetReviews.DatasetReviewQueries, {
+              checkIfReviewIsBeingPublished: () => Effect.void,
+              getAuthor: () => Effect.succeed(user.orcid),
+            }),
+          ),
+          Effect.provideService(Locale, locale),
+          Effect.provideService(LoggedInUser, user),
+        ),
+    )
+
+    it.effect.prop(
+      'when the dataset review has been published and a partial is requested',
+      [fc.uuid(), fc.supportedLocale(), fc.user()],
+      ([datasetReviewId, locale, user]) =>
+        Effect.gen(function* () {
+          const actual = yield* _.ReviewBeingPublishedPage({ datasetReviewId, partial: true })
+
+          expect(actual).toStrictEqual({
+            _tag: 'PartialHtmlResponse',
+            html: expect.anything(),
           })
         }).pipe(
           Effect.provide(

@@ -135,6 +135,18 @@ const EmptyStringAsOptional = <A, R>(schema: Schema.Codec<A, string, R, R>) =>
     }),
   )
 
+const PartialSchema = Schema.optionalKey(Schema.String).pipe(
+  Schema.decodeTo(Schema.optionalKey(Schema.Boolean), {
+    decode: SchemaGetter.transformOptional(Option.as(true)),
+    encode: SchemaGetter.transformOptional(
+      flow(
+        Option.filter(partial => partial),
+        Option.as(''),
+      ),
+    ),
+  }),
+)
+
 const PositiveInt = Schema.Number.check(Schema.isGreaterThan(0))
   .pipe(Schema.check(Schema.isInt()))
   .annotate({ identifier: 'PositiveInt' })
@@ -504,7 +516,7 @@ export const ReviewADatasetCheckYourReview = Route({
 export const ReviewADatasetReviewBeingPublished = Route({
   path: '/review-a-dataset/:datasetReviewId/review-being-published',
   href: params => `/review-a-dataset/${params.datasetReviewId}/review-being-published`,
-  schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema }),
+  schema: Schema.Struct({ datasetReviewId: Uuid.UuidSchema, partial: PartialSchema }),
 })
 
 export const ReviewADatasetReviewPublished = Route({

@@ -6,7 +6,13 @@ import type { Page } from '../page.ts'
 import type { FlashMessageSchema } from './FlashMessage.ts'
 
 export type Response =
-  PageResponse | StreamlinePageResponse | TwoUpPageResponse | RedirectResponse | FlashMessageResponse | LogInResponse
+  | PageResponse
+  | StreamlinePageResponse
+  | TwoUpPageResponse
+  | PartialHtmlResponse
+  | RedirectResponse
+  | FlashMessageResponse
+  | LogInResponse
 
 export interface PageResponse {
   readonly _tag: 'PageResponse'
@@ -49,6 +55,11 @@ export interface TwoUpPageResponse {
   readonly aside: Html
   readonly main: Html
   readonly type: 'preprint' | 'dataset'
+}
+
+export interface PartialHtmlResponse {
+  readonly _tag: 'PartialHtmlResponse'
+  readonly html: Html
 }
 
 export interface RedirectResponse {
@@ -95,6 +106,11 @@ export const StreamlinePageResponse = (
 
 export const TwoUpPageResponse = (args: Omit<TwoUpPageResponse, '_tag'>): TwoUpPageResponse => ({
   _tag: 'TwoUpPageResponse',
+  ...args,
+})
+
+export const PartialHtmlResponse = (args: Omit<PartialHtmlResponse, '_tag'>): PartialHtmlResponse => ({
+  _tag: 'PartialHtmlResponse',
   ...args,
 })
 

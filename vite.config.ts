@@ -26,6 +26,7 @@ const entries = {
   'favicon.svg': path.resolve('assets', 'favicon.svg'),
   'html-editor': path.resolve('assets', 'html-editor.ts'),
   'notification-banner': path.resolve('assets', 'notification-banner.ts'),
+  'poll-partial': path.resolve('assets', 'poll-partial.ts'),
   'poll-redirect': path.resolve('assets', 'poll-redirect.ts'),
   'single-use-form': path.resolve('assets', 'single-use-form.ts'),
   'skip-link': path.resolve('assets', 'skip-link.ts'),

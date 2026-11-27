@@ -1507,7 +1507,9 @@ label {
 }
 
 :--button {
-  display: inline-block;
+  &:not([hidden]) {
+    display: inline-block;
+  }
   position: relative;
   inline-size: fit-content;
   min-inline-size: 4em;

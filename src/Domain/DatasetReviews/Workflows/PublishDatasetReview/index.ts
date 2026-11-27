@@ -21,6 +21,8 @@ export const layer = PublishDatasetReview.toLayer(
     function* ({ datasetReviewId }) {
       yield* Effect.annotateLogsScoped({ datasetReviewId })
 
+      yield* Effect.sleep('2 minutes')
+
       const { recordId, doi } = yield* Activity.make({
         name: 'CreateRecordOnZenodo',
         error: Errors.FailedToCreateRecordOnZenodo,
