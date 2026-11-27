@@ -1,5 +1,5 @@
 import { Schema } from 'effect'
-import { Uuid } from '../../types/index.ts'
+import { Doi, Uuid } from '../../types/index.ts'
 
 export type Draft = typeof Draft.Type
 
@@ -10,6 +10,14 @@ export const Draft = Schema.StructWithRest(
       Schema.Struct({
         record: Schema.Literals(['public', 'restricted']),
         files: Schema.Literals(['public', 'restricted']),
+      }),
+      [Schema.JsonObject],
+    ),
+    pids: Schema.StructWithRest(
+      Schema.Struct({
+        doi: Schema.optionalKey(
+          Schema.StructWithRest(Schema.Struct({ identifier: Doi.DoiSchema }), [Schema.JsonObject]),
+        ),
       }),
       [Schema.JsonObject],
     ),
