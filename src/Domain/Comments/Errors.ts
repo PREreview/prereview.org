@@ -37,3 +37,8 @@ export class UnableToCheckForAVerifiedEmailAddress extends Schema.TaggedError<Un
   'UnableToCheckForAVerifiedEmailAddress',
   { cause: Schema.optional(Schema.Defect()) },
 ) {}
+
+export class UnableToWithdrawCommentOnZenodo extends Schema.TaggedError<UnableToWithdrawCommentOnZenodo>()(
+  'UnableToWithdrawCommentOnZenodo',
+  { cause: Schema.optional(Schema.Defect()) },
+) {}

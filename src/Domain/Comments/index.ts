@@ -1,6 +1,7 @@
 import { Array, Context, Effect, Layer, Option, pipe, Scope, Struct } from 'effect'
 import type { Sharding } from 'effect/cluster'
 import type { WorkflowEngine } from 'effect/workflow'
+import type { ZenodoRecords } from '../../ExternalInteractions/index.ts'
 import type { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
 import * as Events from '../Events/index.ts'
 import { Commands, EventStore, EventSubscription, Queries } from '../Events/index.ts'
@@ -161,12 +162,14 @@ const ReactToCommentEventsNoDeps: Layer.Layer<
   | PublishCommentOnZenodo
   | Sharding.Sharding
   | WorkflowEngine.WorkflowEngine
+  | ZenodoRecords.ZenodoRecords
 > = EventSubscription.make('Comments/Reactions', {
   CommentWasStarted: ({ commentId }) =>
     Workflows.CheckIfUserHasAVerifiedEmailAddress.execute({ commentId }, { discard: true }),
   PublicationOfCommentWasRequested: ({ commentId }) =>
     Workflows.AssignCommentADoi.execute({ commentId }, { discard: true }),
   CommentWasAssignedADoi: ({ commentId, id }) => Workflows.PublishComment.execute({ commentId, id }, { discard: true }),
+  CommentWasWithdrawn: ({ commentId }) => Workflows.WithdrawCommentOnZenodo.execute({ commentId }, { discard: true }),
 }).pipe(Layer.merge(Workflows.workflowsLayer))
 
 export const ReactToCommentEvents = Layer.provide(ReactToCommentEventsNoDeps, layerZenodo)

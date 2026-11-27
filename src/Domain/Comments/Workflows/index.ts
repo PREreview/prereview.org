@@ -6,6 +6,7 @@ import * as Errors from '../Errors.ts'
 import { CreateRecordOnZenodo, RecordAssignedDoi } from './AssignADoi.ts'
 import { CheckIfUserHasAVerifiedEmailAddress as executeCheckIfUserHasAVerifiedEmailAddress } from './CheckIfUserHasAVerifiedEmailAddress.ts'
 import { PublishOnZenodo, RecordPublication } from './PublishComment.ts'
+import { WithdrawOnZenodo } from './WithdrawCommentOnZenodo.ts'
 
 export const AssignCommentADoi = Workflow.make('AssignCommentADoi', {
   error: Errors.UnableToAssignADoi,
@@ -28,6 +29,14 @@ export const PublishComment = Workflow.make('PublishComment', {
   payload: {
     commentId: Uuid.UuidSchema,
     id: Schema.Number,
+  },
+  idempotencyKey: Struct.get('commentId'),
+})
+
+export const WithdrawCommentOnZenodo = Workflow.make('WithdrawCommentOnZenodo', {
+  error: Errors.UnableToWithdrawCommentOnZenodo,
+  payload: {
+    commentId: Uuid.UuidSchema,
   },
   idempotencyKey: Struct.get('commentId'),
 })
@@ -109,5 +118,15 @@ export const workflowsLayer = Layer.mergeAll(
         retryWithBackoff(executionId, 'RecordPublication'),
       )
     }),
+  ),
+  WithdrawCommentOnZenodo.toLayer(({ commentId }, executionId) =>
+    pipe(
+      Activity.make({
+        name: 'WithdrawOnZenodo',
+        error: WithdrawCommentOnZenodo.errorSchema,
+        execute: WithdrawOnZenodo(commentId),
+      }),
+      retryWithBackoff(executionId, 'WithdrawOnZenodo'),
+    ),
   ),
 )
