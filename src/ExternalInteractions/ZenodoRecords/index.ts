@@ -9,6 +9,7 @@ import { CreateRecordForComment } from './CreateRecordForComment/index.ts'
 import { CreateRecordForDatasetReview } from './CreateRecordForDatasetReview/index.ts'
 import { GetDoiForDatasetReviewRecord } from './GetDoiForDatasetReviewRecord/index.ts'
 import { PublishRecord } from './PublishRecord/index.ts'
+import { PublishRecordForComment } from './PublishRecordForComment/index.ts'
 import { WithdrawRecordForComment } from './WithdrawRecordForComment/index.ts'
 import type { ZenodoRecordsConfig } from './ZenodoRecordsConfig.ts'
 
@@ -21,6 +22,8 @@ export { FailedToCreateRecordForDatasetReview } from './CreateRecordForDatasetRe
 export { FailedToGetRecordForDatasetReview } from './GetDoiForDatasetReviewRecord/index.ts'
 
 export { FailedToPublishRecord } from './PublishRecord/index.ts'
+
+export { FailedToPublishRecordForComment } from './PublishRecordForComment/index.ts'
 
 export { FailedToWithdrawRecordForComment } from './WithdrawRecordForComment/index.ts'
 
@@ -50,6 +53,12 @@ export class ZenodoRecords extends Context.Service<
     publishRecord: (
       ...args: Parameters<typeof PublishRecord>
     ) => Effect.Effect<Effect.Success<ReturnType<typeof PublishRecord>>, Effect.Error<ReturnType<typeof PublishRecord>>>
+    publishRecordForComment: (
+      ...args: Parameters<typeof PublishRecordForComment>
+    ) => Effect.Effect<
+      Effect.Success<ReturnType<typeof PublishRecordForComment>>,
+      Effect.Error<ReturnType<typeof PublishRecordForComment>>
+    >
     withdrawRecordForComment: (
       ...args: Parameters<typeof WithdrawRecordForComment>
     ) => Effect.Effect<
@@ -73,6 +82,10 @@ export const getDoiForDatasetReviewRecord = (
 export const publishRecord = (...args: Parameters<(typeof ZenodoRecords.Service)['publishRecord']>) =>
   ZenodoRecords.use(service => service.publishRecord(...args))
 
+export const publishRecordForComment = (
+  ...args: Parameters<(typeof ZenodoRecords.Service)['publishRecordForComment']>
+) => ZenodoRecords.use(service => service.publishRecordForComment(...args))
+
 export const withdrawRecordForComment = (
   ...args: Parameters<(typeof ZenodoRecords.Service)['withdrawRecordForComment']>
 ) => ZenodoRecords.use(service => service.withdrawRecordForComment(...args))
@@ -89,6 +102,7 @@ export const make: Effect.Effect<typeof ZenodoRecords.Service, never, ZenodoApi.
       createRecordForDatasetReview: flow(CreateRecordForDatasetReview, Effect.provide(context)),
       getDoiForDatasetReviewRecord: flow(GetDoiForDatasetReviewRecord, Effect.provide(context)),
       publishRecord: flow(PublishRecord, Effect.provide(context)),
+      publishRecordForComment: flow(PublishRecordForComment, Effect.provide(context)),
       withdrawRecordForComment: flow(WithdrawRecordForComment, Effect.provide(context)),
     }
   })
