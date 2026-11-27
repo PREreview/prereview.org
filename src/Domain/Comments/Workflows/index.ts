@@ -6,7 +6,10 @@ import * as Errors from '../Errors.ts'
 import { CreateRecordOnZenodo, RecordAssignedDoi } from './AssignADoi.ts'
 import { CheckIfUserHasAVerifiedEmailAddress as executeCheckIfUserHasAVerifiedEmailAddress } from './CheckIfUserHasAVerifiedEmailAddress.ts'
 import { PublishOnZenodo, RecordPublication } from './PublishComment.ts'
+import * as PublishCommentRecord from './PublishCommentRecord/index.ts'
 import { WithdrawOnZenodo } from './WithdrawCommentOnZenodo.ts'
+
+export { PublishCommentRecord } from './PublishCommentRecord/index.ts'
 
 export const AssignCommentADoi = Workflow.make('AssignCommentADoi', {
   error: Errors.UnableToAssignADoi,
@@ -65,6 +68,7 @@ const retryWithBackoff =
     )
 
 export const workflowsLayer = Layer.mergeAll(
+  PublishCommentRecord.layer,
   AssignCommentADoi.toLayer(({ commentId }, executionId) =>
     Effect.gen(function* () {
       const [doi, id] = yield* pipe(
