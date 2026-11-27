@@ -8,6 +8,8 @@ import { constructUrlsToInvalidatePrereview } from './ConstructUrlsToInvalidateP
 import { CreateRecordForDatasetReview } from './CreateRecordForDatasetReview/index.ts'
 import { GetDoiForDatasetReviewRecord } from './GetDoiForDatasetReviewRecord/index.ts'
 import { PublishRecord } from './PublishRecord/index.ts'
+import { WithdrawRecordForComment } from './WithdrawRecordForComment/index.ts'
+import type { ZenodoRecordsConfig } from './ZenodoRecordsConfig.ts'
 
 export * from './legacy-zenodo.ts'
 
@@ -16,6 +18,8 @@ export { FailedToCreateRecordForDatasetReview } from './CreateRecordForDatasetRe
 export { FailedToGetRecordForDatasetReview } from './GetDoiForDatasetReviewRecord/index.ts'
 
 export { FailedToPublishRecord } from './PublishRecord/index.ts'
+
+export { FailedToWithdrawRecordForComment } from './WithdrawRecordForComment/index.ts'
 
 export { ZenodoRecordsConfig } from './ZenodoRecordsConfig.ts'
 
@@ -37,6 +41,12 @@ export class ZenodoRecords extends Context.Service<
     publishRecord: (
       ...args: Parameters<typeof PublishRecord>
     ) => Effect.Effect<Effect.Success<ReturnType<typeof PublishRecord>>, Effect.Error<ReturnType<typeof PublishRecord>>>
+    withdrawRecordForComment: (
+      ...args: Parameters<typeof WithdrawRecordForComment>
+    ) => Effect.Effect<
+      Effect.Success<ReturnType<typeof WithdrawRecordForComment>>,
+      Effect.Error<ReturnType<typeof WithdrawRecordForComment>>
+    >
   }
 >()('ZenodoRecords') {}
 
@@ -51,15 +61,24 @@ export const getDoiForDatasetReviewRecord = (
 export const publishRecord = (...args: Parameters<(typeof ZenodoRecords.Service)['publishRecord']>) =>
   ZenodoRecords.use(service => service.publishRecord(...args))
 
-export const make: Effect.Effect<typeof ZenodoRecords.Service, never, ZenodoApi.Zenodo> = Effect.gen(function* () {
-  const context = yield* Effect.map(Effect.context<ZenodoApi.Zenodo>(), Context.omit(Scope.Scope))
+export const withdrawRecordForComment = (
+  ...args: Parameters<(typeof ZenodoRecords.Service)['withdrawRecordForComment']>
+) => ZenodoRecords.use(service => service.withdrawRecordForComment(...args))
 
-  return {
-    createRecordForDatasetReview: flow(CreateRecordForDatasetReview, Effect.provide(context)),
-    getDoiForDatasetReviewRecord: flow(GetDoiForDatasetReviewRecord, Effect.provide(context)),
-    publishRecord: flow(PublishRecord, Effect.provide(context)),
-  }
-})
+export const make: Effect.Effect<typeof ZenodoRecords.Service, never, ZenodoApi.Zenodo | ZenodoRecordsConfig> =
+  Effect.gen(function* () {
+    const context = yield* Effect.map(
+      Effect.context<ZenodoApi.Zenodo | ZenodoRecordsConfig>(),
+      Context.omit(Scope.Scope),
+    )
+
+    return {
+      createRecordForDatasetReview: flow(CreateRecordForDatasetReview, Effect.provide(context)),
+      getDoiForDatasetReviewRecord: flow(GetDoiForDatasetReviewRecord, Effect.provide(context)),
+      publishRecord: flow(PublishRecord, Effect.provide(context)),
+      withdrawRecordForComment: flow(WithdrawRecordForComment, Effect.provide(context)),
+    }
+  })
 
 export const layer = Layer.effect(ZenodoRecords, make)
 

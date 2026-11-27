@@ -23,8 +23,10 @@ export const Draft = Schema.StructWithRest(
     ),
     metadata: Schema.StructWithRest(
       Schema.Struct({
+        resource_type: Schema.StructWithRest(Schema.Struct({ id: Schema.String }), [Schema.JsonObject]),
         title: Schema.String,
         description: Schema.optionalKey(Schema.String),
+        publication_date: Schema.String,
       }),
       [Schema.JsonObject],
     ),
