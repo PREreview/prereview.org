@@ -34,6 +34,20 @@ export const depositMetadata = (): fc.Arbitrary<Zenodo.DepositMetadata> =>
     publicationType: fc.constant('peerreview'),
   })
 
+export const newDraft = (): fc.Arbitrary<Zenodo.NewDraft> =>
+  fc.record({
+    access: fc.record({
+      record: fc.constantFrom('public', 'restricted'),
+      files: fc.constantFrom('public', 'restricted'),
+    }),
+    files: fc.record({ enabled: fc.boolean() }),
+    metadata: fc.record({
+      resource_type: fc.record({ id: fc.string() }),
+      title: fc.string(),
+      description: fc.string(),
+    }),
+  })
+
 export const unsubmittedDeposition = (): fc.Arbitrary<Zenodo.UnsubmittedDeposition> =>
   fc.record({
     id: fc.integer(),
