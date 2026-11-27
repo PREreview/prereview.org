@@ -1,4 +1,4 @@
-import { Data, Effect } from 'effect'
+import { Data, Effect, Exit } from 'effect'
 import { Zenodo } from '../../../ExternalApis/index.ts'
 import { Temporal } from '../../../types/index.ts'
 import { CommentToZenodoRecord, type Comment } from './CommentToZenodoRecord.ts'
@@ -15,15 +15,24 @@ export const CreateRecordForComment = Effect.fn('ZenodoRecords.createRecordForCo
 
     const record = CommentToZenodoRecord({ ...comment, publicationDate })
 
-    const draft = yield* Zenodo.createDraft(record.draft)
+    return yield* Effect.acquireUseRelease(
+      Zenodo.createDraft(record.draft),
+      Effect.fnUntraced(function* (draft) {
+        const doi = yield* Zenodo.reserveDoi(draft)
 
-    const doi = yield* Zenodo.reserveDoi(draft)
+        yield* Zenodo.startDraftFileUpload({ draft, key: record.file.name })
+        yield* Zenodo.uploadDraftFileContent({ draft, file: record.file })
+        yield* Zenodo.commitDraftFile({ draft, key: record.file.name })
 
-    yield* Zenodo.startDraftFileUpload({ draft, key: record.file.name })
-    yield* Zenodo.uploadDraftFileContent({ draft, file: record.file })
-    yield* Zenodo.commitDraftFile({ draft, key: record.file.name })
-
-    return { recordId: draft.id, doi }
+        return { recordId: draft.id, doi }
+      }),
+      (draft, exit) =>
+        Exit.match(exit, {
+          onSuccess: () => Effect.void,
+          onFailure: () =>
+            Effect.ignore(Zenodo.deleteDraft(draft), { log: 'Warn', message: 'Unable to delete draft for comment' }),
+        }),
+    )
   },
   Effect.catchTag(
     ['HttpClientError', 'HttpBodyError', 'SchemaError'],
