@@ -1,36 +1,23 @@
-import { Array, Context, Effect, flow, Layer, Match, Option, pipe, Redacted, Scope, Struct, Tuple } from 'effect'
-import { FetchHttpClient } from 'effect/http'
+import { Context, Effect, Layer } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
-import { MakeDeprecatedLoggerEnv } from '../../DeprecatedServices.ts'
-import { Zenodo } from '../../ExternalApis/index.ts'
-import { ZenodoRecords } from '../../ExternalInteractions/index.ts'
-import { FeatureFlags } from '../../FeatureFlags.ts'
-import { PublicUrl } from '../../public-url.ts'
-import { EffectToFpts, FptsToEffect } from '../../RefactoringUtilities/index.ts'
 import type { FieldId } from '../../types/field.ts'
 import type { OrcidId, Uuid } from '../../types/index.ts'
 import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import type { ProfileId } from '../../types/profile-id.ts'
-import { Clubs } from '../Clubs/index.ts'
-import { DatasetReviewQueries } from '../DatasetReviews/index.ts'
-import * as Datasets from '../Datasets/index.ts'
-import { WasPrereviewRemoved } from '../PreprintReviews/index.ts'
-import type { Preprints } from '../Preprints/index.ts'
-import * as Prereviewers from '../Prereviewers/index.ts'
 import { GetFiveMostRecentPrereviews } from './GetFiveMostRecentPrereviews/index.ts'
 import { GetPrereviewsForClub } from './GetPrereviewsForClub/index.ts'
 import { GetPrereviewsForPrereviewer } from './GetPrereviewsForPrereviewer/index.ts'
 import { GetPrereviewsForProfile } from './GetPrereviewsForProfile/index.ts'
 import { GetPrereviewSummary } from './GetPrereviewSummary/index.ts'
-import {
+import type {
   PrereviewIsNotFound,
   PrereviewIsUnavailable,
   PrereviewsAreUnavailable,
   PrereviewsPageNotFound,
-  type PrereviewWasRemoved,
+  PrereviewWasRemoved,
   RecentDatasetPrereview,
-  type RecentPreprintPrereview,
-  type RecentPrereviews,
+  RecentPreprintPrereview,
+  RecentPrereviews,
 } from './Prereview.ts'
 import { SearchPrereviews } from './SearchPrereviews/index.ts'
 
@@ -84,17 +71,6 @@ export const search = (...args: Parameters<(typeof Prereviews.Service)['search']
 export const layer = Layer.effect(
   Prereviews,
   Effect.gen(function* () {
-    const context = yield* Effect.map(
-      Effect.context<Clubs | DatasetReviewQueries | Datasets.Datasets | Prereviewers.Prereviewers | Preprints>(),
-      Context.omit(Scope.Scope),
-    )
-    const clubs = yield* Clubs
-    const wasPrereviewRemoved = yield* WasPrereviewRemoved
-    const fetch = yield* FetchHttpClient.Fetch
-    const publicUrl = yield* PublicUrl
-    const zenodoApi = yield* Zenodo.ZenodoApi
-    const featureFlags = yield* FeatureFlags
-
     const getFiveMostRecent = yield* GetFiveMostRecentPrereviews
     const getPrereviewSummary = yield* GetPrereviewSummary
     const getPrereviewsForClub = yield* GetPrereviewsForClub
@@ -102,244 +78,13 @@ export const layer = Layer.effect(
     const getPrereviewsForProfile = yield* GetPrereviewsForProfile
     const searchPrereviews = yield* SearchPrereviews
 
-    const getClubByName = yield* EffectToFpts.makeTaskK(
-      flow(
-        clubs.getClubByName,
-        Effect.map(Option.some),
-        Effect.catchTag('ClubNotFound', () => Effect.succeedNone),
-      ),
-    )
-
     return {
-      getFiveMostRecent: featureFlags.useEventsForPreprintReviews
-        ? getFiveMostRecent
-        : Effect.gen(function* () {
-            const loggerEnv = yield* MakeDeprecatedLoggerEnv
-
-            const runtime = yield* Effect.context<Preprints>()
-
-            return yield* pipe(
-              FptsToEffect.readerTaskEither(ZenodoRecords.getRecentPrereviewsFromZenodo({ page: 1 }), {
-                fetch,
-                getClubByName,
-                ...loggerEnv,
-                publicUrl,
-                runtime,
-                zenodoApiKey: Redacted.value(zenodoApi.key),
-                zenodoUrl: zenodoApi.origin,
-              }),
-              Effect.map(Struct.get('recentPrereviews')),
-              Effect.andThen(
-                Effect.partition(
-                  Match.valueTags({
-                    RecentPreprintPrereview: prereview => Effect.succeed(prereview),
-                    DatasetReview: ({ id }) => getRecentDatasetPrereview(id),
-                  }),
-                  { concurrency: 'unbounded' },
-                ),
-              ),
-              Effect.map(Tuple.get(0)),
-              Effect.orElseSucceed(Array.empty),
-              Effect.withSpan('Prereviews.getFiveMostRecent'),
-            )
-          }).pipe(Effect.provide(context)),
-      getForClub: featureFlags.useEventsForPreprintReviews
-        ? getPrereviewsForClub
-        : Effect.fn('Prereviews.getForClub')(
-            function* (id) {
-              yield* Effect.annotateCurrentSpan({ id })
-
-              const loggerEnv = yield* MakeDeprecatedLoggerEnv
-
-              const club = yield* clubs.getClubDetails(id)
-
-              const runtime = yield* Effect.context<Preprints>()
-
-              return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForClubFromZenodo(club), {
-                fetch,
-                getClubByName,
-                publicUrl,
-                runtime,
-                zenodoApiKey: Redacted.value(zenodoApi.key),
-                zenodoUrl: zenodoApi.origin,
-                ...loggerEnv,
-              })
-            },
-            Effect.andThen(
-              Effect.forEach(
-                Match.valueTags({
-                  RecentPreprintPrereview: prereview => Effect.succeed(prereview),
-                  DatasetReview: ({ id }) => getRecentDatasetPrereview(id),
-                }),
-                { concurrency: 'unbounded' },
-              ),
-            ),
-            Effect.catchTag('ClubNotFound', () => Effect.succeed([])),
-            Effect.mapError(() => new PrereviewsAreUnavailable()),
-            Effect.provide(context),
-          ),
-      getForProfile: featureFlags.useEventsForPreprintReviews
-        ? getPrereviewsForProfile
-        : Effect.fn('Prereviews.getForProfile')(
-            function* (profile) {
-              yield* Effect.annotateCurrentSpan({ profile })
-
-              const loggerEnv = yield* MakeDeprecatedLoggerEnv
-
-              const runtime = yield* Effect.context<Preprints>()
-
-              return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForProfileFromZenodo(profile), {
-                fetch,
-                getClubByName,
-                publicUrl,
-                runtime,
-                zenodoApiKey: Redacted.value(zenodoApi.key),
-                zenodoUrl: zenodoApi.origin,
-                ...loggerEnv,
-              })
-            },
-            Effect.andThen(
-              Effect.forEach(
-                Match.valueTags({
-                  RecentPreprintPrereview: prereview => Effect.succeed(prereview),
-                  DatasetReview: ({ id }) => getRecentDatasetPrereview(id),
-                }),
-                { concurrency: 'unbounded' },
-              ),
-            ),
-            Effect.mapError(() => new PrereviewsAreUnavailable()),
-            Effect.provide(context),
-          ),
-      getForUser: featureFlags.useEventsForPreprintReviews
-        ? getPrereviewsForPrereviewer
-        : Effect.fn('Prereviews.getForUser')(
-            function* (user) {
-              yield* Effect.annotateCurrentSpan({ user })
-
-              const loggerEnv = yield* MakeDeprecatedLoggerEnv
-
-              const { pseudonym } = yield* Prereviewers.getPseudonymPersona(user)
-
-              const runtime = yield* Effect.context<Preprints>()
-
-              return yield* FptsToEffect.readerTaskEither(
-                ZenodoRecords.getPrereviewsForUserFromZenodo({ orcidId: user, pseudonym }),
-                {
-                  fetch,
-                  getClubByName,
-                  publicUrl,
-                  runtime,
-                  zenodoApiKey: Redacted.value(zenodoApi.key),
-                  zenodoUrl: zenodoApi.origin,
-                  ...loggerEnv,
-                },
-              )
-            },
-            Effect.andThen(
-              Effect.forEach(
-                Match.valueTags({
-                  RecentPreprintPrereview: prereview => Effect.succeed(prereview),
-                  DatasetReview: ({ id }) => getRecentDatasetPrereview(id),
-                }),
-                { concurrency: 'unbounded' },
-              ),
-            ),
-            Effect.mapError(() => new PrereviewsAreUnavailable()),
-            Effect.provide(context),
-          ),
-      getPrereviewSummary: featureFlags.useEventsForPreprintReviews
-        ? getPrereviewSummary
-        : Effect.fn('Prereviews.getPrereviewSummary')(function* (id) {
-            yield* Effect.annotateCurrentSpan({ id })
-
-            if (typeof id !== 'number') {
-              return yield* pipe(
-                getRecentDatasetPrereview(id),
-                Effect.catchTag(
-                  ['UnknownDatasetReview', 'DatasetReviewHasNotBeenPublished'],
-                  () => new PrereviewIsNotFound(),
-                ),
-                Effect.catchTag('DatasetReviewIsUnavailable', error => new PrereviewIsUnavailable({ cause: error })),
-              )
-            }
-
-            const loggerEnv = yield* MakeDeprecatedLoggerEnv
-
-            const runtime = yield* Effect.context<Preprints>()
-
-            return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewSummaryFromZenodo(id), {
-              fetch,
-              getClubByName,
-              runtime,
-              wasPrereviewRemoved,
-              zenodoApiKey: Redacted.value(zenodoApi.key),
-              zenodoUrl: zenodoApi.origin,
-              ...loggerEnv,
-            })
-          }, Effect.provide(context)),
-      search: featureFlags.useEventsForPreprintReviews
-        ? searchPrereviews
-        : Effect.fn('Prereviews.search')(
-            function* (args) {
-              yield* Effect.annotateCurrentSpan({ args })
-
-              const loggerEnv = yield* MakeDeprecatedLoggerEnv
-
-              const runtime = yield* Effect.context<Preprints>()
-
-              return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getRecentPrereviewsFromZenodo(args), {
-                fetch,
-                getClubByName,
-                ...loggerEnv,
-                publicUrl,
-                runtime,
-                zenodoApiKey: Redacted.value(zenodoApi.key),
-                zenodoUrl: zenodoApi.origin,
-              })
-            },
-            Effect.andThen(({ recentPrereviews, ...results }) =>
-              pipe(
-                Effect.succeed(results),
-                Effect.bind('recentPrereviews', () =>
-                  Effect.forEach(
-                    recentPrereviews,
-                    Match.valueTags({
-                      RecentPreprintPrereview: prereview => Effect.succeed(prereview),
-                      DatasetReview: ({ id }) =>
-                        Effect.mapError(getRecentDatasetPrereview(id), () => 'unavailable' as const),
-                    }),
-                    { concurrency: 'unbounded' },
-                  ),
-                ),
-              ),
-            ),
-            Effect.mapError(
-              flow(
-                Match.value,
-                Match.when('not-found', () => new PrereviewsPageNotFound()),
-                Match.when('unavailable', () => new PrereviewsAreUnavailable()),
-                Match.exhaustive,
-              ),
-            ),
-            Effect.provide(context),
-          ),
+      getFiveMostRecent,
+      getForClub: getPrereviewsForClub,
+      getForProfile: getPrereviewsForProfile,
+      getForUser: getPrereviewsForPrereviewer,
+      getPrereviewSummary,
+      search: searchPrereviews,
     }
   }),
-)
-
-const getRecentDatasetPrereview = flow(
-  DatasetReviewQueries.getPublishedDatasetReview,
-  Effect.map(
-    datasetReview =>
-      new RecentDatasetPrereview({
-        author: datasetReview.author,
-        otherAuthors: datasetReview.otherAuthors,
-        anonymousAuthors: datasetReview.anonymousAuthors,
-        club: Option.getOrUndefined(datasetReview.club),
-        dataset: Datasets.DatasetTitle.fromDataset(datasetReview.dataset),
-        doi: datasetReview.doi,
-        id: datasetReview.id,
-        published: datasetReview.published,
-      }),
-  ),
 )

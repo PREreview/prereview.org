@@ -316,7 +316,7 @@ const routerWithoutHyperTs = pipe(
         ({ field, language, page, query }) =>
           (env: Env) =>
             reviewsPage({
-              canSearchByText: !env.featureFlags.useEventsForPreprintReviews,
+              canSearchByText: false,
               field,
               language,
               locale: env.locale,

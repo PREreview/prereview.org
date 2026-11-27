@@ -1,19 +1,13 @@
-import { Array, Context, Effect, flow, Layer, Option, pipe, Redacted, Scope, Struct, type Result } from 'effect'
-import { FetchHttpClient } from 'effect/http'
-import { MakeDeprecatedLoggerEnv } from '../../DeprecatedServices.ts'
-import { Zenodo } from '../../ExternalApis/index.ts'
-import { ZenodoRecords } from '../../ExternalInteractions/index.ts'
-import { FeatureFlags } from '../../FeatureFlags.ts'
-import { EffectToFpts, FptsToEffect } from '../../RefactoringUtilities/index.ts'
+import { Array, Context, Effect, flow, Layer, pipe, Struct, type Result } from 'effect'
 import { Clubs } from '../Clubs/index.ts'
 import { Commands, Queries } from '../Events/index.ts'
-import type { IndeterminatePreprintId, PreprintId, Preprints } from '../Preprints/index.ts'
+import type { IndeterminatePreprintId, PreprintId } from '../Preprints/index.ts'
 import * as Prereviewers from '../Prereviewers/index.ts'
 import { AddPublishedReviewToAClub } from './AddPublishedReviewToAClub.ts'
 import { AddReviewToAClub } from './AddReviewToAClub.ts'
 import * as CheckIfUserCanAddToAClub from './CheckIfUserCanAddToAClub.ts'
 import { DeclareUseOfAi } from './DeclareUseOfAi.ts'
-import * as Errors from './Errors.ts'
+import type * as Errors from './Errors.ts'
 import * as FormStore from './FormStore.ts'
 import { fromPublishedPreprintReview, toPreprintPrereview } from './FromPublishedPreprintReview.ts'
 import {
@@ -40,7 +34,6 @@ import { ImportPreprintReview } from './ImportPreprintReview.ts'
 import { MarkReviewAsNotInAClub } from './MarkReviewAsNotInAClub.ts'
 import type { PreprintPrereview, Prereview } from './Prereview.ts'
 import { RecordEmailSentToNotifyPrereviewerOfAPrereview } from './RecordEmailSentToNotifyPrereviewerOfAPrereview.ts'
-import { WasPrereviewRemoved } from './WasPrereviewRemoved.ts'
 
 export interface RapidPrereview {
   readonly author: Prereviewers.Persona
@@ -148,23 +141,6 @@ export const layer = Layer.effect(
 
     const clubIds = yield* Effect.map(clubs.listClubs, Array.map(Struct.get('id')))
 
-    const context = yield* Effect.map(
-      Effect.context<Clubs | Prereviewers.Prereviewers | Preprints>(),
-      Context.omit(Scope.Scope),
-    )
-    const featureFlags = yield* FeatureFlags
-    const wasPrereviewRemoved = yield* WasPrereviewRemoved
-    const fetch = yield* FetchHttpClient.Fetch
-    const zenodoApi = yield* Zenodo.ZenodoApi
-
-    const getClubByName = yield* EffectToFpts.makeTaskK(
-      flow(
-        clubs.getClubByName,
-        Effect.map(Option.some),
-        Effect.catchTag('ClubNotFound', () => Effect.succeedNone),
-      ),
-    )
-
     const getPublishedPreprintReview = yield* GetPublishedPreprintReview
 
     const getPreprintReview = flow(getPublishedPreprintReview, Effect.map(fromPublishedPreprintReview))
@@ -178,52 +154,11 @@ export const layer = Layer.effect(
 
     const getAllPublishedPreprintReviewsForSciety = yield* GetAllPublishedPreprintReviewsForSciety
 
-    const getPreprintReviewFromZenodo = Effect.fn('PreprintReviews.getPreprintReviewFromZenodo')(function* (
-      id: number,
-    ) {
-      yield* Effect.annotateCurrentSpan({ id })
-
-      const loggerEnv = yield* MakeDeprecatedLoggerEnv
-
-      const runtime = yield* Effect.context<Preprints>()
-
-      return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewFromZenodo(id), {
-        fetch,
-        getClubByName,
-        runtime,
-        wasPrereviewRemoved,
-        zenodoApiKey: Redacted.value(zenodoApi.key),
-        zenodoUrl: zenodoApi.origin,
-        ...loggerEnv,
-      })
-    }, Effect.provide(context))
-
-    const getForPreprintFromZenodo = Effect.fn('PreprintReviews.getForPreprint')(
-      function* (id: PreprintId) {
-        yield* Effect.annotateCurrentSpan({ id })
-
-        const loggerEnv = yield* MakeDeprecatedLoggerEnv
-
-        return yield* FptsToEffect.readerTaskEither(ZenodoRecords.getPrereviewsForPreprintFromZenodo(id), {
-          fetch,
-          getClubByName,
-          zenodoApiKey: Redacted.value(zenodoApi.key),
-          zenodoUrl: zenodoApi.origin,
-          ...loggerEnv,
-        })
-      },
-      Effect.mapError(() => new Errors.PrereviewsAreUnavailable()),
-    )
-
     return {
-      getAllPublishedPreprintReviewsForReviewsData: featureFlags.useEventsForPreprintReviews
-        ? getAllPublishedPreprintReviewsForReviewsData
-        : Effect.die('Not implemented with Zenodo'),
-      getAllPublishedPreprintReviewsForSciety: featureFlags.useEventsForPreprintReviews
-        ? getAllPublishedPreprintReviewsForSciety
-        : Effect.die('Not implemented with Zenodo'),
-      getForPreprint: featureFlags.useEventsForPreprintReviews ? getForPreprint : getForPreprintFromZenodo,
-      getPreprintReview: featureFlags.useEventsForPreprintReviews ? getPreprintReview : getPreprintReviewFromZenodo,
+      getAllPublishedPreprintReviewsForReviewsData,
+      getAllPublishedPreprintReviewsForSciety,
+      getForPreprint,
+      getPreprintReview,
       getPreprintReviewIdForADoi: yield* GetPreprintReviewIdForADoi,
       getRapidPrereviewsForAPreprint: id =>
         pipe(

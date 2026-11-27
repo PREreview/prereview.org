@@ -10,7 +10,6 @@ export class FeatureFlags extends Context.Service<
     canLogInAsDemoUser: boolean
     canPreviewContentFromContentful: boolean
     canUseMatchmaking: (user?: User) => boolean
-    useEventsForPreprintReviews: boolean
     loadPagesFromContentful: boolean
     loadBlogFromContentful: boolean
     sendCoarNotifyMessages: boolean | 'sandbox'
@@ -25,7 +24,6 @@ const defaults = {
   canLogInAsDemoUser: false,
   canPreviewContentFromContentful: false,
   canUseMatchmaking: () => false,
-  useEventsForPreprintReviews: true,
   loadBlogFromContentful: false,
   loadPagesFromContentful: false,
   sendCoarNotifyMessages: false,

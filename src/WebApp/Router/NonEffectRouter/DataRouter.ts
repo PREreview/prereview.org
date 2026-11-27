@@ -1,26 +1,19 @@
-import { Array, Effect, Filter, flow, Match, Option, pipe, Record, Redacted } from 'effect'
+import { Array, Effect, Match, pipe, Record, Redacted } from 'effect'
 import { HttpServerResponse } from 'effect/http'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/lib/Monoid.js'
 import type * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
-import * as TE from 'fp-ts/lib/TaskEither.js'
-import { Clubs } from '../../../Domain/Clubs/index.ts'
 import {
   PreprintReviews,
   type PublishedPreprintReviewForReviewsData,
   type PublishedPreprintReviewForSciety,
 } from '../../../Domain/PreprintReviews/index.ts'
 import * as Prereviewers from '../../../Domain/Prereviewers/index.ts'
-import { ZenodoRecords } from '../../../ExternalInteractions/index.ts'
-import { withEnv } from '../../../Fpts.ts'
 import * as OrcidTokens from '../../../OrcidTokens.ts'
 import { EffectToFpts, FptsToEffect } from '../../../RefactoringUtilities/index.ts'
 import * as Routes from '../../../routes.ts'
 import * as StatusCodes from '../../../StatusCodes.ts'
 import { Temporal } from '../../../types/index.ts'
-import type { Name } from '../../../types/Name.ts'
-import type { OrcidId } from '../../../types/OrcidId.ts'
-import { isPseudonym } from '../../../types/Pseudonym.ts'
 import { getTopicDomain, getTopicField, getTopicSubfield } from '../../../types/Topic.ts'
 import { reviewsData, type GetPrereviewsEnv, type Prereview as ReviewsDataPrereview } from '../../reviews-data/index.ts'
 import {
@@ -63,59 +56,24 @@ export const DataRouter = pipe(
       function* (env: Env) {
         const json = yield* FptsToEffect.readerTaskEither(handler(env.authorizationHeader ?? ''), {
           scietyListToken: Redacted.value(env.scietyListToken),
-          getPrereviews: env.featureFlags.useEventsForPreprintReviews
-            ? () =>
-                EffectToFpts.toTaskEither(
-                  pipe(
-                    PreprintReviews.getAllPublishedPreprintReviewsForReviewsData,
-                    Effect.map(Array.map(toReviewsDataPrereview)),
-                    Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
-                  ),
-                  env.runtime,
-                )
-            : flow(
-                withEnv(() => ZenodoRecords.getPrereviewsForSciety, {
-                  fetch: env.fetch,
-                  getClubByName: EffectToFpts.toTaskK(
-                    flow(
-                      getClubByName,
-                      Effect.map(Option.some),
-                      Effect.catchTag('ClubNotFound', () => Effect.succeedNone),
-                    ),
-                    env.runtime,
-                  ),
-                  runtime: env.runtime,
-                  zenodoApiKey: Redacted.value(env.zenodoApiConfig.key),
-                  zenodoUrl: env.zenodoApiConfig.origin,
-                  ...env.logger,
-                }),
-                TE.map(Array.map(prereview => ({ ...prereview, authors: toReviewsDataAuthors(prereview.authors) }))),
+          getPrereviews: () =>
+            EffectToFpts.toTaskEither(
+              pipe(
+                PreprintReviews.getAllPublishedPreprintReviewsForReviewsData,
+                Effect.map(Array.map(toReviewsDataPrereview)),
+                Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
               ),
-          getPrereviewsForSciety: env.featureFlags.useEventsForPreprintReviews
-            ? () =>
-                EffectToFpts.toTaskEither(
-                  pipe(
-                    PreprintReviews.getAllPublishedPreprintReviewsForSciety,
-                    Effect.map(Array.map(toScietyListPrereview)),
-                    Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
-                  ),
-                  env.runtime,
-                )
-            : withEnv(() => ZenodoRecords.getPrereviewsForSciety, {
-                fetch: env.fetch,
-                getClubByName: EffectToFpts.toTaskK(
-                  flow(
-                    getClubByName,
-                    Effect.map(Option.some),
-                    Effect.catchTag('ClubNotFound', () => Effect.succeedNone),
-                  ),
-                  env.runtime,
-                ),
-                runtime: env.runtime,
-                zenodoApiKey: Redacted.value(env.zenodoApiConfig.key),
-                zenodoUrl: env.zenodoApiConfig.origin,
-                ...env.logger,
-              }),
+              env.runtime,
+            ),
+          getPrereviewsForSciety: () =>
+            EffectToFpts.toTaskEither(
+              pipe(
+                PreprintReviews.getAllPublishedPreprintReviewsForSciety,
+                Effect.map(Array.map(toScietyListPrereview)),
+                Effect.catchTag('PrereviewsAreUnavailable', () => Effect.fail('unavailable' as const)),
+              ),
+              env.runtime,
+            ),
           getUsers: () =>
             EffectToFpts.toTaskEither(
               pipe(
@@ -163,9 +121,6 @@ export const DataRouter = pipe(
   ) => Effect.Effect<HttpServerResponse.HttpServerResponse, never, EffectToFpts.ContextServices<Env['runtime']>>
 >
 
-const getClubByName = (...args: Parameters<(typeof Clubs.Service)['getClubByName']>) =>
-  Clubs.use(service => service.getClubByName(...args))
-
 const toReviewsDataPrereview = (prereview: PublishedPreprintReviewForReviewsData): ReviewsDataPrereview => ({
   preprint: prereview.preprint,
   createdAt:
@@ -205,22 +160,3 @@ const toScietyListPrereview = (prereview: PublishedPreprintReviewForSciety): Sci
     }),
   ),
 })
-
-const toReviewsDataAuthors = (
-  authors: ReadonlyArray<{ name: Name; orcid?: OrcidId }>,
-): ReviewsDataPrereview['authors'] => Array.filterMap(authors, Filter.fromPredicateOption(toReviewsDataAuthor))
-
-const toReviewsDataAuthor = (author: {
-  name: Name
-  orcid?: OrcidId
-}): Option.Option<ReviewsDataPrereview['authors'][number]> => {
-  if (author.orcid !== undefined) {
-    return Option.some({ orcid: author.orcid })
-  }
-
-  if (isPseudonym(author.name)) {
-    return Option.some({ pseudonym: author.name })
-  }
-
-  return Option.none()
-}
