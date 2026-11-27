@@ -1,6 +1,10 @@
-import { URL } from 'node:url'
-import { type Record, RecordC } from 'zenodo-ts'
+import { Temporal } from '@js-temporal/polyfill'
+import { Option } from 'effect'
+import * as Events from '../src/Domain/Events/index.ts'
+import { BiorxivPreprintId } from '../src/Domain/Preprints/index.ts'
+import { html } from '../src/html.ts'
 import { Doi } from '../src/types/Doi.ts'
+import { Name } from '../src/types/Name.ts'
 import { OrcidId } from '../src/types/OrcidId.ts'
 import {
   areLoggedIn,
@@ -15,70 +19,42 @@ import {
   willPublishAComment,
 } from './base.ts'
 
-const test = baseTest.extend(usePostgresDB)
+const test = baseTest.extend(usePostgresDB).extend({
+  seedEvents: async ({ seedEvents }, use) => {
+    await use([
+      ...seedEvents,
+      new Events.PreprintReviewImported({
+        authors: [
+          {
+            _tag: 'PublicPersona',
+            name: Option.some(Name('Josiah Carberry')),
+            orcidId: OrcidId('0000-0002-1825-0097'),
+          },
+        ],
+        otherAuthors: 0,
+        doi: Doi('10.5072/zenodo.1061864'),
+        id: 1061864,
+        license: 'CC-BY-4.0',
+        published: Temporal.PlainDate.from('2022-07-05'),
+        preprint: new BiorxivPreprintId({ value: Doi('10.1101/2022.01.13.476201') }),
+        live: false,
+        useOfAi: { _tag: 'NotAnswered' },
+        competingInterests: { _tag: 'No' },
+        language: 'en',
+        content: {
+          _tag: 'Full',
+          text: html`<h1>Some title</h1>
+            <p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>`,
+        },
+        topics: [],
+      }),
+    ])
+  },
+})
 
 test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAComment)(
   'can write a comment on a PREreview',
-  async ({ fetch, javaScriptEnabled, page }) => {
-    const record: Record = {
-      conceptdoi: Doi('10.5072/zenodo.1061863'),
-      conceptrecid: 1061863,
-      files: [
-        {
-          links: {
-            self: new URL('http://example.com/review.html/content'),
-          },
-          key: 'review.html',
-          size: 58,
-        },
-      ],
-      id: 1061864,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
-      metadata: {
-        access_right: 'open',
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [
-          { name: 'Jingfang Hao', orcid: OrcidId('0000-0003-4436-3420') },
-          { name: 'Pierrick Bru', orcid: OrcidId('0000-0001-5854-0905') },
-          { name: 'Alizée Malnoë', orcid: OrcidId('0000-0002-8777-3174') },
-          { name: 'Aurélie Crepin', orcid: OrcidId('0000-0002-4754-6823') },
-          { name: 'Jack Forsman', orcid: OrcidId('0000-0002-5111-8901') },
-          { name: 'Domenica Farci', orcid: OrcidId('0000-0002-3691-2699') },
-        ],
-        description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-        doi: Doi('10.5072/zenodo.1061864'),
-        license: { id: 'cc-by-4.0' },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.1061863',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
-        },
-        title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
-      },
-    }
-
-    fetch
-      .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
-      .get('http://example.com/review.html/content', {
-        body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      })
-
+  async ({ javaScriptEnabled, page }) => {
     await page.goto('/reviews/1061864', { waitUntil: 'commit' })
     await page.getByRole('link', { name: 'Write a comment' }).click()
 
@@ -137,66 +113,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishACommen
   },
 )
 
-test('can choose a locale before starting', async ({ fetch, page }) => {
-  const record: Record = {
-    conceptdoi: Doi('10.5072/zenodo.1061863'),
-    conceptrecid: 1061863,
-    files: [
-      {
-        links: {
-          self: new URL('http://example.com/review.html/content'),
-        },
-        key: 'review.html',
-        size: 58,
-      },
-    ],
-    id: 1061864,
-    links: {
-      latest: new URL('http://example.com/latest'),
-      latest_html: new URL('http://example.com/latest_html'),
-    },
-    metadata: {
-      access_right: 'open',
-      communities: [{ id: 'prereview-reviews' }],
-      creators: [
-        { name: 'Jingfang Hao', orcid: OrcidId('0000-0003-4436-3420') },
-        { name: 'Pierrick Bru', orcid: OrcidId('0000-0001-5854-0905') },
-        { name: 'Alizée Malnoë', orcid: OrcidId('0000-0002-8777-3174') },
-        { name: 'Aurélie Crepin', orcid: OrcidId('0000-0002-4754-6823') },
-        { name: 'Jack Forsman', orcid: OrcidId('0000-0002-5111-8901') },
-        { name: 'Domenica Farci', orcid: OrcidId('0000-0002-3691-2699') },
-      ],
-      description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      doi: Doi('10.5072/zenodo.1061864'),
-      license: { id: 'cc-by-4.0' },
-      publication_date: new Date('2022-07-05'),
-      related_identifiers: [
-        {
-          identifier: '10.1101/2022.01.13.476201',
-          relation: 'reviews',
-          resource_type: 'publication-preprint',
-          scheme: 'doi',
-        },
-        {
-          identifier: '10.5072/zenodo.1061863',
-          relation: 'isVersionOf',
-          scheme: 'doi',
-        },
-      ],
-      resource_type: {
-        type: 'publication',
-        subtype: 'peerreview',
-      },
-      title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
-    },
-  }
-
-  fetch
-    .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
-    .get('http://example.com/review.html/content', {
-      body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-    })
-
+test('can choose a locale before starting', async ({ page }) => {
   await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'português (Brasil)' }).click()
 
@@ -205,66 +122,7 @@ test('can choose a locale before starting', async ({ fetch, page }) => {
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'can change the comment after previewing',
-  async ({ fetch, page }) => {
-    const record: Record = {
-      conceptdoi: Doi('10.5072/zenodo.1061863'),
-      conceptrecid: 1061863,
-      files: [
-        {
-          links: {
-            self: new URL('http://example.com/review.html/content'),
-          },
-          key: 'review.html',
-          size: 58,
-        },
-      ],
-      id: 1061864,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
-      metadata: {
-        access_right: 'open',
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [
-          { name: 'Jingfang Hao', orcid: OrcidId('0000-0003-4436-3420') },
-          { name: 'Pierrick Bru', orcid: OrcidId('0000-0001-5854-0905') },
-          { name: 'Alizée Malnoë', orcid: OrcidId('0000-0002-8777-3174') },
-          { name: 'Aurélie Crepin', orcid: OrcidId('0000-0002-4754-6823') },
-          { name: 'Jack Forsman', orcid: OrcidId('0000-0002-5111-8901') },
-          { name: 'Domenica Farci', orcid: OrcidId('0000-0002-3691-2699') },
-        ],
-        description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-        doi: Doi('10.5072/zenodo.1061864'),
-        license: { id: 'cc-by-4.0' },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.1061863',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
-        },
-        title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
-      },
-    }
-
-    fetch
-      .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
-      .get('http://example.com/review.html/content', {
-        body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      })
-
+  async ({ page }) => {
     await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await waitForEditor(page.getByLabel('Write your comment'))
@@ -299,66 +157,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'can change your name after previewing',
-  async ({ fetch, page }) => {
-    const record: Record = {
-      conceptdoi: Doi('10.5072/zenodo.1061863'),
-      conceptrecid: 1061863,
-      files: [
-        {
-          links: {
-            self: new URL('http://example.com/review.html/content'),
-          },
-          key: 'review.html',
-          size: 58,
-        },
-      ],
-      id: 1061864,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
-      metadata: {
-        access_right: 'open',
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [
-          { name: 'Jingfang Hao', orcid: OrcidId('0000-0003-4436-3420') },
-          { name: 'Pierrick Bru', orcid: OrcidId('0000-0001-5854-0905') },
-          { name: 'Alizée Malnoë', orcid: OrcidId('0000-0002-8777-3174') },
-          { name: 'Aurélie Crepin', orcid: OrcidId('0000-0002-4754-6823') },
-          { name: 'Jack Forsman', orcid: OrcidId('0000-0002-5111-8901') },
-          { name: 'Domenica Farci', orcid: OrcidId('0000-0002-3691-2699') },
-        ],
-        description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-        doi: Doi('10.5072/zenodo.1061864'),
-        license: { id: 'cc-by-4.0' },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.1061863',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
-        },
-        title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
-      },
-    }
-
-    fetch
-      .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
-      .get('http://example.com/review.html/content', {
-        body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      })
-
+  async ({ page }) => {
     await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await waitForEditor(page.getByLabel('Write your comment'))
@@ -384,66 +183,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'can change the competing interests after previewing',
-  async ({ fetch, page }) => {
-    const record: Record = {
-      conceptdoi: Doi('10.5072/zenodo.1061863'),
-      conceptrecid: 1061863,
-      files: [
-        {
-          links: {
-            self: new URL('http://example.com/review.html/content'),
-          },
-          key: 'review.html',
-          size: 58,
-        },
-      ],
-      id: 1061864,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
-      metadata: {
-        access_right: 'open',
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [
-          { name: 'Jingfang Hao', orcid: OrcidId('0000-0003-4436-3420') },
-          { name: 'Pierrick Bru', orcid: OrcidId('0000-0001-5854-0905') },
-          { name: 'Alizée Malnoë', orcid: OrcidId('0000-0002-8777-3174') },
-          { name: 'Aurélie Crepin', orcid: OrcidId('0000-0002-4754-6823') },
-          { name: 'Jack Forsman', orcid: OrcidId('0000-0002-5111-8901') },
-          { name: 'Domenica Farci', orcid: OrcidId('0000-0002-3691-2699') },
-        ],
-        description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-        doi: Doi('10.5072/zenodo.1061864'),
-        license: { id: 'cc-by-4.0' },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.1061863',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
-        },
-        title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
-      },
-    }
-
-    fetch
-      .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
-      .get('http://example.com/review.html/content', {
-        body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      })
-
+  async ({ page }) => {
     await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await waitForEditor(page.getByLabel('Write your comment'))
@@ -472,66 +212,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'are returned to the next step if you have already started a comment on a PREreview',
-  async ({ fetch, page }) => {
-    const record: Record = {
-      conceptdoi: Doi('10.5072/zenodo.1061863'),
-      conceptrecid: 1061863,
-      files: [
-        {
-          links: {
-            self: new URL('http://example.com/review.html/content'),
-          },
-          key: 'review.html',
-          size: 58,
-        },
-      ],
-      id: 1061864,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
-      metadata: {
-        access_right: 'open',
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [
-          { name: 'Jingfang Hao', orcid: OrcidId('0000-0003-4436-3420') },
-          { name: 'Pierrick Bru', orcid: OrcidId('0000-0001-5854-0905') },
-          { name: 'Alizée Malnoë', orcid: OrcidId('0000-0002-8777-3174') },
-          { name: 'Aurélie Crepin', orcid: OrcidId('0000-0002-4754-6823') },
-          { name: 'Jack Forsman', orcid: OrcidId('0000-0002-5111-8901') },
-          { name: 'Domenica Farci', orcid: OrcidId('0000-0002-3691-2699') },
-        ],
-        description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-        doi: Doi('10.5072/zenodo.1061864'),
-        license: { id: 'cc-by-4.0' },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.1061863',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
-        },
-        title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
-      },
-    }
-
-    fetch
-      .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
-      .get('http://example.com/review.html/content', {
-        body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      })
-
+  async ({ page }) => {
     await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await waitForEditor(page.getByLabel('Write your comment'))
@@ -553,66 +234,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'can go back through the form',
-  async ({ fetch, javaScriptEnabled, page }) => {
-    const record: Record = {
-      conceptdoi: Doi('10.5072/zenodo.1061863'),
-      conceptrecid: 1061863,
-      files: [
-        {
-          links: {
-            self: new URL('http://example.com/review.html/content'),
-          },
-          key: 'review.html',
-          size: 58,
-        },
-      ],
-      id: 1061864,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
-      metadata: {
-        access_right: 'open',
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [
-          { name: 'Jingfang Hao', orcid: OrcidId('0000-0003-4436-3420') },
-          { name: 'Pierrick Bru', orcid: OrcidId('0000-0001-5854-0905') },
-          { name: 'Alizée Malnoë', orcid: OrcidId('0000-0002-8777-3174') },
-          { name: 'Aurélie Crepin', orcid: OrcidId('0000-0002-4754-6823') },
-          { name: 'Jack Forsman', orcid: OrcidId('0000-0002-5111-8901') },
-          { name: 'Domenica Farci', orcid: OrcidId('0000-0002-3691-2699') },
-        ],
-        description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-        doi: Doi('10.5072/zenodo.1061864'),
-        license: { id: 'cc-by-4.0' },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.1061863',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
-        },
-        title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
-      },
-    }
-
-    fetch
-      .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
-      .get('http://example.com/review.html/content', {
-        body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      })
-
+  async ({ javaScriptEnabled, page }) => {
     await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await waitForEditor(page.getByLabel('Write your comment'))
@@ -659,66 +281,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'see existing values when going back a step',
-  async ({ fetch, javaScriptEnabled, page }) => {
-    const record: Record = {
-      conceptdoi: Doi('10.5072/zenodo.1061863'),
-      conceptrecid: 1061863,
-      files: [
-        {
-          links: {
-            self: new URL('http://example.com/review.html/content'),
-          },
-          key: 'review.html',
-          size: 58,
-        },
-      ],
-      id: 1061864,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
-      metadata: {
-        access_right: 'open',
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [
-          { name: 'Jingfang Hao', orcid: OrcidId('0000-0003-4436-3420') },
-          { name: 'Pierrick Bru', orcid: OrcidId('0000-0001-5854-0905') },
-          { name: 'Alizée Malnoë', orcid: OrcidId('0000-0002-8777-3174') },
-          { name: 'Aurélie Crepin', orcid: OrcidId('0000-0002-4754-6823') },
-          { name: 'Jack Forsman', orcid: OrcidId('0000-0002-5111-8901') },
-          { name: 'Domenica Farci', orcid: OrcidId('0000-0002-3691-2699') },
-        ],
-        description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-        doi: Doi('10.5072/zenodo.1061864'),
-        license: { id: 'cc-by-4.0' },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.1061863',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
-        },
-        title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
-      },
-    }
-
-    fetch
-      .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
-      .get('http://example.com/review.html/content', {
-        body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      })
-
+  async ({ javaScriptEnabled, page }) => {
     await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await waitForEditor(page.getByLabel('Write your comment'))
@@ -761,66 +324,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to give your email address',
-  async ({ javaScriptEnabled, emails, fetch, page }) => {
-    const record: Record = {
-      conceptdoi: Doi('10.5072/zenodo.1061863'),
-      conceptrecid: 1061863,
-      files: [
-        {
-          links: {
-            self: new URL('http://example.com/review.html/content'),
-          },
-          key: 'review.html',
-          size: 58,
-        },
-      ],
-      id: 1061864,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
-      metadata: {
-        access_right: 'open',
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [
-          { name: 'Jingfang Hao', orcid: OrcidId('0000-0003-4436-3420') },
-          { name: 'Pierrick Bru', orcid: OrcidId('0000-0001-5854-0905') },
-          { name: 'Alizée Malnoë', orcid: OrcidId('0000-0002-8777-3174') },
-          { name: 'Aurélie Crepin', orcid: OrcidId('0000-0002-4754-6823') },
-          { name: 'Jack Forsman', orcid: OrcidId('0000-0002-5111-8901') },
-          { name: 'Domenica Farci', orcid: OrcidId('0000-0002-3691-2699') },
-        ],
-        description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-        doi: Doi('10.5072/zenodo.1061864'),
-        license: { id: 'cc-by-4.0' },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.1061863',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
-        },
-        title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
-      },
-    }
-
-    fetch
-      .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
-      .get('http://example.com/review.html/content', {
-        body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      })
-
+  async ({ javaScriptEnabled, emails, page }) => {
     await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await waitForEditor(page.getByLabel('Write your comment'))
@@ -861,66 +365,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAnUnverifiedEmailAddress)(
   'have to verify your email address',
-  async ({ javaScriptEnabled, emails, fetch, page }) => {
-    const record: Record = {
-      conceptdoi: Doi('10.5072/zenodo.1061863'),
-      conceptrecid: 1061863,
-      files: [
-        {
-          links: {
-            self: new URL('http://example.com/review.html/content'),
-          },
-          key: 'review.html',
-          size: 58,
-        },
-      ],
-      id: 1061864,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
-      metadata: {
-        access_right: 'open',
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [
-          { name: 'Jingfang Hao', orcid: OrcidId('0000-0003-4436-3420') },
-          { name: 'Pierrick Bru', orcid: OrcidId('0000-0001-5854-0905') },
-          { name: 'Alizée Malnoë', orcid: OrcidId('0000-0002-8777-3174') },
-          { name: 'Aurélie Crepin', orcid: OrcidId('0000-0002-4754-6823') },
-          { name: 'Jack Forsman', orcid: OrcidId('0000-0002-5111-8901') },
-          { name: 'Domenica Farci', orcid: OrcidId('0000-0002-3691-2699') },
-        ],
-        description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-        doi: Doi('10.5072/zenodo.1061864'),
-        license: { id: 'cc-by-4.0' },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.1061863',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
-        },
-        title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
-      },
-    }
-
-    fetch
-      .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
-      .get('http://example.com/review.html/content', {
-        body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      })
-
+  async ({ javaScriptEnabled, emails, page }) => {
     await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await waitForEditor(page.getByLabel('Write your comment'))
@@ -960,66 +405,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAnUnverifiedEmailAddress)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn)("aren't told about ORCID when already logged in", async ({ fetch, page }) => {
-  const record: Record = {
-    conceptdoi: Doi('10.5072/zenodo.1061863'),
-    conceptrecid: 1061863,
-    files: [
-      {
-        links: {
-          self: new URL('http://example.com/review.html/content'),
-        },
-        key: 'review.html',
-        size: 58,
-      },
-    ],
-    id: 1061864,
-    links: {
-      latest: new URL('http://example.com/latest'),
-      latest_html: new URL('http://example.com/latest_html'),
-    },
-    metadata: {
-      access_right: 'open',
-      communities: [{ id: 'prereview-reviews' }],
-      creators: [
-        { name: 'Jingfang Hao', orcid: OrcidId('0000-0003-4436-3420') },
-        { name: 'Pierrick Bru', orcid: OrcidId('0000-0001-5854-0905') },
-        { name: 'Alizée Malnoë', orcid: OrcidId('0000-0002-8777-3174') },
-        { name: 'Aurélie Crepin', orcid: OrcidId('0000-0002-4754-6823') },
-        { name: 'Jack Forsman', orcid: OrcidId('0000-0002-5111-8901') },
-        { name: 'Domenica Farci', orcid: OrcidId('0000-0002-3691-2699') },
-      ],
-      description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      doi: Doi('10.5072/zenodo.1061864'),
-      license: { id: 'cc-by-4.0' },
-      publication_date: new Date('2022-07-05'),
-      related_identifiers: [
-        {
-          identifier: '10.1101/2022.01.13.476201',
-          relation: 'reviews',
-          resource_type: 'publication-preprint',
-          scheme: 'doi',
-        },
-        {
-          identifier: '10.5072/zenodo.1061863',
-          relation: 'isVersionOf',
-          scheme: 'doi',
-        },
-      ],
-      resource_type: {
-        type: 'publication',
-        subtype: 'peerreview',
-      },
-      title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
-    },
-  }
-
-  fetch
-    .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
-    .get('http://example.com/review.html/content', {
-      body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-    })
-
+test.extend(canLogIn).extend(areLoggedIn)("aren't told about ORCID when already logged in", async ({ page }) => {
   await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a comment')
@@ -1030,66 +416,7 @@ test.extend(canLogIn).extend(areLoggedIn)("aren't told about ORCID when already 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write your comment')
 })
 
-test.extend(canLogIn).extend(areLoggedIn)('have to enter a comment', async ({ javaScriptEnabled, fetch, page }) => {
-  const record: Record = {
-    conceptdoi: Doi('10.5072/zenodo.1061863'),
-    conceptrecid: 1061863,
-    files: [
-      {
-        links: {
-          self: new URL('http://example.com/review.html/content'),
-        },
-        key: 'review.html',
-        size: 58,
-      },
-    ],
-    id: 1061864,
-    links: {
-      latest: new URL('http://example.com/latest'),
-      latest_html: new URL('http://example.com/latest_html'),
-    },
-    metadata: {
-      access_right: 'open',
-      communities: [{ id: 'prereview-reviews' }],
-      creators: [
-        { name: 'Jingfang Hao', orcid: OrcidId('0000-0003-4436-3420') },
-        { name: 'Pierrick Bru', orcid: OrcidId('0000-0001-5854-0905') },
-        { name: 'Alizée Malnoë', orcid: OrcidId('0000-0002-8777-3174') },
-        { name: 'Aurélie Crepin', orcid: OrcidId('0000-0002-4754-6823') },
-        { name: 'Jack Forsman', orcid: OrcidId('0000-0002-5111-8901') },
-        { name: 'Domenica Farci', orcid: OrcidId('0000-0002-3691-2699') },
-      ],
-      description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      doi: Doi('10.5072/zenodo.1061864'),
-      license: { id: 'cc-by-4.0' },
-      publication_date: new Date('2022-07-05'),
-      related_identifiers: [
-        {
-          identifier: '10.1101/2022.01.13.476201',
-          relation: 'reviews',
-          resource_type: 'publication-preprint',
-          scheme: 'doi',
-        },
-        {
-          identifier: '10.5072/zenodo.1061863',
-          relation: 'isVersionOf',
-          scheme: 'doi',
-        },
-      ],
-      resource_type: {
-        type: 'publication',
-        subtype: 'peerreview',
-      },
-      title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
-    },
-  }
-
-  fetch
-    .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
-    .get('http://example.com/review.html/content', {
-      body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-    })
-
+test.extend(canLogIn).extend(areLoggedIn)('have to enter a comment', async ({ javaScriptEnabled, page }) => {
   await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await waitForEditor(page.getByLabel('Write your comment'))
@@ -1120,66 +447,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to enter a comment', async ({ ja
   await expect(page.getByLabel('Write your comment')).toHaveAttribute('aria-invalid', 'true')
 })
 
-test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ javaScriptEnabled, fetch, page }) => {
-  const record: Record = {
-    conceptdoi: Doi('10.5072/zenodo.1061863'),
-    conceptrecid: 1061863,
-    files: [
-      {
-        links: {
-          self: new URL('http://example.com/review.html/content'),
-        },
-        key: 'review.html',
-        size: 58,
-      },
-    ],
-    id: 1061864,
-    links: {
-      latest: new URL('http://example.com/latest'),
-      latest_html: new URL('http://example.com/latest_html'),
-    },
-    metadata: {
-      access_right: 'open',
-      communities: [{ id: 'prereview-reviews' }],
-      creators: [
-        { name: 'Jingfang Hao', orcid: OrcidId('0000-0003-4436-3420') },
-        { name: 'Pierrick Bru', orcid: OrcidId('0000-0001-5854-0905') },
-        { name: 'Alizée Malnoë', orcid: OrcidId('0000-0002-8777-3174') },
-        { name: 'Aurélie Crepin', orcid: OrcidId('0000-0002-4754-6823') },
-        { name: 'Jack Forsman', orcid: OrcidId('0000-0002-5111-8901') },
-        { name: 'Domenica Farci', orcid: OrcidId('0000-0002-3691-2699') },
-      ],
-      description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      doi: Doi('10.5072/zenodo.1061864'),
-      license: { id: 'cc-by-4.0' },
-      publication_date: new Date('2022-07-05'),
-      related_identifiers: [
-        {
-          identifier: '10.1101/2022.01.13.476201',
-          relation: 'reviews',
-          resource_type: 'publication-preprint',
-          scheme: 'doi',
-        },
-        {
-          identifier: '10.5072/zenodo.1061863',
-          relation: 'isVersionOf',
-          scheme: 'doi',
-        },
-      ],
-      resource_type: {
-        type: 'publication',
-        subtype: 'peerreview',
-      },
-      title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
-    },
-  }
-
-  fetch
-    .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
-    .get('http://example.com/review.html/content', {
-      body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-    })
-
+test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ javaScriptEnabled, page }) => {
   await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
   await page.getByRole('button', { name: 'Start now' }).click()
   await waitForEditor(page.getByLabel('Write your comment'))
@@ -1206,66 +474,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ java
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to declare any competing interests',
-  async ({ javaScriptEnabled, fetch, page }) => {
-    const record: Record = {
-      conceptdoi: Doi('10.5072/zenodo.1061863'),
-      conceptrecid: 1061863,
-      files: [
-        {
-          links: {
-            self: new URL('http://example.com/review.html/content'),
-          },
-          key: 'review.html',
-          size: 58,
-        },
-      ],
-      id: 1061864,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
-      metadata: {
-        access_right: 'open',
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [
-          { name: 'Jingfang Hao', orcid: OrcidId('0000-0003-4436-3420') },
-          { name: 'Pierrick Bru', orcid: OrcidId('0000-0001-5854-0905') },
-          { name: 'Alizée Malnoë', orcid: OrcidId('0000-0002-8777-3174') },
-          { name: 'Aurélie Crepin', orcid: OrcidId('0000-0002-4754-6823') },
-          { name: 'Jack Forsman', orcid: OrcidId('0000-0002-5111-8901') },
-          { name: 'Domenica Farci', orcid: OrcidId('0000-0002-3691-2699') },
-        ],
-        description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-        doi: Doi('10.5072/zenodo.1061864'),
-        license: { id: 'cc-by-4.0' },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.1061863',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
-        },
-        title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
-      },
-    }
-
-    fetch
-      .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
-      .get('http://example.com/review.html/content', {
-        body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      })
-
+  async ({ javaScriptEnabled, page }) => {
     await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await waitForEditor(page.getByLabel('Write your comment'))
@@ -1310,66 +519,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to agree to the Code of Conduct',
-  async ({ javaScriptEnabled, fetch, page }) => {
-    const record: Record = {
-      conceptdoi: Doi('10.5072/zenodo.1061863'),
-      conceptrecid: 1061863,
-      files: [
-        {
-          links: {
-            self: new URL('http://example.com/review.html/content'),
-          },
-          key: 'review.html',
-          size: 58,
-        },
-      ],
-      id: 1061864,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
-      metadata: {
-        access_right: 'open',
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [
-          { name: 'Jingfang Hao', orcid: OrcidId('0000-0003-4436-3420') },
-          { name: 'Pierrick Bru', orcid: OrcidId('0000-0001-5854-0905') },
-          { name: 'Alizée Malnoë', orcid: OrcidId('0000-0002-8777-3174') },
-          { name: 'Aurélie Crepin', orcid: OrcidId('0000-0002-4754-6823') },
-          { name: 'Jack Forsman', orcid: OrcidId('0000-0002-5111-8901') },
-          { name: 'Domenica Farci', orcid: OrcidId('0000-0002-3691-2699') },
-        ],
-        description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-        doi: Doi('10.5072/zenodo.1061864'),
-        license: { id: 'cc-by-4.0' },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.1061863',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
-        },
-        title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
-      },
-    }
-
-    fetch
-      .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
-      .get('http://example.com/review.html/content', {
-        body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      })
-
+  async ({ javaScriptEnabled, page }) => {
     await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await waitForEditor(page.getByLabel('Write your comment'))
@@ -1397,108 +547,44 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn)(
-  'have to enter an email address',
-  async ({ javaScriptEnabled, fetch, page }) => {
-    const record: Record = {
-      conceptdoi: Doi('10.5072/zenodo.1061863'),
-      conceptrecid: 1061863,
-      files: [
-        {
-          links: {
-            self: new URL('http://example.com/review.html/content'),
-          },
-          key: 'review.html',
-          size: 58,
-        },
-      ],
-      id: 1061864,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
-      metadata: {
-        access_right: 'open',
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [
-          { name: 'Jingfang Hao', orcid: OrcidId('0000-0003-4436-3420') },
-          { name: 'Pierrick Bru', orcid: OrcidId('0000-0001-5854-0905') },
-          { name: 'Alizée Malnoë', orcid: OrcidId('0000-0002-8777-3174') },
-          { name: 'Aurélie Crepin', orcid: OrcidId('0000-0002-4754-6823') },
-          { name: 'Jack Forsman', orcid: OrcidId('0000-0002-5111-8901') },
-          { name: 'Domenica Farci', orcid: OrcidId('0000-0002-3691-2699') },
-        ],
-        description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-        doi: Doi('10.5072/zenodo.1061864'),
-        license: { id: 'cc-by-4.0' },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.1061863',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
-        },
-        title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
-      },
-    }
+test.extend(canLogIn).extend(areLoggedIn)('have to enter an email address', async ({ javaScriptEnabled, page }) => {
+  await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await waitForEditor(page.getByLabel('Write your comment'))
+  await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('I’m following the Code of Conduct').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    fetch
-      .get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
-      .get('http://example.com/review.html/content', {
-        body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      })
+  await expect(page.getByLabel('What is your email address?')).toBeVisible()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.goto('/reviews/1061864/write-a-comment', { waitUntil: 'commit' })
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await waitForEditor(page.getByLabel('Write your comment'))
-    await page.getByLabel('Write your comment').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Josiah Carberry').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I’m following the Code of Conduct').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+  }
+  await expect(page.getByLabel('What is your email address?')).toHaveAttribute('aria-invalid', 'true')
 
-    await expect(page.getByLabel('What is your email address?')).toBeVisible()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('link', { name: 'Enter your email address' }).click()
 
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
-    } else {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
-    }
-    await expect(page.getByLabel('What is your email address?')).toHaveAttribute('aria-invalid', 'true')
+  await expect(page.getByLabel('What is your email address?')).toBeFocused()
 
-    await page.getByRole('link', { name: 'Enter your email address' }).click()
+  await page.getByLabel('What is your email address?').fill('not an email address')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByLabel('What is your email address?')).toBeFocused()
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+  }
+  await expect(page.getByLabel('What is your email address?')).toHaveAttribute('aria-invalid', 'true')
 
-    await page.getByLabel('What is your email address?').fill('not an email address')
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('link', { name: 'Enter an email address in the correct format, like name@example.com' }).click()
 
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
-    } else {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
-    }
-    await expect(page.getByLabel('What is your email address?')).toHaveAttribute('aria-invalid', 'true')
-
-    await page
-      .getByRole('link', { name: 'Enter an email address in the correct format, like name@example.com' })
-      .click()
-
-    await expect(page.getByLabel('What is your email address?')).toBeFocused()
-  },
-)
+  await expect(page.getByLabel('What is your email address?')).toBeFocused()
+})

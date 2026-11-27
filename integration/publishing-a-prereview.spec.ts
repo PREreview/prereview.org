@@ -1,10 +1,6 @@
 import { Duration, Function } from 'effect'
-import { URL } from 'node:url'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
-import { RecordC, RecordsC, type Record as ZenodoRecord } from 'zenodo-ts'
 import * as StatusCodes from '../src/StatusCodes.ts'
-import { Doi } from '../src/types/Doi.ts'
-import { OrcidId } from '../src/types/OrcidId.ts'
 import {
   areAClubLead,
   areLoggedIn,
@@ -203,14 +199,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
   },
 )
 
-test.extend(canLogIn)('can write a PREreview for a specific preprint', async ({ fetch, page }) => {
-  fetch.get({
-    url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-    query: {
-      q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/2022.01.13.476201"',
-    },
-    response: { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-  })
+test.extend(canLogIn)('can write a PREreview for a specific preprint', async ({ page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201', { waitUntil: 'commit' })
   await page.getByRole('link', { name: 'Write a PREreview' }).click()
 
@@ -498,7 +487,7 @@ test.extend(usePostgresDB).extend(canLogIn).extend(areLoggedIn).extend(hasAVerif
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   'can publish a PREreview with more authors',
-  async ({ emails, fetch, page }) => {
+  async ({ emails, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview', { waitUntil: 'commit' })
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
@@ -580,65 +569,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
     await expect(page.getByRole('main')).toContainText('We’ve sent emails to the other authors')
     await expect(page.getByRole('main')).not.toContainText('other authors’ details')
-
-    const record = {
-      conceptdoi: Doi('10.5072/zenodo.1055805'),
-      conceptrecid: 1055805,
-      files: [
-        {
-          links: {
-            self: new URL('http://example.com/review.html/content'),
-          },
-          key: 'review.html',
-          size: 58,
-        },
-      ],
-      id: 1055806,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
-      metadata: {
-        access_right: 'open',
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [
-          {
-            name: 'Josiah Carberry',
-            orcid: OrcidId('0000-0002-1825-0097'),
-          },
-        ],
-        description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
-        doi: Doi('10.5072/zenodo.1055806'),
-        license: { id: 'cc-by-4.0' },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.1061863',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
-        },
-        title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
-      },
-    } satisfies ZenodoRecord
-
-    fetch
-      .get('http://zenodo.test/api/records/1055806', {
-        body: RecordC.encode(record),
-      })
-      .get('http://example.com/review.html/content', {
-        body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      })
 
     await page.setContent(String(emails[0]?.html))
 
