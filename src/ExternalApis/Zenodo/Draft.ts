@@ -5,7 +5,7 @@ export type Draft = typeof Draft.Type
 
 export const Draft = Schema.StructWithRest(
   Schema.Struct({
-    id: Schema.String,
+    id: Schema.FiniteFromString.check(Schema.isInt()),
     access: Schema.StructWithRest(
       Schema.Struct({
         record: Schema.Literals(['public', 'restricted']),

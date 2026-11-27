@@ -22,7 +22,7 @@ describe('HandleResponse', () => {
           Effect.gen(function* () {
             const actual = yield* Effect.result(_.HandleResponse(response))
 
-            expect(actual).toStrictEqual(Result.succeed(draft))
+            expect(actual).toStrictEqual(Result.succeed({ ...draft, id: 650639 }))
           }),
       )
 
@@ -38,7 +38,7 @@ describe('HandleResponse', () => {
           Effect.gen(function* () {
             const actual = yield* _.HandleResponse(response)
 
-            expect(actual).toStrictEqual(draftInACommunity)
+            expect(actual).toStrictEqual({ ...draftInACommunity, id: 650639 })
             expect(actual.parent.communities.ids).toStrictEqual(['fa23f142-2b05-4a2a-a559-3b955e5a2923'])
           }),
       )

@@ -21,7 +21,7 @@ describe('HandleResponse', () => {
           Effect.gen(function* () {
             const actual = yield* Effect.result(_.HandleResponse(response))
 
-            expect(actual).toStrictEqual(Result.succeed(draft))
+            expect(actual).toStrictEqual(Result.succeed({ ...draft, id: 650639 }))
           }),
       )
     })
