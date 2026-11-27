@@ -1,4 +1,5 @@
 import { Schema } from 'effect'
+import { Uuid } from '../../types/index.ts'
 
 export type Draft = typeof Draft.Type
 
@@ -9,6 +10,14 @@ export const Draft = Schema.StructWithRest(
       Schema.Struct({
         record: Schema.Literals(['public', 'restricted']),
         files: Schema.Literals(['public', 'restricted']),
+      }),
+      [Schema.JsonObject],
+    ),
+    parent: Schema.StructWithRest(
+      Schema.Struct({
+        communities: Schema.StructWithRest(Schema.Struct({ ids: Schema.optionalKey(Schema.Array(Uuid.UuidSchema)) }), [
+          Schema.JsonObject,
+        ]),
       }),
       [Schema.JsonObject],
     ),

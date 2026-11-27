@@ -4,6 +4,7 @@ import * as _ from '../../../../src/ExternalApis/Zenodo/EditRecord/HandleRespons
 import * as StatusCodes from '../../../../src/StatusCodes.ts'
 import { describe, expect, it } from '../../../vitest.ts'
 import * as fc from '../fc.ts'
+import draftInACommunity from '../Samples/draft-in-a-community.json' with { type: 'json' }
 import draft from '../Samples/draft.json' with { type: 'json' }
 
 describe('HandleResponse', () => {
@@ -22,6 +23,23 @@ describe('HandleResponse', () => {
             const actual = yield* Effect.result(_.HandleResponse(response))
 
             expect(actual).toStrictEqual(Result.succeed(draft))
+          }),
+      )
+
+      it.effect.prop(
+        'decodes the communities',
+        [
+          fc.httpClientResponse({
+            json: fc.constant(draftInACommunity),
+            status: fc.constant(StatusCodes.Created),
+          }),
+        ],
+        ([response]) =>
+          Effect.gen(function* () {
+            const actual = yield* _.HandleResponse(response)
+
+            expect(actual).toStrictEqual(draftInACommunity)
+            expect(actual.parent.communities.ids).toStrictEqual(['fa23f142-2b05-4a2a-a559-3b955e5a2923'])
           }),
       )
     })
