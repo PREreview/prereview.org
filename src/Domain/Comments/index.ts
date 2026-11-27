@@ -27,6 +27,7 @@ export * from './Decide.ts'
 export * from './Errors.ts'
 export * from './Evolve.ts'
 export * from './ExpectedCommand.ts'
+export { CommentIsNotFound } from './GetCommentIdForADoi/index.ts'
 export { CommentsAreUnavailable, type PublishedCommentWithAuthor } from './GetPublishedCommentsForAPrereview/index.ts'
 export * from './State.ts'
 
