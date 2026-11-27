@@ -24,14 +24,14 @@ export class DoiIsAlreadyAssigned extends Data.TaggedError('DoiIsAlreadyAssigned
 export class CommentWasAlreadyPublished extends Data.TaggedError('CommentWasAlreadyPublished') {}
 
 export class UnableToAssignADoi extends Schema.TaggedError<UnableToAssignADoi>()('UnableToAssignADoi', {
-  cause: Schema.optional(Schema.Unknown),
+  cause: Schema.optional(Schema.Defect()),
 }) {}
 
 export class UnableToPublishComment extends Schema.TaggedError<UnableToPublishComment>()('UnableToPublishComment', {
-  cause: Schema.optional(Schema.Unknown),
+  cause: Schema.optional(Schema.Defect()),
 }) {}
 
 export class UnableToCheckForAVerifiedEmailAddress extends Schema.TaggedError<UnableToCheckForAVerifiedEmailAddress>()(
   'UnableToCheckForAVerifiedEmailAddress',
-  { cause: Schema.optional(Schema.Unknown) },
+  { cause: Schema.optional(Schema.Defect()) },
 ) {}

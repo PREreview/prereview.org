@@ -2,22 +2,22 @@ import { type Array, Data, Schema } from 'effect'
 
 export class FailedToProcessReceivedReviewRequest extends Schema.TaggedError<FailedToProcessReceivedReviewRequest>()(
   'FailedToProcessReceivedReviewRequest',
-  { cause: Schema.optional(Schema.Unknown) },
+  { cause: Schema.optional(Schema.Defect()) },
 ) {}
 
 export class FailedToCategorizeReviewRequest extends Schema.TaggedError<FailedToCategorizeReviewRequest>()(
   'FailedToCategorizeReviewRequest',
-  { cause: Schema.optional(Schema.Unknown) },
+  { cause: Schema.optional(Schema.Defect()) },
 ) {}
 
 export class FailedToAcknowledgeReviewRequest extends Schema.TaggedError<FailedToAcknowledgeReviewRequest>()(
   'FailedToAcknowledgeReviewRequest',
-  { cause: Schema.optional(Schema.Unknown) },
+  { cause: Schema.optional(Schema.Defect()) },
 ) {}
 
 export class FailedToNotifyCommunitySlack extends Schema.TaggedError<FailedToNotifyCommunitySlack>()(
   'FailedToNotifyCommunitySlack',
-  { cause: Schema.optional(Schema.Unknown) },
+  { cause: Schema.optional(Schema.Defect()) },
 ) {}
 
 export class ReviewRequestWasAlreadyStarted extends Data.TaggedError('ReviewRequestWasAlreadyStarted')<{
@@ -26,7 +26,7 @@ export class ReviewRequestWasAlreadyStarted extends Data.TaggedError('ReviewRequ
 
 export class ReviewRequestWasAlreadyCategorized extends Schema.TaggedError<ReviewRequestWasAlreadyCategorized>()(
   'ReviewRequestWasAlreadyCategorized',
-  { cause: Schema.optional(Schema.Unknown) },
+  { cause: Schema.optional(Schema.Defect()) },
 ) {}
 
 export class ReviewRequestCannotBeAcknowledged extends Data.TaggedError('ReviewRequestCannotBeAcknowledged')<{
@@ -39,7 +39,7 @@ export class ReviewRequestWasAlreadyAcknowledged extends Data.TaggedError('Revie
 
 export class ReviewRequestWasAlreadySharedOnTheCommunitySlack extends Schema.TaggedError<ReviewRequestWasAlreadySharedOnTheCommunitySlack>()(
   'ReviewRequestWasAlreadySharedOnTheCommunitySlack',
-  { cause: Schema.optional(Schema.Unknown) },
+  { cause: Schema.optional(Schema.Defect()) },
 ) {}
 
 export class NoReviewRequestsFound extends Data.TaggedError('NoReviewRequestsFound')<{ cause?: unknown }> {}

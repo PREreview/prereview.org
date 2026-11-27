@@ -61,31 +61,31 @@ export class DatasetReviewDoesNotHaveAZenodoRecord extends Data.TaggedError('Dat
 
 export class FailedToPublishDatasetReview extends Schema.TaggedError<FailedToPublishDatasetReview>()(
   'FailedToPublishDatasetReview',
-  { cause: Schema.optional(Schema.Unknown) },
+  { cause: Schema.optional(Schema.Defect()) },
 ) {}
 
 export class FailedToCreateRecordOnZenodo extends Schema.TaggedError<FailedToCreateRecordOnZenodo>()(
   'FailedToCreateRecordOnZenodo',
-  { cause: Schema.optional(Schema.Unknown) },
+  { cause: Schema.optional(Schema.Defect()) },
 ) {}
 
 export class FailedToNotifyCommunitySlack extends Schema.TaggedError<FailedToNotifyCommunitySlack>()(
   'FailedToNotifyCommunitySlack',
-  { cause: Schema.optional(Schema.Unknown) },
+  { cause: Schema.optional(Schema.Defect()) },
 ) {}
 
 export class FailedToPublishRecordOnZenodo extends Schema.TaggedError<FailedToPublishRecordOnZenodo>()(
   'FailedToPublishRecordOnZenodo',
-  { cause: Schema.optional(Schema.Unknown) },
+  { cause: Schema.optional(Schema.Defect()) },
 ) {}
 
 export class FailedToUseZenodoDoi extends Schema.TaggedError<FailedToUseZenodoDoi>()('FailedToUseZenodoDoi', {
-  cause: Schema.optional(Schema.Unknown),
+  cause: Schema.optional(Schema.Defect()),
 }) {}
 
 export class FailedToMarkDatasetReviewAsPublished extends Schema.TaggedError<FailedToMarkDatasetReviewAsPublished>()(
   'FailedToMarkDatasetReviewAsPublished',
-  { cause: Schema.optional(Schema.Unknown) },
+  { cause: Schema.optional(Schema.Defect()) },
 ) {}
 
 export class UnknownDatasetReview extends Data.TaggedError('UnknownDatasetReview')<{ cause?: unknown }> {}

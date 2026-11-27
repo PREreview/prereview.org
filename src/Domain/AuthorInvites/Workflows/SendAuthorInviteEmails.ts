@@ -9,7 +9,7 @@ import { AuthorInvites } from '../AuthorInvites.ts'
 
 export class FailedToSendAuthorInviteEmails extends Schema.TaggedError<FailedToSendAuthorInviteEmails>()(
   'FailedToInviteAuthors',
-  { cause: Schema.optional(Schema.Unknown) },
+  { cause: Schema.optional(Schema.Defect()) },
 ) {}
 
 export const SendAuthorInviteEmails = Effect.fn('AuthorInvites.sendAuthorInviteEmails')(

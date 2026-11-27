@@ -33,7 +33,7 @@ export interface PreprintTitle {
 export class NotAPreprint extends Data.TaggedError('NotAPreprint')<{ cause?: unknown }> {}
 
 export class PreprintIsNotFound extends Schema.TaggedError<PreprintIsNotFound>()('PreprintIsNotFound', {
-  cause: Schema.optional(Schema.Unknown),
+  cause: Schema.optional(Schema.Defect()),
 }) {}
 
 export class PreprintIsUnavailable extends Data.TaggedError('PreprintIsUnavailable')<{ cause?: unknown }> {}
