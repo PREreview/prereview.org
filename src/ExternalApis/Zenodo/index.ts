@@ -1,5 +1,6 @@
 import { Context, Effect, flow, Layer, Scope } from 'effect'
 import type { HttpClient } from 'effect/http'
+import { AddRecordToCommunity } from './AddRecordToCommunity/index.ts'
 import { CommitDraftFile } from './CommitDraftFile/index.ts'
 import { CreateDeposition } from './CreateDeposition/index.ts'
 import { CreateDraft } from './CreateDraft/index.ts'
@@ -25,6 +26,12 @@ export { ZenodoApi } from './ZenodoApi.ts'
 export class Zenodo extends Context.Service<
   Zenodo,
   {
+    addRecordToCommunity: (
+      ...args: Parameters<typeof AddRecordToCommunity>
+    ) => Effect.Effect<
+      Effect.Success<ReturnType<typeof AddRecordToCommunity>>,
+      Effect.Error<ReturnType<typeof AddRecordToCommunity>>
+    >
     commitDraftFile: (
       ...args: Parameters<typeof CommitDraftFile>
     ) => Effect.Effect<
@@ -88,6 +95,9 @@ export class Zenodo extends Context.Service<
   }
 >()('Zenodo') {}
 
+export const addRecordToCommunity = (...args: Parameters<(typeof Zenodo.Service)['addRecordToCommunity']>) =>
+  Zenodo.use(service => service.addRecordToCommunity(...args))
+
 export const commitDraftFile = (...args: Parameters<(typeof Zenodo.Service)['commitDraftFile']>) =>
   Zenodo.use(service => service.commitDraftFile(...args))
 
@@ -134,6 +144,7 @@ const make: Effect.Effect<typeof Zenodo.Service, never, HttpClient.HttpClient | 
   const context = yield* Effect.map(Effect.context<HttpClient.HttpClient | ZenodoApi>(), Context.omit(Scope.Scope))
 
   return {
+    addRecordToCommunity: flow(AddRecordToCommunity, Effect.provide(context)),
     commitDraftFile: flow(CommitDraftFile, Effect.provide(context)),
     createDeposition: flow(CreateDeposition, Effect.provide(context)),
     createDraft: flow(CreateDraft, Effect.provide(context)),
