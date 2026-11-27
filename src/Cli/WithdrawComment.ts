@@ -1,4 +1,4 @@
-import { Console, Effect, Option, pipe, Schema } from 'effect'
+import { Array, Console, Effect, Option, pipe, Schema } from 'effect'
 import { Command, Prompt } from 'effect/cli'
 import { Comments, GetComment, type CommentPublished } from '../Domain/Comments/index.ts'
 import { plainText } from '../html.ts'
@@ -41,25 +41,41 @@ const findCommentId = (input: string) => {
 const program = Effect.fnUntraced(function* () {
   const getComment = yield* GetComment
 
-  const input = yield* Prompt.String({ message: 'Which comment (ID or DOI)?' })
+  const commentIds: Array<Uuid.Uuid> = []
 
-  const commentId = yield* findCommentId(input)
+  yield* Effect.gen(function* () {
+    const input = yield* Prompt.String({ message: 'Which comment (ID or DOI)?' })
 
-  if (Option.isNone(commentId)) {
+    const commentId = yield* findCommentId(input)
+
+    if (Option.isNone(commentId)) {
+      return
+    }
+
+    if (Array.contains(commentIds, commentId.value)) {
+      return yield* Console.log('Already selected')
+    }
+
+    const comment = yield* getComment(commentId.value)
+
+    if (comment._tag !== 'CommentPublished') {
+      return yield* Console.log('Not published')
+    }
+
+    yield* Console.log(`\n${describeComment(comment)}\n`)
+
+    commentIds.push(commentId.value)
+  }).pipe(Effect.repeat({ while: () => Prompt.Confirm({ message: 'Add another comment?' }) }))
+
+  if (!Array.isArrayNonEmpty(commentIds)) {
     return
   }
 
-  const comment = yield* getComment(commentId.value)
-
-  if (comment._tag !== 'CommentPublished') {
-    return yield* Console.log('Not published')
-  }
-
-  yield* Console.log(`\n${describeComment(comment)}\n`)
-
   const reason = yield* Prompt.Select({ message: 'Why?', choices: [{ title: 'Spam', value: 'spam' }] })
 
-  const confirmed = yield* Prompt.Confirm({ message: 'Withdraw this comment?' })
+  const confirmed = yield* Prompt.Confirm({
+    message: `Withdraw ${commentIds.length === 1 ? 'this comment' : `these ${commentIds.length} comments`}?`,
+  })
 
   if (!confirmed) {
     return
@@ -67,7 +83,9 @@ const program = Effect.fnUntraced(function* () {
 
   const withdrawnAt = yield* Temporal.currentInstant
 
-  yield* Comments.withdrawComment({ commentId: commentId.value, withdrawnAt, reason })
+  yield* Effect.forEach(commentIds, commentId => Comments.withdrawComment({ commentId, withdrawnAt, reason }), {
+    discard: true,
+  })
 })
 
 export const WithdrawComment = Command.make('withdraw-comment', {}, program)
