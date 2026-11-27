@@ -1,5 +1,6 @@
 import { Context, Effect, flow, Layer, Scope } from 'effect'
 import type { HttpClient } from 'effect/http'
+import { CommitDraftFile } from './CommitDraftFile/index.ts'
 import { CreateDeposition } from './CreateDeposition/index.ts'
 import { CreateDraft } from './CreateDraft/index.ts'
 import { EditRecord } from './EditRecord/index.ts'
@@ -8,7 +9,9 @@ import { PublishDeposition } from './PublishDeposition/index.ts'
 import { PublishDraft } from './PublishDraft/index.ts'
 import { RemoveRecordFromCommunity } from './RemoveRecordFromCommunity/index.ts'
 import { ReserveDoi } from './ReserveDoi/index.ts'
+import { StartDraftFileUpload } from './StartDraftFileUpload/index.ts'
 import { UpdateDraft } from './UpdateDraft/index.ts'
+import { UploadDraftFileContent } from './UploadDraftFileContent/index.ts'
 import { UploadFile } from './UploadFile/index.ts'
 import type { ZenodoApi } from './ZenodoApi.ts'
 
@@ -21,6 +24,12 @@ export { ZenodoApi } from './ZenodoApi.ts'
 export class Zenodo extends Context.Service<
   Zenodo,
   {
+    commitDraftFile: (
+      ...args: Parameters<typeof CommitDraftFile>
+    ) => Effect.Effect<
+      Effect.Success<ReturnType<typeof CommitDraftFile>>,
+      Effect.Error<ReturnType<typeof CommitDraftFile>>
+    >
     createDeposition: (
       ...args: Parameters<typeof CreateDeposition>
     ) => Effect.Effect<
@@ -54,14 +63,29 @@ export class Zenodo extends Context.Service<
     reserveDoi: (
       ...args: Parameters<typeof ReserveDoi>
     ) => Effect.Effect<Effect.Success<ReturnType<typeof ReserveDoi>>, Effect.Error<ReturnType<typeof ReserveDoi>>>
+    startDraftFileUpload: (
+      ...args: Parameters<typeof StartDraftFileUpload>
+    ) => Effect.Effect<
+      Effect.Success<ReturnType<typeof StartDraftFileUpload>>,
+      Effect.Error<ReturnType<typeof StartDraftFileUpload>>
+    >
     updateDraft: (
       ...args: Parameters<typeof UpdateDraft>
     ) => Effect.Effect<Effect.Success<ReturnType<typeof UpdateDraft>>, Effect.Error<ReturnType<typeof UpdateDraft>>>
+    uploadDraftFileContent: (
+      ...args: Parameters<typeof UploadDraftFileContent>
+    ) => Effect.Effect<
+      Effect.Success<ReturnType<typeof UploadDraftFileContent>>,
+      Effect.Error<ReturnType<typeof UploadDraftFileContent>>
+    >
     uploadFile: (
       ...args: Parameters<typeof UploadFile>
     ) => Effect.Effect<Effect.Success<ReturnType<typeof UploadFile>>, Effect.Error<ReturnType<typeof UploadFile>>>
   }
 >()('Zenodo') {}
+
+export const commitDraftFile = (...args: Parameters<(typeof Zenodo.Service)['commitDraftFile']>) =>
+  Zenodo.use(service => service.commitDraftFile(...args))
 
 export const createDeposition = (...args: Parameters<(typeof Zenodo.Service)['createDeposition']>) =>
   Zenodo.use(service => service.createDeposition(...args))
@@ -87,8 +111,14 @@ export const removeRecordFromCommunity = (...args: Parameters<(typeof Zenodo.Ser
 export const reserveDoi = (...args: Parameters<(typeof Zenodo.Service)['reserveDoi']>) =>
   Zenodo.use(service => service.reserveDoi(...args))
 
+export const startDraftFileUpload = (...args: Parameters<(typeof Zenodo.Service)['startDraftFileUpload']>) =>
+  Zenodo.use(service => service.startDraftFileUpload(...args))
+
 export const updateDraft = (...args: Parameters<(typeof Zenodo.Service)['updateDraft']>) =>
   Zenodo.use(service => service.updateDraft(...args))
+
+export const uploadDraftFileContent = (...args: Parameters<(typeof Zenodo.Service)['uploadDraftFileContent']>) =>
+  Zenodo.use(service => service.uploadDraftFileContent(...args))
 
 export const uploadFile = (...args: Parameters<(typeof Zenodo.Service)['uploadFile']>) =>
   Zenodo.use(service => service.uploadFile(...args))
@@ -97,6 +127,7 @@ const make: Effect.Effect<typeof Zenodo.Service, never, HttpClient.HttpClient | 
   const context = yield* Effect.map(Effect.context<HttpClient.HttpClient | ZenodoApi>(), Context.omit(Scope.Scope))
 
   return {
+    commitDraftFile: flow(CommitDraftFile, Effect.provide(context)),
     createDeposition: flow(CreateDeposition, Effect.provide(context)),
     createDraft: flow(CreateDraft, Effect.provide(context)),
     editRecord: flow(EditRecord, Effect.provide(context)),
@@ -105,7 +136,9 @@ const make: Effect.Effect<typeof Zenodo.Service, never, HttpClient.HttpClient | 
     publishDraft: flow(PublishDraft, Effect.provide(context)),
     removeRecordFromCommunity: flow(RemoveRecordFromCommunity, Effect.provide(context)),
     reserveDoi: flow(ReserveDoi, Effect.provide(context)),
+    startDraftFileUpload: flow(StartDraftFileUpload, Effect.provide(context)),
     updateDraft: flow(UpdateDraft, Effect.provide(context)),
+    uploadDraftFileContent: flow(UploadDraftFileContent, Effect.provide(context)),
     uploadFile: flow(UploadFile, Effect.provide(context)),
   }
 })
