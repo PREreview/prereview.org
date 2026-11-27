@@ -1,22 +1,17 @@
 import { Array, Context, Effect, Layer, Option, pipe, Scope, Struct } from 'effect'
-import type { Sharding } from 'effect/cluster'
-import type { WorkflowEngine } from 'effect/workflow'
-import type { ZenodoRecords } from '../../ExternalInteractions/index.ts'
-import type { ContactEmailAddresses } from '../ContactEmailAddresses/index.ts'
 import * as Events from '../Events/index.ts'
-import { Commands, EventStore, EventSubscription, Queries } from '../Events/index.ts'
+import { Commands, EventStore, Queries } from '../Events/index.ts'
 import { layer as commentsServiceLayer } from './Comments.ts'
 import {
   GetComment,
   GetNextExpectedCommandForUser,
   GetNextExpectedCommandForUserOnAComment,
   HandleCommentCommand,
-  type CreateRecordOnZenodoForComment,
-  type PublishCommentOnZenodo,
 } from './Context.ts'
 import { DecideComment } from './Decide.ts'
 import { EvolveComment } from './Evolve.ts'
 import * as CommentQueries from './Queries.ts'
+import { reactionsWorker } from './Reactions.ts'
 import { CommentNotStarted, type CommentState } from './State.ts'
 import * as Workflows from './Workflows/index.ts'
 import { layerZenodo } from './Zenodo.ts'
@@ -152,25 +147,6 @@ export const layer = Layer.mergeAll(
   Layer.effect(GetComment, makeGetComment),
 )
 
-const ReactToCommentEventsNoDeps: Layer.Layer<
-  never,
-  never,
-  | EventStore.EventStore
-  | GetComment
-  | HandleCommentCommand
-  | ContactEmailAddresses
-  | CreateRecordOnZenodoForComment
-  | PublishCommentOnZenodo
-  | Sharding.Sharding
-  | WorkflowEngine.WorkflowEngine
-  | ZenodoRecords.ZenodoRecords
-> = EventSubscription.make('Comments/Reactions', {
-  CommentWasStarted: ({ commentId }) =>
-    Workflows.CheckIfUserHasAVerifiedEmailAddress.execute({ commentId }, { discard: true }),
-  PublicationOfCommentWasRequested: ({ commentId }) =>
-    Workflows.AssignCommentADoi.execute({ commentId }, { discard: true }),
-  CommentWasAssignedADoi: ({ commentId, id }) => Workflows.PublishComment.execute({ commentId, id }, { discard: true }),
-  CommentWasWithdrawn: ({ commentId }) => Workflows.WithdrawCommentOnZenodo.execute({ commentId }, { discard: true }),
-}).pipe(Layer.merge(Workflows.workflowsLayer))
+const ReactToCommentEventsNoDeps = reactionsWorker.pipe(Layer.merge(Workflows.workflowsLayer))
 
 export const ReactToCommentEvents = Layer.provide(ReactToCommentEventsNoDeps, layerZenodo)
