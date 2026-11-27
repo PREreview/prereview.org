@@ -3,6 +3,7 @@ import type { HttpClient } from 'effect/http'
 import { CreateDeposition } from './CreateDeposition/index.ts'
 import { GetDeposition } from './GetDeposition/index.ts'
 import { PublishDeposition } from './PublishDeposition/index.ts'
+import { RemoveRecordFromCommunity } from './RemoveRecordFromCommunity/index.ts'
 import { UploadFile } from './UploadFile/index.ts'
 import type { ZenodoApi } from './ZenodoApi.ts'
 
@@ -28,6 +29,12 @@ export class Zenodo extends Context.Service<
       Effect.Success<ReturnType<typeof PublishDeposition>>,
       Effect.Error<ReturnType<typeof PublishDeposition>>
     >
+    removeRecordFromCommunity: (
+      ...args: Parameters<typeof RemoveRecordFromCommunity>
+    ) => Effect.Effect<
+      Effect.Success<ReturnType<typeof RemoveRecordFromCommunity>>,
+      Effect.Error<ReturnType<typeof RemoveRecordFromCommunity>>
+    >
     uploadFile: (
       ...args: Parameters<typeof UploadFile>
     ) => Effect.Effect<Effect.Success<ReturnType<typeof UploadFile>>, Effect.Error<ReturnType<typeof UploadFile>>>
@@ -43,6 +50,9 @@ export const getDeposition = (...args: Parameters<(typeof Zenodo.Service)['getDe
 export const publishDeposition = (...args: Parameters<(typeof Zenodo.Service)['publishDeposition']>) =>
   Zenodo.use(service => service.publishDeposition(...args))
 
+export const removeRecordFromCommunity = (...args: Parameters<(typeof Zenodo.Service)['removeRecordFromCommunity']>) =>
+  Zenodo.use(service => service.removeRecordFromCommunity(...args))
+
 export const uploadFile = (...args: Parameters<(typeof Zenodo.Service)['uploadFile']>) =>
   Zenodo.use(service => service.uploadFile(...args))
 
@@ -53,6 +63,7 @@ const make: Effect.Effect<typeof Zenodo.Service, never, HttpClient.HttpClient | 
     createDeposition: flow(CreateDeposition, Effect.provide(context)),
     getDeposition: flow(GetDeposition, Effect.provide(context)),
     publishDeposition: flow(PublishDeposition, Effect.provide(context)),
+    removeRecordFromCommunity: flow(RemoveRecordFromCommunity, Effect.provide(context)),
     uploadFile: flow(UploadFile, Effect.provide(context)),
   }
 })
