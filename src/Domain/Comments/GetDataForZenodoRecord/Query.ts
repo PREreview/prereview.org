@@ -7,7 +7,7 @@ import * as Errors from '../Errors.ts'
 
 export type Input = Uuid.Uuid
 
-export interface DataForZenodoRecord {
+export interface DataForZenodoRecordDetails {
   readonly authorId: OrcidId.OrcidId
   readonly persona: 'public' | 'pseudonym'
   readonly prereviewId: number
@@ -22,7 +22,7 @@ export type Error =
   | Errors.CommentHasBeenWithdrawn
   | Queries.UnexpectedSequenceOfEvents
 
-export type Result = Result.Result<DataForZenodoRecord, Error>
+export type Result = Result.Result<DataForZenodoRecordDetails, Error>
 
 const createFilter = (commentId: Input) =>
   Events.EventFilter({
@@ -64,7 +64,7 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result => {
   ).pipe(Result.map(data => ({ authorId: started.authorId, prereviewId: started.prereviewId, ...data })))
 }
 
-export const GetDataForZenodoRecord = Queries.OnDemandQuery({
+export const Query = Queries.OnDemandQuery({
   name: 'Comments.getDataForZenodoRecord.Query',
   createFilter,
   query,

@@ -42,7 +42,7 @@ const readyForPublication = [
   verifiedEmailAddressConfirmed,
 ]
 
-const expected: _.DataForZenodoRecord = {
+const expected: _.DataForZenodoRecordDetails = {
   authorId,
   persona: 'pseudonym',
   prereviewId: 123,
@@ -83,7 +83,7 @@ test.each<[string, ReadonlyArray<Events.Event>, _.Result]>([
     Result.fail(new Queries.UnexpectedSequenceOfEvents({})),
   ],
 ])('%s', (_name, events, expected) => {
-  const actual = _.GetDataForZenodoRecord.query(events, commentId)
+  const actual = _.Query.query(events, commentId)
 
   expect(actual).toStrictEqual(expected)
 })

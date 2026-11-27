@@ -20,6 +20,7 @@ import { Email, LanguageDetection, OpenAlexWorks, OrcidRecords, PreprintData } f
 import * as FeatureFlags from './FeatureFlags.ts'
 import * as LoggingHttpClient from './LoggingHttpClient.ts'
 import * as LoggingWorkflowEngine from './LoggingWorkflowEngine.ts'
+import { PublicUrl } from './public-url.ts'
 import * as Redis from './Redis.ts'
 import { Uuid } from './types/index.ts'
 
@@ -46,7 +47,8 @@ pipe(
   Effect.provide(
     pipe(
       Layer.effectDiscard(StatefulQueries.replay),
-      Layer.provideMerge(Layer.mergeAll(Comments.layer, PreprintReviews.layer)),
+      Layer.provideMerge(Comments.layer),
+      Layer.provideMerge(PreprintReviews.layer),
       Layer.provideMerge(
         Layer.mergeAll(
           DatasetReviews.commandsLayer,
@@ -66,6 +68,7 @@ pipe(
         LanguageDetection.layerCld,
         OrcidRecords.layer,
         Layer.mock(Email.Email, {}),
+        Layer.effect(PublicUrl, Config.URL('PUBLIC_URL')),
         Layer.effect(
           PreprintReviews.WasPrereviewRemoved,
           pipe(
