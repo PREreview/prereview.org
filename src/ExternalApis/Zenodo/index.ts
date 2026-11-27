@@ -5,6 +5,7 @@ import { EditRecord } from './EditRecord/index.ts'
 import { GetDeposition } from './GetDeposition/index.ts'
 import { PublishDeposition } from './PublishDeposition/index.ts'
 import { RemoveRecordFromCommunity } from './RemoveRecordFromCommunity/index.ts'
+import { UpdateDraft } from './UpdateDraft/index.ts'
 import { UploadFile } from './UploadFile/index.ts'
 import type { ZenodoApi } from './ZenodoApi.ts'
 
@@ -40,6 +41,9 @@ export class Zenodo extends Context.Service<
       Effect.Success<ReturnType<typeof RemoveRecordFromCommunity>>,
       Effect.Error<ReturnType<typeof RemoveRecordFromCommunity>>
     >
+    updateDraft: (
+      ...args: Parameters<typeof UpdateDraft>
+    ) => Effect.Effect<Effect.Success<ReturnType<typeof UpdateDraft>>, Effect.Error<ReturnType<typeof UpdateDraft>>>
     uploadFile: (
       ...args: Parameters<typeof UploadFile>
     ) => Effect.Effect<Effect.Success<ReturnType<typeof UploadFile>>, Effect.Error<ReturnType<typeof UploadFile>>>
@@ -61,6 +65,9 @@ export const publishDeposition = (...args: Parameters<(typeof Zenodo.Service)['p
 export const removeRecordFromCommunity = (...args: Parameters<(typeof Zenodo.Service)['removeRecordFromCommunity']>) =>
   Zenodo.use(service => service.removeRecordFromCommunity(...args))
 
+export const updateDraft = (...args: Parameters<(typeof Zenodo.Service)['updateDraft']>) =>
+  Zenodo.use(service => service.updateDraft(...args))
+
 export const uploadFile = (...args: Parameters<(typeof Zenodo.Service)['uploadFile']>) =>
   Zenodo.use(service => service.uploadFile(...args))
 
@@ -73,6 +80,7 @@ const make: Effect.Effect<typeof Zenodo.Service, never, HttpClient.HttpClient | 
     getDeposition: flow(GetDeposition, Effect.provide(context)),
     publishDeposition: flow(PublishDeposition, Effect.provide(context)),
     removeRecordFromCommunity: flow(RemoveRecordFromCommunity, Effect.provide(context)),
+    updateDraft: flow(UpdateDraft, Effect.provide(context)),
     uploadFile: flow(UploadFile, Effect.provide(context)),
   }
 })
