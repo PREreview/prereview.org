@@ -4,6 +4,7 @@ import { CreateDeposition } from './CreateDeposition/index.ts'
 import { EditRecord } from './EditRecord/index.ts'
 import { GetDeposition } from './GetDeposition/index.ts'
 import { PublishDeposition } from './PublishDeposition/index.ts'
+import { PublishDraft } from './PublishDraft/index.ts'
 import { RemoveRecordFromCommunity } from './RemoveRecordFromCommunity/index.ts'
 import { UpdateDraft } from './UpdateDraft/index.ts'
 import { UploadFile } from './UploadFile/index.ts'
@@ -35,6 +36,9 @@ export class Zenodo extends Context.Service<
       Effect.Success<ReturnType<typeof PublishDeposition>>,
       Effect.Error<ReturnType<typeof PublishDeposition>>
     >
+    publishDraft: (
+      ...args: Parameters<typeof PublishDraft>
+    ) => Effect.Effect<Effect.Success<ReturnType<typeof PublishDraft>>, Effect.Error<ReturnType<typeof PublishDraft>>>
     removeRecordFromCommunity: (
       ...args: Parameters<typeof RemoveRecordFromCommunity>
     ) => Effect.Effect<
@@ -62,6 +66,9 @@ export const getDeposition = (...args: Parameters<(typeof Zenodo.Service)['getDe
 export const publishDeposition = (...args: Parameters<(typeof Zenodo.Service)['publishDeposition']>) =>
   Zenodo.use(service => service.publishDeposition(...args))
 
+export const publishDraft = (...args: Parameters<(typeof Zenodo.Service)['publishDraft']>) =>
+  Zenodo.use(service => service.publishDraft(...args))
+
 export const removeRecordFromCommunity = (...args: Parameters<(typeof Zenodo.Service)['removeRecordFromCommunity']>) =>
   Zenodo.use(service => service.removeRecordFromCommunity(...args))
 
@@ -79,6 +86,7 @@ const make: Effect.Effect<typeof Zenodo.Service, never, HttpClient.HttpClient | 
     editRecord: flow(EditRecord, Effect.provide(context)),
     getDeposition: flow(GetDeposition, Effect.provide(context)),
     publishDeposition: flow(PublishDeposition, Effect.provide(context)),
+    publishDraft: flow(PublishDraft, Effect.provide(context)),
     removeRecordFromCommunity: flow(RemoveRecordFromCommunity, Effect.provide(context)),
     updateDraft: flow(UpdateDraft, Effect.provide(context)),
     uploadFile: flow(UploadFile, Effect.provide(context)),
