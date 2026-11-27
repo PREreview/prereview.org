@@ -1,0 +1,237 @@
+{
+  "id": "650639",
+  "access": {
+    "record": "public",
+    "files": "public",
+    "embargo": {
+      "active": false,
+      "reason": null
+    },
+    "status": "open"
+  },
+  "metadata": {
+    "title": "Comment on a PREreview of \"A Sequential Assembly Mechanism for Stable Cdc13 Dimerization on Telomeric DNA\"",
+    "description": "<p><strong>This Zenodo record is a permanently preserved version of a comment on a PREreview. You can view the complete PREreview and comments at <a href=\"https://chris.local/reviews/24540607\">https://chris.local/reviews/24540607</a>.</strong></p>\n\n<p>this is a test comment</p>\n\n        <h2><span>Competing interests</span></h2>\n\n        <p>\n          <span>The author of this comment declares that they have no competing interests.</span>\n        </p>",
+    "resource_type": {
+      "id": "publication-other"
+    },
+    "creators": [
+      {
+        "person_or_org": {
+          "type": "personal",
+          "name": "Chris Wilkinson",
+          "family_name": "Chris Wilkinson",
+          "identifiers": [
+            {
+              "identifier": "0000-0003-4921-6155",
+              "scheme": "orcid"
+            }
+          ]
+        }
+      }
+    ],
+    "publisher": "Zenodo",
+    "publication_date": "2026-11-27",
+    "related_identifiers": [
+      {
+        "identifier": "10.64898/2026.09.01.748474",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        },
+        "resource_type": {
+          "id": "publication-preprint"
+        }
+      },
+      {
+        "identifier": "10.5281/zenodo.24540607",
+        "scheme": "doi",
+        "relation_type": {
+          "id": "references"
+        },
+        "resource_type": {
+          "id": "publication-peerreview"
+        }
+      }
+    ],
+    "rights": [
+      {
+        "id": "cc-by-4.0"
+      }
+    ]
+  },
+  "created": "2026-11-27T14:12:34.278523+00:00",
+  "updated": "2026-11-27T14:22:27.576834+00:00",
+  "links": {
+    "self": "https://sandbox.zenodo.org/api/records/650639/draft",
+    "self_html": "https://sandbox.zenodo.org/uploads/650639",
+    "preview_html": "https://sandbox.zenodo.org/records/650639?preview=1",
+    "doi": "https://handle.test.datacite.org/10.5072/zenodo.650639",
+    "self_doi": "https://handle.test.datacite.org/10.5072/zenodo.650639",
+    "reserve_doi": "https://sandbox.zenodo.org/api/records/650639/draft/pids/doi",
+    "parent_doi": "https://handle.test.datacite.org/10.5072/zenodo.650638",
+    "parent_doi_html": "https://sandbox.zenodo.org/doi/10.5072/zenodo.650638",
+    "self_iiif_manifest": "https://sandbox.zenodo.org/api/iiif/draft:650639/manifest",
+    "self_iiif_sequence": "https://sandbox.zenodo.org/api/iiif/draft:650639/sequence/default",
+    "files": "https://sandbox.zenodo.org/api/records/650639/draft/files",
+    "media_files": "https://sandbox.zenodo.org/api/records/650639/draft/media-files",
+    "archive": "https://sandbox.zenodo.org/api/records/650639/draft/files-archive",
+    "archive_media": "https://sandbox.zenodo.org/api/records/650639/draft/media-files-archive",
+    "versions": "https://sandbox.zenodo.org/api/records/650639/versions",
+    "record": "https://sandbox.zenodo.org/api/records/650639",
+    "record_html": "https://sandbox.zenodo.org/records/650639",
+    "publish": "https://sandbox.zenodo.org/api/records/650639/draft/actions/publish",
+    "review": "https://sandbox.zenodo.org/api/records/650639/draft/review",
+    "access_links": "https://sandbox.zenodo.org/api/records/650639/access/links",
+    "access_grants": "https://sandbox.zenodo.org/api/records/650639/access/grants",
+    "access_users": "https://sandbox.zenodo.org/api/records/650639/access/users",
+    "access_request": "https://sandbox.zenodo.org/api/records/650639/access/request",
+    "access": "https://sandbox.zenodo.org/api/records/650639/access",
+    "communities": "https://sandbox.zenodo.org/api/records/650639/communities",
+    "communities-suggestions": "https://sandbox.zenodo.org/api/records/650639/communities-suggestions",
+    "request_deletion": "https://sandbox.zenodo.org/api/records/650639/request-deletion",
+    "file_modification": "https://sandbox.zenodo.org/api/records/650639/file-modification",
+    "quota_increase": "https://sandbox.zenodo.org/api/records/650639/quota-increase",
+    "requests": "https://sandbox.zenodo.org/api/records/650639/requests"
+  },
+  "revision_id": 13,
+  "parent": {
+    "id": "650638",
+    "access": {
+      "grants": [],
+      "owned_by": {
+        "user": "107"
+      },
+      "links": [],
+      "settings": {
+        "allow_user_requests": false,
+        "allow_guest_requests": false,
+        "accept_conditions_text": null,
+        "secret_link_expiration": 0
+      }
+    },
+    "communities": {},
+    "pids": {
+      "doi": {
+        "identifier": "10.5072/zenodo.650638",
+        "provider": "datacite",
+        "client": "datacite"
+      }
+    }
+  },
+  "versions": {
+    "is_latest": true,
+    "is_latest_draft": true,
+    "index": 1
+  },
+  "is_published": true,
+  "is_draft": true,
+  "expires_at": "2026-11-27 14:12:34.278511+00:00",
+  "pids": {
+    "doi": {
+      "identifier": "10.5072/zenodo.650639",
+      "provider": "datacite",
+      "client": "datacite"
+    },
+    "oai": {
+      "identifier": "oai:zenodo.org:650639",
+      "provider": "oai"
+    }
+  },
+  "custom_fields": {},
+  "files": {
+    "enabled": true,
+    "order": [],
+    "count": 1,
+    "total_bytes": 204,
+    "entries": {
+      "comment.html": {
+        "id": "d977f978-2964-4b94-8f59-87745842da63",
+        "checksum": "md5:f7f7750b730afaa0508ebeb4d7f74993",
+        "ext": "html",
+        "size": 204,
+        "mimetype": "text/html",
+        "storage_class": "L",
+        "key": "comment.html",
+        "metadata": {},
+        "access": {
+          "hidden": false
+        }
+      }
+    }
+  },
+  "media_files": {
+    "enabled": false,
+    "order": [],
+    "count": 0,
+    "total_bytes": 0,
+    "entries": {}
+  },
+  "status": "published",
+  "ui": {
+    "publication_date_l10n_medium": "Nov 27, 2026",
+    "publication_date_l10n_long": "November 27, 2026",
+    "created_date_l10n_long": "November 27, 2026",
+    "updated_date_l10n_long": "November 27, 2026",
+    "resource_type": {
+      "id": "publication-other"
+    },
+    "custom_fields": {},
+    "access_status": {
+      "id": "open",
+      "title_l10n": "Open",
+      "description_l10n": "The record and files are publicly accessible.",
+      "icon": "unlock",
+      "embargo_date_l10n": null,
+      "message_class": ""
+    },
+    "creators": {
+      "creators": [
+        {
+          "person_or_org": {
+            "type": "personal",
+            "name": "Chris Wilkinson",
+            "family_name": "Chris Wilkinson",
+            "identifiers": [
+              {
+                "identifier": "0000-0003-4921-6155",
+                "scheme": "orcid"
+              }
+            ]
+          }
+        }
+      ],
+      "affiliations": []
+    },
+    "description_stripped": "This Zenodo record is a permanently preserved version of a comment on a PREreview. You can view the complete PREreview and comments at https://chris.local/reviews/24540607.\n\n\nthis is a test comment\n\n        \nCompeting interests\n\n        \n\n          The author of this comment declares that they have no competing interests.",
+    "version": "v1",
+    "related_identifiers": [
+      {
+        "identifier": "10.64898/2026.09.01.748474",
+        "relation_type": {
+          "id": "references"
+        },
+        "scheme": "doi",
+        "resource_type": {
+          "id": "publication-preprint"
+        }
+      },
+      {
+        "identifier": "10.5281/zenodo.24540607",
+        "relation_type": {
+          "id": "references"
+        },
+        "scheme": "doi",
+        "resource_type": {
+          "id": "publication-peerreview"
+        }
+      }
+    ],
+    "rights": [
+      {
+        "id": "cc-by-4.0"
+      }
+    ],
+    "is_draft": true
+  }
+}

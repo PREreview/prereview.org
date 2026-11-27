@@ -1,6 +1,7 @@
 import { Context, Effect, flow, Layer, Scope } from 'effect'
 import type { HttpClient } from 'effect/http'
 import { CreateDeposition } from './CreateDeposition/index.ts'
+import { EditRecord } from './EditRecord/index.ts'
 import { GetDeposition } from './GetDeposition/index.ts'
 import { PublishDeposition } from './PublishDeposition/index.ts'
 import { RemoveRecordFromCommunity } from './RemoveRecordFromCommunity/index.ts'
@@ -8,6 +9,7 @@ import { UploadFile } from './UploadFile/index.ts'
 import type { ZenodoApi } from './ZenodoApi.ts'
 
 export * from './Deposition.ts'
+export * from './Draft.ts'
 export { type File } from './UploadFile/index.ts'
 export { ZenodoApi } from './ZenodoApi.ts'
 
@@ -20,6 +22,9 @@ export class Zenodo extends Context.Service<
       Effect.Success<ReturnType<typeof CreateDeposition>>,
       Effect.Error<ReturnType<typeof CreateDeposition>>
     >
+    editRecord: (
+      ...args: Parameters<typeof EditRecord>
+    ) => Effect.Effect<Effect.Success<ReturnType<typeof EditRecord>>, Effect.Error<ReturnType<typeof EditRecord>>>
     getDeposition: (
       ...args: Parameters<typeof GetDeposition>
     ) => Effect.Effect<Effect.Success<ReturnType<typeof GetDeposition>>, Effect.Error<ReturnType<typeof GetDeposition>>>
@@ -44,6 +49,9 @@ export class Zenodo extends Context.Service<
 export const createDeposition = (...args: Parameters<(typeof Zenodo.Service)['createDeposition']>) =>
   Zenodo.use(service => service.createDeposition(...args))
 
+export const editRecord = (...args: Parameters<(typeof Zenodo.Service)['editRecord']>) =>
+  Zenodo.use(service => service.editRecord(...args))
+
 export const getDeposition = (...args: Parameters<(typeof Zenodo.Service)['getDeposition']>) =>
   Zenodo.use(service => service.getDeposition(...args))
 
@@ -61,6 +69,7 @@ const make: Effect.Effect<typeof Zenodo.Service, never, HttpClient.HttpClient | 
 
   return {
     createDeposition: flow(CreateDeposition, Effect.provide(context)),
+    editRecord: flow(EditRecord, Effect.provide(context)),
     getDeposition: flow(GetDeposition, Effect.provide(context)),
     publishDeposition: flow(PublishDeposition, Effect.provide(context)),
     removeRecordFromCommunity: flow(RemoveRecordFromCommunity, Effect.provide(context)),
