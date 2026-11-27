@@ -25,6 +25,8 @@ export class CommentWasAlreadyPublished extends Data.TaggedError('CommentWasAlre
 
 export class CommentHasNotBeenPublished extends Data.TaggedError('CommentHasNotBeenPublished') {}
 
+export class CommentHasBeenWithdrawn extends Data.TaggedError('CommentHasBeenWithdrawn') {}
+
 export class UnableToAssignADoi extends Schema.TaggedError<UnableToAssignADoi>()('UnableToAssignADoi', {
   cause: Schema.optional(Schema.Defect()),
 }) {}
