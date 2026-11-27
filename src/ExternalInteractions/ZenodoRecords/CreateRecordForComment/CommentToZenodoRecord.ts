@@ -1,14 +1,21 @@
 import type { Temporal } from '@js-temporal/polyfill'
-import { Match } from 'effect'
+import { Match, Option } from 'effect'
 import type * as Preprints from '../../../Domain/Preprints/index.ts'
 import type * as Prereviewers from '../../../Domain/Prereviewers/index.ts'
 import type { Zenodo } from '../../../ExternalApis/index.ts'
 import { html, plainText, type Html } from '../../../html.ts'
-import type { Doi } from '../../../types/index.ts'
+import { DefaultLocale, translate } from '../../../locales/index.ts'
+import type { Doi, NonEmptyString } from '../../../types/index.ts'
+
+export const CommentToZenodoRecord = (comment: Comment): { draft: Zenodo.NewDraft; file: Zenodo.File } => ({
+  draft: CommentToNewDraft(comment),
+  file: { name: 'comment.html', content: CommentToHtml(comment).toString() },
+})
 
 export interface Comment {
   readonly author: Prereviewers.Persona
   readonly comment: Html
+  readonly competingInterests: Option.Option<NonEmptyString.NonEmptyString>
   readonly prereview: {
     readonly doi: Doi.Doi
     readonly url: URL
@@ -20,7 +27,23 @@ export interface Comment {
   readonly publicationDate: Temporal.PlainDate
 }
 
-export const CommentToNewDraft = ({ author, comment, prereview, publicationDate }: Comment): Zenodo.NewDraft => ({
+const CommentToHtml = ({ comment, competingInterests }: Pick<Comment, 'comment' | 'competingInterests'>) => {
+  const t = translate(DefaultLocale, 'write-comment-flow')
+
+  return html`${comment}
+
+    <h2>${t('competingInterestsHeading')()}</h2>
+
+    <p>${Option.getOrElse(competingInterests, () => t('noCompetingInterests')())}</p>`
+}
+
+const CommentToNewDraft = ({
+  author,
+  comment,
+  competingInterests,
+  prereview,
+  publicationDate,
+}: Comment): Zenodo.NewDraft => ({
   access: { record: 'public', files: 'public' },
   files: { enabled: true },
   metadata: {
@@ -45,7 +68,7 @@ export const CommentToNewDraft = ({ author, comment, prereview, publicationDate 
         >
       </p>
 
-      ${comment}`.toString(),
+      ${CommentToHtml({ comment, competingInterests })}`.toString(),
     publisher: 'Zenodo',
     publication_date: publicationDate.toString(),
     rights: [{ id: 'cc-by-4.0' }],

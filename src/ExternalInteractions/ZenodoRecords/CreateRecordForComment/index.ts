@@ -1,9 +1,9 @@
 import { Data, Effect } from 'effect'
 import { Zenodo } from '../../../ExternalApis/index.ts'
 import { Temporal } from '../../../types/index.ts'
-import { CommentToNewDraft, type Comment } from './CommentToNewDraft.ts'
+import { CommentToZenodoRecord, type Comment } from './CommentToZenodoRecord.ts'
 
-export type { Comment } from './CommentToNewDraft.ts'
+export type { Comment } from './CommentToZenodoRecord.ts'
 
 export class FailedToCreateRecordForComment extends Data.TaggedError('FailedToCreateRecordForComment')<{
   cause?: unknown
@@ -13,15 +13,15 @@ export const CreateRecordForComment = Effect.fn('ZenodoRecords.createRecordForCo
   function* (comment: Omit<Comment, 'publicationDate'>) {
     const publicationDate = yield* Temporal.currentPlainDate
 
-    const draft = yield* Zenodo.createDraft(CommentToNewDraft({ ...comment, publicationDate }))
+    const record = CommentToZenodoRecord({ ...comment, publicationDate })
+
+    const draft = yield* Zenodo.createDraft(record.draft)
 
     const doi = yield* Zenodo.reserveDoi(draft)
 
-    const file = { name: 'comment.html', content: comment.comment.toString() }
-
-    yield* Zenodo.startDraftFileUpload({ draft, key: file.name })
-    yield* Zenodo.uploadDraftFileContent({ draft, file })
-    yield* Zenodo.commitDraftFile({ draft, key: file.name })
+    yield* Zenodo.startDraftFileUpload({ draft, key: record.file.name })
+    yield* Zenodo.uploadDraftFileContent({ draft, file: record.file })
+    yield* Zenodo.commitDraftFile({ draft, key: record.file.name })
 
     return { recordId: draft.id, doi }
   },
