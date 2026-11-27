@@ -101,9 +101,7 @@ pipe(
       Layer.provide([SqlSensitiveDataStore.layer, LoggingHttpClient.layer]),
       Layer.provideMerge(StatefulQueries.layer),
       Layer.provide([
-        FeatureFlags.layerConfig({
-          useEventsForPreprintReviews: Config.withDefault(Config.Boolean('USE_EVENTS_FOR_PREPRINT_REVIEWS'), false),
-        }),
+        FeatureFlags.layerDefaults,
         NodeHttpClient.layerNodeHttp,
         OpenAlex.layerApiConfig({ key: Config.Redacted('OPENALEX_API_KEY') }),
         Layer.effect(

@@ -2356,7 +2356,6 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
             canClubLeadsAddReviewsToClubs,
             canLogInAsDemoUser,
             showSpotlight,
-            useEventsForPreprintReviews: true,
           }),
           Nodemailer.layerTransporter(nodemailer),
           Layer.succeed(IsUserBlocked, isUserBlocked),

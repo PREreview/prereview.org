@@ -25,7 +25,7 @@ const defaults = {
   canLogInAsDemoUser: false,
   canPreviewContentFromContentful: false,
   canUseMatchmaking: () => false,
-  useEventsForPreprintReviews: false,
+  useEventsForPreprintReviews: true,
   loadBlogFromContentful: false,
   loadPagesFromContentful: false,
   sendCoarNotifyMessages: false,
