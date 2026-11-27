@@ -60,6 +60,12 @@ export class PublicationDateForCommentWasImported extends Schema.TaggedClass<Pub
   },
 ) {}
 
+export class CommentWasWithdrawn extends Schema.TaggedClass<CommentWasWithdrawn>()('CommentWasWithdrawn', {
+  commentId: Uuid.UuidSchema,
+  withdrawnAt: Temporal.InstantSchema,
+  reason: Schema.Literals(['spam']),
+}) {}
+
 export type CommentEvent = typeof CommentEvent.Type
 
 export const CommentEvent = Schema.Union([
@@ -73,6 +79,7 @@ export const CommentEvent = Schema.Union([
   CommentWasAssignedADoi,
   CommentWasPublished,
   PublicationDateForCommentWasImported,
+  CommentWasWithdrawn,
 ])
 
 export const CommentEventTypes = Array.map(CommentEvent.members, member => member.identifier as CommentEvent['_tag'])

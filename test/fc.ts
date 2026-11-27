@@ -2163,6 +2163,15 @@ export const publicationDateForCommentWasImported = ({
     .record({ commentId: commentId ?? uuid(), publishedAt: instant() })
     .map(data => new Events.PublicationDateForCommentWasImported(data))
 
+export const commentWasWithdrawn = ({
+  commentId,
+}: {
+  commentId?: fc.Arbitrary<Events.CommentWasWithdrawn['commentId']>
+} = {}): fc.Arbitrary<Events.CommentWasWithdrawn> =>
+  fc
+    .record({ commentId: commentId ?? uuid(), withdrawnAt: instant(), reason: constant('spam') })
+    .map(data => new Events.CommentWasWithdrawn(data))
+
 export const commentEvent = (
   args: {
     commentId?: fc.Arbitrary<Events.CommentEvent['commentId']>
@@ -2178,6 +2187,7 @@ export const commentEvent = (
     commentWasAssignedADoi(args),
     commentWasPublished(args),
     publicationDateForCommentWasImported(args),
+    commentWasWithdrawn(args),
   )
 
 export const datasetReviewWasStarted = ({

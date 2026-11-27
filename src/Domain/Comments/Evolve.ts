@@ -142,6 +142,7 @@ const onEvent = pipe(
   Match.tag('CommentWasAssignedADoi', onCommentWasAssignedADoi),
   Match.tag('CommentWasPublished', onCommentWasPublished),
   Match.tag('PublicationDateForCommentWasImported', () => Function.identity<State.CommentState>),
+  Match.tag('CommentWasWithdrawn', () => Function.identity<State.CommentState>),
   Match.exhaustive,
 )
 

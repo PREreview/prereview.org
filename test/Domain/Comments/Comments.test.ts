@@ -366,6 +366,21 @@ describe('when published', () => {
       .when(new _.MarkCommentAsPublished({ commentId, publishedAt }))
       .thenError(new _.CommentWasAlreadyPublished()))
 
+  test('is still published once withdrawn', () =>
+    given(
+      new Events.CommentWasStarted({ commentId, prereviewId: 123, authorId: OrcidId('0000-0002-1825-0097') }),
+      new Events.CommentWasEntered({ commentId, comment: html`<p>Some comment.</p>` }),
+      new Events.PersonaForCommentWasChosen({ commentId, persona: 'public' }),
+      new Events.CompetingInterestsForCommentWereDeclared({ commentId, competingInterests: Option.none() }),
+      new Events.CodeOfConductForCommentWasAgreed({ commentId }),
+      new Events.ExistenceOfVerifiedEmailAddressForCommentWasConfirmed({ commentId }),
+      new Events.CommentWasAssignedADoi({ commentId, id: 107286, doi: Doi('10.5072/zenodo.107286') }),
+      new Events.CommentWasPublished({ commentId, publishedAt }),
+      new Events.CommentWasWithdrawn({ commentId, withdrawnAt: publishedAt.add({ hours: 1 }), reason: 'spam' }),
+    )
+      .when(new _.EnterComment({ commentId, comment: html`<p>Some different comment.</p>` }))
+      .thenError(new _.CommentWasAlreadyPublished()))
+
   test('cannot be started again', () =>
     given(
       new Events.CommentWasStarted({ commentId, prereviewId: 123, authorId: OrcidId('0000-0002-1825-0097') }),
