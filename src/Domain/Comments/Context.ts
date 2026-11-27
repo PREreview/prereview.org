@@ -1,11 +1,8 @@
-import { Context, type Effect, type Option } from 'effect'
-import type { Html } from '../../html.ts'
-import type { Doi } from '../../types/Doi.ts'
-import type { NonEmptyString, Uuid } from '../../types/index.ts'
-import type { OrcidId } from '../../types/OrcidId.ts'
+import { Context, type Effect } from 'effect'
+import type { Uuid } from '../../types/index.ts'
 import type { Commands, Queries } from '../Events/index.ts'
 import type { CommentCommand } from './Commands.ts'
-import type { CommentError, UnableToAssignADoi, UnableToPublishComment } from './Errors.ts'
+import type { CommentError } from './Errors.ts'
 import type * as CommentQueries from './Queries.ts'
 import type { CommentState } from './State.ts'
 
@@ -35,21 +32,3 @@ export class HandleCommentCommand extends Context.Service<
   HandleCommentCommand,
   (command: CommentCommand) => Effect.Effect<void, Commands.UnableToHandleCommand | CommentError>
 >()('HandleCommentCommand') {}
-
-export class CreateRecordOnZenodoForComment extends Context.Service<
-  CreateRecordOnZenodoForComment,
-  (comment: InputForCommentZenodoRecord) => Effect.Effect<[Doi, number], UnableToAssignADoi>
->()('CreateRecordOnZenodoForComment') {}
-
-export interface InputForCommentZenodoRecord {
-  readonly authorId: OrcidId
-  readonly competingInterests: Option.Option<NonEmptyString.NonEmptyString>
-  readonly comment: Html
-  readonly persona: 'public' | 'pseudonym'
-  readonly prereviewId: number
-}
-
-export class PublishCommentOnZenodo extends Context.Service<
-  PublishCommentOnZenodo,
-  (commentId: number) => Effect.Effect<void, UnableToPublishComment>
->()('PublishCommentOnZenodo') {}

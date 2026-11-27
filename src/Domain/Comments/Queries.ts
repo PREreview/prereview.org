@@ -2,8 +2,6 @@ import { Array, Equal, Option, pipe, Record, Result } from 'effect'
 import type { Uuid } from '../../types/index.ts'
 import type { OrcidId } from '../../types/OrcidId.ts'
 import type * as Events from '../Events/index.ts'
-import { Queries } from '../Events/index.ts'
-import type { InputForCommentZenodoRecord } from './Context.ts'
 import * as Errors from './Errors.ts'
 import { EvolveComment } from './Evolve.ts'
 import * as ExpectedCommand from './ExpectedCommand.ts'
@@ -115,38 +113,3 @@ export const GetNextExpectedCommandForUserOnAComment =
 
     return Result.succeed(new ExpectedCommand.ExpectedToPublishComment({ commentId }))
   }
-
-export const buildInputForCommentZenodoRecord = (
-  events: ReadonlyArray<Events.CommentEvent>,
-): Result.Result<InputForCommentZenodoRecord, Queries.UnexpectedSequenceOfEvents> => {
-  const authorId = pipe(
-    events,
-    Array.findLast(event => event._tag === 'CommentWasStarted'),
-    Option.map(event => event.authorId),
-  )
-  const prereviewId = pipe(
-    events,
-    Array.findLast(event => event._tag === 'CommentWasStarted'),
-    Option.map(event => event.prereviewId),
-  )
-  const persona = pipe(
-    events,
-    Array.findLast(event => event._tag === 'PersonaForCommentWasChosen'),
-    Option.map(event => event.persona),
-  )
-  const comment = pipe(
-    events,
-    Array.findLast(event => event._tag === 'CommentWasEntered'),
-    Option.map(event => event.comment),
-  )
-  const competingInterests = pipe(
-    events,
-    Array.findLast(event => event._tag === 'CompetingInterestsForCommentWereDeclared'),
-    Option.map(event => event.competingInterests),
-  )
-
-  return Result.fromOption(
-    Option.all({ authorId, prereviewId, persona, comment, competingInterests }),
-    () => new Queries.UnexpectedSequenceOfEvents({}),
-  )
-}

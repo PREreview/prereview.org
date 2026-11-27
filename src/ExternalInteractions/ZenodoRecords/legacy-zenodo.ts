@@ -31,11 +31,9 @@ import { URL } from 'node:url'
 import { P, match } from 'ts-pattern'
 import {
   type DepositMetadata,
-  type Deposition,
   type EmptyDeposition,
   type InProgressDeposition,
   type Record,
-  type UnsubmittedDeposition,
   type ZenodoAuthenticatedEnv,
   createEmptyDeposition,
   depositionIsSubmitted,
@@ -66,7 +64,7 @@ import {
 import type * as Prereviewers from '../../Domain/Prereviewers/index.ts'
 import * as Prereview from '../../Domain/Prereviews/Prereview.ts' // oxlint-disable-line module-boundaries/use-index
 import { timeoutRequest, useStaleCache } from '../../fetch.ts'
-import { type Html, plainText, sanitizeHtml } from '../../html.ts'
+import { plainText, sanitizeHtml } from '../../html.ts'
 import { type PublicUrlEnv, toUrl } from '../../public-url.ts'
 import { EffectToFpts, FptsToEffect } from '../../RefactoringUtilities/index.ts'
 import * as Routes from '../../routes.ts'
@@ -601,78 +599,6 @@ export const addAuthorToRecordOnZenodo = (
     RTE.bimap(() => 'unavailable', Function.constVoid),
   )
 
-interface CommentToPublish {
-  author: Prereviewers.Persona
-  comment: Html
-  prereview: {
-    doi: Doi
-    id: number
-    preprint: {
-      id: PreprintId
-      title: Html
-    }
-  }
-}
-
-export const createCommentOnZenodo = (
-  comment: CommentToPublish,
-): RTE.ReaderTaskEither<PublicUrlEnv & ZenodoAuthenticatedEnv & L.LoggerEnv, 'unavailable', [Doi, number]> =>
-  pipe(
-    RTE.Do,
-    RTE.apSW('deposition', createEmptyDeposition()),
-    RTE.apSW('metadata', RTE.fromReader(createDepositMetadataForComment(comment))),
-    RTE.chainW(({ deposition, metadata }) => updateDeposition(metadata, deposition)),
-    RTE.chainFirstW(
-      uploadFile({
-        name: 'comment.html',
-        content: comment.comment.toString(),
-      }),
-    ),
-    RTE.orElseFirstW(
-      RTE.fromReaderIOK(
-        flow(
-          error => ({
-            error: match(error)
-              .with(P.instanceOf(Error), error => error.message)
-              .with({ status: P.number }, response => `${response.status} ${response.statusText}`)
-              .with({ _tag: P.string }, D.draw)
-              .exhaustive(),
-          }),
-          L.errorP('Unable to create completed deposition on Zenodo'),
-        ),
-      ),
-    ),
-    RTE.bimap(
-      () => 'unavailable',
-      deposition => [deposition.metadata.prereserve_doi.doi, deposition.id],
-    ),
-  )
-
-export const publishDepositionOnZenodo = (
-  depositionId: number,
-): RTE.ReaderTaskEither<ZenodoAuthenticatedEnv & L.LoggerEnv, 'unavailable', void> =>
-  pipe(
-    getDeposition(depositionId),
-    RTE.filterOrElseW(depositionCanBePublished, identity),
-    RTE.chainW(publishDeposition),
-    RTE.orElseFirstW(
-      RTE.fromReaderIOK(
-        flow(
-          error => ({
-            error: match(error)
-              .with(P.instanceOf(Error), error => error.message)
-              .with({ status: P.number }, response => `${response.status} ${response.statusText}`)
-              .with({ _tag: P.string }, D.draw)
-              .with({ state: P.string }, deposition => `deposition is ${deposition.state}`)
-              .exhaustive(),
-          }),
-          L.errorP('Unable to publish deposition on Zenodo'),
-        ),
-      ),
-    ),
-    RTE.bimap(() => 'unavailable', Function.constVoid),
-  )
-
 export const createRecordOnZenodo: (
   newPrereview: Omit<NewPrereview, 'club'> & { club: Option.Option<ClubName> },
 ) => RTE.ReaderTaskEither<
@@ -719,43 +645,6 @@ export const createRecordOnZenodo: (
       deposition => [deposition.metadata.doi, deposition.id],
     ),
   )
-
-function createDepositMetadataForComment(comment: CommentToPublish) {
-  return pipe(
-    toUrl(Routes.Review, { id: comment.prereview.id }),
-    R.map(
-      url =>
-        ({
-          upload_type: 'publication',
-          publication_type: 'other',
-          title: plainText`Comment on a PREreview of “${comment.prereview.preprint.title}”`.toString(),
-          creators: [
-            Match.valueTags(comment.author, {
-              PublicPersona: persona => ({ name: persona.displayName, orcid: persona.orcidId }),
-              PseudonymPersona: persona => ({ name: persona.pseudonym }),
-            }),
-          ],
-          description: `<p><strong>This Zenodo record is a permanently preserved version of a comment on a PREreview. You can view the complete PREreview and comments at <a href="${url.href}">${url.href}</a>.</strong></p>
-
-${comment.comment.toString()}`,
-          communities: [{ identifier: 'prereview-reviews' }],
-          related_identifiers: [
-            {
-              ...toExternalIdentifier(comment.prereview.preprint.id),
-              relation: 'references',
-              resource_type: 'publication-preprint',
-            },
-            {
-              identifier: comment.prereview.doi,
-              relation: 'references',
-              resource_type: 'publication-peerreview',
-              scheme: 'doi',
-            },
-          ],
-        }) satisfies DepositMetadata,
-    ),
-  )
-}
 
 function createDepositMetadata(
   deposition: EmptyDeposition,
@@ -1223,9 +1112,6 @@ const getDatasetReviewId = (record: Record) =>
       ),
     ),
   )
-
-const depositionCanBePublished = (deposition: Deposition): deposition is InProgressDeposition | UnsubmittedDeposition =>
-  'publish' in deposition.links
 
 const UrlD = pipe(
   D.string,

@@ -1,37 +1,17 @@
-import { Duration, Effect, Layer, pipe, Schema, Struct } from 'effect'
+import { Duration, Effect, Layer, pipe, Struct } from 'effect'
 import { Activity, DurableClock, Workflow } from 'effect/workflow'
-import { DoiSchema } from '../../../types/Doi.ts'
-import { Temporal, Uuid } from '../../../types/index.ts'
+import { Uuid } from '../../../types/index.ts'
 import * as Errors from '../Errors.ts'
-import { CreateRecordOnZenodo, RecordAssignedDoi } from './AssignADoi.ts'
 import { CheckIfUserHasAVerifiedEmailAddress as executeCheckIfUserHasAVerifiedEmailAddress } from './CheckIfUserHasAVerifiedEmailAddress.ts'
-import { PublishOnZenodo, RecordPublication } from './PublishComment.ts'
 import * as PublishCommentRecord from './PublishCommentRecord/index.ts'
 import { WithdrawOnZenodo } from './WithdrawCommentOnZenodo.ts'
 
 export { PublishCommentRecord } from './PublishCommentRecord/index.ts'
 
-export const AssignCommentADoi = Workflow.make('AssignCommentADoi', {
-  error: Errors.UnableToAssignADoi,
-  payload: {
-    commentId: Uuid.UuidSchema,
-  },
-  idempotencyKey: Struct.get('commentId'),
-})
-
 export const CheckIfUserHasAVerifiedEmailAddress = Workflow.make('CheckIfUserHasAVerifiedEmailAddress', {
   error: Errors.UnableToCheckForAVerifiedEmailAddress,
   payload: {
     commentId: Uuid.UuidSchema,
-  },
-  idempotencyKey: Struct.get('commentId'),
-})
-
-export const PublishComment = Workflow.make('PublishComment', {
-  error: Errors.UnableToPublishComment,
-  payload: {
-    commentId: Uuid.UuidSchema,
-    id: Schema.Number,
   },
   idempotencyKey: Struct.get('commentId'),
 })
@@ -69,28 +49,6 @@ const retryWithBackoff =
 
 export const workflowsLayer = Layer.mergeAll(
   PublishCommentRecord.layer,
-  AssignCommentADoi.toLayer(({ commentId }, executionId) =>
-    Effect.gen(function* () {
-      const [doi, id] = yield* pipe(
-        Activity.make({
-          name: 'CreateRecordOnZenodo',
-          success: Schema.Tuple([DoiSchema, Schema.Number]),
-          error: AssignCommentADoi.errorSchema,
-          execute: CreateRecordOnZenodo(commentId),
-        }),
-        retryWithBackoff(executionId, 'CreateRecordOnZenodo'),
-      )
-
-      yield* pipe(
-        Activity.make({
-          name: 'RecordAssignedDoi',
-          error: AssignCommentADoi.errorSchema,
-          execute: RecordAssignedDoi(commentId, doi, id),
-        }),
-        retryWithBackoff(executionId, 'RecordAssignedDoi'),
-      )
-    }),
-  ),
   CheckIfUserHasAVerifiedEmailAddress.toLayer(({ commentId }, executionId) =>
     pipe(
       Activity.make({
@@ -100,28 +58,6 @@ export const workflowsLayer = Layer.mergeAll(
       }),
       retryWithBackoff(executionId, CheckIfUserHasAVerifiedEmailAddress._tag),
     ),
-  ),
-  PublishComment.toLayer(({ commentId, id }, executionId) =>
-    Effect.gen(function* () {
-      const publishedAt = yield* pipe(
-        Activity.make({
-          name: 'PublishOnZenodo',
-          success: Temporal.InstantSchema,
-          error: PublishComment.errorSchema,
-          execute: PublishOnZenodo(id),
-        }),
-        retryWithBackoff(executionId, 'PublishOnZenodo'),
-      )
-
-      yield* pipe(
-        Activity.make({
-          name: 'RecordPublication',
-          error: PublishComment.errorSchema,
-          execute: RecordPublication(commentId, publishedAt),
-        }),
-        retryWithBackoff(executionId, 'RecordPublication'),
-      )
-    }),
   ),
   WithdrawCommentOnZenodo.toLayer(({ commentId }, executionId) =>
     pipe(

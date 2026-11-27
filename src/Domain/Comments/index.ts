@@ -14,7 +14,6 @@ import * as CommentQueries from './Queries.ts'
 import { reactionsWorker } from './Reactions.ts'
 import { CommentNotStarted, type CommentState } from './State.ts'
 import * as Workflows from './Workflows/index.ts'
-import { layerZenodo } from './Zenodo.ts'
 
 export * from './Commands.ts'
 export { Comments } from './Comments.ts'
@@ -147,6 +146,4 @@ export const layer = Layer.mergeAll(
   Layer.effect(GetComment, makeGetComment),
 )
 
-const ReactToCommentEventsNoDeps = reactionsWorker.pipe(Layer.merge(Workflows.workflowsLayer))
-
-export const ReactToCommentEvents = Layer.provide(ReactToCommentEventsNoDeps, layerZenodo)
+export const ReactToCommentEvents = reactionsWorker.pipe(Layer.merge(Workflows.workflowsLayer))

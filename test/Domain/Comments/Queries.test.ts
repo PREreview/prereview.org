@@ -2,7 +2,6 @@ import { Option, Result } from 'effect'
 import * as _ from '../../../src/Domain/Comments/Queries.ts'
 import * as Comments from '../../../src/Domain/Comments/index.ts'
 import * as Events from '../../../src/Domain/Events/Events.ts'
-import * as Queries from '../../../src/EventSourcing/Queries.ts'
 import { html } from '../../../src/html.ts'
 import { Doi } from '../../../src/types/Doi.ts'
 import { OrcidId } from '../../../src/types/OrcidId.ts'
@@ -277,54 +276,5 @@ describe('GetNextExpectedCommandForUserOnAComment', () => {
     const actual = _.GetNextExpectedCommandForUserOnAComment(events)(resourceId)
 
     expect(actual).toStrictEqual(Result.fail(new Comments.CommentWasAlreadyPublished()))
-  })
-})
-
-describe('buildInputForCommentZenodoRecord', () => {
-  const commentId = Uuid.Uuid('20d4a551-54fe-48e0-890b-3e08a98f54a2')
-  const authorId = OrcidId('0000-0002-1825-0097')
-  const prereviewId = 123
-  const commentWasStarted = new Events.CommentWasStarted({ commentId, authorId, prereviewId })
-  const commentWasEntered = new Events.CommentWasEntered({ commentId, comment: html`Some comment` })
-  const personaForCommentWasChosen = new Events.PersonaForCommentWasChosen({ commentId, persona: 'public' })
-  const competingInterestsForCommentWereDeclared = new Events.CompetingInterestsForCommentWereDeclared({
-    commentId,
-    competingInterests: Option.none(),
-  })
-  const codeOfConductForCommentWasAgreed = new Events.CodeOfConductForCommentWasAgreed({ commentId })
-  const publicationOfCommentWasRequested = new Events.PublicationOfCommentWasRequested({ commentId })
-
-  test('builds input', () => {
-    const events = [
-      commentWasStarted,
-      commentWasEntered,
-      personaForCommentWasChosen,
-      competingInterestsForCommentWereDeclared,
-      codeOfConductForCommentWasAgreed,
-      publicationOfCommentWasRequested,
-    ]
-
-    const expectedInputForCommentZenodoRecord: Comments.InputForCommentZenodoRecord = {
-      authorId: commentWasStarted.authorId,
-      prereviewId: commentWasStarted.prereviewId,
-      comment: commentWasEntered.comment,
-      persona: personaForCommentWasChosen.persona,
-      competingInterests: competingInterestsForCommentWereDeclared.competingInterests,
-    }
-
-    const actual = _.buildInputForCommentZenodoRecord(events)
-
-    expect(actual).toStrictEqual(Result.succeed(expectedInputForCommentZenodoRecord))
-  })
-
-  test.each([
-    ['no CommentWasStarted', [commentWasEntered, personaForCommentWasChosen, competingInterestsForCommentWereDeclared]],
-    ['no CommentWasEntered', [commentWasStarted, personaForCommentWasChosen, competingInterestsForCommentWereDeclared]],
-    ['no PersonaForCommentWasChosen', [commentWasStarted, commentWasEntered, competingInterestsForCommentWereDeclared]],
-    ['no CompetingInterestsForCommentWereDeclared', [commentWasStarted, commentWasEntered, personaForCommentWasChosen]],
-  ])('returns an UnexpectedSequenceOfEvents when %s', (_name, events) => {
-    const actual = _.buildInputForCommentZenodoRecord([...events, publicationOfCommentWasRequested])
-
-    expect(actual).toStrictEqual(Result.fail(new Queries.UnexpectedSequenceOfEvents({})))
   })
 })
