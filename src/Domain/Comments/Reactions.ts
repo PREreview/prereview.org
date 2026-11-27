@@ -5,7 +5,7 @@ export const reactionsWorker = EventSubscription.make('Comments/Reactions', {
   CommentWasStarted: ({ commentId }) =>
     Workflows.CheckIfUserHasAVerifiedEmailAddress.execute({ commentId }, { discard: true }),
   PublicationOfCommentWasRequested: ({ commentId }) =>
-    Workflows.AssignCommentADoi.execute({ commentId }, { discard: true }),
-  CommentWasAssignedADoi: ({ commentId, id }) => Workflows.PublishComment.execute({ commentId, id }, { discard: true }),
+    // oxlint-disable-next-line import/namespace
+    Workflows.PublishCommentRecord.execute({ commentId }, { discard: true }),
   CommentWasWithdrawn: ({ commentId }) => Workflows.WithdrawCommentOnZenodo.execute({ commentId }, { discard: true }),
 })

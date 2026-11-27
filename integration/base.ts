@@ -3195,153 +3195,38 @@ export const willPublishADatasetReview: Fixtures<Pick<AppFixtures, 'fetch'>, NoF
 
 export const willPublishAComment: Fixtures<Pick<AppFixtures, 'fetch'>, NoFixtures, Pick<AppFixtures, 'fetch'>> = {
   fetch: async ({ fetch }, use) => {
-    const record = {
-      conceptdoi: Doi('10.5072/zenodo.112360'),
-      conceptrecid: 112360,
-      files: [
-        {
-          links: {
-            self: new URL('http://example.com/comment.html/content'),
-          },
-          key: 'comment.html',
-          size: 58,
-        },
-      ],
-      id: 112361,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
+    const draft = {
+      id: '112361',
+      access: { record: 'public', files: 'public' },
+      pids: {},
+      parent: { communities: {} },
       metadata: {
-        access_right: 'open',
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [
-          {
-            name: 'Josiah Carberry',
-            orcid: OrcidId('0000-0002-1825-0097'),
-          },
-        ],
-        description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
-        doi: Doi('10.5072/zenodo.112360'),
-        license: { id: 'cc-by-4.0' },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'references',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.1061864',
-            relation: 'references',
-            resource_type: 'publication-peerreview',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.112360',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'other',
-        },
+        resource_type: { id: 'publication-other' },
         title:
-          'Comment on a PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
+          'Comment on a PREreview of “The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii”',
+        publication_date: '2022-07-05',
       },
-    } satisfies ZenodoRecord
+    }
+    const draftWithADoi = { ...draft, pids: { doi: { identifier: '10.5072/zenodo.112361', provider: 'datacite' } } }
 
     fetch
-      .postOnce('http://zenodo.test/api/deposit/depositions', {
-        body: EmptyDepositionC.encode({
-          ...record,
-          links: {
-            bucket: new URL('http://example.com/bucket'),
-            self: new URL('http://example.com/self'),
-          },
-          metadata: {
-            prereserve_doi: {
-              doi: record.metadata.doi,
-            },
-          },
-          state: 'unsubmitted',
-          submitted: false,
-        }),
+      .postOnce('http://zenodo.test/api/records', { body: draft, status: StatusCodes.Created })
+      .postOnce('http://zenodo.test/api/records/112361/draft/pids/doi', {
+        body: draftWithADoi,
         status: StatusCodes.Created,
       })
-      .putOnce('http://example.com/self', {
-        body: UnsubmittedDepositionC.encode({
-          ...record,
-          links: {
-            bucket: new URL('http://example.com/bucket'),
-            publish: new URL('http://example.com/publish'),
-            self: new URL('http://example.com/self'),
-          },
-          metadata: {
-            ...record.metadata,
-            communities: [{ identifier: 'prereview-reviews' }],
-            license: record.metadata.license.id,
-            prereserve_doi: {
-              doi: record.metadata.doi,
-            },
-            upload_type: 'publication',
-            publication_type: 'other',
-          },
-          state: 'unsubmitted',
-          submitted: false,
-        }),
-        status: StatusCodes.OK,
-      })
-      .putOnce('http://example.com/bucket/comment.html', {
-        status: StatusCodes.Created,
-      })
-      .getOnce('http://zenodo.test/api/deposit/depositions/112361', {
-        body: UnsubmittedDepositionC.encode({
-          ...record,
-          links: {
-            bucket: new URL('http://example.com/bucket'),
-            publish: new URL('http://example.com/publish'),
-            self: new URL('http://example.com/self'),
-          },
-          metadata: {
-            ...record.metadata,
-            communities: [{ identifier: 'prereview-reviews' }],
-            license: record.metadata.license.id,
-            prereserve_doi: {
-              doi: record.metadata.doi,
-            },
-            upload_type: 'publication',
-            publication_type: 'other',
-          },
-          state: 'unsubmitted',
-          submitted: false,
-        }),
-        status: StatusCodes.OK,
-      })
+      .postOnce('http://zenodo.test/api/records/112361/draft/files', { status: StatusCodes.Created })
+      .putOnce('http://zenodo.test/api/records/112361/draft/files/comment.html/content', { status: StatusCodes.OK })
+      .postOnce('http://zenodo.test/api/records/112361/draft/files/comment.html/commit', { status: StatusCodes.OK })
+      .getOnce('http://zenodo.test/api/records/112361', { status: StatusCodes.NotFound })
+      .getOnce('http://zenodo.test/api/records/112361/draft', { body: draftWithADoi })
       .postOnce(
-        'http://example.com/publish',
-        {
-          body: SubmittedDepositionC.encode({
-            ...record,
-            links: {
-              edit: new URL('http://example.com/edit'),
-            },
-            metadata: {
-              ...record.metadata,
-              communities: [{ identifier: 'prereview-reviews' }],
-              license: record.metadata.license.id,
-              upload_type: 'publication',
-              publication_type: 'other',
-            },
-            state: 'done',
-            submitted: true,
-          }),
-          status: StatusCodes.Accepted,
-        },
+        'http://zenodo.test/api/records/112361/draft/actions/publish',
+        { status: StatusCodes.Accepted },
         { delay: 100 },
       )
+      .getOnce('http://zenodo.test/api/records/112361', { body: draftWithADoi })
+      .postOnce('http://zenodo.test/api/records/112361/communities', { status: StatusCodes.OK })
       .getOnce('http://api.orcid.test/v3.0/0000-0002-1825-0097/personal-details', {
         body: {
           name: { 'given-names': { value: 'Josiah' }, 'family-name': { value: 'Carberry' }, 'credit-name': null },
