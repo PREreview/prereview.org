@@ -56,19 +56,14 @@ const removed = new Events.InvitationToAppearOnADatasetReviewRemovedFromTheList(
 
 test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
   ['no events', input, [], Result.fail(new DatasetReviews.DatasetReviewHasNotBeenStarted())],
-  ['not answered', input, [started], Result.fail(new DatasetReviews.DatasetReviewDoesNotNeedInvitationsToAppear())],
+  ['not answered', input, [started], Result.succeed([])],
   [
     'different dataset review ID',
     inputDifferentDatasetReviewId,
     [started],
     Result.fail(new DatasetReviews.DatasetReviewHasNotBeenStarted()),
   ],
-  [
-    'answered no',
-    input,
-    [started, answeredNo],
-    Result.fail(new DatasetReviews.DatasetReviewDoesNotNeedInvitationsToAppear()),
-  ],
+  ['answered no', input, [started, answeredNo], Result.succeed([])],
   ['answered yes', input, [started, answeredYes], Result.succeed([])],
   [
     'answered yes, one invite',
@@ -82,6 +77,7 @@ test.each<[string, _.Input, ReadonlyArray<Events.Event>, _.Result]>([
       },
     ]),
   ],
+  ['answered yes, one invite, answered no', input, [started, answeredYes, invited1, answeredNo], Result.succeed([])],
   [
     'answered yes, multiple invites',
     input,

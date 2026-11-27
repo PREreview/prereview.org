@@ -14,10 +14,7 @@ export interface InvitationToAppear {
   emailAddress: EmailAddress.EmailAddress
 }
 
-export type Result = Result.Result<
-  ReadonlyArray<InvitationToAppear>,
-  Errors.DatasetReviewHasNotBeenStarted | Errors.DatasetReviewDoesNotNeedInvitationsToAppear
->
+export type Result = Result.Result<ReadonlyArray<InvitationToAppear>, Errors.DatasetReviewHasNotBeenStarted>
 
 const createFilter = ({ datasetReviewId }: Input) =>
   Events.EventFilter({
@@ -47,7 +44,7 @@ const query = (events: ReadonlyArray<Events.Event>, input: Input): Result =>
     )
 
     if (!Equal.equals(needInvitations, Option.some('yes'))) {
-      return yield* Result.fail(new Errors.DatasetReviewDoesNotNeedInvitationsToAppear())
+      return []
     }
 
     const addedInvitations = Array.filter(events, hasTag('InvitationToAppearOnADatasetReviewAddedToTheList'))
