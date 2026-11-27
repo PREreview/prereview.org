@@ -3,7 +3,7 @@ import type { KeyValueStore } from 'effect/persistence'
 import type { Json } from 'fp-ts/lib/Json.js'
 import { SessionStore } from './Context.ts'
 
-const SessionSchema = Schema.Record(Schema.String, Schema.Unknown)
+const SessionSchema = Schema.JsonObject
 
 const getSession = Effect.fnUntraced(function* (sessionId: string) {
   const { store } = yield* SessionStore
@@ -30,7 +30,7 @@ export const popFromSession = Effect.fn('popFromSession')(
   function* (sessionId: string, key: string) {
     const { store } = yield* SessionStore
     const session = yield* getSession(sessionId)
-    const value = yield* Effect.fromOption(Option.fromNullishOr(session[key] as Json))
+    const value = yield* Effect.fromOption(Option.fromNullishOr(session[key]))
 
     yield* store.set(sessionId, { ...session, [key]: undefined })
 

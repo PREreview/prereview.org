@@ -310,6 +310,6 @@ export type ContentfulErrorResponse = typeof ContentfulErrorResponse.Type
 export const ContentfulErrorResponse = Schema.Struct({
   sys: Schema.Struct({ type: Schema.Literal('Error'), id: Schema.String }),
   message: Schema.String,
-  details: Schema.optional(Schema.Unknown),
+  details: Schema.optional(Schema.Json),
   requestId: Schema.optional(Schema.String),
 })

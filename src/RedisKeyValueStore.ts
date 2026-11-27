@@ -1,7 +1,7 @@
 import { Array, Clock, Duration, Effect, Option, pipe, Schema } from 'effect'
 import { KeyValueStore, Redis } from 'effect/persistence'
 
-const KeyvEnvelopeSchema = Schema.Struct({ value: Schema.Unknown, expires: Schema.NullOr(Schema.Number) })
+const KeyvEnvelopeSchema = Schema.Struct({ value: Schema.Json, expires: Schema.NullOr(Schema.Number) })
 
 export const make = Effect.fnUntraced(function* (
   namespace: string,
