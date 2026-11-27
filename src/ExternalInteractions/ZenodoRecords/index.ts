@@ -38,18 +38,21 @@ export class ZenodoRecords extends Context.Service<
       Effect.Success<ReturnType<typeof CreateRecordForComment>>,
       Effect.Error<ReturnType<typeof CreateRecordForComment>>
     >
+    /** @deprecated Uses Zenodo's legacy deposit API. */
     createRecordForDatasetReview: (
       ...args: Parameters<typeof CreateRecordForDatasetReview>
     ) => Effect.Effect<
       Effect.Success<ReturnType<typeof CreateRecordForDatasetReview>>,
       Effect.Error<ReturnType<typeof CreateRecordForDatasetReview>>
     >
+    /** @deprecated Uses Zenodo's legacy deposit API. */
     getDoiForDatasetReviewRecord: (
       ...args: Parameters<typeof GetDoiForDatasetReviewRecord>
     ) => Effect.Effect<
       Effect.Success<ReturnType<typeof GetDoiForDatasetReviewRecord>>,
       Effect.Error<ReturnType<typeof GetDoiForDatasetReviewRecord>>
     >
+    /** @deprecated Uses Zenodo's legacy deposit API. */
     publishRecord: (
       ...args: Parameters<typeof PublishRecord>
     ) => Effect.Effect<Effect.Success<ReturnType<typeof PublishRecord>>, Effect.Error<ReturnType<typeof PublishRecord>>>
@@ -71,14 +74,17 @@ export class ZenodoRecords extends Context.Service<
 export const createRecordForComment = (...args: Parameters<(typeof ZenodoRecords.Service)['createRecordForComment']>) =>
   ZenodoRecords.use(service => service.createRecordForComment(...args))
 
+/** @deprecated Uses Zenodo's legacy deposit API. */
 export const createRecordForDatasetReview = (
   ...args: Parameters<(typeof ZenodoRecords.Service)['createRecordForDatasetReview']>
 ) => ZenodoRecords.use(service => service.createRecordForDatasetReview(...args))
 
+/** @deprecated Uses Zenodo's legacy deposit API. */
 export const getDoiForDatasetReviewRecord = (
   ...args: Parameters<(typeof ZenodoRecords.Service)['getDoiForDatasetReviewRecord']>
 ) => ZenodoRecords.use(service => service.getDoiForDatasetReviewRecord(...args))
 
+/** @deprecated Uses Zenodo's legacy deposit API. */
 export const publishRecord = (...args: Parameters<(typeof ZenodoRecords.Service)['publishRecord']>) =>
   ZenodoRecords.use(service => service.publishRecord(...args))
 

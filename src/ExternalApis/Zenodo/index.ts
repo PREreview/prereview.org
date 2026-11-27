@@ -41,6 +41,7 @@ export class Zenodo extends Context.Service<
       Effect.Success<ReturnType<typeof CommitDraftFile>>,
       Effect.Error<ReturnType<typeof CommitDraftFile>>
     >
+    /** @deprecated Uses Zenodo's legacy deposit API. */
     createDeposition: (
       ...args: Parameters<typeof CreateDeposition>
     ) => Effect.Effect<
@@ -56,6 +57,7 @@ export class Zenodo extends Context.Service<
     editRecord: (
       ...args: Parameters<typeof EditRecord>
     ) => Effect.Effect<Effect.Success<ReturnType<typeof EditRecord>>, Effect.Error<ReturnType<typeof EditRecord>>>
+    /** @deprecated Uses Zenodo's legacy deposit API. */
     getDeposition: (
       ...args: Parameters<typeof GetDeposition>
     ) => Effect.Effect<Effect.Success<ReturnType<typeof GetDeposition>>, Effect.Error<ReturnType<typeof GetDeposition>>>
@@ -65,6 +67,7 @@ export class Zenodo extends Context.Service<
     getRecord: (
       ...args: Parameters<typeof GetRecord>
     ) => Effect.Effect<Effect.Success<ReturnType<typeof GetRecord>>, Effect.Error<ReturnType<typeof GetRecord>>>
+    /** @deprecated Uses Zenodo's legacy deposit API. */
     publishDeposition: (
       ...args: Parameters<typeof PublishDeposition>
     ) => Effect.Effect<
@@ -98,6 +101,7 @@ export class Zenodo extends Context.Service<
       Effect.Success<ReturnType<typeof UploadDraftFileContent>>,
       Effect.Error<ReturnType<typeof UploadDraftFileContent>>
     >
+    /** @deprecated Uses Zenodo's legacy deposit API. */
     uploadFile: (
       ...args: Parameters<typeof UploadFile>
     ) => Effect.Effect<Effect.Success<ReturnType<typeof UploadFile>>, Effect.Error<ReturnType<typeof UploadFile>>>
@@ -110,6 +114,7 @@ export const addRecordToCommunity = (...args: Parameters<(typeof Zenodo.Service)
 export const commitDraftFile = (...args: Parameters<(typeof Zenodo.Service)['commitDraftFile']>) =>
   Zenodo.use(service => service.commitDraftFile(...args))
 
+/** @deprecated Uses Zenodo's legacy deposit API. */
 export const createDeposition = (...args: Parameters<(typeof Zenodo.Service)['createDeposition']>) =>
   Zenodo.use(service => service.createDeposition(...args))
 
@@ -122,6 +127,7 @@ export const deleteDraft = (...args: Parameters<(typeof Zenodo.Service)['deleteD
 export const editRecord = (...args: Parameters<(typeof Zenodo.Service)['editRecord']>) =>
   Zenodo.use(service => service.editRecord(...args))
 
+/** @deprecated Uses Zenodo's legacy deposit API. */
 export const getDeposition = (...args: Parameters<(typeof Zenodo.Service)['getDeposition']>) =>
   Zenodo.use(service => service.getDeposition(...args))
 
@@ -131,6 +137,7 @@ export const getDraft = (...args: Parameters<(typeof Zenodo.Service)['getDraft']
 export const getRecord = (...args: Parameters<(typeof Zenodo.Service)['getRecord']>) =>
   Zenodo.use(service => service.getRecord(...args))
 
+/** @deprecated Uses Zenodo's legacy deposit API. */
 export const publishDeposition = (...args: Parameters<(typeof Zenodo.Service)['publishDeposition']>) =>
   Zenodo.use(service => service.publishDeposition(...args))
 
@@ -152,6 +159,7 @@ export const updateDraft = (...args: Parameters<(typeof Zenodo.Service)['updateD
 export const uploadDraftFileContent = (...args: Parameters<(typeof Zenodo.Service)['uploadDraftFileContent']>) =>
   Zenodo.use(service => service.uploadDraftFileContent(...args))
 
+/** @deprecated Uses Zenodo's legacy deposit API. */
 export const uploadFile = (...args: Parameters<(typeof Zenodo.Service)['uploadFile']>) =>
   Zenodo.use(service => service.uploadFile(...args))
 

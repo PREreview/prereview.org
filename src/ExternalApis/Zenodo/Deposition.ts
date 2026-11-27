@@ -2,10 +2,13 @@ import { Array, Effect, Schema } from 'effect'
 import { HtmlSchema, PlainTextSchema } from '../../html.ts'
 import { Doi, OrcidId } from '../../types/index.ts'
 
+/** @deprecated Uses Zenodo's legacy deposit API. */
 export type DepositMetadata = typeof DepositMetadata.Type
 
+/** @deprecated Uses Zenodo's legacy deposit API. */
 export type UnsubmittedDeposition = typeof UnsubmittedDeposition.Type
 
+/** @deprecated Uses Zenodo's legacy deposit API. */
 export type SubmittedDeposition = typeof SubmittedDeposition.Type
 
 const RelatedIdentifiers = Schema.Tuple([
@@ -42,8 +45,10 @@ const DepositMetadataKeys = {
   publicationType: 'publication_type',
 } as const
 
+/** @deprecated Uses Zenodo's legacy deposit API. */
 export const DepositMetadata = Schema.Struct(DepositMetadataFields).pipe(Schema.encodeKeys(DepositMetadataKeys))
 
+/** @deprecated Uses Zenodo's legacy deposit API. */
 export const UnsubmittedDeposition = Schema.Struct({
   id: Schema.Int,
   links: Schema.Struct({
@@ -58,6 +63,7 @@ export const UnsubmittedDeposition = Schema.Struct({
   submitted: Schema.Literal(false),
 })
 
+/** @deprecated Uses Zenodo's legacy deposit API. */
 export const SubmittedDeposition = Schema.Struct({
   id: Schema.Int,
   metadata: Schema.Struct({
