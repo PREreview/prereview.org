@@ -5,6 +5,7 @@ import type { Zenodo as ZenodoApi } from '../../ExternalApis/index.ts'
 import type { PublicUrl } from '../../public-url.ts'
 import type { OrcidId, Pseudonym } from '../../types/index.ts'
 import { constructUrlsToInvalidatePrereview } from './ConstructUrlsToInvalidatePrereview.ts'
+import { CreateRecordForComment } from './CreateRecordForComment/index.ts'
 import { CreateRecordForDatasetReview } from './CreateRecordForDatasetReview/index.ts'
 import { GetDoiForDatasetReviewRecord } from './GetDoiForDatasetReviewRecord/index.ts'
 import { PublishRecord } from './PublishRecord/index.ts'
@@ -12,6 +13,8 @@ import { WithdrawRecordForComment } from './WithdrawRecordForComment/index.ts'
 import type { ZenodoRecordsConfig } from './ZenodoRecordsConfig.ts'
 
 export * from './legacy-zenodo.ts'
+
+export { FailedToCreateRecordForComment, type Comment } from './CreateRecordForComment/index.ts'
 
 export { FailedToCreateRecordForDatasetReview } from './CreateRecordForDatasetReview/index.ts'
 
@@ -26,6 +29,12 @@ export { ZenodoRecordsConfig } from './ZenodoRecordsConfig.ts'
 export class ZenodoRecords extends Context.Service<
   ZenodoRecords,
   {
+    createRecordForComment: (
+      ...args: Parameters<typeof CreateRecordForComment>
+    ) => Effect.Effect<
+      Effect.Success<ReturnType<typeof CreateRecordForComment>>,
+      Effect.Error<ReturnType<typeof CreateRecordForComment>>
+    >
     createRecordForDatasetReview: (
       ...args: Parameters<typeof CreateRecordForDatasetReview>
     ) => Effect.Effect<
@@ -50,6 +59,9 @@ export class ZenodoRecords extends Context.Service<
   }
 >()('ZenodoRecords') {}
 
+export const createRecordForComment = (...args: Parameters<(typeof ZenodoRecords.Service)['createRecordForComment']>) =>
+  ZenodoRecords.use(service => service.createRecordForComment(...args))
+
 export const createRecordForDatasetReview = (
   ...args: Parameters<(typeof ZenodoRecords.Service)['createRecordForDatasetReview']>
 ) => ZenodoRecords.use(service => service.createRecordForDatasetReview(...args))
@@ -73,6 +85,7 @@ export const make: Effect.Effect<typeof ZenodoRecords.Service, never, ZenodoApi.
     )
 
     return {
+      createRecordForComment: flow(CreateRecordForComment, Effect.provide(context)),
       createRecordForDatasetReview: flow(CreateRecordForDatasetReview, Effect.provide(context)),
       getDoiForDatasetReviewRecord: flow(GetDoiForDatasetReviewRecord, Effect.provide(context)),
       publishRecord: flow(PublishRecord, Effect.provide(context)),
