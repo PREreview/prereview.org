@@ -1,4 +1,4 @@
-import { Effect, Result } from 'effect'
+import { Effect, Option, Result } from 'effect'
 import type { HttpClientError } from 'effect/http'
 import * as _ from '../../../../src/ExternalApis/Zenodo/GetRecord/HandleResponse.ts'
 import * as StatusCodes from '../../../../src/StatusCodes.ts'
@@ -24,11 +24,13 @@ describe('HandleResponse', () => {
             const actual = yield* Effect.result(_.HandleResponse(response))
 
             expect(actual).toStrictEqual(
-              Result.succeed({
-                id: 650679,
-                pids: { doi: { identifier: Doi('10.5072/zenodo.650679') } },
-                parent: { communities: { ids: [Uuid('fa23f142-2b05-4a2a-a559-3b955e5a2923')] } },
-              }),
+              Result.succeed(
+                Option.some({
+                  id: 650679,
+                  pids: { doi: { identifier: Doi('10.5072/zenodo.650679') } },
+                  parent: { communities: { ids: [Uuid('fa23f142-2b05-4a2a-a559-3b955e5a2923')] } },
+                }),
+              ),
             )
           }),
       )
@@ -72,10 +74,27 @@ describe('HandleResponse', () => {
     })
   })
 
+  describe('with a 404 status code', () => {
+    it.effect.prop(
+      'returns nothing',
+      [fc.httpClientResponse({ status: fc.constant(StatusCodes.NotFound) })],
+      ([response]) =>
+        Effect.gen(function* () {
+          const actual = yield* Effect.result(_.HandleResponse(response))
+
+          expect(actual).toStrictEqual(Result.succeed(Option.none()))
+        }),
+    )
+  })
+
   describe('with another status code', () => {
     it.effect.prop(
       'returns an error',
-      [fc.httpClientResponse({ status: fc.statusCode().filter(status => status !== StatusCodes.OK) })],
+      [
+        fc.httpClientResponse({
+          status: fc.statusCode().filter(status => status !== StatusCodes.OK && status !== StatusCodes.NotFound),
+        }),
+      ],
       ([response]) =>
         Effect.gen(function* () {
           const actual = yield* Effect.flip(_.HandleResponse(response))
