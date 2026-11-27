@@ -52,6 +52,7 @@ export const SendAuthorInviteEmails = Effect.fn('AuthorInvites.sendAuthorInviteE
       { concurrency: 'unbounded', discard: true },
     )
   },
+  Effect.catchTag('DatasetReviewDoesNotNeedInvitationsToAppear', () => Effect.void),
   Effect.tapError(error =>
     Effect.logError('Failed to send author invite emails for review').pipe(Effect.annotateLogs({ error })),
   ),
