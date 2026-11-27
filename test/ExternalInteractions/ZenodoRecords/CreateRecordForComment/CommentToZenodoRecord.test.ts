@@ -14,6 +14,7 @@ const comment = {
   }),
   comment: html`<p>Some comment.</p>`,
   competingInterests: Option.some(NonEmptyString.NonEmptyString('Some competing interests')),
+  language: Option.none(),
   prereview: {
     doi: Doi.Doi('10.5281/zenodo.24540607'),
     url: new URL('https://prereview.org/reviews/24540607'),
@@ -103,6 +104,30 @@ describe('creates the file', () => {
       <h2><span>Competing interests</span></h2>
 
       <p><span>The author of this comment declares that they have no competing interests.</span></p>
+    `)
+  })
+})
+
+describe('in a language we support', () => {
+  test('sets the language', () => {
+    const { draft } = _.CommentToZenodoRecord({ ...comment, language: Option.some('es') })
+
+    expect(draft.metadata['languages']).toStrictEqual([{ id: 'spa' }])
+  })
+
+  test('uses the language for the competing interests', () => {
+    const { file } = _.CommentToZenodoRecord({
+      ...comment,
+      competingInterests: Option.none(),
+      language: Option.some('es'),
+    })
+
+    expect(rawHtml(file.content)).toStrictEqual(html`
+      <p>Some comment.</p>
+
+      <h2><span>Conflicto de intereses</span></h2>
+
+      <p><span>El/la autor/a de este comentario declara que no tiene conflicto de intereses.</span></p>
     `)
   })
 })

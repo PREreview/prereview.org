@@ -4,8 +4,9 @@ import type * as Preprints from '../../../Domain/Preprints/index.ts'
 import type * as Prereviewers from '../../../Domain/Prereviewers/index.ts'
 import type { Zenodo } from '../../../ExternalApis/index.ts'
 import { html, plainText, type Html } from '../../../html.ts'
-import { DefaultLocale, translate } from '../../../locales/index.ts'
+import { DefaultLocale, getLocaleForLanguage, translate, type UserSelectableLanguage } from '../../../locales/index.ts'
 import type { Doi, NonEmptyString } from '../../../types/index.ts'
+import { iso6391To3 } from '../../../types/iso639.ts'
 
 export const CommentToZenodoRecord = (comment: Comment): { draft: Zenodo.NewDraft; file: Zenodo.File } => ({
   draft: CommentToNewDraft(comment),
@@ -16,6 +17,7 @@ export interface Comment {
   readonly author: Prereviewers.Persona
   readonly comment: Html
   readonly competingInterests: Option.Option<NonEmptyString.NonEmptyString>
+  readonly language: Option.Option<UserSelectableLanguage>
   readonly prereview: {
     readonly doi: Doi.Doi
     readonly url: URL
@@ -27,8 +29,15 @@ export interface Comment {
   readonly publicationDate: Temporal.PlainDate
 }
 
-const CommentToHtml = ({ comment, competingInterests }: Pick<Comment, 'comment' | 'competingInterests'>) => {
-  const t = translate(DefaultLocale, 'write-comment-flow')
+const CommentToHtml = ({
+  comment,
+  competingInterests,
+  language,
+}: Pick<Comment, 'comment' | 'competingInterests' | 'language'>) => {
+  const t = translate(
+    Option.match(language, { onNone: () => DefaultLocale, onSome: getLocaleForLanguage }),
+    'write-comment-flow',
+  )
 
   return html`${comment}
 
@@ -41,6 +50,7 @@ const CommentToNewDraft = ({
   author,
   comment,
   competingInterests,
+  language,
   prereview,
   publicationDate,
 }: Comment): Zenodo.NewDraft => ({
@@ -68,7 +78,11 @@ const CommentToNewDraft = ({
         >
       </p>
 
-      ${CommentToHtml({ comment, competingInterests })}`.toString(),
+      ${CommentToHtml({ comment, competingInterests, language })}`.toString(),
+    ...Option.match(language, {
+      onNone: () => ({}),
+      onSome: language => ({ languages: [{ id: iso6391To3(language) }] }),
+    }),
     publisher: 'Zenodo',
     publication_date: publicationDate.toString(),
     rights: [{ id: 'cc-by-4.0' }],
