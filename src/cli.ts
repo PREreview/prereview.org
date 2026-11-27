@@ -6,6 +6,7 @@ import { ClusterWorkflowEngine, RunnerAddress } from 'effect/cluster'
 import * as AuthorInviteStore from './AuthorInviteStore.ts'
 import { Cli } from './Cli/index.ts'
 import * as Clubs from './Domain/Clubs/index.ts'
+import * as Comments from './Domain/Comments/index.ts'
 import * as ContactEmailAddresses from './Domain/ContactEmailAddresses/index.ts'
 import * as DatasetReviews from './Domain/DatasetReviews/index.ts'
 import { SqlEventStore, StatefulQueries } from './Domain/Events/index.ts'
@@ -45,7 +46,7 @@ pipe(
   Effect.provide(
     pipe(
       Layer.effectDiscard(StatefulQueries.replay),
-      Layer.provideMerge(PreprintReviews.layer),
+      Layer.provideMerge(Layer.mergeAll(Comments.layer, PreprintReviews.layer)),
       Layer.provideMerge(
         Layer.mergeAll(
           DatasetReviews.commandsLayer,
