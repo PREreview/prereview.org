@@ -5,6 +5,7 @@ import { CreateDeposition } from './CreateDeposition/index.ts'
 import { CreateDraft } from './CreateDraft/index.ts'
 import { EditRecord } from './EditRecord/index.ts'
 import { GetDeposition } from './GetDeposition/index.ts'
+import { GetDraft } from './GetDraft/index.ts'
 import { PublishDeposition } from './PublishDeposition/index.ts'
 import { PublishDraft } from './PublishDraft/index.ts'
 import { RemoveRecordFromCommunity } from './RemoveRecordFromCommunity/index.ts'
@@ -45,6 +46,9 @@ export class Zenodo extends Context.Service<
     getDeposition: (
       ...args: Parameters<typeof GetDeposition>
     ) => Effect.Effect<Effect.Success<ReturnType<typeof GetDeposition>>, Effect.Error<ReturnType<typeof GetDeposition>>>
+    getDraft: (
+      ...args: Parameters<typeof GetDraft>
+    ) => Effect.Effect<Effect.Success<ReturnType<typeof GetDraft>>, Effect.Error<ReturnType<typeof GetDraft>>>
     publishDeposition: (
       ...args: Parameters<typeof PublishDeposition>
     ) => Effect.Effect<
@@ -99,6 +103,9 @@ export const editRecord = (...args: Parameters<(typeof Zenodo.Service)['editReco
 export const getDeposition = (...args: Parameters<(typeof Zenodo.Service)['getDeposition']>) =>
   Zenodo.use(service => service.getDeposition(...args))
 
+export const getDraft = (...args: Parameters<(typeof Zenodo.Service)['getDraft']>) =>
+  Zenodo.use(service => service.getDraft(...args))
+
 export const publishDeposition = (...args: Parameters<(typeof Zenodo.Service)['publishDeposition']>) =>
   Zenodo.use(service => service.publishDeposition(...args))
 
@@ -132,6 +139,7 @@ const make: Effect.Effect<typeof Zenodo.Service, never, HttpClient.HttpClient | 
     createDraft: flow(CreateDraft, Effect.provide(context)),
     editRecord: flow(EditRecord, Effect.provide(context)),
     getDeposition: flow(GetDeposition, Effect.provide(context)),
+    getDraft: flow(GetDraft, Effect.provide(context)),
     publishDeposition: flow(PublishDeposition, Effect.provide(context)),
     publishDraft: flow(PublishDraft, Effect.provide(context)),
     removeRecordFromCommunity: flow(RemoveRecordFromCommunity, Effect.provide(context)),
