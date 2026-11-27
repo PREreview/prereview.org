@@ -23,6 +23,8 @@ export class DoiIsAlreadyAssigned extends Data.TaggedError('DoiIsAlreadyAssigned
 
 export class CommentWasAlreadyPublished extends Data.TaggedError('CommentWasAlreadyPublished') {}
 
+export class CommentHasNotBeenPublished extends Data.TaggedError('CommentHasNotBeenPublished') {}
+
 export class UnableToAssignADoi extends Schema.TaggedError<UnableToAssignADoi>()('UnableToAssignADoi', {
   cause: Schema.optional(Schema.Defect()),
 }) {}
