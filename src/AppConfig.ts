@@ -4,13 +4,13 @@ import * as Clubs from './Domain/Clubs/index.ts'
 import * as PreprintReviews from './Domain/PreprintReviews/index.ts'
 import { ContentfulConfig, ContentfulId } from './ExternalApis/Contentful/index.ts'
 import { Cloudinary, Ghost, OpenAlex, Orcid, Slack, Zenodo } from './ExternalApis/index.ts'
-import { CommunitySlack } from './ExternalInteractions/index.ts'
+import { CommunitySlack, ZenodoRecords } from './ExternalInteractions/index.ts'
 import * as FeatureFlags from './FeatureFlags.ts'
 import { UserSelectableLocales } from './locales/index.ts'
 import * as OrcidOauth from './OrcidOauth.ts'
 import { PublicUrl } from './public-url.ts'
 import * as SlackOauth from './SlackOauth.ts'
-import { NonEmptyString, OrcidId } from './types/index.ts'
+import { NonEmptyString, OrcidId, Uuid } from './types/index.ts'
 import { isPrereviewTeam, type User } from './user.ts'
 import * as WebApp from './WebApp/index.ts'
 import { IsUserBlocked } from './WebApp/log-in/index.ts' // oxlint-disable-line module-boundaries/use-index
@@ -131,6 +131,10 @@ export const layer = Layer.mergeAll(
   Layer.effect(
     Zenodo.ZenodoApi,
     Config.all({ key: Config.Redacted('ZENODO_API_KEY'), origin: Config.URL('ZENODO_URL') }),
+  ),
+  Layer.effect(
+    ZenodoRecords.ZenodoRecordsConfig,
+    Config.all({ communityId: Config.schema(Uuid.UuidSchema, 'ZENODO_COMMUNITY_ID') }),
   ),
   OpenAlex.layerApiConfig({ key: Config.Redacted('OPENALEX_API_KEY') }),
 )

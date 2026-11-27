@@ -17,6 +17,8 @@ export { FailedToGetRecordForDatasetReview } from './GetDoiForDatasetReviewRecor
 
 export { FailedToPublishRecord } from './PublishRecord/index.ts'
 
+export { ZenodoRecordsConfig } from './ZenodoRecordsConfig.ts'
+
 export class ZenodoRecords extends Context.Service<
   ZenodoRecords,
   {

@@ -47,7 +47,7 @@ import { Embeddings } from '../src/Embeddings/index.ts'
 import { SqlSensitiveDataStore } from '../src/EventSourcing/index.ts'
 import { ContentfulConfig, ContentfulId, type Entries } from '../src/ExternalApis/Contentful/index.ts'
 import { Cloudinary, Ghost, Nodemailer, OpenAlex, Orcid, Slack, Zenodo } from '../src/ExternalApis/index.ts'
-import { CommunitySlack, Email } from '../src/ExternalInteractions/index.ts'
+import { CommunitySlack, Email, ZenodoRecords } from '../src/ExternalInteractions/index.ts'
 import * as FeatureFlags from '../src/FeatureFlags.ts'
 import { html, rawHtml } from '../src/html.ts'
 import { DefaultLocale, UserSelectableLocales } from '../src/locales/index.ts'
@@ -2510,6 +2510,9 @@ const appFixtures: Fixtures<AppFixtures, NoFixtures, PlaywrightTestArgs & Playwr
           Layer.succeed(Zenodo.ZenodoApi, {
             key: Redacted.make('key'),
             origin: new URL('http://zenodo.test/'),
+          }),
+          Layer.succeed(ZenodoRecords.ZenodoRecordsConfig, {
+            communityId: Uuid.Uuid('cfd8d2a6-0e54-4b51-9a4f-0e0b6c1e6a4f'),
           }),
           OpenAlex.layerApi({ key: Redacted.make('key') }),
           WebApp.optionsLayer({ fathomId: Option.none(), environmentLabel: Option.none() }),
