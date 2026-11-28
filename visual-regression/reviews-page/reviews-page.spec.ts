@@ -9,7 +9,6 @@ import { DefaultLocale } from '../../src/locales/index.ts'
 import { Doi } from '../../src/types/Doi.ts'
 import { OrcidId, Pseudonym, Uuid } from '../../src/types/index.ts'
 import { Name } from '../../src/types/Name.ts'
-import { NonEmptyString } from '../../src/types/NonEmptyString.ts'
 import { Slug } from '../../src/types/Slug.ts'
 import { createPage, emptyPage } from '../../src/WebApp/reviews-page/reviews-page.ts'
 import { expect, test } from '../base.ts'
@@ -19,22 +18,6 @@ test('content looks right', async ({ showPage }) => {
     {
       currentPage: 1,
       totalPages: 3,
-      recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
-    },
-    DefaultLocale,
-  )
-
-  const content = await showPage(response)
-
-  await expect(content).toHaveScreenshot()
-})
-
-test('content looks right with a query', async ({ showPage }) => {
-  const response = createPage(
-    {
-      currentPage: 1,
-      totalPages: 3,
-      query: NonEmptyString('Josiah Carberry'),
       recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
     },
     DefaultLocale,
@@ -79,14 +62,6 @@ test('content looks right with a field', async ({ showPage }) => {
 
 test('content looks right when empty', async ({ showPage }) => {
   const response = emptyPage({}, DefaultLocale)
-
-  const content = await showPage(response)
-
-  await expect(content).toHaveScreenshot()
-})
-
-test('content looks right when empty with a query', async ({ showPage }) => {
-  const response = emptyPage({ query: NonEmptyString('Josiah Carberry') }, DefaultLocale)
 
   const content = await showPage(response)
 

@@ -4,14 +4,12 @@ import type * as TE from 'fp-ts/lib/TaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import type * as Prereviews from '../../Domain/Prereviews/index.ts'
 import type { FieldId } from '../../types/field.ts'
-import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 
 export interface GetRecentPrereviewsEnv {
   getRecentPrereviews: (args: {
     field?: FieldId
     language?: LanguageCode
     page: number
-    query?: NonEmptyString
   }) => TE.TaskEither<'not-found' | 'unavailable', Prereviews.RecentPrereviews>
 }
 

@@ -4,7 +4,6 @@ import * as RTE from 'fp-ts/lib/ReaderTaskEither.js'
 import type { LanguageCode } from 'iso-639-1'
 import type { SupportedLocale } from '../../locales/index.ts'
 import type { FieldId } from '../../types/field.ts'
-import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import { pageNotFound } from '../http-error.ts'
 import type { PageResponse } from '../Response/index.ts'
 import { failureMessage } from './failure-message.ts'
@@ -14,36 +13,26 @@ import { createPage, emptyPage } from './reviews-page.ts'
 export type { GetRecentPrereviewsEnv } from './recent-prereviews.ts'
 
 export const reviewsPage = ({
-  canSearchByText = true,
   field,
   language,
   locale,
   page,
-  query: requestedQuery,
 }: {
-  canSearchByText?: boolean
   field?: FieldId
   language?: LanguageCode
   locale: SupportedLocale
   page: number
-  query?: NonEmptyString
-}): RT.ReaderTask<GetRecentPrereviewsEnv, PageResponse> => {
-  const query = canSearchByText ? requestedQuery : undefined
-
-  return pipe(
-    String(query).includes('%')
-      ? RTE.left('not-found' as const)
-      : getRecentPrereviews({ field, language, page, query }),
+}): RT.ReaderTask<GetRecentPrereviewsEnv, PageResponse> =>
+  pipe(
+    getRecentPrereviews({ field, language, page }),
     RTE.matchW(
       error =>
         Match.value(error).pipe(
           Match.literalsExhaustive({
-            'not-found': () =>
-              page === 1 ? emptyPage({ field, language, query }, locale, { canSearchByText }) : pageNotFound(locale),
+            'not-found': () => (page === 1 ? emptyPage({ field, language }, locale) : pageNotFound(locale)),
             unavailable: () => failureMessage(locale),
           }),
         ),
-      prereviews => createPage(prereviews, locale, { canSearchByText }),
+      prereviews => createPage(prereviews, locale),
     ),
   )
-}

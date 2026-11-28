@@ -313,15 +313,13 @@ const routerWithoutHyperTs = pipe(
     pipe(
       Routes.reviewsMatch.parser,
       P.map(
-        ({ field, language, page, query }) =>
+        ({ field, language, page }) =>
           (env: Env) =>
             reviewsPage({
-              canSearchByText: false,
               field,
               language,
               locale: env.locale,
               page: page ?? 1,
-              query,
             })({
               getRecentPrereviews: EffectToFpts.toTaskEitherK(
                 flow(

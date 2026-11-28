@@ -17,17 +17,16 @@ import { getSubfieldName } from '../../types/subfield.ts'
 import { PageResponse } from '../Response/index.ts'
 
 export const createPage = (
-  { currentPage, field, language, query, totalPages, recentPrereviews }: Prereviews.RecentPrereviews,
+  { currentPage, field, language, totalPages, recentPrereviews }: Prereviews.RecentPrereviews,
   locale: SupportedLocale,
-  { canSearchByText = true }: { canSearchByText?: boolean } = {},
 ) =>
   PageResponse({
-    title: title({ currentPage, field, language, locale, query }),
+    title: title({ currentPage, field, language, locale }),
     extraSkipLink: [html`${translate(locale, 'reviews-page', 'skipResults')()}`, '#results'],
     main: html`
       <h1>${translate(locale, 'reviews-page', 'title')()}</h1>
 
-      ${form({ canSearchByText, field, language, locale, query })}
+      ${form({ field, language, locale })}
 
       <ol class="cards" id="results">
         ${Array.map(
@@ -160,40 +159,32 @@ export const createPage = (
       <nav class="pager">
         ${
           currentPage > 1
-            ? html`<a
-                href="${format(reviewsMatch.formatter, { page: currentPage - 1, field, language, query })}"
-                rel="prev"
+            ? html`<a href="${format(reviewsMatch.formatter, { page: currentPage - 1, field, language })}" rel="prev"
                 >${translate(locale, 'reviews-page', 'pagerNewer')()}</a
               >`
             : ''
         }
         ${
           currentPage < totalPages
-            ? html`<a
-                href="${format(reviewsMatch.formatter, { page: currentPage + 1, field, language, query })}"
-                rel="next"
+            ? html`<a href="${format(reviewsMatch.formatter, { page: currentPage + 1, field, language })}" rel="next"
                 >${translate(locale, 'reviews-page', 'pagerOlder')()}</a
               >`
             : ''
         }
       </nav>
     `,
-    canonical: format(reviewsMatch.formatter, { page: currentPage, field, language, query }),
+    canonical: format(reviewsMatch.formatter, { page: currentPage, field, language }),
     current: 'reviews',
   })
 
-export const emptyPage = (
-  { field, language, query }: { field?: FieldId; language?: LanguageCode; query?: NonEmptyString },
-  locale: SupportedLocale,
-  { canSearchByText = true }: { canSearchByText?: boolean } = {},
-) =>
+export const emptyPage = ({ field, language }: { field?: FieldId; language?: LanguageCode }, locale: SupportedLocale) =>
   PageResponse({
-    title: title({ currentPage: 1, field, language, locale, query }),
+    title: title({ currentPage: 1, field, language, locale }),
     extraSkipLink: [html`${translate(locale, 'reviews-page', 'skipResults')()}`, '#results'],
     main: html`
       <h1>${translate(locale, 'reviews-page', 'title')()}</h1>
 
-      ${form({ canSearchByText, field, language, locale, query })}
+      ${form({ field, language, locale })}
 
       <div class="inset" id="results">
         <p>${translate(locale, 'reviews-page', 'noResults')()}</p>
@@ -201,7 +192,7 @@ export const emptyPage = (
         <p>${translate(locale, 'reviews-page', 'appearHere')()}</p>
       </div>
     `,
-    canonical: format(reviewsMatch.formatter, { page: 1, field, language, query }),
+    canonical: format(reviewsMatch.formatter, { page: 1, field, language }),
     current: 'reviews',
   })
 
@@ -210,11 +201,9 @@ const title = ({
   field,
   language,
   locale,
-  query,
-}: Pick<Prereviews.RecentPrereviews, 'currentPage' | 'field' | 'language' | 'query'> & { locale: SupportedLocale }) => {
+}: Pick<Prereviews.RecentPrereviews, 'currentPage' | 'field' | 'language'> & { locale: SupportedLocale }) => {
   const details = Array.append(
     [
-      query,
       field ? plainText(getFieldName(field, locale)).toString() : undefined,
       language ? new Intl.DisplayNames(locale, { type: 'language' }).of(language) : undefined,
     ].filter(String.isString),
@@ -231,13 +220,10 @@ const title = ({
 }
 
 const form = ({
-  canSearchByText,
   field,
   language,
   locale,
-  query,
-}: Pick<Prereviews.RecentPrereviews, 'field' | 'language' | 'query'> & {
-  canSearchByText: boolean
+}: Pick<Prereviews.RecentPrereviews, 'field' | 'language'> & {
   locale: SupportedLocale
 }) => html`
   <form
@@ -249,23 +235,6 @@ const form = ({
   >
     <h2 class="visually-hidden" id="filter-label">${translate(locale, 'reviews-page', 'filterTitle')()}</h2>
     <input type="hidden" name="page" value="1" />
-    ${
-      canSearchByText
-        ? html`
-            <div>
-              <label for="query">${translate(locale, 'reviews-page', 'filterTitleAuthorLabel')()}</label>
-              <input
-                type="text"
-                placeholder=" "
-                dir="auto"
-                name="query"
-                id="query"
-                ${query === undefined ? '' : html`value="${query}"`}
-              />
-            </div>
-          `
-        : ''
-    }
     <div>
       <label for="language">${translate(locale, 'reviews-page', 'filterLanguageLabel')()}</label>
       <div class="select">

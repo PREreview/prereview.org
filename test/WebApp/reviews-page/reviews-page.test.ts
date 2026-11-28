@@ -15,15 +15,10 @@ describe('reviewsPage', () => {
       fc.supportedLocale(),
       fc.integer(),
       fc.option(fc.fieldId(), { nil: undefined }),
-      fc.option(
-        fc.nonEmptyString().filter(string => !string.includes('%')),
-        { nil: undefined },
-      ),
       fc.record({
         currentPage: fc.integer(),
         totalPages: fc.integer(),
         field: fc.option(fc.fieldId(), { nil: undefined }),
-        query: fc.option(fc.nonEmptyString(), { nil: undefined }),
         recentPrereviews: fc.nonEmptyArray(
           fc.oneof(
             fc
@@ -54,70 +49,13 @@ describe('reviewsPage', () => {
         ),
       }),
     ],
-    ([locale, page, field, query, recentPrereviews]) =>
+    ([locale, page, field, recentPrereviews]) =>
       Effect.gen(function* () {
         const getRecentPrereviews = vi.fn<_.GetRecentPrereviewsEnv['getRecentPrereviews']>(() =>
           TE.right(recentPrereviews),
         )
 
-        const actual = yield* Effect.promise(_.reviewsPage({ field, locale, page, query })({ getRecentPrereviews }))
-
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          canonical: format(reviewsMatch.formatter, {
-            page: recentPrereviews.currentPage,
-            field: recentPrereviews.field,
-            query: recentPrereviews.query,
-          }),
-          current: 'reviews',
-          status: StatusCodes.OK,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          extraSkipLink: [expect.anything(), '#results'],
-          js: [],
-        })
-        expect(getRecentPrereviews).toHaveBeenCalledWith({ field, page, query })
-      }),
-  )
-
-  it.effect.prop(
-    "when text search isn't available",
-    [
-      fc.supportedLocale(),
-      fc.integer(),
-      fc.option(fc.fieldId(), { nil: undefined }),
-      fc.nonEmptyString(),
-      fc.record({
-        currentPage: fc.integer(),
-        totalPages: fc.integer(),
-        field: fc.option(fc.fieldId(), { nil: undefined }),
-        recentPrereviews: fc.nonEmptyArray(
-          fc
-            .record({
-              id: fc.integer(),
-              reviewers: fc.record({
-                named: fc.nonEmptyArray(fc.name()),
-                anonymous: fc.integer({ min: 0 }),
-              }),
-              published: fc.plainDate(),
-              fields: fc.array(fc.fieldId()),
-              subfields: fc.array(fc.subfieldId()),
-              preprint: fc.preprintTitle(),
-            })
-            .map(args => new Prereviews.RecentPreprintPrereview(args)),
-        ),
-      }),
-    ],
-    ([locale, page, field, query, recentPrereviews]) =>
-      Effect.gen(function* () {
-        const getRecentPrereviews = vi.fn<_.GetRecentPrereviewsEnv['getRecentPrereviews']>(() =>
-          TE.right(recentPrereviews),
-        )
-
-        const actual = yield* Effect.promise(
-          _.reviewsPage({ canSearchByText: false, field, locale, page, query })({ getRecentPrereviews }),
-        )
+        const actual = yield* Effect.promise(_.reviewsPage({ field, locale, page })({ getRecentPrereviews }))
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
@@ -133,60 +71,24 @@ describe('reviewsPage', () => {
           extraSkipLink: [expect.anything(), '#results'],
           js: [],
         })
-        expect(getRecentPrereviews).toHaveBeenCalledWith({ field, page, query: undefined })
+        expect(getRecentPrereviews).toHaveBeenCalledWith({ field, page })
       }),
   )
 
   it.effect.prop(
     'when there are no reviews',
-    [
-      fc.supportedLocale(),
-      fc.option(fc.fieldId(), { nil: undefined }),
-      fc.option(
-        fc.nonEmptyString().filter(string => !string.includes('%')),
-        { nil: undefined },
-      ),
-    ],
-    ([locale, field, query]) =>
+    [fc.supportedLocale(), fc.option(fc.fieldId(), { nil: undefined })],
+    ([locale, field]) =>
       Effect.gen(function* () {
         const actual = yield* Effect.promise(
-          _.reviewsPage({ field, locale, page: 1, query })({
+          _.reviewsPage({ field, locale, page: 1 })({
             getRecentPrereviews: () => TE.left('not-found'),
           }),
         )
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          canonical: format(reviewsMatch.formatter, { page: 1, field, query }),
-          current: 'reviews',
-          status: StatusCodes.OK,
-          title: expect.anything(),
-          main: expect.anything(),
-          skipToLabel: 'main',
-          extraSkipLink: [expect.anything(), '#results'],
-          js: [],
-        })
-      }),
-  )
-
-  it.effect.prop(
-    'when the query looks odd',
-    [
-      fc.supportedLocale(),
-      fc.option(fc.fieldId(), { nil: undefined }),
-      fc.nonEmptyString().filter(string => string.includes('%')),
-    ],
-    ([locale, field, query]) =>
-      Effect.gen(function* () {
-        const actual = yield* Effect.promise(
-          _.reviewsPage({ field, locale, page: 1, query })({
-            getRecentPrereviews: () => TE.left('not-found'),
-          }),
-        )
-
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          canonical: format(reviewsMatch.formatter, { page: 1, field, query }),
+          canonical: format(reviewsMatch.formatter, { page: 1, field }),
           current: 'reviews',
           status: StatusCodes.OK,
           title: expect.anything(),
@@ -204,15 +106,11 @@ describe('reviewsPage', () => {
       fc.supportedLocale(),
       fc.oneof(fc.integer({ max: 0 }), fc.integer({ min: 2 })),
       fc.option(fc.fieldId(), { nil: undefined }),
-      fc.option(
-        fc.nonEmptyString().filter(string => !string.includes('%')),
-        { nil: undefined },
-      ),
     ],
-    ([locale, page, field, query]) =>
+    ([locale, page, field]) =>
       Effect.gen(function* () {
         const actual = yield* Effect.promise(
-          _.reviewsPage({ field, locale, page, query })({
+          _.reviewsPage({ field, locale, page })({
             getRecentPrereviews: () => TE.left('not-found'),
           }),
         )
@@ -230,19 +128,11 @@ describe('reviewsPage', () => {
 
   it.effect.prop(
     'when the recent reviews cannot be loaded',
-    [
-      fc.supportedLocale(),
-      fc.integer(),
-      fc.option(fc.fieldId(), { nil: undefined }),
-      fc.option(
-        fc.nonEmptyString().filter(string => !string.includes('%')),
-        { nil: undefined },
-      ),
-    ],
-    ([locale, page, field, query]) =>
+    [fc.supportedLocale(), fc.integer(), fc.option(fc.fieldId(), { nil: undefined })],
+    ([locale, page, field]) =>
       Effect.gen(function* () {
         const actual = yield* Effect.promise(
-          _.reviewsPage({ field, locale, page, query })({
+          _.reviewsPage({ field, locale, page })({
             getRecentPrereviews: () => TE.left('unavailable'),
           }),
         )
