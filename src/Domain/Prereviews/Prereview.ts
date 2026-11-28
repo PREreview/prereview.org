@@ -3,7 +3,7 @@ import { Data, type Array } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { Doi } from '../../types/Doi.ts'
 import type { FieldId } from '../../types/field.ts'
-import type { NonEmptyString, Uuid } from '../../types/index.ts'
+import type { Uuid } from '../../types/index.ts'
 import type { Name } from '../../types/Name.ts'
 import type { SubfieldId } from '../../types/subfield.ts'
 import type { ClubName } from '../Clubs/index.ts'
@@ -16,7 +16,6 @@ export interface RecentPrereviews {
   readonly totalPages: number
   readonly field?: FieldId
   readonly language?: LanguageCode
-  readonly query?: NonEmptyString.NonEmptyString
   readonly recentPrereviews: Array.NonEmptyReadonlyArray<RecentPreprintPrereview | RecentDatasetPrereview>
 }
 

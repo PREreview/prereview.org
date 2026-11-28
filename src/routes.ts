@@ -28,7 +28,6 @@ import { FptsToEffect } from './RefactoringUtilities/index.ts'
 import { isDoi } from './types/Doi.ts'
 import { FieldIdSchema, isFieldId } from './types/field.ts'
 import { Iso639, ProfileId, Uuid } from './types/index.ts'
-import { NonEmptyStringC } from './types/NonEmptyString.ts'
 import { OrcidC } from './types/OrcidId.ts'
 import { PseudonymC } from './types/Pseudonym.ts'
 import { SlugSchema } from './types/Slug.ts'
@@ -774,7 +773,6 @@ export const reviewsMatch = pipe(
         field: EmptyAsUndefinedC(FieldIdC),
         language: EmptyAsUndefinedC(LanguageC),
         page: IntegerFromStringC,
-        query: EmptyAsUndefinedC(NonEmptyStringC),
       }),
     ),
   ),

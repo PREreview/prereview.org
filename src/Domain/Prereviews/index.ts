@@ -2,7 +2,6 @@ import { Context, Effect, Layer } from 'effect'
 import type { LanguageCode } from 'iso-639-1'
 import type { FieldId } from '../../types/field.ts'
 import type { OrcidId, Uuid } from '../../types/index.ts'
-import type { NonEmptyString } from '../../types/NonEmptyString.ts'
 import type { ProfileId } from '../../types/profile-id.ts'
 import { GetFiveMostRecentPrereviews } from './GetFiveMostRecentPrereviews/index.ts'
 import { GetPrereviewsForClub } from './GetPrereviewsForClub/index.ts'
@@ -46,7 +45,6 @@ export class Prereviews extends Context.Service<
       field?: FieldId
       language?: LanguageCode
       page: number
-      query?: NonEmptyString
     }) => Effect.Effect<RecentPrereviews, PrereviewsAreUnavailable | PrereviewsPageNotFound>
   }
 >()('Prereviews') {}
