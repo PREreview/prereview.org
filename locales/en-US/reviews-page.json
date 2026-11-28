@@ -19,10 +19,6 @@
     "message": "Filter",
     "description": "Heading for the section showing the filters for the list of PREreviews."
   },
-  "filterTitleAuthorLabel": {
-    "message": "Keyword, title or author",
-    "description": "Label for the text field to filter the list of PREreviews by keyword, title or author."
-  },
   "filterLanguageLabel": {
     "message": "Language",
     "description": "Label for the dropdown to filter the list of PREreviews by language."
