@@ -90,6 +90,15 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
     await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
     await expect(page.getByRole('main')).toContainText('Share your review')
+
+    await page.getByRole('link', { name: 'Back to preprint' }).click()
+    await page
+      .getByRole('article', { name: 'PREreview by Josiah Carberry' })
+      .getByRole('link', { name: 'Read the PREreview by Josiah Carberry' })
+      .click()
+
+    await expect(page.getByRole('main')).toContainText('by Josiah Carberry')
+    await expect(page.getByRole('main')).toContainText('consectetur adipiscing elit.')
   },
 )
 
@@ -196,6 +205,17 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
     await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
+
+    await page.getByRole('link', { name: 'Back to preprint' }).click()
+    await page
+      .getByRole('article', { name: 'PREreview by Josiah Carberry' })
+      .getByRole('link', { name: 'Read the PREreview by Josiah Carberry' })
+      .click()
+
+    await expect(page.getByRole('main')).toContainText('by Josiah Carberry')
+    await expect(page.getByRole('main')).toContainText(
+      'Would you recommend this preprint to others? Yes, but it needs to be improved Dignissim lobortis ligula.',
+    )
   },
 )
 
