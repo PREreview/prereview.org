@@ -329,6 +329,11 @@ test.extend(
 
   await expect(page).toHaveTitle(/Recent PREreviews \(English, page 1\)/)
   await expect(filters.getByLabel('Language').locator('[selected]')).toHaveText('English')
+  await expect(
+    page.getByRole('link', {
+      name: 'Josiah Carberry reviewed The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
+    }),
+  ).toBeVisible()
 })
 
 test.extend(
@@ -354,6 +359,11 @@ test.extend(
 
   await expect(page).toHaveTitle(/Recent PREreviews \(Immunology and Microbiology, page 1\)/)
   await expect(filters.getByLabel('Field').locator('[selected]')).toHaveText('Immunology and Microbiology')
+  await expect(
+    page.getByRole('link', {
+      name: 'Josiah Carberry reviewed The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
+    }),
+  ).toBeVisible()
 })
 
 test.extend(prereviewWasRemoved)('when the PREreview was removed', async ({ page }) => {
