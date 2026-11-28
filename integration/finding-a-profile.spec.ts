@@ -44,6 +44,11 @@ test.extend(
   await page.getByRole('link', { name: 'CJ San Felipe' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('CJ San Felipe')
+  await expect(
+    page.getByRole('link', {
+      name: 'CJ San Felipe reviewed The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
+    }),
+  ).toBeVisible()
 })
 
 test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)('can view my profile', async ({ fetch, page }) => {
@@ -130,6 +135,11 @@ test.extend(
   await page.getByRole('link', { name: 'Blue Sheep' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Blue Sheep')
+  await expect(
+    page.getByRole('link', {
+      name: 'Blue Sheep reviewed The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
+    }),
+  ).toBeVisible()
 })
 
 test.extend(canLogIn).extend(areLoggedIn)("can view my pseduonym's profile", async ({ page }) => {
@@ -138,6 +148,7 @@ test.extend(canLogIn).extend(areLoggedIn)("can view my pseduonym's profile", asy
   await page.getByRole('link', { name: 'View pseudonym profile' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Orange Panda')
+  await expect(page.getByRole('main')).toContainText('Orange Panda hasn’t published a PREreview yet.')
 })
 
 test.extend(
@@ -156,4 +167,5 @@ test.extend(
   await page.goto('/profiles/0000-0002-6109-0367', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Daniela Saderi')
+  await expect(page.getByRole('main')).toContainText('Daniela Saderi hasn’t published a PREreview yet.')
 })
