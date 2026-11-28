@@ -128,12 +128,6 @@ export const AuthorInviteFlowRouter = pipe(
                   env.runtime,
                 ),
               ),
-              RTE.chainFirstTaskEitherKW(() =>
-                EffectToFpts.toTaskEither(
-                  ZenodoRecords.invalidatePrereviewInCache({ prereviewId: id, user }),
-                  env.runtime,
-                ),
-              ),
             ),
           {
             fetch: env.fetch,

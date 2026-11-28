@@ -2754,21 +2754,6 @@ export const willPublishAReview: Fixtures<Pick<AppFixtures, 'fetch'>, NoFixtures
         }),
         status: StatusCodes.Accepted,
       })
-      .getOnce({
-        name: 'reload-review',
-        url: 'http://zenodo.test/api/records/1055806',
-        matcherFunction: ({ options }) => options.cache === 'reload',
-        response: { status: StatusCodes.ServiceUnavailable },
-      })
-      .getOnce({
-        name: 'reload-preprint-reviews',
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: {
-          q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/2022.01.13.476201"',
-        },
-        matcherFunction: ({ options }) => options.cache === 'reload',
-        response: { status: StatusCodes.ServiceUnavailable },
-      })
 
     await use(fetch)
   },
@@ -2918,21 +2903,6 @@ export const willUpdateAReview: Fixtures<NoFixtures, NoFixtures, Pick<AppFixture
           }),
           status: StatusCodes.Accepted,
         },
-      })
-      .getOnce({
-        name: 'reload-review',
-        url: 'http://zenodo.test/api/records/1055806',
-        matcherFunction: ({ options }) => options.cache === 'reload',
-        response: { status: StatusCodes.ServiceUnavailable },
-      })
-      .getOnce({
-        name: 'reload-preprint-reviews',
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: {
-          q: 'metadata.related_identifiers.resource_type.id:"publication-preprint" AND related.identifier:"10.1101/2022.01.13.476201"',
-        },
-        matcherFunction: ({ options }) => options.cache === 'reload',
-        response: { status: StatusCodes.ServiceUnavailable },
       })
 
     await use(fetch)

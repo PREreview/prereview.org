@@ -139,15 +139,6 @@ export const publishPrereview = (newPrereview: NewPrereview) =>
         ),
       ),
     ),
-    RTE.chainFirstW(([, review]) =>
-      EffectToFpts.toReaderTaskEither(
-        ZenodoRecords.invalidatePrereviewInCache({
-          prereviewId: review,
-          preprintId: newPrereview.preprint.id,
-          user: newPrereview.user,
-        }),
-      ),
-    ),
   )
 
 function renderReview(form: CompletedForm, locale: SupportedLocale) {

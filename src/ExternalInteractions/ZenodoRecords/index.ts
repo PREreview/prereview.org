@@ -1,10 +1,5 @@
-import { Array, Context, Effect, flow, Layer, pipe, Scope } from 'effect'
-import * as CachingHttpClient from '../../CachingHttpClient/index.ts'
-import type { PreprintId } from '../../Domain/Preprints/index.ts'
+import { Context, Effect, flow, Layer, Scope } from 'effect'
 import type { Zenodo as ZenodoApi } from '../../ExternalApis/index.ts'
-import type { PublicUrl } from '../../public-url.ts'
-import type { OrcidId, Pseudonym } from '../../types/index.ts'
-import { constructUrlsToInvalidatePrereview } from './ConstructUrlsToInvalidatePrereview.ts'
 import { CreateRecordForComment } from './CreateRecordForComment/index.ts'
 import { CreateRecordForDatasetReview } from './CreateRecordForDatasetReview/index.ts'
 import { GetDoiForDatasetReviewRecord } from './GetDoiForDatasetReviewRecord/index.ts'
@@ -114,33 +109,3 @@ export const make: Effect.Effect<typeof ZenodoRecords.Service, never, ZenodoApi.
   })
 
 export const layer = Layer.effect(ZenodoRecords, make)
-
-export const invalidatePrereviewInCache = ({
-  prereviewId,
-  preprintId,
-  user,
-}: {
-  prereviewId: number
-  preprintId?: PreprintId
-  user: { orcidId: OrcidId.OrcidId; pseudonym: Pseudonym.Pseudonym }
-}): Effect.Effect<void, never, ZenodoApi.ZenodoApi | PublicUrl | CachingHttpClient.HttpCache> =>
-  pipe(
-    constructUrlsToInvalidatePrereview({ prereviewId, preprintId, user }),
-    Effect.map(Array.map(invalidateCacheEntry)),
-    Effect.andThen(effects => Effect.all(effects, { mode: 'result', concurrency: 'unbounded' })),
-    Effect.map(Array.getFailures),
-    Effect.andThen(
-      Effect.forEach(error =>
-        Effect.logError('Unable to invalidate URL for PREreview').pipe(Effect.annotateLogs({ error, prereviewId })),
-      ),
-    ),
-    Effect.catch(error =>
-      Effect.logError('Unable to invalidate PREreview in cache').pipe(Effect.annotateLogs({ error, prereviewId })),
-    ),
-  )
-
-const invalidateCacheEntry = Effect.fnUntraced(function* (url: URL) {
-  const httpCache = yield* CachingHttpClient.HttpCache
-
-  yield* httpCache.delete(url)
-})
