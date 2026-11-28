@@ -48,10 +48,21 @@ test.extend(
   await page.getByRole('link', { name: 'ASAPbio Metabolism Crowd' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('ASAPbio Metabolism Crowd')
+  await expect(
+    page.getByRole('link', {
+      name: 'Josiah Carberry reviewed The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
+    }),
+  ).toBeVisible()
+  await expect(
+    page.getByRole('link', {
+      name: 'Josiah Carberry reviewed A conserved local structural motif controls the kinetics of PTP1B catalysis',
+    }),
+  ).toBeVisible()
 })
 
 test('the list might be empty', async ({ page }) => {
   await page.goto('/clubs/asapbio-metabolism', { waitUntil: 'commit' })
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('ASAPbio Metabolism Crowd')
+  await expect(page.getByRole('main')).toContainText('ASAPbio Metabolism Crowd hasn’t published a PREreview yet.')
 })
